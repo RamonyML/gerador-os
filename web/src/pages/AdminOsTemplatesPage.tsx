@@ -34,6 +34,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
+import { stripUndefinedDeep } from '../lib/firestoreSanitize'
 import { useAuth } from '../contexts/AuthContext'
 import { useAdminOsTemplates } from '../hooks/useAdminOsTemplates'
 import { getMudEndExampleDefaults } from '../data/mudEndExample'
@@ -142,7 +143,7 @@ export function AdminOsTemplatesPage() {
       const label = f.label.trim()
       if (!id || !label) continue
       const ctrl: FieldControl = f.control ?? 'text'
-      const placeholder = f.placeholder?.trim() || undefined
+      const ph = f.placeholder?.trim()
       const opts = (f.options ?? [])
         .map((o) => ({
           value: o.value.trim(),
@@ -157,17 +158,27 @@ export function AdminOsTemplatesPage() {
           )
           return null
         }
-        out.push({ id, label, placeholder, control: ctrl, options: opts })
+        out.push(
+          ph
+            ? { id, label, placeholder: ph, control: ctrl, options: opts }
+            : { id, label, control: ctrl, options: opts },
+        )
       } else if (ctrl === 'textarea') {
-        out.push({
-          id,
-          label,
-          placeholder,
-          control: 'textarea',
-          multiline: true,
-        })
+        out.push(
+          ph
+            ? {
+                id,
+                label,
+                placeholder: ph,
+                control: 'textarea',
+                multiline: true,
+              }
+            : { id, label, control: 'textarea', multiline: true },
+        )
       } else {
-        out.push({ id, label, placeholder, control: 'text' })
+        out.push(
+          ph ? { id, label, placeholder: ph, control: 'text' } : { id, label, control: 'text' },
+        )
       }
     }
     return out
@@ -190,7 +201,7 @@ export function AdminOsTemplatesPage() {
     const fieldsPayload = buildFieldsPayload()
     if (fieldsPayload === null) return
 
-    const payload = {
+    const payload = stripUndefinedDeep({
       sector,
       slug: slugT,
       title: titleT,
@@ -198,7 +209,7 @@ export function AdminOsTemplatesPage() {
       active,
       outputTemplate: outputTemplate,
       fields: fieldsPayload,
-    }
+    })
 
     setSaving(true)
     try {
