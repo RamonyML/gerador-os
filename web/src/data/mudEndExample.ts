@@ -48,70 +48,154 @@ const ESQUECEU_SIM =
 const ESQUECEU_NAO =
   'VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONEI O CLIENTE E O MESMO DISSE QUE VAI BUSCAR OS EQUIPAMENTOS ATÉ O DIA DA MUDANÇA.\n\n'
 
-/** Campos alinhados ao fluxo legado (protocolo). */
+const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
+const S_END = 'NOVO ENDEREÇO DO CLIENTE'
+const S_AGE = 'AGENDAMENTO'
+
+/**
+ * Campos alinhados ao fluxo legado (protocolo).
+ * Seções e ordem espelham index-mud-end.html; `layout.md` em grid 12 colunas.
+ */
 export const MUD_END_FIELDS: OsTemplateField[] = [
   {
     id: 'cliente',
     label: 'Cliente (use o primeiro nome se quiser igual ao HTML antigo)',
     control: 'text',
     placeholder: 'Nome',
+    section: S_ID,
+    layout: { md: 8 },
   },
-  { id: 'canal', label: 'Canal de contato', control: 'text', placeholder: 'WhatsApp, telefone…' },
-  { id: 'contato', label: 'Telefone / contato', control: 'text', placeholder: 'Somente números ou como registrar' },
-  { id: 'sinalONU', label: 'Sinal ONU', control: 'text', placeholder: 'Ex.: BOM, FRACO' },
+  {
+    id: 'canal',
+    label: 'Canal de contato',
+    control: 'text',
+    placeholder: 'WhatsApp, telefone…',
+    section: S_ID,
+    layout: { md: 4 },
+  },
+  {
+    id: 'contato',
+    label: 'Telefone / contato',
+    control: 'text',
+    placeholder: 'Somente números ou como registrar',
+    section: S_ID,
+    layout: { md: 6 },
+  },
+  {
+    id: 'sinalONU',
+    label: 'Sinal ONU',
+    control: 'text',
+    placeholder: 'Ex.: BOM, FRACO',
+    section: S_ID,
+    layout: { md: 6 },
+  },
   {
     id: 'mudou',
     label: 'Situação da mudança',
     control: 'radio',
+    section: S_END,
     options: [
       { value: 'MUDOU DE RESIDÊNCIA E', label: 'Cliente já se mudou' },
       { value: 'AINDA NÃO SE MUDOU, PORÉM', label: 'Cliente ainda vai se mudar' },
     ],
+    layout: { md: 12 },
   },
-  { id: 'adress', label: 'Endereço novo (logradouro)', control: 'text' },
-  { id: 'num', label: 'Número', control: 'text' },
-  { id: 'complemento', label: 'Complemento', control: 'text' },
-  { id: 'cep', label: 'CEP', control: 'text' },
-  { id: 'bairro', label: 'Bairro', control: 'text' },
+  { id: 'cep', label: 'CEP', control: 'text', section: S_END, layout: { md: 2 } },
+  {
+    id: 'adress',
+    label: 'Endereço novo (logradouro)',
+    control: 'text',
+    section: S_END,
+    layout: { md: 4 },
+  },
+  { id: 'num', label: 'Número', control: 'text', section: S_END, layout: { md: 2 } },
+  { id: 'bairro', label: 'Bairro', control: 'text', section: S_END, layout: { md: 4 } },
+  {
+    id: 'complemento',
+    label: 'Complemento',
+    control: 'text',
+    section: S_END,
+    layout: { md: 3 },
+  },
   {
     id: 'quandoMud',
     label: 'Quando / observação da mudança',
     control: 'textarea',
+    section: S_END,
     placeholder: 'Ex.: Cliente informou que vai mudar na próxima semana.',
+    layout: { md: 9 },
   },
   {
     id: 'levouEquip',
     label: 'Conexão sem IP — equipamentos (texto do protocolo)',
     control: 'radio',
+    section: S_END,
     options: [
       { value: LEVOU_SIM, label: 'Sim — equipamentos já no novo endereço' },
       { value: LEVOU_NAO, label: 'Não — cliente levará depois' },
     ],
+    layout: { md: 12 },
   },
   {
     id: 'esqueceuEquip',
     label: 'Conexão com IP — equipamentos (texto do protocolo)',
     control: 'radio',
+    section: S_END,
     options: [
       { value: ESQUECEU_SIM, label: 'Sim — esqueceu no endereço antigo' },
       { value: ESQUECEU_NAO, label: 'Não — buscará até o dia da mudança' },
     ],
+    layout: { md: 12 },
   },
   {
-    id: 'formaPag',
-    label: 'Forma de pagamento da taxa',
+    id: 'comprovante',
+    label: 'Tipo de comprovante',
     control: 'select',
+    section: S_END,
     options: [
-      { value: 'PIX', label: 'PIX' },
-      { value: 'DINHEIRO', label: 'Dinheiro' },
-      { value: 'CARTAO', label: 'Cartão' },
+      { value: 'CEMIG', label: 'CEMIG' },
+      { value: 'DMAE', label: 'DMAE' },
+      { value: 'CONTRATO DE LOCAÇÃO', label: 'Contrato de locação' },
+      { value: 'CONTRATO DE HABITAÇÃO', label: 'Contrato de habitação' },
+      { value: 'OUTROS', label: 'Outros (preencha “tipo” abaixo)' },
     ],
+    layout: { md: 2 },
   },
-  { id: 'dataVisita', label: 'Data da visita (texto livre)', control: 'text', placeholder: 'dd/mm/aaaa' },
+  {
+    id: 'tipoComp',
+    label: 'Tipo do comprovante (se “Outros”)',
+    control: 'text',
+    section: S_END,
+    placeholder: 'Só se necessário',
+    layout: { md: 3 },
+  },
+  {
+    id: 'nomeComprov',
+    label: 'Nome no comprovante',
+    control: 'text',
+    section: S_END,
+    layout: { md: 3 },
+  },
+  {
+    id: 'grauComp',
+    label: 'Grau (assinante, terceiro, etc.)',
+    control: 'text',
+    section: S_END,
+    layout: { md: 4 },
+  },
+  {
+    id: 'dataVisita',
+    label: 'Data da visita',
+    control: 'date',
+    section: S_AGE,
+    placeholder: 'dd/mm/aaaa',
+    layout: { md: 4 },
+  },
   {
     id: 'horaVisita',
     label: 'Horário da visita',
     control: 'select',
+    section: S_AGE,
     options: [
       { value: 'ÀS 08:00', label: '08:00' },
       { value: 'ÀS 08:30', label: '08:30' },
@@ -124,27 +208,20 @@ export const MUD_END_FIELDS: OsTemplateField[] = [
       { value: 'ÀS 17:00', label: '17:00 (somente com autorização)' },
       { value: 'APÓS ÀS 11:00', label: 'Após 11:00 (sábados)' },
     ],
+    layout: { md: 4 },
   },
   {
-    id: 'comprovante',
-    label: 'Tipo de comprovante',
+    id: 'formaPag',
+    label: 'Forma de pagamento da taxa',
     control: 'select',
+    section: S_AGE,
     options: [
-      { value: 'CEMIG', label: 'CEMIG' },
-      { value: 'DMAE', label: 'DMAE' },
-      { value: 'CONTRATO DE LOCAÇÃO', label: 'Contrato de locação' },
-      { value: 'CONTRATO DE HABITAÇÃO', label: 'Contrato de habitação' },
-      { value: 'OUTROS', label: 'Outros (preencha “tipo” abaixo)' },
+      { value: 'PIX', label: 'PIX' },
+      { value: 'DINHEIRO', label: 'Dinheiro' },
+      { value: 'CARTAO', label: 'Cartão' },
     ],
+    layout: { md: 4 },
   },
-  {
-    id: 'tipoComp',
-    label: 'Tipo do comprovante (se “Outros”)',
-    control: 'text',
-    placeholder: 'Só se necessário',
-  },
-  { id: 'nomeComprov', label: 'Nome no comprovante', control: 'text' },
-  { id: 'grauComp', label: 'Grau (assinante, terceiro, etc.)', control: 'text' },
 ]
 
 export function getMudEndExampleDefaults() {
@@ -152,6 +229,7 @@ export function getMudEndExampleDefaults() {
     slug: 'mud-end-protocolo',
     title: 'MUD END — protocolo (exemplo HTML)',
     outputTemplate: MUD_END_OUTPUT_TEMPLATE,
+    demandCategory: 'mudanca-endereco',
     fields: MUD_END_FIELDS.map((f) => ({ ...f })),
   }
 }

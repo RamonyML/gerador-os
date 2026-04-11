@@ -38,7 +38,13 @@ import { stripUndefinedDeep } from '../lib/firestoreSanitize'
 import { useAuth } from '../contexts/AuthContext'
 import { useAdminOsTemplates } from '../hooks/useAdminOsTemplates'
 import { getMudEndExampleDefaults } from '../data/mudEndExample'
-import type { FieldControl, OsTemplate, OsTemplateField } from '../types/osTemplate'
+import { SUPPORT_DEMANDS } from '../data/supportDemands'
+import type {
+  FieldControl,
+  FieldLayout,
+  OsTemplate,
+  OsTemplateField,
+} from '../types/osTemplate'
 import {
   SECTOR_LABELS,
   SECTORS,
@@ -50,6 +56,26 @@ const CONTROL_LABELS: Record<FieldControl, string> = {
   textarea: 'Texto longo',
   select: 'Lista (select)',
   radio: 'Opções (radio)',
+  date: 'Data (calendário)',
+}
+
+function layoutPayload(f: OsTemplateField): FieldLayout | undefined {
+  const L = f.layout
+  if (!L) return undefined
+  const o: FieldLayout = {}
+  if (L.xs != null) o.xs = L.xs
+  if (L.sm != null) o.sm = L.sm
+  if (L.md != null) o.md = L.md
+  return Object.keys(o).length > 0 ? o : undefined
+}
+
+function fieldMeta(f: OsTemplateField): Pick<OsTemplateField, 'layout' | 'section'> {
+  const o: Pick<OsTemplateField, 'layout' | 'section'> = {}
+  const lo = layoutPayload(f)
+  if (lo) o.layout = lo
+  const sec = f.section?.trim()
+  if (sec) o.section = sec
+  return o
 }
 
 function emptyField(): OsTemplateField {
@@ -78,6 +104,7 @@ export function AdminOsTemplatesPage() {
   const [version, setVersion] = useState(1)
   const [active, setActive] = useState(true)
   const [outputTemplate, setOutputTemplate] = useState('')
+  const [demandCategory, setDemandCategory] = useState('geral')
   const [fields, setFields] = useState<OsTemplateField[]>([emptyField()])
 
   const canPickSector = profile?.isDev === true || profile?.isAdmin === true
@@ -88,6 +115,7 @@ export function AdminOsTemplatesPage() {
     setSlug(d.slug)
     setTitle(d.title)
     setOutputTemplate(d.outputTemplate)
+    setDemandCategory(d.demandCategory)
     setVersion(1)
     setActive(true)
     setFields(
@@ -107,6 +135,7 @@ export function AdminOsTemplatesPage() {
     setVersion(1)
     setActive(true)
     setOutputTemplate('')
+    setDemandCategory('geral')
     setFields([emptyField()])
     setDialogOpen(true)
   }
@@ -120,6 +149,7 @@ export function AdminOsTemplatesPage() {
     setVersion(t.version)
     setActive(t.active)
     setOutputTemplate(t.outputTemplate)
+    setDemandCategory(t.demandCategory)
     setFields(
       t.fields.length > 0
         ? t.fields.map((f) => ({
@@ -151,6 +181,8 @@ export function AdminOsTemplatesPage() {
         }))
         .filter((o) => o.value && o.label)
 
+      const meta = fieldMeta(f)
+
       if (ctrl === 'select' || ctrl === 'radio') {
         if (opts.length === 0) {
           setFormError(
@@ -158,27 +190,31 @@ export function AdminOsTemplatesPage() {
           )
           return null
         }
-        out.push(
-          ph
-            ? { id, label, placeholder: ph, control: ctrl, options: opts }
-            : { id, label, control: ctrl, options: opts },
-        )
+        const base = ph
+          ? { id, label, placeholder: ph, control: ctrl, options: opts }
+          : { id, label, control: ctrl, options: opts }
+        out.push({ ...base, ...meta })
       } else if (ctrl === 'textarea') {
-        out.push(
-          ph
-            ? {
-                id,
-                label,
-                placeholder: ph,
-                control: 'textarea',
-                multiline: true,
-              }
-            : { id, label, control: 'textarea', multiline: true },
-        )
+        const base = ph
+          ? {
+              id,
+              label,
+              placeholder: ph,
+              control: 'textarea' as const,
+              multiline: true,
+            }
+          : { id, label, control: 'textarea' as const, multiline: true }
+        out.push({ ...base, ...meta })
+      } else if (ctrl === 'date') {
+        const base = ph
+          ? { id, label, placeholder: ph, control: 'date' as const }
+          : { id, label, control: 'date' as const }
+        out.push({ ...base, ...meta })
       } else {
-        out.push(
-          ph ? { id, label, placeholder: ph, control: 'text' } : { id, label, control: 'text' },
-        )
+        const base = ph
+          ? { id, label, placeholder: ph, control: 'text' as const }
+          : { id, label, control: 'text' as const }
+        out.push({ ...base, ...meta })
       }
     }
     return out
@@ -208,6 +244,7 @@ export function AdminOsTemplatesPage() {
       version: Number(version) || 1,
       active,
       outputTemplate: outputTemplate,
+      demandCategory: demandCategory.trim() || 'geral',
       fields: fieldsPayload,
     })
 
@@ -284,6 +321,7 @@ export function AdminOsTemplatesPage() {
                 <TableCell>Título</TableCell>
                 <TableCell>Slug</TableCell>
                 <TableCell>Setor</TableCell>
+                <TableCell>Demanda</TableCell>
                 <TableCell align="right">Versão</TableCell>
                 <TableCell>Ativo</TableCell>
                 <TableCell align="right">Ações</TableCell>
@@ -292,7 +330,7 @@ export function AdminOsTemplatesPage() {
             <TableBody>
               {state.templates.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6}>
+                  <TableCell colSpan={7}>
                     <Typography color="text.secondary">
                       Nenhum modelo. Clique em &quot;Novo modelo&quot;.
                     </Typography>
@@ -306,6 +344,10 @@ export function AdminOsTemplatesPage() {
                       <code>{t.slug}</code>
                     </TableCell>
                     <TableCell>{SECTOR_LABELS[t.sector]}</TableCell>
+                    <TableCell>
+                      {SUPPORT_DEMANDS.find((x) => x.id === t.demandCategory)
+                        ?.title ?? t.demandCategory}
+                    </TableCell>
                     <TableCell align="right">{t.version}</TableCell>
                     <TableCell>{t.active ? 'Sim' : 'Não'}</TableCell>
                     <TableCell align="right">
@@ -387,6 +429,24 @@ export function AdminOsTemplatesPage() {
               fullWidth
               required
             />
+            <FormControl fullWidth size="small">
+              <InputLabel id="demand-cat-label">Demanda (hub Suporte)</InputLabel>
+              <Select
+                labelId="demand-cat-label"
+                label="Demanda (hub Suporte)"
+                value={demandCategory}
+                onChange={(e) => setDemandCategory(e.target.value)}
+              >
+                {SUPPORT_DEMANDS.map((d) => (
+                  <MenuItem key={d.id} value={d.id}>
+                    {d.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Typography variant="caption" color="text.secondary">
+              Define em qual card do menu <strong>Suporte</strong> o modelo aparece.
+            </Typography>
             <TextField
               label="Versão"
               type="number"
@@ -480,6 +540,7 @@ export function AdminOsTemplatesPage() {
                             cur.options = []
                           }
                           if (next === 'textarea') cur.multiline = true
+                          else cur.multiline = false
                           n[index] = cur
                           return n
                         })
@@ -528,6 +589,20 @@ export function AdminOsTemplatesPage() {
                       setFields((prev) => {
                         const n = [...prev]
                         n[index] = { ...n[index], placeholder: e.target.value }
+                        return n
+                      })
+                    }
+                    fullWidth
+                  />
+                  <TextField
+                    size="small"
+                    label="Seção (opcional, agrupa no gerador)"
+                    value={f.section ?? ''}
+                    placeholder="Ex.: IDENTIFICAÇÃO DO CLIENTE"
+                    onChange={(e) =>
+                      setFields((prev) => {
+                        const n = [...prev]
+                        n[index] = { ...n[index], section: e.target.value }
                         return n
                       })
                     }

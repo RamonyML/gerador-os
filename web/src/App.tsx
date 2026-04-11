@@ -6,6 +6,9 @@ import { AdminOsTemplatesPage } from './pages/AdminOsTemplatesPage'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { OsGeneratorPage } from './pages/OsGeneratorPage'
+import { SupportHomePage } from './pages/SupportHomePage'
+import { SupportDemandPage } from './pages/SupportDemandPage'
+import { RequireSupport } from './components/RequireSupport'
 
 export default function App() {
   return (
@@ -19,6 +22,22 @@ export default function App() {
         }
       >
         <Route path="/" element={<HomePage />} />
+        <Route
+          path="/suporte"
+          element={
+            <RequireSupport>
+              <SupportHomePage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/demanda/:demandId"
+          element={
+            <RequireSupport>
+              <SupportDemandPage />
+            </RequireSupport>
+          }
+        />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
         <Route
           path="/admin/modelos-os"

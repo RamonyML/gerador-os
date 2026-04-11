@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suporte MZNET</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="auth.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-image: url('/fundos/fundo008.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(.4,2,.3,1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-7px) scale(1.03);
+    }
+    
+    .card-hover.hover-green:hover {
+      box-shadow: 0 10px 24px 0 rgba(56, 175, 71, 0.13);
+      background: #f6fff9;
+    }
+    
+    .card-hover.hover-blue:hover {
+      box-shadow: 0 10px 24px 0 rgba(59, 130, 246, 0.13);
+      background: #f6faff;
+    }
+    
+    .card-hover.hover-yellow:hover {
+      box-shadow: 0 10px 24px 0 rgba(234, 179, 8, 0.13);
+      background: #fffef6;
+    }
+    
+    .card-hover.hover-purple:hover {
+      box-shadow: 0 10px 24px 0 rgba(139, 92, 246, 0.13);
+      background: #faf6ff;
+    }
+    
+    .card-hover.hover-red:hover {
+      box-shadow: 0 10px 24px 0 rgba(239, 68, 68, 0.13);
+      background: #fff6f6;
+    }
+    
+    .card-hover.hover-pink:hover {
+      box-shadow: 0 10px 24px 0 rgba(236, 72, 153, 0.13);
+      background: #fff6fa;
+    }
+    
+    .card-hover.hover-cyan:hover {
+      box-shadow: 0 10px 24px 0 rgba(6, 182, 212, 0.13);
+      background: #f6fdff;
+    }
+    
+    .card-hover.hover-orange:hover {
+      box-shadow: 0 10px 24px 0 rgba(249, 115, 22, 0.13);
+      background: #fffaf6;
+    }
+    
+    .card-hover.hover-teal:hover {
+      box-shadow: 0 10px 24px 0 rgba(20, 184, 166, 0.13);
+      background: #f6fffd;
+    }
+    
+    .card-hover.hover-amber:hover {
+      box-shadow: 0 10px 24px 0 rgba(245, 158, 11, 0.13);
+      background: #fffdf6;
+    }
+    
+    .card-hover.hover-lime:hover {
+      box-shadow: 0 10px 24px 0 rgba(132, 204, 22, 0.13);
+      background: #fafff6;
+    }
+    
+    .card-hover.hover-indigo:hover {
+      box-shadow: 0 10px 24px 0 rgba(99, 102, 241, 0.13);
+      background: #f6f6ff;
+    }
+    
+    .nav-gradient {
+      background: linear-gradient(to right, #000000, #0f7939);
+    }
+    
+    .icon-container {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    
+    ::selection {
+      background-color: rgba(56, 175, 71, 0.2);
+      color: #28a746;
+    }
+    
+    .title-underline::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background-color: #38af47;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+    
+    /* New navbar styles */
+    .navbar-glass {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-link {
+      position: relative;
+      padding: 8px 12px;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #38af47;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .dropdown-menu {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 bg-opacity-90">
+  <!-- Adicionar o e-mail no canto inferior esquerdo -->
+  <div style="position: fixed; bottom: 10px; left: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; font-size: 12px; z-index: 1000;">
+    <span id="userEmailFooter" class="text-green-800"></span>
+  </div>
+
+  <!-- New Modern Navbar -->
+<nav class="fixed w-full z-50 shadow-lg bg-gradient-to-r from-black to-green-600">
+  <div class="w-full px-4 sm:px-6 lg:px-8"> <!-- Removi o max-w-7xl mx-auto -->
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Lado esquerdo (logo + links) -->
+      <div class="flex items-center space-x-10">
+        <div class="flex-shrink-0 flex items-center">
+          <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+          <span class="text-white font-bold text-lg">Gerador de O.S</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="/index.html" class="nav-link text-white text-sm font-medium">Home</a>
+          <a href="/suporte/modelos/index.html" class="nav-link text-white text-sm font-medium">Modelos de O.S</a>
+
+          <div class="dropdown relative">
+            <button class="nav-link text-white text-sm font-medium flex items-center">
+              Orientações
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+              <a href="/suporte/tuto-rot-reset/tuto-home/tutorial.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Roteador resetado</a>
+              <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">RokuTV</a>
+              <a href="https://drive.google.com/drive/folders/1t9S8-n_sblmQPbiS84pOxQfnjzX3GP00" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Grade de Canais</a>
+              <div class="relative inline-block text-left">
+                <!-- Botão downloads -->
+                <button id="menuButton" 
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none">
+                  Baixar extensões
+                </button>
+                <!-- Submenu -->
+                <div id="submenu" 
+                     class="absolute left-full top-0 ml-2 hidden bg-white border border-gray-200 rounded-md shadow-lg">
+                  <a href="/suporte/download/utilidades/ceps.zip" 
+                     download 
+                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                     Pesquisa de endereços
+                  </a>
+                  <a href="/suporte/download/utilidades/registros.zip" 
+                     download 
+                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                     Meus registros
+                  </a>
+                </div>
+              </div>
+              <div class="border-t border-gray-200 my-1"></div>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Outros</a>
+            </div>
+          </div>
+
+          <div class="dropdown relative">
+            <button class="nav-link text-white text-sm font-medium flex items-center">
+              Links importantes
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="dropdown-menu absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+              <a href="https://sistema.mznet.com.br/mk/" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">MK Login</a>
+              <a href="https://downdetector.com.br/" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">DownDetector</a>
+              <a href="https://macvendors.com/" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">MacVendors</a>
+              <a href="https://www.4devs.com.br/corretor_ortografico" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Corretor</a>
+              <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CEP Correios</a>
+              <a href="https://dmzinternet.portal.mknext.com.br/?company=14565336000106" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Fatura Fácil</a>
+              <a href="https://tv.ittv.com.br/auth/login?redirect=%2F" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">ITTV login</a>
+              <a href="https://play.mznet.com.br/login" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">MZ TV</a>
+              <a href="https://play.google.com/store/apps/details?id=br.tv.cdn.cdn_vod.mobiles" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CDNTV PlayStore</a>
+            </div>
+          </div>
+
+
+          <a href="/suporte/separadores/separadores.html" target="_blank" class="nav-link text-white text-sm font-medium">Separadores MAC</a>
+          <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="nav-link text-white text-sm font-medium">Encerramentos de O.S</a>
+        </div>
+      </div>
+
+      <!-- Lado direito (usuário e logout) -->
+      <div class="hidden md:flex items-center space-x-4">
+        <span id="userEmail" class="text-white text-sm">Usuário não autenticado</span>
+        <button id="logoutButton" class="px-4 py-1.5 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Sair
+        </button>
+      </div>
+
+      <!-- Botão hamburguer (mobile) -->
+      <div class="-mr-2 flex md:hidden">
+        <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+  <!-- Mobile menu -->
+  <div class="md:hidden hidden pt-16" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-900 bg-opacity-90">
+      <a href="/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+      <a href="/suporte/modelos/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Modelos de O.S</a>
+      <a href="/suporte/tuto-rot-reset/tuto-home/tutorial.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Roteador resetado</a>
+      <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="text-white block px-3 py-2 rounded-md text-base font-medium">RokuTV</a>
+      <a href="/suporte/separadores/separadores.html" target="_blank" class="text-white block px-3 py-2 rounded-md text-base font-medium">Separadores MAC</a>
+      <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Encerramentos de O.S</a>
+      <a href="https://geradordeos-mz2.netlify.app/" class="text-green-300 block px-3 py-2 rounded-md text-base font-medium">Versão Anterior</a>
+      <div class="pt-4 pb-3 border-t border-gray-700">
+        <div class="flex items-center px-5">
+          <div class="text-sm">
+            <span id="mobileUserEmail" class="text-white">Usuário não autenticado</span>
+          </div>
+        </div>
+        <div class="mt-3 px-2 space-y-1">
+          <button id="mobileLogoutButton" class="block w-full px-3 py-2 text-left text-sm font-medium text-white rounded-md hover:bg-green-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sair
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">SUPORTE</h1>
+      <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Selecione o tipo de serviço que deseja realizar</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Card 1 - ALTERAÇÃO DE PLANO -->
+      <a href="/suporte/dash-altplan.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-green">
+        <div class="p-6">
+          <div class="icon-container bg-green-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38af47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left">
+              <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">ALTERAÇÃO DE PLANO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para alterações de planos</p>
+        </div>
+      </a>
+
+      <!-- Card 2 - MUDANÇA DE ENDEREÇO -->
+      <a href="/suporte/dash-mudend.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-blue">
+        <div class="p-6">
+          <div class="icon-container bg-blue-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-house">
+              <path d="M15 22a1 1 0 0 1-1-1v-4a1 1 0 0 1 .445-.832l3-2a1 1 0 0 1 1.11 0l3 2A1 1 0 0 1 22 17v4a1 1 0 0 1-1 1z"/><path d="M18 10a8 8 0 0 0-16 0c0 4.993 5.539 10.193 7.399 11.799a1 1 0 0 0 .601.2"/><path d="M18 22v-3"/><circle cx="10" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">MUDANÇA DE ENDEREÇO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para mudança de endereço da conexão</p>
+        </div>
+      </a>
+
+      <!-- Card 3 - MANUTENÇÃO -->
+      <a href="/suporte/dash-man.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-yellow">
+        <div class="p-6">
+          <div class="icon-container bg-yellow-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bolt">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">MANUTENÇÃO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para manutenção externa/interna</p>
+        </div>
+      </a>
+
+      <!-- Card 4 - CONVERSORES DE MÍDIA -->
+      <a href="/suporte/dash-stb.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-purple">
+        <div class="p-6">
+          <div class="icon-container bg-purple-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor-play">
+              <path d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"/><path d="M12 17v4"/><path d="M8 21h8"/><rect x="2" y="3" width="20" height="14" rx="2"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">CONVERSORES DE MÍDIA</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para compra de STB e RokuTV</p>
+        </div>
+      </a>
+
+      <!-- Card 5 - WI-FI EXTEND -->
+      <a href="/suporte/dash-extend.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-red">
+        <div class="p-6">
+          <div class="icon-container bg-red-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-wifi">
+              <path d="M9.5 13.866a4 4 0 0 1 5 .01"/><path d="M12 17h.01"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M7 10.754a8 8 0 0 1 10 0"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">WI-FI EXTEND</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para contratação de Wi-Fi Mesh</p>
+        </div>
+      </a>
+
+      <!-- Card 6 - SENHA/SSID WI-FI -->
+      <a href="/suporte/altera-senha/altera-senha.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-indigo">
+        <div class="p-6">
+          <div class="icon-container bg-indigo-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rectangle-ellipsis">
+              <rect width="20" height="12" x="2" y="6" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">SENHA/SSID WI-FI</h3>
+          <p class="text-gray-500 text-sm">Gere protocolo para alteração de credenciais de rede Wi-Fi</p>
+        </div>
+      </a>
+
+      <!-- Card 7 - FEEDBACK -->
+      <a href="/suporte/dash-feedback.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-pink">
+        <div class="p-6">
+          <div class="icon-container bg-pink-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square">
+              <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">FEEDBACK</h3>
+          <p class="text-gray-500 text-sm">Registre feedbacks sobre os serviços prestados</p>
+        </div>
+      </a>
+
+      <!-- Card 8 - LIBERAÇÃO DE PORTAS -->
+      <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-cyan group relative" title="O gerador desta demanda está temporariamente suspenso">
+        <div class="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10">
+          <p class="text-white text-center px-4">O gerador desta demanda está temporariamente suspenso</p>
+        </div>
+        <div class="p-6 relative">
+          <div class="icon-container bg-cyan-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cctv">
+              <path d="M16.75 12h3.632a1 1 0 0 1 .894 1.447l-2.034 4.069a1 1 0 0 1-1.708.134l-2.124-2.97"/><path d="M17.106 9.053a1 1 0 0 1 .447 1.341l-3.106 6.211a1 1 0 0 1-1.342.447L3.61 12.3a2.92 2.92 0 0 1-1.3-3.91L3.69 5.6a2.92 2.92 0 0 1 3.92-1.3z"/><path d="M2 19h3.76a2 2 0 0 0 1.8-1.1L9 15"/><path d="M2 21v-4"/><path d="M7 9h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">DIRECIONAMENTO DE PORTAS</h3>
+          <p class="text-gray-500 text-sm">Gere protocolos para direcionamento de portas</p>
+        </div>
+      </a>
+
+      <!-- Card 9 - TERMO DE RESPONSABILIDADE -->
+      <a href="/suporte/termo-resp/termo-resp-padrao.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-orange">
+        <div class="p-6">
+          <div class="icon-container bg-orange-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-check-2">
+              <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m3 15 2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">TERMO DE RESPONSABILIDADE</h3>
+          <p class="text-gray-500 text-sm">Gere protocolos de termos de responsabilidade</p>
+        </div>
+      </a>
+
+      <!-- Card 10 - VISITA INSTRUTIVA -->
+      <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-teal group relative" title="O gerador desta demanda está temporariamente suspenso">
+        <div class="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10">
+          <p class="text-white text-center px-4">O gerador desta demanda está temporariamente suspenso</p>
+        </div>
+        <div class="p-6 relative">
+          <div class="icon-container bg-teal-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb">
+              <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">VISITA INSTRUTIVA</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para visitas instrutivas</p>
+        </div>
+      </a>
+
+      <!-- Card 11 - PESQUISA DE ENDEREÇOS -->
+      <a href="/suporte/pesquisa-cep/pesquisa-end.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-amber">
+        <div class="p-6">
+          <div class="icon-container bg-amber-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map">
+              <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">PESQUISA DE ENDEREÇOS</h3>
+          <p class="text-gray-500 text-sm">Consulte endereços e obtenha CEPs de logradouros</p>
+        </div>
+      </a>
+
+      <!-- Card 12 - REGISTRO DE UPGRADES -->
+      <a href="https://mz-upgrades.web.app" target="_blank" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-lime">
+        <div class="p-6">
+          <div class="icon-container bg-lime-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#84cc16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-wide-narrow">
+              <path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h10"/><path d="M11 16h7"/><path d="M11 20h4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">REGISTRO DE UPGRADES</h3>
+          <p class="text-gray-500 text-sm">Acesse o sistema de registro e controle de upgrades</p>
+        </div>
+      </a>
+
+      <!-- Card 13 - TUTORIAIS DE ROTEADOR RESETADO -->
+      <a href="/suporte/tuto-rot-reset/tuto-home/tutorial.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-red">
+        <div class="p-6">
+          <div class="icon-container bg-red-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-router">
+              <rect x="2" y="8" width="20" height="8" rx="2"/>
+              <path d="M6 16v2"/>
+              <path d="M18 16v2"/>
+              <path d="M8 12h.01"/>
+              <path d="M12 12h.01"/>
+              <path d="M16 12h.01"/>
+              <path d="M12 8V4M8 4h8"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">TUTORIAIS DE ROTEADOR RESETADO</h3>
+          <p class="text-gray-500 text-sm">Acesse tutoriais passo a passo para configuração de roteadores após reset</p>
+        </div>
+      </a>
+
+      <!-- Card 14 - VALIDAÇÃO DE TEXTOS -->
+      <a href="/suporte/validacao/validacao.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-indigo">
+        <div class="p-6">
+          <div class="icon-container bg-indigo-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-search">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <circle cx="11" cy="14" r="2"/>
+              <path d="M13 16l1.5 1.5"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">VALIDAÇÃO DE TEXTOS</h3>
+          <p class="text-gray-500 text-sm">Compare textos de O.S e destaque diferenças automaticamente</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <!-- Report Button -->
+  <div class="fixed bottom-8 right-8 flex space-x-4">
+    <a href="/sobre.html" class="bg-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors duration-200" title="Sobre o Gerador de O.S">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 16v-4"/>
+        <path d="M12 8h.01"/>
+      </svg>
+    </a>
+    <a href="/report.html" class="bg-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors duration-200" title="Reportar problemas ou sugestões" target="_blank">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-transparent py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-right">
+      <p class="text-gray-600 text-sm">Versão 3.1.1</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const submenu = document.getElementById('submenu');
+  
+    menuButton.addEventListener('click', () => {
+      submenu.classList.toggle('hidden');
+    });
+  
+    // Fecha o menu se clicar fora
+    document.addEventListener('click', (event) => {
+      if (!menuButton.contains(event.target) && !submenu.contains(event.target)) {
+        submenu.classList.add('hidden');
+      }
+    });
+  </script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+    
+    const auth = getAuth(app);
+
+    // Função para buscar o nome do operador
+    async function getOperadorName(email) {
+      try {
+        const response = await fetch('/js/operadores.json');
+        const data = await response.json();
+        return data.operadores[email] || email;
+      } catch (error) {
+        console.error("Erro ao buscar nome do operador:", error);
+        return email;
+      }
+    }
+
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html";
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Busca o nome do operador e atualiza os elementos
+        const operadorName = await getOperadorName(user.email);
+        document.getElementById("userEmail").textContent = `Olá, ${operadorName}!`;
+        document.getElementById("mobileUserEmail").textContent = `Olá, ${operadorName}!`;
+        document.getElementById("userEmailFooter").textContent = `Logado como: ${user.email}`;
+      }
+    });
+
+    // Logout desktop
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+
+    // Logout mobile
+    document.getElementById('mobileLogoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

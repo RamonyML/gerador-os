@@ -13,10 +13,12 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { canManageOsTemplates } from '../lib/permissions'
+import { canAccessSupportHub } from '../lib/supportAccess'
 
 export function AppLayout() {
   const { user, profile, logOut } = useAuth()
   const showModels = profile != null && canManageOsTemplates(profile)
+  const showSupport = profile != null && canAccessSupportHub(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
 
@@ -58,6 +60,11 @@ export function AppLayout() {
           <Button color="inherit" onClick={() => navigate('/gerar-os')}>
             Gerar O.S
           </Button>
+          {showSupport ? (
+            <Button color="inherit" onClick={() => navigate('/suporte')}>
+              Suporte
+            </Button>
+          ) : null}
           {showModels ? (
             <Button
               color="inherit"

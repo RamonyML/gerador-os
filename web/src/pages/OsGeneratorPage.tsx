@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link as RouterLink, useSearchParams } from 'react-router-dom'
 import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Container,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
@@ -20,6 +23,11 @@ import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
 import { renderTemplate } from '../lib/renderTemplate'
 import type { OsTemplate } from '../types/osTemplate'
+import {
+  SUPPORT_DEMANDS,
+  isKnownDemandCategory,
+  templatesMatchingDemand,
+} from '../data/supportDemands'
 
 const EXEMPLO_FIRESTORE_JSON = `{
   "sector": "suporte",
@@ -27,6 +35,7 @@ const EXEMPLO_FIRESTORE_JSON = `{
   "title": "Atendimento — demonstração",
   "version": 1,
   "active": true,
+  "demandCategory": "geral",
   "outputTemplate": "Cliente: {{cliente}}\\nProtocolo: {{protocolo}}\\nBairro: {{bairro}}\\nOperador: {{operador.nome}}\\nObservações: {{observacoes}}",
   "fields": [
     { "id": "cliente", "label": "Cliente", "placeholder": "Nome do cliente" },
@@ -48,30 +57,60 @@ function buildInitialValues(template: OsTemplate | null): Record<string, string>
 export function OsGeneratorPage() {
   const { user, profile, profileMissing } = useAuth()
   const state = useOsTemplates(profile)
+  const [searchParams] = useSearchParams()
   const [selectedId, setSelectedId] = useState<string>('')
   const [values, setValues] = useState<Record<string, string>>({})
   const [copyOk, setCopyOk] = useState(false)
 
   const templates = state.status === 'ready' ? state.templates : []
+  const demandParam = searchParams.get('demanda')
+  const tplParam = searchParams.get('tpl')
 
-  const selected = useMemo(
-    () => templates.find((t) => t.id === selectedId) ?? null,
-    [templates, selectedId],
+  const visibleTemplates = useMemo(() => {
+    if (!demandParam || !isKnownDemandCategory(demandParam)) {
+      return templates
+    }
+    return templatesMatchingDemand(templates, demandParam)
+  }, [templates, demandParam])
+
+  const demandMeta = useMemo(
+    () =>
+      demandParam
+        ? SUPPORT_DEMANDS.find((d) => d.id === demandParam)
+        : undefined,
+    [demandParam],
   )
 
-  const handleSelectTemplate = useCallback((id: string) => {
-    setSelectedId(id)
-    const t = templates.find((x) => x.id === id) ?? null
-    setValues(buildInitialValues(t))
-  }, [templates])
+  const selected = useMemo(
+    () => visibleTemplates.find((t) => t.id === selectedId) ?? null,
+    [visibleTemplates, selectedId],
+  )
+
+  const handleSelectTemplate = useCallback(
+    (id: string) => {
+      setSelectedId(id)
+      const t = visibleTemplates.find((x) => x.id === id) ?? null
+      setValues(buildInitialValues(t))
+    },
+    [visibleTemplates],
+  )
 
   useEffect(() => {
-    if (templates.length > 0 && !selectedId) {
-      const first = templates[0]
-      setSelectedId(first.id)
-      setValues(buildInitialValues(first))
+    if (state.status !== 'ready') return
+    const vis = visibleTemplates
+    if (vis.length === 0) {
+      setSelectedId('')
+      setValues({})
+      return
     }
-  }, [templates, selectedId])
+    const prefer =
+      tplParam && vis.find((t) => t.id === tplParam) ? tplParam : null
+    const next = prefer
+      ? vis.find((t) => t.id === prefer)!
+      : vis[0]
+    setSelectedId(next.id)
+    setValues(buildInitialValues(next))
+  }, [state.status, visibleTemplates, tplParam, demandParam])
 
   const context = useMemo(() => {
     const base: Record<string, unknown> = { ...values }
@@ -108,15 +147,35 @@ export function OsGeneratorPage() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
+    <Container
+      maxWidth="md"
+      sx={{ py: 3, maxWidth: { xs: '100%', md: 880 } }}
+    >
       <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
         Gerar O.S
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
         Escolha um fluxo, preencha os campos e copie o texto gerado. Templates
         vêm da coleção <code>osTemplates</code> no Firestore (ativos e do seu
         setor; dev vê todos).
       </Typography>
+
+      {demandParam && demandMeta ? (
+        <Stack
+          direction="row"
+          sx={{ alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}
+        >
+          <Chip
+            size="small"
+            color="primary"
+            variant="outlined"
+            label={`Demanda: ${demandMeta.title}`}
+          />
+          <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
+            Mostrar todos os modelos
+          </Link>
+        </Stack>
+      ) : null}
 
       {state.status === 'loading' ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
@@ -127,6 +186,18 @@ export function OsGeneratorPage() {
       {state.status === 'error' ? (
         <Alert severity="error" sx={{ mb: 2 }}>
           {state.message}
+        </Alert>
+      ) : null}
+
+      {state.status === 'ready' &&
+      templates.length > 0 &&
+      visibleTemplates.length === 0 ? (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Nenhum modelo nesta categoria de demanda.{' '}
+          <Link component={RouterLink} to="/gerar-os">
+            Ver todos os fluxos
+          </Link>{' '}
+          ou peça a um gestor para classificar um modelo em <strong>Modelos</strong>.
         </Alert>
       ) : null}
 
@@ -152,7 +223,7 @@ export function OsGeneratorPage() {
         </Alert>
       ) : null}
 
-      {state.status === 'ready' && templates.length > 0 ? (
+      {state.status === 'ready' && visibleTemplates.length > 0 ? (
         <Stack spacing={2}>
           <FormControl fullWidth>
             <InputLabel id="tpl-label">Fluxo / template</InputLabel>
@@ -162,7 +233,7 @@ export function OsGeneratorPage() {
               value={selectedId}
               onChange={(e) => handleSelectTemplate(e.target.value)}
             >
-              {templates.map((t) => (
+              {visibleTemplates.map((t) => (
                 <MenuItem key={t.id} value={t.id}>
                   {t.title}{' '}
                   <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
@@ -180,6 +251,9 @@ export function OsGeneratorPage() {
                 values={values}
                 onChange={(id, v) =>
                   setValues((prev) => ({ ...prev, [id]: v }))
+                }
+                onPatchValues={(patch) =>
+                  setValues((prev) => ({ ...prev, ...patch }))
                 }
               />
 
