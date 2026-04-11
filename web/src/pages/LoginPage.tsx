@@ -30,6 +30,7 @@ export function LoginPage() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          bgcolor: 'background.default',
         }}
       >
         <CircularProgress />
@@ -57,8 +58,19 @@ export function LoginPage() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ py: 6 }}>
-      <Paper elevation={1} sx={{ p: 3 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default',
+        py: 4,
+        px: 2,
+      }}
+    >
+      <Container maxWidth="sm">
+      <Paper elevation={2} sx={{ p: 3 }}>
         <Typography component="h1" variant="h5" gutterBottom>
           Entrar
         </Typography>
@@ -111,6 +123,7 @@ export function LoginPage() {
           </Button>
         </Box>
       </Paper>
-    </Container>
+      </Container>
+    </Box>
   )
 }

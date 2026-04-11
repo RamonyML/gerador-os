@@ -1,0 +1,14 @@
+{
+  "sector": "suporte",
+  "slug": "atendimento-demo",
+  "title": "Atendimento — demonstração",
+  "version": 1,
+  "active": true,
+  "outputTemplate": "Cliente: {{cliente}}\nProtocolo: {{protocolo}}\nBairro: {{bairro}}\nOperador: {{operador.nome}}\nObservações: {{observacoes}}",
+  "fields": [
+    { "id": "cliente", "label": "Cliente", "placeholder": "Nome do cliente" },
+    { "id": "protocolo", "label": "Protocolo", "placeholder": "Número" },
+    { "id": "bairro", "label": "Bairro", "placeholder": "" },
+    { "id": "observacoes", "label": "Observações", "placeholder": "", "multiline": true }
+  ]
+}

@@ -8,6 +8,17 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Templates de O.S: leitura por setor ou dev; escrita só via console/admin depois
+    match /osTemplates/{templateId} {
+      allow read: if request.auth != null
+        && resource.data.active == true
+        && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isDev == true
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.sector == resource.data.sector
+        );
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { CssBaseline, ThemeProvider } from '@mui/material'
 import { initAnalytics } from './lib/firebase'
 import { AuthProvider } from './contexts/AuthContext'
-import { theme } from './theme'
+import { ColorModeProvider } from './contexts/ColorModeContext'
+import { AppThemeProvider } from './components/AppThemeProvider'
 import './index.css'
 import App from './App.tsx'
 
@@ -13,12 +13,13 @@ void initAnalytics()
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ThemeProvider>
+      <ColorModeProvider>
+        <AppThemeProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </AppThemeProvider>
+      </ColorModeProvider>
     </BrowserRouter>
   </StrictMode>,
 )
