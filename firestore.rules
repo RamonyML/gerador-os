@@ -2,21 +2,74 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Perfil: usuário autenticado só lê o próprio documento (ajuste quando houver admin/claims).
+
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
       allow write: if false;
     }
 
-    // Templates de O.S: leitura por setor ou dev; escrita só via console/admin depois
     match /osTemplates/{templateId} {
-      allow read: if request.auth != null
-        && resource.data.active == true
+      // Leitura: dev vê tudo; no setor, operador só ativo, gerente/supervisor/admin veem também inativos
+      allow read: if request.auth != null && (
+        userData().isDev == true
+        || (
+          userData().sector == resource.data.sector
+          && (
+            resource.data.active == true
+            || userData().isAdmin == true
+            || userData().hierarchy == 'gerente'
+            || userData().hierarchy == 'supervisor'
+          )
+        )
+      );
+
+      allow create: if request.auth != null
+        && userData().active != false
+        && request.resource.data.sector is string
+        && request.resource.data.slug is string
+        && request.resource.data.title is string
+        && request.resource.data.outputTemplate is string
+        && request.resource.data.fields is list
         && (
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isDev == true
-          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.sector == resource.data.sector
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (
+            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
+            && userData().sector == request.resource.data.sector
+          )
         );
-      allow write: if false;
+
+      allow update: if request.auth != null
+        && userData().active != false
+        && request.resource.data.sector is string
+        && request.resource.data.slug is string
+        && request.resource.data.title is string
+        && request.resource.data.outputTemplate is string
+        && request.resource.data.fields is list
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (
+            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
+            && userData().sector == resource.data.sector
+            && request.resource.data.sector == resource.data.sector
+          )
+        );
+
+      allow delete: if request.auth != null
+        && userData().active != false
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (
+            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
+            && userData().sector == resource.data.sector
+          )
+        );
     }
 
     match /{document=**} {

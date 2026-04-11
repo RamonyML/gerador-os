@@ -5,6 +5,22 @@ export type Sector =
   | 'comercial'
   | 'cadastro'
 
+export const SECTOR_LABELS: Record<Sector, string> = {
+  suporte: 'Suporte',
+  instalacao: 'Instalação',
+  financeiro: 'Financeiro',
+  comercial: 'Comercial',
+  cadastro: 'Cadastro',
+}
+
+export const SECTORS: Sector[] = [
+  'suporte',
+  'instalacao',
+  'financeiro',
+  'comercial',
+  'cadastro',
+]
+
 export type Hierarchy = 'gerente' | 'supervisor' | 'operador'
 
 export interface UserProfile {

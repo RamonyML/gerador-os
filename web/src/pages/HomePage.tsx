@@ -1,6 +1,7 @@
 import { Container, Typography, Alert } from '@mui/material'
 import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
+import { canManageOsTemplates } from '../lib/permissions'
 
 export function HomePage() {
   const { user, profile, profileMissing } = useAuth()
@@ -58,6 +59,14 @@ export function HomePage() {
       <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
         Use <strong>Gerar O.S</strong> no menu para montar textos a partir dos
         templates no Firestore.
+        {profile && canManageOsTemplates(profile) ? (
+          <>
+            {' '}
+            Quem é <strong>gerente</strong>, <strong>supervisor</strong>,{' '}
+            <strong>admin</strong> ou <strong>dev</strong> pode criar e editar
+            modelos em <strong>Modelos</strong>.
+          </>
+        ) : null}
       </Typography>
     </Container>
   )

@@ -12,9 +12,11 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
+import { canManageOsTemplates } from '../lib/permissions'
 
 export function AppLayout() {
-  const { user, logOut } = useAuth()
+  const { user, profile, logOut } = useAuth()
+  const showModels = profile != null && canManageOsTemplates(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
 
@@ -56,6 +58,14 @@ export function AppLayout() {
           <Button color="inherit" onClick={() => navigate('/gerar-os')}>
             Gerar O.S
           </Button>
+          {showModels ? (
+            <Button
+              color="inherit"
+              onClick={() => navigate('/admin/modelos-os')}
+            >
+              Modelos
+            </Button>
+          ) : null}
 
           <Box sx={{ flexGrow: 1 }} />
 
