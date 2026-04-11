@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -37,15 +36,30 @@ import {
 import { db } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useAdminOsTemplates } from '../hooks/useAdminOsTemplates'
-import type { OsTemplate, OsTemplateField } from '../types/osTemplate'
+import { getMudEndExampleDefaults } from '../data/mudEndExample'
+import type { FieldControl, OsTemplate, OsTemplateField } from '../types/osTemplate'
 import {
   SECTOR_LABELS,
   SECTORS,
   type Sector,
 } from '../types/profile'
 
+const CONTROL_LABELS: Record<FieldControl, string> = {
+  text: 'Texto curto',
+  textarea: 'Texto longo',
+  select: 'Lista (select)',
+  radio: 'Opções (radio)',
+}
+
 function emptyField(): OsTemplateField {
-  return { id: '', label: '', placeholder: '', multiline: false }
+  return {
+    id: '',
+    label: '',
+    placeholder: '',
+    control: 'text',
+    options: [],
+    multiline: false,
+  }
 }
 
 export function AdminOsTemplatesPage() {
@@ -66,6 +80,22 @@ export function AdminOsTemplatesPage() {
   const [fields, setFields] = useState<OsTemplateField[]>([emptyField()])
 
   const canPickSector = profile?.isDev === true || profile?.isAdmin === true
+
+  const loadMudEndExampleIntoForm = () => {
+    setFormError(null)
+    const d = getMudEndExampleDefaults()
+    setSlug(d.slug)
+    setTitle(d.title)
+    setOutputTemplate(d.outputTemplate)
+    setVersion(1)
+    setActive(true)
+    setFields(
+      d.fields.map((f) => ({
+        ...f,
+        options: f.options ? f.options.map((o) => ({ ...o })) : [],
+      })),
+    )
+  }
 
   const openNew = () => {
     setEditingId(null)
@@ -89,7 +119,15 @@ export function AdminOsTemplatesPage() {
     setVersion(t.version)
     setActive(t.active)
     setOutputTemplate(t.outputTemplate)
-    setFields(t.fields.length > 0 ? t.fields.map((f) => ({ ...f })) : [emptyField()])
+    setFields(
+      t.fields.length > 0
+        ? t.fields.map((f) => ({
+            ...f,
+            control: f.control ?? (f.multiline ? 'textarea' : 'text'),
+            options: f.options ? f.options.map((o) => ({ ...o })) : [],
+          }))
+        : [emptyField()],
+    )
     setDialogOpen(true)
   }
 
@@ -97,16 +135,43 @@ export function AdminOsTemplatesPage() {
     if (!saving) setDialogOpen(false)
   }
 
-  const normalizedFields = useMemo(() => {
-    return fields
-      .map((f) => ({
-        id: f.id.trim(),
-        label: f.label.trim(),
-        placeholder: f.placeholder?.trim() || undefined,
-        multiline: f.multiline === true,
-      }))
-      .filter((f) => f.id && f.label)
-  }, [fields])
+  function buildFieldsPayload(): OsTemplateField[] | null {
+    const out: OsTemplateField[] = []
+    for (const f of fields) {
+      const id = f.id.trim()
+      const label = f.label.trim()
+      if (!id || !label) continue
+      const ctrl: FieldControl = f.control ?? 'text'
+      const placeholder = f.placeholder?.trim() || undefined
+      const opts = (f.options ?? [])
+        .map((o) => ({
+          value: o.value.trim(),
+          label: o.label.trim(),
+        }))
+        .filter((o) => o.value && o.label)
+
+      if (ctrl === 'select' || ctrl === 'radio') {
+        if (opts.length === 0) {
+          setFormError(
+            `Campo "${label}" (${id}): lista/radio precisa de pelo menos uma opção com valor e rótulo.`,
+          )
+          return null
+        }
+        out.push({ id, label, placeholder, control: ctrl, options: opts })
+      } else if (ctrl === 'textarea') {
+        out.push({
+          id,
+          label,
+          placeholder,
+          control: 'textarea',
+          multiline: true,
+        })
+      } else {
+        out.push({ id, label, placeholder, control: 'text' })
+      }
+    }
+    return out
+  }
 
   async function handleSave() {
     setFormError(null)
@@ -122,6 +187,9 @@ export function AdminOsTemplatesPage() {
       return
     }
 
+    const fieldsPayload = buildFieldsPayload()
+    if (fieldsPayload === null) return
+
     const payload = {
       sector,
       slug: slugT,
@@ -129,7 +197,7 @@ export function AdminOsTemplatesPage() {
       version: Number(version) || 1,
       active,
       outputTemplate: outputTemplate,
-      fields: normalizedFields,
+      fields: fieldsPayload,
     }
 
     setSaving(true)
@@ -337,12 +405,28 @@ export function AdminOsTemplatesPage() {
             />
 
             <Typography variant="subtitle2">Campos do formulário</Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block' }}
+            >
               Cada <code>id</code> deve coincidir com um{' '}
-              <code>{'{{id}}'}</code> no texto acima (ex.: cliente, protocolo).
+              <code>{'{{id}}'}</code> no texto acima. Para <strong>select</strong>{' '}
+              e <strong>radio</strong>, defina opções (valor = o que entra no
+              texto; pode ser um parágrafo inteiro).
             </Typography>
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ mt: 1, mb: 1 }}
+              onClick={loadMudEndExampleIntoForm}
+            >
+              Carregar exemplo MUD END (protocolo do HTML)
+            </Button>
 
-            {fields.map((f, index) => (
+            {fields.map((f, index) => {
+              const ctrl: FieldControl = f.control ?? 'text'
+              return (
               <Paper key={index} variant="outlined" sx={{ p: 1.5 }}>
                 <Stack spacing={1}>
                   <Box
@@ -365,6 +449,40 @@ export function AdminOsTemplatesPage() {
                       <DeleteOutlined fontSize="small" />
                     </IconButton>
                   </Box>
+                  <FormControl fullWidth size="small">
+                    <InputLabel id={`ctrl-${index}`}>Tipo do campo</InputLabel>
+                    <Select
+                      labelId={`ctrl-${index}`}
+                      label="Tipo do campo"
+                      value={ctrl}
+                      onChange={(e) => {
+                        const next = e.target.value as FieldControl
+                        setFields((prev) => {
+                          const n = [...prev]
+                          const cur = { ...n[index], control: next }
+                          if (next === 'select' || next === 'radio') {
+                            cur.options =
+                              cur.options && cur.options.length > 0
+                                ? cur.options
+                                : [{ value: '', label: '' }]
+                          } else {
+                            cur.options = []
+                          }
+                          if (next === 'textarea') cur.multiline = true
+                          n[index] = cur
+                          return n
+                        })
+                      }}
+                    >
+                      {(Object.keys(CONTROL_LABELS) as FieldControl[]).map(
+                        (k) => (
+                          <MenuItem key={k} value={k}>
+                            {CONTROL_LABELS[k]}
+                          </MenuItem>
+                        ),
+                      )}
+                    </Select>
+                  </FormControl>
                   <TextField
                     size="small"
                     label="id (chave)"
@@ -404,27 +522,114 @@ export function AdminOsTemplatesPage() {
                     }
                     fullWidth
                   />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={f.multiline === true}
-                        onChange={(e) =>
+                  {(ctrl === 'select' || ctrl === 'radio') && (
+                    <Box sx={{ pl: 0.5 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Opções (valor no texto · rótulo na tela)
+                      </Typography>
+                      {(f.options ?? [{ value: '', label: '' }]).map(
+                        (opt, oi) => (
+                          <Stack
+                            key={oi}
+                            direction={{ xs: 'column', sm: 'row' }}
+                            spacing={1}
+                            sx={{ mt: 1, alignItems: 'flex-start' }}
+                          >
+                            <TextField
+                              size="small"
+                              label="Valor (vai para o protocolo)"
+                              value={opt.value}
+                              multiline
+                              minRows={2}
+                              fullWidth
+                              onChange={(e) =>
+                                setFields((prev) => {
+                                  const n = [...prev]
+                                  const opts = [
+                                    ...(n[index].options ?? [
+                                      { value: '', label: '' },
+                                    ]),
+                                  ]
+                                  opts[oi] = {
+                                    ...opts[oi],
+                                    value: e.target.value,
+                                  }
+                                  n[index] = { ...n[index], options: opts }
+                                  return n
+                                })
+                              }
+                            />
+                            <TextField
+                              size="small"
+                              label="Rótulo curto"
+                              value={opt.label}
+                              fullWidth
+                              onChange={(e) =>
+                                setFields((prev) => {
+                                  const n = [...prev]
+                                  const opts = [
+                                    ...(n[index].options ?? [
+                                      { value: '', label: '' },
+                                    ]),
+                                  ]
+                                  opts[oi] = {
+                                    ...opts[oi],
+                                    label: e.target.value,
+                                  }
+                                  n[index] = { ...n[index], options: opts }
+                                  return n
+                                })
+                              }
+                            />
+                            <IconButton
+                              aria-label="Remover opção"
+                              size="small"
+                              onClick={() =>
+                                setFields((prev) => {
+                                  const n = [...prev]
+                                  const opts = [
+                                    ...(n[index].options ?? []),
+                                  ].filter((_, j) => j !== oi)
+                                  n[index] = {
+                                    ...n[index],
+                                    options:
+                                      opts.length > 0
+                                        ? opts
+                                        : [{ value: '', label: '' }],
+                                  }
+                                  return n
+                                })
+                              }
+                            >
+                              <DeleteOutlined fontSize="small" />
+                            </IconButton>
+                          </Stack>
+                        ),
+                      )}
+                      <Button
+                        size="small"
+                        startIcon={<Add />}
+                        sx={{ mt: 1 }}
+                        onClick={() =>
                           setFields((prev) => {
                             const n = [...prev]
-                            n[index] = {
-                              ...n[index],
-                              multiline: e.target.checked,
-                            }
+                            const opts = [
+                              ...(n[index].options ?? []),
+                              { value: '', label: '' },
+                            ]
+                            n[index] = { ...n[index], options: opts }
                             return n
                           })
                         }
-                      />
-                    }
-                    label="Várias linhas"
-                  />
+                      >
+                        Adicionar opção
+                      </Button>
+                    </Box>
+                  )}
                 </Stack>
               </Paper>
-            ))}
+              )
+            })}
 
             <Button
               startIcon={<Add />}

@@ -12,10 +12,10 @@ import {
   Select,
   Snackbar,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import { ContentCopy } from '@mui/icons-material'
+import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
 import { renderTemplate } from '../lib/renderTemplate'
@@ -175,22 +175,13 @@ export function OsGeneratorPage() {
 
           {selected ? (
             <>
-              <Stack spacing={2}>
-                {selected.fields.map((f) => (
-                  <TextField
-                    key={f.id}
-                    label={f.label}
-                    placeholder={f.placeholder}
-                    value={values[f.id] ?? ''}
-                    onChange={(e) =>
-                      setValues((prev) => ({ ...prev, [f.id]: e.target.value }))
-                    }
-                    fullWidth
-                    multiline={f.multiline}
-                    minRows={f.multiline ? 3 : 1}
-                  />
-                ))}
-              </Stack>
+              <OsTemplateFieldsForm
+                fields={selected.fields}
+                values={values}
+                onChange={(id, v) =>
+                  setValues((prev) => ({ ...prev, [id]: v }))
+                }
+              />
 
               <Typography variant="subtitle2" sx={{ mt: 1 }}>
                 Pré-visualização
@@ -213,7 +204,7 @@ export function OsGeneratorPage() {
 
               <Button
                 variant="contained"
-                startIcon={<ContentCopyIcon />}
+                startIcon={<ContentCopy />}
                 onClick={() => void handleCopy()}
                 disabled={!preview.trim()}
               >
