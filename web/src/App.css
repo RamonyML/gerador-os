@@ -1,0 +1,30 @@
+.app-shell {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.app-shell h1 {
+  font-family: var(--heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 0.75rem;
+}
+
+.app-shell p {
+  margin: 0 0 0.75rem;
+}
+
+.app-shell code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--code-bg);
+}
+
+.muted {
+  opacity: 0.85;
+  font-size: 0.95rem;
+}

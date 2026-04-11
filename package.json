@@ -1,0 +1,12 @@
+{
+  "name": "gerador-os",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix web",
+    "build": "npm run build --prefix web",
+    "deploy": "npm run build --prefix web && firebase deploy"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.0.0"
+  }
+}
