@@ -6,6 +6,7 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import { useNavigate } from 'react-router-dom'
 import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
@@ -57,6 +58,14 @@ export function HomePage() {
       description: 'Monte textos a partir dos templates salvos no Firestore.',
       to: '/gerar-os',
       icon: <DescriptionOutlinedIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      key: 'upgrades',
+      title: 'Registro de Upgrades',
+      description:
+        'Acesse a área de registro de upgrades e gerencie as suas comissões.',
+      to: '/upgrades',
+      icon: <TrendingUpOutlinedIcon sx={{ fontSize: 28 }} />,
     },
     ...(showSupportHub
       ? [

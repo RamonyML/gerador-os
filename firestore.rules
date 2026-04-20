@@ -7,6 +7,29 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
+    /** Perfil carregado e não desativado (mesma ideia dos modelos de O.S). */
+    function isActiveUser() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && userData().active != false;
+    }
+
+    /** Gestão ampla de upgrades (lista/export/dashboard/comissões no app). */
+    function isUpgradeManager() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (
+            userData().sector == 'suporte'
+            && (
+              userData().hierarchy == 'gerente'
+              || userData().hierarchy == 'supervisor'
+            )
+          )
+        );
+    }
+
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
       allow write: if false;
@@ -70,6 +93,41 @@ service cloud.firestore {
             && userData().sector == resource.data.sector
           )
         );
+    }
+
+    /**
+     * Upgrades / Roku — leitura ampla para usuários ativos (consulta de duplicidade
+     * por cliente exige ver documentos de outros operadores). A UI restringe o que
+     * cada perfil enxerga.
+     */
+    match /upgrades/{upgradeId} {
+      allow read: if isActiveUser();
+
+      allow create: if isActiveUser()
+        && request.auth.token.email != null
+        && request.resource.data.operadorId == request.auth.token.email;
+
+      allow update: if isActiveUser()
+        && (
+          (
+            resource.data.operadorId == request.auth.token.email
+            && request.resource.data.operadorId == resource.data.operadorId
+            && request.resource.data.operadorNome == resource.data.operadorNome
+          )
+          || isUpgradeManager()
+        );
+
+      allow delete: if isActiveUser()
+        && (
+          resource.data.operadorId == request.auth.token.email
+          || isUpgradeManager()
+        );
+    }
+
+    /** Auditoria de ações no registro de upgrades (somente criação pelo cliente). */
+    match /logs/{logId} {
+      allow create: if isActiveUser();
+      allow read, update, delete: if false;
     }
 
     match /{document=**} {

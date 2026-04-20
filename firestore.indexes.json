@@ -1,4 +1,13 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "upgrades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "operadorId", "order": "ASCENDING" },
+        { "fieldPath": "data", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

@@ -3,6 +3,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,6 +31,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { Add, DeleteOutlined, Edit } from '@mui/icons-material'
+import { AppPageChrome } from '../components/AppPageChrome'
 import {
   addDoc,
   collection,
@@ -332,40 +334,56 @@ export function AdminOsTemplatesPage() {
   }
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          justifyContent: 'space-between',
-          gap: 2,
-          mb: 2,
-        }}
+    <>
+      <AppPageChrome
+        overline="Modelos"
+        title="Modelos de O.S."
+        maxWidth="xl"
+        headerRight={
+          <Button variant="contained" startIcon={<Add />} onClick={openNew}>
+            Novo modelo
+          </Button>
+        }
+        subtitle={
+          <Typography variant="body1" color="text.secondary" component="div">
+            Crie e edite fluxos sem usar o Console do Firebase. Operadores continuam vendo só modelos{' '}
+            <strong>ativos</strong> do setor.
+          </Typography>
+        }
       >
-        <Box>
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
-            Modelos de O.S
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Crie e edite fluxos sem usar o Console do Firebase. Operadores
-            continuam vendo só modelos <strong>ativos</strong> do setor.
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={openNew}>
-          Novo modelo
-        </Button>
-      </Box>
+        {state.status === 'loading' ? (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              py: 2,
+              px: 2,
+              borderRadius: 2,
+              border: 1,
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+            }}
+          >
+            <CircularProgress size={22} thickness={5} />
+            <Typography variant="body2" color="text.secondary">
+              Carregando modelos…
+            </Typography>
+          </Box>
+        ) : null}
+        {state.status === 'error' ? (
+          <Alert severity="error" sx={{ borderRadius: 2 }}>
+            {state.message}
+          </Alert>
+        ) : null}
 
-      {state.status === 'loading' ? (
-        <Typography color="text.secondary">Carregando…</Typography>
-      ) : null}
-      {state.status === 'error' ? (
-        <Alert severity="error">{state.message}</Alert>
-      ) : null}
-
-      {state.status === 'ready' ? (
-        <TableContainer component={Paper} variant="outlined">
+        {state.status === 'ready' ? (
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          variant="outlined"
+          sx={{ borderRadius: 2.5, overflow: 'hidden' }}
+        >
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -424,7 +442,8 @@ export function AdminOsTemplatesPage() {
             </TableBody>
           </Table>
         </TableContainer>
-      ) : null}
+        ) : null}
+      </AppPageChrome>
 
       <Dialog
         open={dialogOpen}
@@ -941,6 +960,6 @@ export function AdminOsTemplatesPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   )
 }

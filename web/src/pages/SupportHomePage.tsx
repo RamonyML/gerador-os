@@ -19,6 +19,7 @@ import {
   SUPPORT_DEMANDS,
   templatesMatchingDemand,
 } from '../data/supportDemands'
+import { SupportHubHeroIllustration } from '../components/SupportHubHeroIllustration'
 
 export function SupportHomePage() {
   const theme = useTheme()
@@ -69,7 +70,7 @@ export function SupportHomePage() {
               justifyContent: 'space-between',
             }}
           >
-            <Box>
+            <Box sx={{ minWidth: 0, flex: '1 1 520px' }}>
               <Typography
                 variant="overline"
                 color="text.secondary"
@@ -88,20 +89,27 @@ export function SupportHomePage() {
                 Escolha o tipo de demanda para acessar os modelos de O.S. alinhados à sua operação. Os
                 números indicam quantos fluxos ativos existem no Firestore em cada categoria.
               </Typography>
+              {totalModelos !== null ? (
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                  {totalModelos} modelo{totalModelos === 1 ? '' : 's'} no projeto
+                </Typography>
+              ) : null}
             </Box>
-            {totalModelos !== null ? (
-              <Chip
-                size="small"
-                label={`${totalModelos} modelo${totalModelos === 1 ? '' : 's'} no projeto`}
-                variant="outlined"
-                sx={{
-                  borderColor: alpha(primary, 0.35),
-                  color: 'text.secondary',
-                  fontFamily: 'inherit',
-                  alignSelf: { xs: 'flex-start', sm: 'center' },
-                }}
-              />
-            ) : null}
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: { xs: 360, md: 420 },
+                flexShrink: 0,
+                ml: { md: 2 },
+                opacity: { xs: 0.95, md: 1 },
+                filter:
+                  theme.palette.mode === 'light'
+                    ? undefined
+                    : `drop-shadow(0 10px 30px ${alpha('#000', 0.35)})`,
+              }}
+            >
+              <SupportHubHeroIllustration accent={primary} />
+            </Box>
           </Box>
 
           {state.status === 'loading' ? (

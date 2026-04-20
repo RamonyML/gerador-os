@@ -12,6 +12,10 @@ import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
 import { RequireUserManager } from './components/RequireUserManager'
 import { AdminUsersPage } from './pages/AdminUsersPage'
+import { SobrePage } from './pages/SobrePage'
+import { UpgradesHubPage } from './pages/UpgradesHubPage'
+import { UpgradesCommissionsPage } from './pages/UpgradesCommissionsPage'
+import { RequireUpgradeCommissions } from './components/RequireUpgradeCommissions'
 
 export default function App() {
   return (
@@ -50,6 +54,16 @@ export default function App() {
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
+        <Route path="/upgrades" element={<UpgradesHubPage />} />
+        <Route
+          path="/upgrades/comissoes"
+          element={
+            <RequireUpgradeCommissions>
+              <UpgradesCommissionsPage />
+            </RequireUpgradeCommissions>
+          }
+        />
+        <Route path="/sobre" element={<SobrePage />} />
         <Route
           path="/admin/modelos-os"
           element={

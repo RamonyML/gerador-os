@@ -70,6 +70,14 @@ export function AppLayout() {
             </Typography>
           </Box>
 
+          <Button color="inherit" size="small" onClick={() => navigate('/sobre')}>
+            Sobre
+          </Button>
+
+          <Button color="inherit" size="small" onClick={() => navigate('/upgrades')}>
+            Upgrades
+          </Button>
+
           {hideNavLinks ? null : (
             <>
               <Button color="inherit" onClick={() => navigate('/')}>

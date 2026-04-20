@@ -6,7 +6,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Container,
   FormControl,
   InputLabel,
   Link,
@@ -21,6 +20,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { ContentCopy } from '@mui/icons-material'
+import { AppPageChrome } from '../components/AppPageChrome'
 import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
@@ -311,55 +311,59 @@ export function OsGeneratorPage() {
 
   if (profileMissing || !profile) {
     return (
-      <Container maxWidth="md" sx={{ py: 3 }}>
-        <Alert severity="warning">
-          Complete seu perfil em <strong>users/&lt;uid&gt;</strong> para usar o
-          gerador.
+      <AppPageChrome overline="Operação" title="Gerar O.S." maxWidth="xl">
+        <Alert severity="warning" sx={{ borderRadius: 2 }}>
+          Complete seu perfil em <strong>users/&lt;uid&gt;</strong> para usar o gerador.
         </Alert>
-      </Container>
+      </AppPageChrome>
     )
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 3 }, pb: 6 }}>
-      <Stack spacing={2} sx={{ mb: 2 }}>
-        <Box>
-          <Typography
-            variant="h5"
-            component="h1"
-            sx={{ fontWeight: 700, letterSpacing: -0.3 }}
-          >
-            Gerar O.S
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas
-            para copiar só um trecho (protocolo, O.S., encerramento).
-          </Typography>
+    <AppPageChrome
+      overline="Operação"
+      title="Gerar O.S."
+      maxWidth="xl"
+      subtitle={
+        <Typography variant="body1" color="text.secondary" component="div">
+          Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho
+          (protocolo, O.S., encerramento).
+        </Typography>
+      }
+    >
+      {demandParam && demandMeta ? (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+          <Chip size="small" color="primary" variant="outlined" label={demandMeta.title} />
+          <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
+            Ver todos os modelos
+          </Link>
         </Box>
-
-        {demandParam && demandMeta ? (
-          <Stack direction="row" sx={{ alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-            <Chip
-              size="small"
-              color="primary"
-              variant="outlined"
-              label={demandMeta.title}
-            />
-            <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
-              Ver todos os modelos
-            </Link>
-          </Stack>
-        ) : null}
-      </Stack>
+      ) : null}
 
       {state.status === 'loading' ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2,
+            py: 6,
+            px: 2,
+            borderRadius: 2,
+            border: 1,
+            borderColor: 'divider',
+            bgcolor: 'background.paper',
+          }}
+        >
+          <CircularProgress size={28} thickness={4} />
+          <Typography variant="body2" color="text.secondary">
+            Carregando modelos…
+          </Typography>
         </Box>
       ) : null}
 
       {state.status === 'error' ? (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ borderRadius: 2 }}>
           {state.message}
         </Alert>
       ) : null}
@@ -367,7 +371,7 @@ export function OsGeneratorPage() {
       {state.status === 'ready' &&
       templates.length > 0 &&
       visibleTemplates.length === 0 ? (
-        <Alert severity="info" sx={{ mb: 2 }}>
+        <Alert severity="info" sx={{ borderRadius: 2 }}>
           Nenhum modelo nesta categoria.{' '}
           <Link component={RouterLink} to="/gerar-os">
             Ver todos os fluxos
@@ -377,7 +381,7 @@ export function OsGeneratorPage() {
       ) : null}
 
       {state.status === 'ready' && templates.length === 0 ? (
-        <Alert severity="info" sx={{ mb: 2 }}>
+        <Alert severity="info" sx={{ borderRadius: 2 }}>
           Nenhum template ativo. Crie documentos em{' '}
           <strong>osTemplates</strong> no Firestore. Exemplo:
           <Box
@@ -411,7 +415,8 @@ export function OsGeneratorPage() {
             variant="outlined"
             sx={{
               p: { xs: 2, md: 2.5 },
-              borderRadius: 2,
+              borderRadius: 2.5,
+              borderColor: 'divider',
               bgcolor:
                 theme.palette.mode === 'dark'
                   ? 'rgba(255,255,255,0.02)'
@@ -464,7 +469,8 @@ export function OsGeneratorPage() {
             variant="outlined"
             sx={{
               p: { xs: 2, md: 2.5 },
-              borderRadius: 2,
+              borderRadius: 2.5,
+              borderColor: 'divider',
               position: { md: 'sticky' },
               top: { md: 72 },
               maxHeight: { md: 'calc(100vh - 96px)' },
@@ -581,6 +587,6 @@ export function OsGeneratorPage() {
         message="Copiado para a área de transferência"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
-    </Container>
+    </AppPageChrome>
   )
 }

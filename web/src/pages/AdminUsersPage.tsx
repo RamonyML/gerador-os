@@ -25,7 +25,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
 import { Add, Edit } from '@mui/icons-material'
+import { AddUserHeroIllustration } from '../components/AddUserHeroIllustration'
+import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
 import {
   callableErrorMessage,
@@ -56,6 +59,8 @@ function rowDisplayName(row: ManagedUserRow): string {
 }
 
 export function AdminUsersPage() {
+  const theme = useTheme()
+  const primary = theme.palette.primary.main
   const { profile } = useAuth()
   const isDev = profile?.isDev === true
   const canEditAdminFlag =
@@ -198,19 +203,37 @@ export function AdminUsersPage() {
   }
 
   return (
-    <Box sx={{ p: 2, maxWidth: 1200, mx: 'auto' }}>
-      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
-        Usuários
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Crie e atualize contas no Authentication e o documento em{' '}
-        <code>users/&#123;uid&#125;</code> (setor, hierarquia, nome, flags). Somente{' '}
-        <strong>gestor</strong>, <strong>supervisor</strong>,{' '}
-        <strong>administrador</strong> e <strong>dev</strong> acessam esta tela;
-        gestores e supervisores só enxergam o próprio setor. A senha só trafega ao
-        salvar e exige Cloud Functions implantadas.
-      </Typography>
-
+    <>
+      <AppPageChrome
+        overline="Administração"
+        title="Usuários"
+        subtitle={
+          <Typography variant="body1" color="text.secondary" component="div">
+            Crie e atualize contas no Authentication e o documento em{' '}
+            <code>users/&#123;uid&#125;</code> (setor, hierarquia, nome, flags). Somente{' '}
+            <strong>gestor</strong>, <strong>supervisor</strong>,{' '}
+            <strong>administrador</strong> e <strong>dev</strong> acessam esta tela;
+            gestores e supervisores só enxergam o próprio setor. A senha só trafega ao
+            salvar e exige Cloud Functions implantadas.
+          </Typography>
+        }
+        headerRight={
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: { xs: 260, sm: 280 },
+              alignSelf: { xs: 'center', sm: 'flex-end' },
+              flexShrink: 0,
+              filter:
+                theme.palette.mode === 'light'
+                  ? undefined
+                  : `drop-shadow(0 8px 24px ${alpha('#000', 0.35)})`,
+            }}
+          >
+            <AddUserHeroIllustration accent={primary} />
+          </Box>
+        }
+      >
       {listError ? (
         <Alert severity="error" sx={{ mb: 2 }}>
           {listError}
@@ -226,7 +249,12 @@ export function AdminUsersPage() {
         </Button>
       </Stack>
 
-      <TableContainer component={Paper} variant="outlined">
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        variant="outlined"
+        sx={{ borderRadius: 2.5, overflow: 'hidden' }}
+      >
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -296,6 +324,7 @@ export function AdminUsersPage() {
           </Button>
         </Box>
       ) : null}
+      </AppPageChrome>
 
       <Dialog open={dialogOpen} onClose={closeDialog} fullWidth maxWidth="sm">
         <DialogTitle>{editing ? 'Editar usuário' : 'Novo usuário'}</DialogTitle>
@@ -414,6 +443,6 @@ export function AdminUsersPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   )
 }
