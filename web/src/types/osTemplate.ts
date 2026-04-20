@@ -1,7 +1,16 @@
 import type { Sector } from './profile'
 
 /** Tipo de controle no formulário do operador */
-export type FieldControl = 'text' | 'textarea' | 'select' | 'radio' | 'date'
+export type FieldControl =
+  | 'text'
+  | 'textarea'
+  | 'select'
+  | 'radio'
+  | 'date'
+  /** Data + hora com seletor (valor `DD/MM/YYYY HH:mm`). */
+  | 'datetime'
+  /** Telefone BR com máscara (00) 00000-0000. */
+  | 'phone'
 
 export interface FieldOption {
   value: string
@@ -52,6 +61,8 @@ export function getFieldControl(f: OsTemplateField): FieldControl {
   if (f.control === 'text' || f.control === 'textarea') return f.control
   if (f.control === 'select' || f.control === 'radio') return f.control
   if (f.control === 'date') return 'date'
+  if (f.control === 'datetime') return 'datetime'
+  if (f.control === 'phone') return 'phone'
   return f.multiline === true ? 'textarea' : 'text'
 }
 
@@ -72,7 +83,7 @@ export function resolveFieldGridSize(f: OsTemplateField): {
   if (kind === 'textarea' || kind === 'radio') {
     return { xs: 12, sm: 12, md: 12 }
   }
-  if (kind === 'date') {
+  if (kind === 'date' || kind === 'datetime') {
     return { xs: 12, sm: 12, md: 6 }
   }
   return { xs: 12, sm: 12, md: 6 }
@@ -119,7 +130,9 @@ function parseField(raw: unknown): OsTemplateField | null {
     c === 'textarea' ||
     c === 'select' ||
     c === 'radio' ||
-    c === 'date'
+    c === 'date' ||
+    c === 'datetime' ||
+    c === 'phone'
   ) {
     control = c
   }

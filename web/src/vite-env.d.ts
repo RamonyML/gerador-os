@@ -8,6 +8,10 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_MESSAGING_SENDER_ID: string
   readonly VITE_FIREBASE_APP_ID: string
   readonly VITE_FIREBASE_MEASUREMENT_ID?: string
+  /** Região das Cloud Functions callable (ex.: southamerica-east1). */
+  readonly VITE_FIREBASE_FUNCTIONS_REGION?: string
+  /** `1` = usar `/fbfunctions/*` no Hosting (domínio próprio sem .web.app). */
+  readonly VITE_FUNCTIONS_USE_HOSTING_PROXY?: string
 }
 
 interface ImportMeta {

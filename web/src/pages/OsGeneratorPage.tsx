@@ -15,19 +15,25 @@ import {
   Select,
   Snackbar,
   Stack,
+  Tab,
+  Tabs,
   Typography,
+  useTheme,
 } from '@mui/material'
 import { ContentCopy } from '@mui/icons-material'
 import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
 import { renderTemplate } from '../lib/renderTemplate'
+import { splitOsPreviewSections } from '../lib/splitOsPreviewSections'
 import type { OsTemplate } from '../types/osTemplate'
 import {
   SUPPORT_DEMANDS,
   isKnownDemandCategory,
   templatesMatchingDemand,
 } from '../data/supportDemands'
+
+const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
 const EXEMPLO_FIRESTORE_JSON = `{
   "sector": "suporte",
@@ -55,16 +61,19 @@ function buildInitialValues(template: OsTemplate | null): Record<string, string>
 }
 
 export function OsGeneratorPage() {
+  const theme = useTheme()
   const { user, profile, profileMissing } = useAuth()
   const state = useOsTemplates(profile)
   const [searchParams] = useSearchParams()
   const [selectedId, setSelectedId] = useState<string>('')
   const [values, setValues] = useState<Record<string, string>>({})
   const [copyOk, setCopyOk] = useState(false)
+  const [previewTab, setPreviewTab] = useState(0)
 
   const templates = state.status === 'ready' ? state.templates : []
   const demandParam = searchParams.get('demanda')
   const tplParam = searchParams.get('tpl')
+  const slugParam = searchParams.get('slug')
 
   const visibleTemplates = useMemo(() => {
     if (!demandParam || !isKnownDemandCategory(demandParam)) {
@@ -91,6 +100,7 @@ export function OsGeneratorPage() {
       setSelectedId(id)
       const t = visibleTemplates.find((x) => x.id === id) ?? null
       setValues(buildInitialValues(t))
+      setPreviewTab(0)
     },
     [visibleTemplates],
   )
@@ -103,17 +113,162 @@ export function OsGeneratorPage() {
       setValues({})
       return
     }
-    const prefer =
-      tplParam && vis.find((t) => t.id === tplParam) ? tplParam : null
-    const next = prefer
-      ? vis.find((t) => t.id === prefer)!
+
+    const tplBySlug =
+      !tplParam && slugParam
+        ? vis.find((t) => t.slug === slugParam)
+        : undefined
+
+    let savedId: string | null = null
+    try {
+      savedId = localStorage.getItem(LAST_OS_TEMPLATE_KEY)
+    } catch {
+      savedId = null
+    }
+
+    const preferSaved =
+      !tplParam &&
+      !slugParam &&
+      savedId &&
+      vis.some((t) => t.id === savedId)
+        ? savedId
+        : null
+
+    const preferId =
+      tplParam && vis.find((t) => t.id === tplParam)
+        ? tplParam
+        : tplBySlug
+          ? tplBySlug.id
+          : preferSaved
+
+    const next = preferId
+      ? vis.find((t) => t.id === preferId)!
       : vis[0]
     setSelectedId(next.id)
     setValues(buildInitialValues(next))
-  }, [state.status, visibleTemplates, tplParam, demandParam])
+    setPreviewTab(0)
+  }, [state.status, visibleTemplates, tplParam, slugParam, demandParam])
+
+  useEffect(() => {
+    if (!selectedId) return
+    try {
+      localStorage.setItem(LAST_OS_TEMPLATE_KEY, selectedId)
+    } catch {
+      /* ignore */
+    }
+  }, [selectedId])
 
   const context = useMemo(() => {
     const base: Record<string, unknown> = { ...values }
+
+    const nome = String(values.cliente ?? '').trim()
+    const upperTokens = nome.toUpperCase().split(/\s+/).filter(Boolean)
+    base.clientePrimeiro = upperTokens[0] ?? ''
+    base.clienteUpper = nome.toUpperCase()
+    base.bairroUpper = String(values.bairro ?? '').trim().toUpperCase()
+
+    base.equipamentoOuOnu =
+      String(values.equipamento ?? '').trim().toUpperCase() || 'ONU'
+
+    const sol = String(values.solicitante ?? '')
+      .trim()
+      .toUpperCase()
+      .split(/\s+/)
+      .filter(Boolean)
+    base.solicitantePrimeiro = sol[0] ?? ''
+    base.solicitanteUpper = String(values.solicitante ?? '').trim().toUpperCase()
+
+    base.parenteUpper = String(values.parente ?? '').trim().toUpperCase()
+    base.autorizadoUpper = String(values.autorizado ?? '').trim().toUpperCase()
+
+    const contatoRaw = String(values.contato ?? '')
+    base.contatoNumerico = contatoRaw.replace(/\D/g, '')
+
+    base.contatoSolNumerico = String(values.contatoSol ?? '').replace(
+      /\D/g,
+      '',
+    )
+
+    base.motivoUpper = String(values.motivo ?? '').trim().toUpperCase()
+
+    base.ambienteAtualUpper = String(values.ambienteAtual ?? '')
+      .trim()
+      .toUpperCase()
+    base.ambienteNovoUpper = String(values.ambienteNovo ?? '')
+      .trim()
+      .toUpperCase()
+
+    const semSinal = values.semSinal === 'sim'
+    const sinalRaw = String(values.sinalONU ?? '').trim().toUpperCase()
+    base.sinalONUFinal = semSinal || !sinalRaw ? 'SEM SINAL' : sinalRaw
+    base.sinalONUUpper = String(values.sinalONU ?? '').trim().toUpperCase()
+    base.sinalONUAnUpper = String(values.sinalONUan ?? '').trim().toUpperCase()
+    base.oscilaUpper = String(values.oscila ?? '').trim().toUpperCase()
+    base.protocoloUpper = String(values.protocolo ?? '').trim().toUpperCase()
+    base.valorUpper = String(values.valor ?? '').trim().toUpperCase()
+    base.cargoUpper = String(values.cargo ?? '').trim().toUpperCase()
+
+    const tipoAlarmeMon = String(values.tipoAlarme ?? '').trim()
+    let alarmeMonitoramentoCompleto = tipoAlarmeMon
+    if (tipoAlarmeMon === 'DE SINAL ALTO') {
+      const sigMon = String(values.sinalMonitoramento ?? '').trim()
+      if (sigMon) alarmeMonitoramentoCompleto = `DE SINAL ALTO ${sigMon}`
+    }
+    base.alarmeMonitoramentoCompleto = alarmeMonitoramentoCompleto
+
+    const onuTok = String(values.onu ?? '')
+      .trim()
+      .toUpperCase()
+      .split(/\s+/)
+      .filter(Boolean)
+    base.onuPrimeiro = onuTok[0] ?? ''
+
+    const alarmeTok = String(values.alarme ?? '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+    base.alarmeAgendaPrefix = alarmeTok.slice(0, 2).join(' ')
+
+    const ctRaw = String(values.ctoType ?? '').trim()
+    const ctoTypeResolved = ctRaw || 'CTOE'
+    const ctoU = String(values.cto ?? '').trim().toUpperCase()
+    const passU = String(values.passante ?? '').trim().toUpperCase()
+    if (ctoTypeResolved === 'CTOE') {
+      base.textoOSCtoInstrutiva = ` <b> CTOE: ${ctoU} // ${passU}.</b>`
+    } else if (ctoTypeResolved === 'CTOI') {
+      base.textoOSCtoInstrutiva = ` <b> CTOI // ${passU}.</b>`
+    } else {
+      base.textoOSCtoInstrutiva = ''
+    }
+
+    if (ctRaw === 'CTOE') {
+      base.textoOSCtoSinalAlto = `\nCTOE: ${ctoU} // ${passU}.\n`
+    } else if (ctRaw === 'CTOI') {
+      base.textoOSCtoSinalAlto = `\nCTOI // ${passU}.\n`
+    } else {
+      base.textoOSCtoSinalAlto = ''
+    }
+    base.agendaSinalAltoSuffix = ctRaw === 'CTOI' ? ' *CTOI*' : ''
+
+    base.operadorOuSemSinal =
+      String(values.operador ?? '').trim() || 'SEM SINAL'
+
+    const spL = String(values.dataLigacao ?? '').trim().split(/\s+/)
+    base.dataLigacaoData = spL[0] ?? ''
+    base.dataLigacaoHora = spL[1] ?? ''
+
+    const spP = String(values.dataProtocolo ?? '').trim().split(/\s+/)
+    base.dataProtocoloData = spP[0] ?? ''
+    base.dataProtocoloHora = spP[1] ?? ''
+
+    base.encerramento = {
+      data: new Date().toLocaleDateString('pt-BR'),
+      hora: new Date().toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    }
+
     base.operador = {
       nome: profile?.displayName ?? '',
       email: user?.email ?? profile?.email ?? '',
@@ -126,7 +281,15 @@ export function OsGeneratorPage() {
     return renderTemplate(selected.outputTemplate, context)
   }, [selected, context])
 
-  const handleCopy = useCallback(async () => {
+  const previewSections = useMemo(
+    () => splitOsPreviewSections(preview),
+    [preview],
+  )
+
+  const activePreviewBody =
+    previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
+
+  const handleCopyAll = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(preview)
       setCopyOk(true)
@@ -134,6 +297,17 @@ export function OsGeneratorPage() {
       /* ignore */
     }
   }, [preview])
+
+  const handleCopySection = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(activePreviewBody)
+      setCopyOk(true)
+    } catch {
+      /* ignore */
+    }
+  }, [activePreviewBody])
+
+  const multiPreviewTabs = previewSections.length > 1
 
   if (profileMissing || !profile) {
     return (
@@ -147,38 +321,39 @@ export function OsGeneratorPage() {
   }
 
   return (
-    <Container
-      maxWidth="md"
-      sx={{ py: 3, maxWidth: { xs: '100%', md: 880 } }}
-    >
-      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
-        Gerar O.S
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-        Escolha um fluxo, preencha os campos e copie o texto gerado. Templates
-        vêm da coleção <code>osTemplates</code> no Firestore (ativos e do seu
-        setor; dev vê todos).
-      </Typography>
+    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 3 }, pb: 6 }}>
+      <Stack spacing={2} sx={{ mb: 2 }}>
+        <Box>
+          <Typography
+            variant="h5"
+            component="h1"
+            sx={{ fontWeight: 700, letterSpacing: -0.3 }}
+          >
+            Gerar O.S
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas
+            para copiar só um trecho (protocolo, O.S., encerramento).
+          </Typography>
+        </Box>
 
-      {demandParam && demandMeta ? (
-        <Stack
-          direction="row"
-          sx={{ alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}
-        >
-          <Chip
-            size="small"
-            color="primary"
-            variant="outlined"
-            label={`Demanda: ${demandMeta.title}`}
-          />
-          <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
-            Mostrar todos os modelos
-          </Link>
-        </Stack>
-      ) : null}
+        {demandParam && demandMeta ? (
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+            <Chip
+              size="small"
+              color="primary"
+              variant="outlined"
+              label={demandMeta.title}
+            />
+            <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
+              Ver todos os modelos
+            </Link>
+          </Stack>
+        ) : null}
+      </Stack>
 
       {state.status === 'loading' ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
           <CircularProgress />
         </Box>
       ) : null}
@@ -193,19 +368,18 @@ export function OsGeneratorPage() {
       templates.length > 0 &&
       visibleTemplates.length === 0 ? (
         <Alert severity="info" sx={{ mb: 2 }}>
-          Nenhum modelo nesta categoria de demanda.{' '}
+          Nenhum modelo nesta categoria.{' '}
           <Link component={RouterLink} to="/gerar-os">
             Ver todos os fluxos
           </Link>{' '}
-          ou peça a um gestor para classificar um modelo em <strong>Modelos</strong>.
+          ou peça classificação em <strong>Modelos</strong>.
         </Alert>
       ) : null}
 
       {state.status === 'ready' && templates.length === 0 ? (
         <Alert severity="info" sx={{ mb: 2 }}>
-          Nenhum template ativo para o seu acesso. No Firebase Console →
-          Firestore, crie a coleção <strong>osTemplates</strong>, adicione um
-          documento e preencha os campos. Exemplo de campos do documento:
+          Nenhum template ativo. Crie documentos em{' '}
+          <strong>osTemplates</strong> no Firestore. Exemplo:
           <Box
             component="pre"
             sx={{
@@ -224,28 +398,54 @@ export function OsGeneratorPage() {
       ) : null}
 
       {state.status === 'ready' && visibleTemplates.length > 0 ? (
-        <Stack spacing={2}>
-          <FormControl fullWidth>
-            <InputLabel id="tpl-label">Fluxo / template</InputLabel>
-            <Select
-              labelId="tpl-label"
-              label="Fluxo / template"
-              value={selectedId}
-              onChange={(e) => handleSelectTemplate(e.target.value)}
-            >
-              {visibleTemplates.map((t) => (
-                <MenuItem key={t.id} value={t.id}>
-                  {t.title}{' '}
-                  <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
-                    (v{t.version} · {t.sector})
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: { xs: 2.5, md: 3 },
+            gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) minmax(0, 1.05fr)' },
+            alignItems: 'start',
+          }}
+        >
+          <Paper
+            elevation={0}
+            variant="outlined"
+            sx={{
+              p: { xs: 2, md: 2.5 },
+              borderRadius: 2,
+              bgcolor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255,255,255,0.02)'
+                  : 'background.paper',
+            }}
+          >
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
+              1 · Modelo e campos
+            </Typography>
+            <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+              <InputLabel id="tpl-label">Modelo</InputLabel>
+              <Select
+                labelId="tpl-label"
+                label="Modelo"
+                value={selectedId}
+                onChange={(e) => handleSelectTemplate(e.target.value)}
+              >
+                {visibleTemplates.map((t) => (
+                  <MenuItem key={t.id} value={t.id}>
+                    {t.title}
+                    <Typography
+                      component="span"
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ ml: 0.75 }}
+                    >
+                      v{t.version}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          {selected ? (
-            <>
+            {selected ? (
               <OsTemplateFieldsForm
                 fields={selected.fields}
                 values={values}
@@ -256,44 +456,129 @@ export function OsGeneratorPage() {
                   setValues((prev) => ({ ...prev, ...patch }))
                 }
               />
+            ) : null}
+          </Paper>
 
-              <Typography variant="subtitle2" sx={{ mt: 1 }}>
-                Pré-visualização
-              </Typography>
-              <Paper variant="outlined" sx={{ p: 2 }}>
-                <Box
-                  component="pre"
-                  sx={{
-                    m: 0,
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                    fontFamily: 'inherit',
-                    fontSize: 14,
-                    textAlign: 'left',
-                  }}
+          <Paper
+            elevation={0}
+            variant="outlined"
+            sx={{
+              p: { xs: 2, md: 2.5 },
+              borderRadius: 2,
+              position: { md: 'sticky' },
+              top: { md: 72 },
+              maxHeight: { md: 'calc(100vh - 96px)' },
+              display: 'flex',
+              flexDirection: 'column',
+              bgcolor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255,255,255,0.03)'
+                  : 'grey.50',
+            }}
+          >
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                gap: 1,
+                mb: 1.5,
+                flexWrap: 'wrap',
+              }}
+            >
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  2 · Resultado
+                </Typography>
+                {selected ? (
+                  <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.25 }}>
+                    {selected.title}
+                  </Typography>
+                ) : null}
+              </Box>
+              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+                {multiPreviewTabs ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<ContentCopy />}
+                    onClick={() => void handleCopySection()}
+                    disabled={!activePreviewBody.trim()}
+                  >
+                    Trecho da aba
+                  </Button>
+                ) : null}
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<ContentCopy />}
+                  onClick={() => void handleCopyAll()}
+                  disabled={!preview.trim()}
                 >
-                  {preview || '(vazio)'}
-                </Box>
-              </Paper>
+                  Texto completo
+                </Button>
+              </Stack>
+            </Stack>
 
-              <Button
-                variant="contained"
-                startIcon={<ContentCopy />}
-                onClick={() => void handleCopy()}
-                disabled={!preview.trim()}
+            {multiPreviewTabs ? (
+              <Tabs
+                value={Math.min(previewTab, previewSections.length - 1)}
+                onChange={(_, v) => setPreviewTab(v)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  minHeight: 40,
+                  borderBottom: 1,
+                  borderColor: 'divider',
+                  mb: 1.5,
+                  '& .MuiTab-root': {
+                    minHeight: 40,
+                    py: 0,
+                    textTransform: 'none',
+                    fontSize: 13,
+                  },
+                }}
               >
-                Copiar texto
-              </Button>
-            </>
-          ) : null}
-        </Stack>
+                {previewSections.map((sec, i) => (
+                  <Tab key={sec.id} label={sec.label} value={i} />
+                ))}
+              </Tabs>
+            ) : null}
+
+            <Box
+              sx={{
+                flex: 1,
+                overflow: 'auto',
+                minHeight: { xs: 220, md: 280 },
+                pr: 0.5,
+              }}
+            >
+              <Box
+                component="pre"
+                sx={{
+                  m: 0,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  fontFamily: theme.typography.fontFamily,
+                  fontSize: { xs: 13, sm: 14 },
+                  lineHeight: 1.55,
+                  color: 'text.primary',
+                  textAlign: 'left',
+                }}
+              >
+                {(multiPreviewTabs ? activePreviewBody : preview) ||
+                  'Preencha os campos ao lado para gerar o texto.'}
+              </Box>
+            </Box>
+          </Paper>
+        </Box>
       ) : null}
 
       <Snackbar
         open={copyOk}
-        autoHideDuration={2500}
+        autoHideDuration={2200}
         onClose={() => setCopyOk(false)}
-        message="Texto copiado para a área de transferência"
+        message="Copiado para a área de transferência"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </Container>

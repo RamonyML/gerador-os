@@ -7,6 +7,24 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --selection-bg: rgba(27, 94, 32, 0.28);
+  --selection-fg: inherit;
+}
+
+html[data-theme='dark'] {
+  --selection-bg: rgba(102, 187, 106, 0.38);
+  --selection-fg: inherit;
+}
+
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg);
+  color: var(--selection-fg);
 }
 
 *,

@@ -19,8 +19,6 @@ export type SupportDemandMeta = {
   title: string
   description: string
   Icon: ElementType
-  /** Cor de destaque do ícone (tema) */
-  accent: 'primary' | 'info' | 'warning' | 'secondary' | 'error' | 'success'
 }
 
 /**
@@ -33,70 +31,60 @@ export const SUPPORT_DEMANDS: SupportDemandMeta[] = [
     title: 'Alteração de plano',
     description: 'Troca de plano, upgrade/downgrade e propostas.',
     Icon: SwapHorizOutlinedIcon,
-    accent: 'primary',
   },
   {
     id: 'mudanca-endereco',
     title: 'Mudança de endereço',
     description: 'Mudança de ponto, viabilidade, equipamentos e variantes de protocolo.',
     Icon: HomeWorkOutlinedIcon,
-    accent: 'info',
   },
   {
     id: 'manutencao',
     title: 'Manutenção',
     description: 'Visitas técnicas, interna/externa e ocasionado.',
     Icon: BuildOutlinedIcon,
-    accent: 'warning',
   },
   {
     id: 'midia-tv',
     title: 'Conversores / TV',
     description: 'STB, Roku e mídia.',
     Icon: TvOutlinedIcon,
-    accent: 'secondary',
   },
   {
     id: 'wifi-extend',
     title: 'Wi-Fi Extend',
     description: 'Mesh e extensão de cobertura.',
     Icon: WifiOutlinedIcon,
-    accent: 'error',
   },
   {
     id: 'senha-rede',
     title: 'Senha / SSID Wi-Fi',
     description: 'Alteração de credenciais da rede.',
     Icon: RouterOutlinedIcon,
-    accent: 'success',
   },
   {
     id: 'feedback',
     title: 'Feedback',
     description: 'Confirmações pós-atendimento e registros de feedback.',
     Icon: ForumOutlinedIcon,
-    accent: 'primary',
   },
   {
     id: 'termo-docs',
     title: 'Termos e documentos',
     description: 'Termos de responsabilidade e textos formais.',
     Icon: DescriptionOutlinedIcon,
-    accent: 'warning',
   },
   {
     id: 'pesquisa-endereco',
     title: 'Pesquisa de endereço',
     description: 'Consultas de CEP e logradouro.',
     Icon: MapOutlinedIcon,
-    accent: 'info',
   },
   {
     id: 'geral',
     title: 'Demais demandas',
     description: 'Modelos gerais ou ainda não classificados.',
     Icon: CategoryOutlinedIcon,
-    accent: 'secondary',
   },
 ]
 

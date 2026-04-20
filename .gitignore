@@ -7,5 +7,7 @@ web/.env
 web/.env.local
 web/dist
 dist
+functions/lib
+functions/node_modules
 .DS_Store
 Thumbs.db

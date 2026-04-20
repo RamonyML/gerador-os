@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Box,
@@ -12,15 +12,20 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
-import { canManageOsTemplates } from '../lib/permissions'
+import { canManageOsTemplates, canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
+import { brandLogoSrc } from '../lib/brandAssets'
 
 export function AppLayout() {
   const { user, profile, logOut } = useAuth()
   const showModels = profile != null && canManageOsTemplates(profile)
+  const showUsers = profile != null && canManageUsers(profile)
   const showSupport = profile != null && canAccessSupportHub(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
+  /** No dashboard as rotas ficam nos cards; o menu completo volta nas demais telas. */
+  const hideNavLinks = pathname === '/'
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -35,14 +40,15 @@ export function AppLayout() {
         }}
       >
         <Toolbar variant="dense" sx={{ gap: 1, flexWrap: 'wrap' }}>
-          <Typography
-            variant="h6"
+          <Box
             component="button"
             type="button"
             onClick={() => navigate('/')}
             sx={{
               mr: 1,
-              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
               cursor: 'pointer',
               border: 'none',
               background: 'none',
@@ -51,28 +57,47 @@ export function AppLayout() {
               p: 0,
             }}
           >
-            Gerador de O.S
-          </Typography>
+            {hideNavLinks ? null : (
+              <Box
+                component="img"
+                src={brandLogoSrc(mode)}
+                alt=""
+                sx={{ height: 28, width: 'auto', display: 'block' }}
+              />
+            )}
+            <Typography variant="h6" component="span" sx={{ fontWeight: 600 }}>
+              Gerador de O.S
+            </Typography>
+          </Box>
 
-          <Button color="inherit" onClick={() => navigate('/')}>
-            Início
-          </Button>
-          <Button color="inherit" onClick={() => navigate('/gerar-os')}>
-            Gerar O.S
-          </Button>
-          {showSupport ? (
-            <Button color="inherit" onClick={() => navigate('/suporte')}>
-              Suporte
-            </Button>
-          ) : null}
-          {showModels ? (
-            <Button
-              color="inherit"
-              onClick={() => navigate('/admin/modelos-os')}
-            >
-              Modelos
-            </Button>
-          ) : null}
+          {hideNavLinks ? null : (
+            <>
+              <Button color="inherit" onClick={() => navigate('/')}>
+                Início
+              </Button>
+              <Button color="inherit" onClick={() => navigate('/gerar-os')}>
+                Gerar O.S
+              </Button>
+              {showSupport ? (
+                <Button color="inherit" onClick={() => navigate('/suporte')}>
+                  Suporte
+                </Button>
+              ) : null}
+              {showModels ? (
+                <Button
+                  color="inherit"
+                  onClick={() => navigate('/admin/modelos-os')}
+                >
+                  Modelos
+                </Button>
+              ) : null}
+              {showUsers ? (
+                <Button color="inherit" onClick={() => navigate('/admin/usuarios')}>
+                  Usuários
+                </Button>
+              ) : null}
+            </>
+          )}
 
           <Box sx={{ flexGrow: 1 }} />
 

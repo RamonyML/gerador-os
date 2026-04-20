@@ -1,0 +1,419 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { Add, Edit } from '@mui/icons-material'
+import { useAuth } from '../contexts/AuthContext'
+import {
+  callableErrorMessage,
+  manageUsersCreate,
+  manageUsersList,
+  manageUsersUpdate,
+  type ManagedUserRow,
+} from '../lib/userManagementApi'
+import {
+  SECTOR_LABELS,
+  SECTORS,
+  type Hierarchy,
+  type Sector,
+} from '../types/profile'
+
+const HIERARCHY_LABELS: Record<Hierarchy, string> = {
+  gerente: 'Gestor',
+  supervisor: 'Supervisor',
+  operador: 'Operador',
+}
+
+function rowDisplayName(row: ManagedUserRow): string {
+  return (
+    row.displayName?.trim() ||
+    row.email?.trim() ||
+    row.uid.slice(0, 8)
+  )
+}
+
+export function AdminUsersPage() {
+  const { profile } = useAuth()
+  const isDev = profile?.isDev === true
+  const canEditAdminFlag =
+    profile?.isDev === true || profile?.isAdmin === true
+  const canPickSector = profile?.isDev === true || profile?.isAdmin === true
+
+  const [rows, setRows] = useState<ManagedUserRow[]>([])
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [listError, setListError] = useState<string | null>(null)
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editing, setEditing] = useState<ManagedUserRow | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [sector, setSector] = useState<Sector>('suporte')
+  const [hierarchy, setHierarchy] = useState<Hierarchy>('operador')
+  const [active, setActive] = useState(true)
+  const [flagAdmin, setFlagAdmin] = useState(false)
+  const [flagDev, setFlagDev] = useState(false)
+
+  const loadFirstPage = useCallback(async () => {
+    setLoading(true)
+    setListError(null)
+    try {
+      const res = await manageUsersList()
+      setRows(res.users)
+      setNextPageToken(res.nextPageToken)
+    } catch (e) {
+      setListError(callableErrorMessage(e))
+      setRows([])
+      setNextPageToken(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const loadMore = useCallback(async () => {
+    if (!nextPageToken) return
+    setLoading(true)
+    setListError(null)
+    try {
+      const res = await manageUsersList(nextPageToken)
+      setRows((prev) => [...prev, ...res.users])
+      setNextPageToken(res.nextPageToken)
+    } catch (e) {
+      setListError(callableErrorMessage(e))
+    } finally {
+      setLoading(false)
+    }
+  }, [nextPageToken])
+
+  useEffect(() => {
+    void loadFirstPage()
+  }, [loadFirstPage])
+
+  const defaultSector = useMemo((): Sector => {
+    if (profile?.sector) return profile.sector
+    return 'suporte'
+  }, [profile?.sector])
+
+  const openCreate = () => {
+    setEditing(null)
+    setFormError(null)
+    setEmail('')
+    setPassword('')
+    setDisplayName('')
+    setSector(
+      canPickSector
+        ? defaultSector
+        : ((profile?.sector as Sector) ?? 'suporte'),
+    )
+    setHierarchy('operador')
+    setActive(true)
+    setFlagAdmin(false)
+    setFlagDev(false)
+    setDialogOpen(true)
+  }
+
+  const openEdit = (row: ManagedUserRow) => {
+    setEditing(row)
+    setFormError(null)
+    setEmail(row.email ?? '')
+    setPassword('')
+    setDisplayName(row.displayName ?? '')
+    setSector((row.sector as Sector) ?? defaultSector)
+    setHierarchy((row.hierarchy as Hierarchy) ?? 'operador')
+    const accountActive = !row.disabled && (row.profileActive !== false)
+    setActive(accountActive)
+    setFlagAdmin(row.isAdmin === true)
+    setFlagDev(row.isDev === true)
+    setDialogOpen(true)
+  }
+
+  const closeDialog = () => {
+    if (saving) return
+    setDialogOpen(false)
+  }
+
+  const submit = async () => {
+    setSaving(true)
+    setFormError(null)
+    try {
+      if (!editing) {
+        await manageUsersCreate({
+          email: email.trim(),
+          password,
+          displayName: displayName.trim(),
+          sector,
+          hierarchy,
+          active,
+          ...(canEditAdminFlag ? { isAdmin: flagAdmin } : {}),
+          ...(isDev ? { isDev: flagDev } : {}),
+        })
+      } else {
+        const payload: Parameters<typeof manageUsersUpdate>[0] = {
+          uid: editing.uid,
+          email: email.trim(),
+          displayName: displayName.trim(),
+          sector,
+          hierarchy,
+          active,
+        }
+        if (password.trim()) payload.password = password.trim()
+        if (canEditAdminFlag) payload.isAdmin = flagAdmin
+        if (isDev) payload.isDev = flagDev
+        await manageUsersUpdate(payload)
+      }
+      setDialogOpen(false)
+      await loadFirstPage()
+    } catch (e) {
+      setFormError(callableErrorMessage(e))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Box sx={{ p: 2, maxWidth: 1200, mx: 'auto' }}>
+      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
+        Usuários
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Crie e atualize contas no Authentication e o documento em{' '}
+        <code>users/&#123;uid&#125;</code> (setor, hierarquia, nome, flags). Somente{' '}
+        <strong>gestor</strong>, <strong>supervisor</strong>,{' '}
+        <strong>administrador</strong> e <strong>dev</strong> acessam esta tela;
+        gestores e supervisores só enxergam o próprio setor. A senha só trafega ao
+        salvar e exige Cloud Functions implantadas.
+      </Typography>
+
+      {listError ? (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {listError}
+        </Alert>
+      ) : null}
+
+      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+        <Button variant="contained" startIcon={<Add />} onClick={() => openCreate()}>
+          Novo usuário
+        </Button>
+        <Button variant="outlined" onClick={() => void loadFirstPage()} disabled={loading}>
+          Atualizar lista
+        </Button>
+      </Stack>
+
+      <TableContainer component={Paper} variant="outlined">
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Nome / e-mail</TableCell>
+              <TableCell>Setor</TableCell>
+              <TableCell>Função</TableCell>
+              <TableCell align="center">Perfil Firestore</TableCell>
+              <TableCell align="center">Ativo</TableCell>
+              <TableCell align="right">Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((r) => (
+              <TableRow key={r.uid} hover>
+                <TableCell>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    {rowDisplayName(r)}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    {r.email ?? '—'}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  {r.sector ? SECTOR_LABELS[r.sector as Sector] ?? r.sector : '—'}
+                </TableCell>
+                <TableCell>
+                  {r.hierarchy ? HIERARCHY_LABELS[r.hierarchy as Hierarchy] ?? r.hierarchy : '—'}
+                </TableCell>
+                <TableCell align="center">
+                  {r.profileMissing ? (
+                    <Chip size="small" color="warning" label="Incompleto" />
+                  ) : (
+                    <Chip size="small" color="success" label="OK" />
+                  )}
+                </TableCell>
+                <TableCell align="center">
+                  {!r.disabled && r.profileActive !== false ? (
+                    <Chip size="small" label="Sim" />
+                  ) : (
+                    <Chip size="small" color="default" label="Não" />
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  <Button size="small" startIcon={<Edit />} onClick={() => openEdit(r)}>
+                    Editar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {!loading && rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Nenhum usuário listado (ou sem permissão de escopo).
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ) : null}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {nextPageToken ? (
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+          <Button variant="outlined" onClick={() => void loadMore()} disabled={loading}>
+            Carregar mais
+          </Button>
+        </Box>
+      ) : null}
+
+      <Dialog open={dialogOpen} onClose={closeDialog} fullWidth maxWidth="sm">
+        <DialogTitle>{editing ? 'Editar usuário' : 'Novo usuário'}</DialogTitle>
+        <DialogContent>
+          {formError ? (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {formError}
+            </Alert>
+          ) : null}
+
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <TextField
+              label="E-mail"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="off"
+              required
+              fullWidth
+            />
+            <TextField
+              label={editing ? 'Nova senha (opcional)' : 'Senha'}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              required={!editing}
+              fullWidth
+              helperText={
+                editing
+                  ? 'Deixe em branco para manter a senha atual.'
+                  : 'Mínimo de 6 caracteres (Firebase Auth).'
+              }
+            />
+            <TextField
+              label="Nome completo"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+              fullWidth
+            />
+
+            <FormControl fullWidth disabled={!canPickSector}>
+              <InputLabel id="sector-label">Setor</InputLabel>
+              <Select
+                labelId="sector-label"
+                label="Setor"
+                value={sector}
+                onChange={(e) => setSector(e.target.value as Sector)}
+              >
+                {SECTORS.map((s) => (
+                  <MenuItem key={s} value={s}>
+                    {SECTOR_LABELS[s]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel id="hierarchy-label">Hierarquia</InputLabel>
+              <Select
+                labelId="hierarchy-label"
+                label="Hierarquia"
+                value={hierarchy}
+                onChange={(e) => setHierarchy(e.target.value as Hierarchy)}
+              >
+                {(Object.keys(HIERARCHY_LABELS) as Hierarchy[]).map((h) => (
+                  <MenuItem key={h} value={h}>
+                    {HIERARCHY_LABELS[h]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControlLabel
+              control={<Switch checked={active} onChange={(e) => setActive(e.target.checked)} />}
+              label="Conta ativa (Auth desbloqueado e perfil ativo)"
+            />
+
+            {canEditAdminFlag ? (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={flagAdmin}
+                    onChange={(e) => setFlagAdmin(e.target.checked)}
+                  />
+                }
+                label="Administrador (gestão de usuários em todos os setores)"
+              />
+            ) : null}
+            {isDev ? (
+              <FormControlLabel
+                control={
+                  <Switch checked={flagDev} onChange={(e) => setFlagDev(e.target.checked)} />
+                }
+                label="Desenvolvedor (acesso total aos templates e flag dev)"
+              />
+            ) : null}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog} disabled={saving}>
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void submit()}
+            disabled={
+              saving ||
+              !email.trim() ||
+              !displayName.trim() ||
+              (!editing && password.length < 6)
+            }
+          >
+            {saving ? 'Salvando…' : 'Salvar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  )
+}

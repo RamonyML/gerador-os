@@ -8,3 +8,12 @@ export function canManageOsTemplates(profile: UserProfile | null): boolean {
     profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
   )
 }
+
+/** Gestão de contas (Auth + documento `users/{uid}`) via Cloud Functions. */
+export function canManageUsers(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return (
+    profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
+  )
+}

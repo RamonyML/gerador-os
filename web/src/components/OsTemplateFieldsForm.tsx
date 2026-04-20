@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Search as SearchIcon } from '@mui/icons-material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import {
   Box,
   CircularProgress,
@@ -27,7 +28,13 @@ import {
   fetchCepWithFallback,
   normalizeCepInput,
 } from '../lib/cepLookup'
-import { parseBrDateString, toBrDateString } from '../lib/dateFieldValue'
+import {
+  parseBrDateString,
+  parseBrDateTimeString,
+  toBrDateString,
+  toBrDateTimeString,
+} from '../lib/dateFieldValue'
+import { formatPhoneBrMask } from '../lib/phoneBrFormat'
 
 type Props = {
   fields: OsTemplateField[]
@@ -315,6 +322,50 @@ function FieldInput({
             },
           },
         }}
+      />
+    )
+  }
+
+  if (kind === 'datetime') {
+    return (
+      <DateTimePicker
+        label={f.label}
+        value={parseBrDateTimeString(value)}
+        onChange={(d) => onChange(f.id, d ? toBrDateTimeString(d) : '')}
+        format="DD/MM/YYYY HH:mm"
+        ampm={false}
+        slotProps={{
+          textField: {
+            size: 'small',
+            fullWidth: true,
+            slotProps: {
+              htmlInput: {
+                placeholder: f.placeholder || 'dd/mm/aaaa hh:mm',
+              },
+            },
+          },
+        }}
+      />
+    )
+  }
+
+  if (kind === 'phone') {
+    return (
+      <TextField
+        label={f.label}
+        placeholder={f.placeholder ?? '(00) 00000-0000'}
+        value={value}
+        onChange={(e) => onChange(f.id, formatPhoneBrMask(e.target.value))}
+        fullWidth
+        size="small"
+        slotProps={{
+          htmlInput: {
+            inputMode: 'numeric',
+            autoComplete: 'tel',
+            maxLength: 16,
+          },
+        }}
+        helperText="Somente números; a máscara é aplicada automaticamente."
       />
     )
   }

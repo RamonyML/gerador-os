@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Alert,
   Box,
@@ -24,6 +24,10 @@ import {
   TableRow,
   TextField,
   Typography,
+  ListSubheader,
+  Tab,
+  Tabs,
+  useTheme,
 } from '@mui/material'
 import { Add, DeleteOutlined, Edit } from '@mui/icons-material'
 import {
@@ -35,9 +39,14 @@ import {
 } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { stripUndefinedDeep } from '../lib/firestoreSanitize'
+import { splitOsPreviewSections } from '../lib/splitOsPreviewSections'
 import { useAuth } from '../contexts/AuthContext'
 import { useAdminOsTemplates } from '../hooks/useAdminOsTemplates'
-import { getMudEndExampleDefaults } from '../data/mudEndExample'
+import {
+  OS_TEMPLATE_PRESETS,
+  presetCategories,
+  type OsTemplatePresetPayload,
+} from '../data/osTemplatePresets'
 import { SUPPORT_DEMANDS } from '../data/supportDemands'
 import type {
   FieldControl,
@@ -57,6 +66,8 @@ const CONTROL_LABELS: Record<FieldControl, string> = {
   select: 'Lista (select)',
   radio: 'Opções (radio)',
   date: 'Data (calendário)',
+  datetime: 'Data e hora (calendário)',
+  phone: 'Telefone (máscara BR)',
 }
 
 function layoutPayload(f: OsTemplateField): FieldLayout | undefined {
@@ -90,6 +101,7 @@ function emptyField(): OsTemplateField {
 }
 
 export function AdminOsTemplatesPage() {
+  const theme = useTheme()
   const { profile } = useAuth()
   const { state, reload } = useAdminOsTemplates(profile)
 
@@ -106,12 +118,30 @@ export function AdminOsTemplatesPage() {
   const [outputTemplate, setOutputTemplate] = useState('')
   const [demandCategory, setDemandCategory] = useState('geral')
   const [fields, setFields] = useState<OsTemplateField[]>([emptyField()])
+  const [examplePresetId, setExamplePresetId] = useState('')
+  const [templatePreviewTab, setTemplatePreviewTab] = useState(0)
+
+  const templateSections = useMemo(
+    () => splitOsPreviewSections(outputTemplate),
+    [outputTemplate],
+  )
+
+  useEffect(() => {
+    if (dialogOpen) setTemplatePreviewTab(0)
+  }, [dialogOpen])
+
+  useEffect(() => {
+    setTemplatePreviewTab((t) =>
+      templateSections.length === 0
+        ? 0
+        : Math.min(t, Math.max(0, templateSections.length - 1)),
+    )
+  }, [templateSections.length])
 
   const canPickSector = profile?.isDev === true || profile?.isAdmin === true
 
-  const loadMudEndExampleIntoForm = () => {
+  function applyExampleDefaults(d: OsTemplatePresetPayload) {
     setFormError(null)
-    const d = getMudEndExampleDefaults()
     setSlug(d.slug)
     setTitle(d.title)
     setOutputTemplate(d.outputTemplate)
@@ -126,6 +156,15 @@ export function AdminOsTemplatesPage() {
     )
   }
 
+  const loadSelectedPresetIntoForm = () => {
+    const preset = OS_TEMPLATE_PRESETS.find((p) => p.id === examplePresetId)
+    if (!preset) {
+      setFormError('Selecione um exemplo na lista.')
+      return
+    }
+    applyExampleDefaults(preset.getDefaults())
+  }
+
   const openNew = () => {
     setEditingId(null)
     setFormError(null)
@@ -137,6 +176,7 @@ export function AdminOsTemplatesPage() {
     setOutputTemplate('')
     setDemandCategory('geral')
     setFields([emptyField()])
+    setExamplePresetId('')
     setDialogOpen(true)
   }
 
@@ -150,6 +190,7 @@ export function AdminOsTemplatesPage() {
     setActive(t.active)
     setOutputTemplate(t.outputTemplate)
     setDemandCategory(t.demandCategory)
+    setExamplePresetId('')
     setFields(
       t.fields.length > 0
         ? t.fields.map((f) => ({
@@ -209,6 +250,16 @@ export function AdminOsTemplatesPage() {
         const base = ph
           ? { id, label, placeholder: ph, control: 'date' as const }
           : { id, label, control: 'date' as const }
+        out.push({ ...base, ...meta })
+      } else if (ctrl === 'datetime') {
+        const base = ph
+          ? { id, label, placeholder: ph, control: 'datetime' as const }
+          : { id, label, control: 'datetime' as const }
+        out.push({ ...base, ...meta })
+      } else if (ctrl === 'phone') {
+        const base = ph
+          ? { id, label, placeholder: ph, control: 'phone' as const }
+          : { id, label, control: 'phone' as const }
         out.push({ ...base, ...meta })
       } else {
         const base = ph
@@ -379,20 +430,45 @@ export function AdminOsTemplatesPage() {
         open={dialogOpen}
         onClose={closeDialog}
         fullWidth
-        maxWidth="md"
+        maxWidth="xl"
+        scroll="paper"
       >
-        <DialogTitle>
+        <DialogTitle sx={{ pb: 0.5 }}>
           {editingId ? 'Editar modelo' : 'Novo modelo'}
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontWeight: 400 }}>
+            Identificação e campos à esquerda; texto com{' '}
+            <code>{'{{placeholders}}'}</code> à direita (como no gerador).
+          </Typography>
         </DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers sx={{ p: 0 }}>
           {formError ? (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert severity="error" sx={{ m: 2, mb: 0 }}>
               {formError}
             </Alert>
           ) : null}
 
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', lg: 'minmax(300px, 420px) minmax(0, 1fr)' },
+              minHeight: { lg: '58vh' },
+            }}
+          >
+            <Box
+              sx={{
+                order: { xs: 2, lg: 1 },
+                p: { xs: 2, sm: 2.5 },
+                borderRight: { lg: 1 },
+                borderColor: 'divider',
+                maxHeight: { lg: 'calc(100vh - 132px)' },
+                overflow: 'auto',
+              }}
+            >
           <Stack spacing={2} sx={{ pt: 0.5 }}>
-            <FormControl fullWidth disabled={!canPickSector}>
+            <Typography variant="subtitle2" color="text.secondary">
+              1 · Identificação do modelo
+            </Typography>
+            <FormControl fullWidth disabled={!canPickSector} size="small">
               <InputLabel id="sector-label">Setor</InputLabel>
               <Select
                 labelId="sector-label"
@@ -465,35 +541,54 @@ export function AdminOsTemplatesPage() {
               label="Modelo ativo (inativo some para operadores)"
             />
 
-            <TextField
-              label="Texto de saída (placeholders {{campo}})"
-              value={outputTemplate}
-              onChange={(e) => setOutputTemplate(e.target.value)}
-              fullWidth
-              required
-              multiline
-              minRows={6}
-            />
-
-            <Typography variant="subtitle2">Campos do formulário</Typography>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ display: 'block' }}
-            >
-              Cada <code>id</code> deve coincidir com um{' '}
-              <code>{'{{id}}'}</code> no texto acima. Para <strong>select</strong>{' '}
-              e <strong>radio</strong>, defina opções (valor = o que entra no
-              texto; pode ser um parágrafo inteiro).
+            <Typography variant="subtitle2" sx={{ pt: 1 }}>
+              2 · Campos do formulário
             </Typography>
-            <Button
-              variant="outlined"
-              size="small"
-              sx={{ mt: 1, mb: 1 }}
-              onClick={loadMudEndExampleIntoForm}
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+              <code>id</code> = <code>{'{{id}}'}</code> no texto à direita. Em select/radio, o
+              valor é o que entra no protocolo.
+            </Typography>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1}
+              sx={{ mt: 1, mb: 1, alignItems: { sm: 'flex-start' } }}
             >
-              Carregar exemplo MUD END (protocolo do HTML)
-            </Button>
+              <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 340 } }}>
+                <InputLabel id="os-preset-lbl">Exemplo pronto (código)</InputLabel>
+                <Select
+                  labelId="os-preset-lbl"
+                  label="Exemplo pronto (código)"
+                  value={examplePresetId}
+                  onChange={(e) => setExamplePresetId(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>Nenhum</em>
+                  </MenuItem>
+                  {presetCategories().flatMap((cat) => [
+                    <ListSubheader key={`preset-h-${cat}`}>{cat}</ListSubheader>,
+                    ...OS_TEMPLATE_PRESETS.filter((p) => p.category === cat).map(
+                      (p) => (
+                        <MenuItem key={p.id} value={p.id}>
+                          {p.label}
+                        </MenuItem>
+                      ),
+                    ),
+                  ])}
+                </Select>
+              </FormControl>
+              <Button
+                variant="outlined"
+                size="small"
+                disabled={!examplePresetId}
+                onClick={loadSelectedPresetIntoForm}
+                sx={{ flexShrink: 0 }}
+              >
+                Aplicar ao rascunho
+              </Button>
+            </Stack>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+              Atalhos do repositório — novos exemplos: <code>osTemplatePresets.ts</code>.
+            </Typography>
 
             {fields.map((f, index) => {
               const ctrl: FieldControl = f.control ?? 'text'
@@ -724,6 +819,118 @@ export function AdminOsTemplatesPage() {
               Adicionar campo
             </Button>
           </Stack>
+            </Box>
+
+            <Paper
+              elevation={0}
+              variant="outlined"
+              square
+              sx={{
+                order: { xs: 1, lg: 2 },
+                p: { xs: 2, sm: 2.5 },
+                borderRadius: 0,
+                borderLeft: { lg: 'none' },
+                maxHeight: { lg: 'calc(100vh - 132px)' },
+                overflow: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.5,
+                bgcolor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255,255,255,0.03)'
+                    : 'grey.50',
+              }}
+            >
+              <Box>
+                <Typography variant="subtitle2" color="text.secondary">
+                  3 · Texto de saída
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ mt: 0.5, display: 'block' }}
+                >
+                  Linhas <code>=== Título ===</code> geram abas no gerador. Placeholders:{' '}
+                  <code>{'{{campo}}'}</code>.
+                </Typography>
+              </Box>
+              <TextField
+                label="Template (obrigatório)"
+                value={outputTemplate}
+                onChange={(e) => setOutputTemplate(e.target.value)}
+                fullWidth
+                required
+                multiline
+                minRows={14}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontFamily:
+                      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                    fontSize: 13,
+                    lineHeight: 1.5,
+                  },
+                }}
+              />
+              {templateSections.length > 1 ? (
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5 }}>
+                    Mesmo texto por blocos (leitura)
+                  </Typography>
+                  <Tabs
+                    value={Math.min(
+                      templatePreviewTab,
+                      Math.max(0, templateSections.length - 1),
+                    )}
+                    onChange={(_, v) => setTemplatePreviewTab(v)}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    sx={{
+                      minHeight: 40,
+                      borderBottom: 1,
+                      borderColor: 'divider',
+                      '& .MuiTab-root': {
+                        minHeight: 40,
+                        py: 0,
+                        textTransform: 'none',
+                        fontSize: 13,
+                      },
+                    }}
+                  >
+                    {templateSections.map((sec, i) => (
+                      <Tab key={sec.id} label={sec.label} value={i} />
+                    ))}
+                  </Tabs>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      overflow: 'auto',
+                      pt: 1,
+                      minHeight: 100,
+                    }}
+                  >
+                    {templateSections.map((sec, i) =>
+                      templatePreviewTab === i ? (
+                        <Box
+                          key={sec.id}
+                          component="pre"
+                          sx={{
+                            m: 0,
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-word',
+                            fontFamily: 'inherit',
+                            fontSize: 13,
+                            lineHeight: 1.55,
+                          }}
+                        >
+                          {sec.body || '(sem corpo neste bloco)'}
+                        </Box>
+                      ) : null,
+                    )}
+                  </Box>
+                </Box>
+              ) : null}
+            </Paper>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDialog} disabled={saving}>

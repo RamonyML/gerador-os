@@ -7,8 +7,11 @@ import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { OsGeneratorPage } from './pages/OsGeneratorPage'
 import { SupportHomePage } from './pages/SupportHomePage'
+import { AlteracaoPlanoHubPage } from './pages/AlteracaoPlanoHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
+import { RequireUserManager } from './components/RequireUserManager'
+import { AdminUsersPage } from './pages/AdminUsersPage'
 
 export default function App() {
   return (
@@ -31,6 +34,14 @@ export default function App() {
           }
         />
         <Route
+          path="/suporte/alteracao-plano"
+          element={
+            <RequireSupport>
+              <AlteracaoPlanoHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
           path="/suporte/demanda/:demandId"
           element={
             <RequireSupport>
@@ -45,6 +56,14 @@ export default function App() {
             <RequireTemplateManager>
               <AdminOsTemplatesPage />
             </RequireTemplateManager>
+          }
+        />
+        <Route
+          path="/admin/usuarios"
+          element={
+            <RequireUserManager>
+              <AdminUsersPage />
+            </RequireUserManager>
           }
         />
       </Route>
