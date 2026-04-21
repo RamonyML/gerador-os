@@ -58,3 +58,10 @@ export function canManageWorkSchedule(profile: UserProfile | null): boolean {
     profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
   )
 }
+
+/** Criar/editar avisos do sistema. */
+export function canManageNotices(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.hierarchy === 'gerente'
+}

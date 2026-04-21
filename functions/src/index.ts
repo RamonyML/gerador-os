@@ -3,6 +3,7 @@ import { FieldValue, getFirestore } from 'firebase-admin/firestore'
 import { getAuth, type UserRecord } from 'firebase-admin/auth'
 import { setGlobalOptions } from 'firebase-functions/v2/options'
 import { HttpsError, onCall } from 'firebase-functions/v2/https'
+import { onDocumentCreated } from 'firebase-functions/v2/firestore'
 
 initializeApp()
 
@@ -505,3 +506,26 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
 
   return { ok: true }
 })
+
+/**
+ * Incrementa contador de leitura ao criar `users/{uid}/noticeReads/{noticeId}`.
+ * Contador é best-effort (não usado para segurança).
+ */
+export const noticeReadOnCreate = onDocumentCreated(
+  {
+    region: REGION,
+    document: 'users/{userId}/noticeReads/{noticeId}',
+  },
+  async (event) => {
+    const noticeId = event.params.noticeId
+    if (!noticeId) return
+    const db = getFirestore()
+    const noticeRef = db.doc(`notices/${noticeId}`)
+    await noticeRef.set(
+      {
+        stats: { readCount: FieldValue.increment(1) },
+      },
+      { merge: true },
+    )
+  },
+)

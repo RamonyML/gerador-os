@@ -31,10 +31,10 @@ import {
   sendPasswordResetEmail,
   setPersistence,
 } from 'firebase/auth'
-import { LoginHeroIllustration } from '../components/LoginHeroIllustration'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { useAuth } from '../contexts/AuthContext'
 import { auth } from '../lib/firebase'
+import { brandLogoSrc } from '../lib/brandAssets'
 
 const LOGIN_FONT = '"Poppins", "Ubuntu", "Segoe UI", system-ui, sans-serif'
 
@@ -59,23 +59,6 @@ function loginErrorMessage(err: unknown): string {
   return 'Não foi possível entrar. Tente novamente.'
 }
 
-const FLOAT_ORBS: Array<{
-  w: number
-  top?: string
-  left?: string
-  right?: string
-  bottom?: string
-  delay: string
-}> = [
-  { w: 120, top: '5%', left: '10%', delay: '0s' },
-  { w: 80, top: '15%', right: '15%', delay: '1s' },
-  { w: 60, top: '45%', left: '20%', delay: '2s' },
-  { w: 100, bottom: '15%', right: '5%', delay: '3s' },
-  { w: 90, top: '60%', right: '30%', delay: '4s' },
-  { w: 70, bottom: '25%', left: '15%', delay: '5s' },
-  { w: 110, bottom: '5%', left: '50%', delay: '6s' },
-]
-
 export function LoginPage() {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
@@ -93,26 +76,34 @@ export function LoginPage() {
   const [resetHint, setResetHint] = useState<string | null>(null)
 
   const primary = theme.palette.primary.main
-  const primaryDark = theme.palette.primary.dark
-  const panelGradient =
+  const surface =
+    mode === 'light' ? alpha('#ffffff', 0.9) : alpha(theme.palette.background.paper, 0.9)
+  const pageBg =
     mode === 'light'
-      ? `linear-gradient(155deg, ${alpha(primary, 0.12)} 0%, ${alpha(primary, 0.04)} 38%, ${theme.palette.background.default} 72%)`
-      : `linear-gradient(155deg, ${alpha(primary, 0.22)} 0%, ${alpha('#000', 0.2)} 45%, ${theme.palette.background.default} 100%)`
-
-  /** Painel esquerdo (desktop): gradiente verde forte como no login.html legado */
-  const illustrationBg = `linear-gradient(135deg, ${primary} 0%, ${primaryDark} 100%)`
+      ? `radial-gradient(1200px 500px at 12% 12%, ${alpha(primary, 0.14)} 0%, transparent 60%), radial-gradient(900px 450px at 85% 20%, ${alpha(primary, 0.08)} 0%, transparent 55%), ${theme.palette.background.default}`
+      : `radial-gradient(1100px 520px at 18% 12%, ${alpha(primary, 0.16)} 0%, transparent 55%), ${theme.palette.background.default}`
 
   const inputAccentSx = {
     '& .MuiOutlinedInput-root': {
       borderRadius: 2,
-      transition: 'all 0.2s ease',
-      borderLeft: `3px solid ${alpha(primary, 0.35)}`,
+      transition: 'background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease',
+      bgcolor: alpha(theme.palette.background.paper, mode === 'dark' ? 0.22 : 0.4),
+      borderLeft: `2px solid ${alpha(primary, mode === 'dark' ? 0.42 : 0.28)}`,
+      '& fieldset': {
+        borderColor: alpha(theme.palette.text.primary, mode === 'dark' ? 0.16 : 0.12),
+      },
       '&:hover': {
-        bgcolor: alpha(primary, mode === 'dark' ? 0.12 : 0.06),
+        bgcolor: alpha(theme.palette.background.paper, mode === 'dark' ? 0.28 : 0.55),
+        '& fieldset': {
+          borderColor: alpha(theme.palette.text.primary, mode === 'dark' ? 0.24 : 0.18),
+        },
       },
       '&.Mui-focused': {
-        borderLeft: `3px solid ${primary}`,
-        boxShadow: `0 4px 14px ${alpha(primary, 0.22)}`,
+        borderLeft: `2px solid ${primary}`,
+        boxShadow: `0 10px 30px ${alpha(primary, 0.18)}`,
+        '& fieldset': {
+          borderColor: alpha(primary, 0.55),
+        },
       },
     },
   } as const
@@ -126,7 +117,7 @@ export function LoginPage() {
           alignItems: 'center',
           justifyContent: 'center',
           bgcolor: 'background.default',
-          background: panelGradient,
+          background: pageBg,
           fontFamily: LOGIN_FONT,
         }}
       >
@@ -181,219 +172,162 @@ export function LoginPage() {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: 'center',
+        justifyContent: 'center',
+        px: 2,
+        py: 6,
         bgcolor: 'background.default',
-        background: { md: illustrationBg },
+        background: pageBg,
         fontFamily: LOGIN_FONT,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
       <Box
+        aria-hidden
         sx={{
-          position: 'relative',
-          flex: { md: '1 1 52%' },
-          minHeight: { xs: 240, md: 'auto' },
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          opacity: mode === 'dark' ? 0.7 : 0.55,
+          '&::before, &::after': {
+            content: '""',
+            position: 'absolute',
+            width: { xs: 320, sm: 420 },
+            height: { xs: 320, sm: 420 },
+            borderRadius: '50%',
+            filter: 'blur(42px)',
+            background:
+              mode === 'light'
+                ? `radial-gradient(circle at 30% 30%, ${alpha(primary, 0.22)} 0%, transparent 62%)`
+                : `radial-gradient(circle at 30% 30%, ${alpha(primary, 0.32)} 0%, transparent 62%)`,
+            animation: 'login-ambient-float 18s ease-in-out infinite',
+          },
+          '&::before': {
+            top: { xs: -120, sm: -160 },
+            left: { xs: -120, sm: -160 },
+          },
+          '&::after': {
+            bottom: { xs: -140, sm: -180 },
+            right: { xs: -140, sm: -180 },
+            animationDelay: '3.5s',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            '&::before, &::after': { animation: 'none' },
+          },
+        }}
+      />
+
+      <Tooltip title={mode === 'dark' ? 'Tema claro' : 'Tema escuro'} placement="left">
+        <IconButton
+          onClick={() => toggle()}
+          aria-label="Alternar tema claro ou escuro"
+          sx={{
+            position: 'fixed',
+            top: 16,
+            right: 16,
+            bgcolor: alpha(theme.palette.text.primary, 0.06),
+            '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.1) },
+          }}
+        >
+          {mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+        </IconButton>
+      </Tooltip>
+
+      <Paper
+        elevation={0}
+        sx={{
+          width: '100%',
+          maxWidth: 420,
+          borderRadius: 3,
+          border: 1,
+          borderColor: 'divider',
+          bgcolor: surface,
           overflow: 'hidden',
-          background: isMdUp ? 'transparent' : panelGradient,
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center',
-          justifyContent: 'center',
-          px: { md: 4, lg: 6 },
-          py: { md: 6 },
+          opacity: 0,
+          transform: 'translateY(8px)',
+          animation: 'login-card-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards',
+          '@keyframes login-card-enter': {
+            to: { opacity: 1, transform: 'translateY(0)' },
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            animation: 'none',
+            opacity: 1,
+            transform: 'none',
+          },
+          boxShadow:
+            mode === 'light'
+              ? '0 24px 60px -18px rgba(0, 0, 0, 0.16)'
+              : '0 24px 60px -18px rgba(0, 0, 0, 0.5)',
         }}
       >
-        {FLOAT_ORBS.map((o, i) => (
-          <Box
-            key={i}
-            sx={{
-              position: 'absolute',
-              width: o.w,
-              height: o.w,
-              borderRadius: '50%',
-              bgcolor: 'rgba(255,255,255,0.1)',
-              top: o.top,
-              left: o.left,
-              right: o.right,
-              bottom: o.bottom,
-              animation: 'login-panel-float 15s ease-in-out infinite',
-              animationDelay: o.delay,
-              pointerEvents: 'none',
-            }}
-          />
-        ))}
+        <Box
+          sx={{
+            height: 6,
+            bgcolor: primary,
+          }}
+        />
 
-        <Box sx={{ position: 'relative', zIndex: 1, maxWidth: 520, width: '100%', textAlign: 'center', px: 2 }}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              lineHeight: 1.15,
-              mb: 1.5,
-              color: '#fff',
-            }}
-          >
-            Bem-vindo de volta!
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 3,
-              maxWidth: 420,
-              mx: 'auto',
-              // Painel esquerdo: fundo verde em ambos os temas — texto sempre branco
-              color: '#ffffff !important',
-            }}
-          >
-            Acesse o Gerador de O.S. com seu e-mail e senha.
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              '& img': {
-                filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.2))',
-              },
-            }}
-          >
+        <Box sx={{ p: { xs: 3, sm: 4 } }}>
+          <Stack spacing={2.5} sx={{ mb: 2.5, alignItems: 'center' }}>
             <Box
               component="img"
-              src="/brand/mzlogo-login.png"
+              src={brandLogoSrc(mode)}
               alt="MZ NET"
               sx={{
-                width: '100%',
-                maxWidth: 280,
-                height: 'auto',
+                height: 54,
+                width: 'auto',
                 objectFit: 'contain',
               }}
             />
-          </Box>
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
-          flex: { md: '1 1 48%' },
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          px: 2,
-          py: { xs: 4, md: 6 },
-          position: 'relative',
-          background: isMdUp ? theme.palette.background.default : panelGradient,
-          // Recorte curvo no desktop (estilo modelo): revela o painel verde.
-          overflow: { md: 'hidden' },
-          '&::before': isMdUp
-            ? ({
-                content: '""',
-                position: 'absolute',
-                inset: 0,
-                left: -10,
-                width: 270,
-                background: illustrationBg,
-                pointerEvents: 'none',
-                zIndex: 0,
-                // Máscara em S-curve (fica parecido com o “recorte” do exemplo)
-                WebkitMaskImage:
-                  'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 220 100%27 preserveAspectRatio=%27none%27%3E%3Cpath fill=%27white%27 d=%27M0 0H168C118 10 128 38 172 50C206 60 126 90 184 100H0Z%27/%3E%3C/svg%3E")',
-                WebkitMaskRepeat: 'no-repeat',
-                WebkitMaskSize: '100% 100%',
-                maskImage:
-                  'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 220 100%27 preserveAspectRatio=%27none%27%3E%3Cpath fill=%27white%27 d=%27M0 0H168C118 10 128 38 172 50C206 60 126 90 184 100H0Z%27/%3E%3C/svg%3E")',
-                maskRepeat: 'no-repeat',
-                maskSize: '100% 100%',
-              } as const)
-            : undefined,
-        }}
-      >
-        <Tooltip title={mode === 'dark' ? 'Tema claro' : 'Tema escuro'} placement="left">
-          <IconButton
-            onClick={() => toggle()}
-            aria-label="Alternar tema claro ou escuro"
-            sx={{
-              position: 'absolute',
-              top: { xs: 16, md: 24 },
-              right: { xs: 16, md: 24 },
-              bgcolor: alpha(theme.palette.text.primary, 0.06),
-              '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.1) },
-            }}
-          >
-            {mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
-          </IconButton>
-        </Tooltip>
-
-        {isMdUp ? null : (
-          <Box
-            sx={{
-              position: 'absolute',
-              inset: 0,
-              zIndex: 0,
-              pointerEvents: 'none',
-              background: panelGradient,
-              opacity: 0.88,
-            }}
-          />
-        )}
-
-        <Paper
-          elevation={0}
-          sx={{
-            position: 'relative',
-            zIndex: 1,
-            width: '100%',
-            maxWidth: 420,
-            p: { xs: 3, sm: 4 },
-            borderRadius: 3,
-            border: 1,
-            borderColor: 'divider',
-            backdropFilter: 'blur(8px)',
-            bgcolor:
-              mode === 'light'
-                ? alpha('#ffffff', 0.92)
-                : alpha(theme.palette.background.paper, 0.92),
-            boxShadow:
-              mode === 'light'
-                ? '0 25px 50px -12px rgba(0, 0, 0, 0.12)'
-                : '0 25px 50px -12px rgba(0, 0, 0, 0.45)',
-          }}
-        >
-          <Stack spacing={2} sx={{ mb: 3, alignItems: 'center' }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
-                Gerador de O.S.
+              <Typography variant="h5" component="h1" sx={{ fontWeight: 750, letterSpacing: '-0.02em' }}>
+                Entrar
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                Use suas credenciais para entrar
+                Acesse com seu e-mail e senha.
               </Typography>
             </Box>
           </Stack>
 
-          <Box
-            sx={{
-              mb: 2,
-              borderRadius: 2,
-              overflow: 'hidden',
-              px: { xs: 0, sm: 0.5 },
-              '& svg': {
-                maxHeight: { xs: 200, md: 168 },
-              },
-            }}
-            aria-hidden
-          >
-            <LoginHeroIllustration
-              accent={primary}
-              muted={alpha(primary, mode === 'dark' ? 0.22 : 0.12)}
-            />
-          </Box>
-
           <Box component="form" onSubmit={handleSubmit} noValidate>
             {error ? (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
+              <Alert
+                severity="error"
+                icon={false}
+                sx={{
+                  mb: 2,
+                  borderRadius: 2,
+                  py: 1,
+                  bgcolor: alpha(theme.palette.error.main, mode === 'dark' ? 0.12 : 0.08),
+                  border: 1,
+                  borderColor: alpha(theme.palette.error.main, mode === 'dark' ? 0.24 : 0.18),
+                  color: 'text.primary',
+                }}
+              >
+                <Typography variant="caption" sx={{ display: 'block', lineHeight: 1.45 }}>
+                  {error}
+                </Typography>
               </Alert>
             ) : null}
             {resetHint ? (
-              <Alert severity="success" sx={{ mb: 2 }} onClose={() => setResetHint(null)}>
-                {resetHint}
+              <Alert
+                severity="success"
+                icon={false}
+                sx={{
+                  mb: 2,
+                  borderRadius: 2,
+                  py: 1,
+                  bgcolor: alpha(theme.palette.success.main, mode === 'dark' ? 0.12 : 0.08),
+                  border: 1,
+                  borderColor: alpha(theme.palette.success.main, mode === 'dark' ? 0.24 : 0.18),
+                  color: 'text.primary',
+                }}
+                onClose={() => setResetHint(null)}
+              >
+                <Typography variant="caption" sx={{ display: 'block', lineHeight: 1.45 }}>
+                  {resetHint}
+                </Typography>
               </Alert>
             ) : null}
 
@@ -420,6 +354,7 @@ export function LoginPage() {
                 },
               }}
             />
+
             <TextField
               required
               fullWidth
@@ -463,8 +398,7 @@ export function LoginPage() {
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 gap: 1,
-                mt: 2,
-                mb: 1,
+                mt: 1.5,
               }}
             >
               <FormControlLabel
@@ -476,7 +410,7 @@ export function LoginPage() {
                     size="small"
                   />
                 }
-                label={<Typography variant="body2">Lembrar-me neste dispositivo</Typography>}
+                label={<Typography variant="body2">Lembrar-me</Typography>}
               />
               <Link
                 component="button"
@@ -486,12 +420,12 @@ export function LoginPage() {
                 sx={{
                   cursor: 'pointer',
                   color: 'primary.main',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   textDecoration: 'none',
                   '&:hover': { color: 'primary.dark' },
                 }}
               >
-                Esqueceu a senha?
+                Esqueci minha senha
               </Link>
             </Box>
 
@@ -503,29 +437,32 @@ export function LoginPage() {
               disabled={submitting}
               sx={{
                 mt: 2,
-                py: 1.35,
+                py: 1.3,
                 borderRadius: 2,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                fontSize: 13,
-                background: `linear-gradient(to right, ${primary}, ${primaryDark})`,
-                boxShadow: `0 4px 14px ${alpha(primary, 0.35)}`,
+                fontWeight: 700,
+                textTransform: 'none',
+                letterSpacing: 0,
+                boxShadow: `0 10px 24px ${alpha(primary, 0.24)}`,
                 '&:hover': {
-                  background: `linear-gradient(to right, ${primaryDark}, ${theme.palette.primary.main})`,
-                  transform: 'translateY(-2px)',
-                  boxShadow: `0 10px 22px ${alpha(primary, 0.38)}`,
+                  boxShadow: `0 14px 32px ${alpha(primary, 0.3)}`,
+                  transform: 'translateY(-1px)',
                 },
-                '&:active': {
-                  transform: 'translateY(0)',
-                },
+                '&:active': { transform: 'translateY(0)' },
               }}
             >
               {submitting ? 'Entrando…' : 'Entrar'}
             </Button>
+
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', textAlign: 'center', mt: 2 }}
+            >
+              {isMdUp ? 'Acesso restrito para colaboradores.' : 'Acesso restrito.'}
+            </Typography>
           </Box>
-        </Paper>
-      </Box>
+        </Box>
+      </Paper>
     </Box>
   )
 }

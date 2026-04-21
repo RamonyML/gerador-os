@@ -53,6 +53,87 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    /** Leituras de avisos por usuário (somente o próprio usuário). */
+    match /users/{userId}/noticeReads/{noticeId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    /**
+     * Avisos do sistema (criados por gerente).
+     *
+     * Modelo:
+     * - message: string
+     * - authorUid: string
+     * - authorName: string
+     * - createdAt: timestamp
+     * - target: { scope: 'all' | 'sector', sector?: string }
+     * - active: bool
+     */
+    match /notices/{noticeId} {
+      allow read: if isActiveUser()
+        && resource.data.active == true
+        && (
+          resource.data.status == 'published'
+          || !('status' in resource.data)
+        )
+        && resource.data.target is map
+        && (
+          resource.data.target.scope == 'all'
+          || (
+            resource.data.target.scope == 'sector'
+            && resource.data.target.sector == userData().sector
+          )
+        );
+
+      allow create: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+        )
+        && request.resource.data.active == true
+        && request.resource.data.status in ['draft', 'published']
+        && request.resource.data.pinned is bool
+        && request.resource.data.priority in ['normal', 'important', 'critical']
+        && request.resource.data.message is string
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.authorName is string
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.target is map
+        && (
+          request.resource.data.target.scope == 'all'
+          || (
+            request.resource.data.target.scope == 'sector'
+            && request.resource.data.target.sector is string
+          )
+        )
+        && (request.resource.data.startsAt == null || request.resource.data.startsAt is timestamp)
+        && (request.resource.data.endsAt == null || request.resource.data.endsAt is timestamp)
+        && request.resource.data.stats is map
+        && request.resource.data.stats.readCount is int;
+
+      allow update: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+        )
+        && request.resource.data.authorUid == resource.data.authorUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.authorName is string
+        && request.resource.data.message is string
+        && request.resource.data.target is map
+        && request.resource.data.active is bool
+        && request.resource.data.status in ['draft', 'published']
+        && request.resource.data.pinned is bool
+        && request.resource.data.priority in ['normal', 'important', 'critical']
+        && request.resource.data.stats is map
+        && request.resource.data.stats.readCount is int;
+
+      allow delete: if isActiveUser() && userData().isDev == true;
+    }
+
     match /osTemplates/{templateId} {
       // Leitura: dev vê tudo; no setor, operador só ativo, gerente/supervisor/admin veem também inativos
       allow read: if request.auth != null && (

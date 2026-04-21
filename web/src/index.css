@@ -60,3 +60,16 @@ body {
     transform: translate(-5px, 5px);
   }
 }
+
+@keyframes login-ambient-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  30% {
+    transform: translate3d(18px, 10px, 0) scale(1.03);
+  }
+  60% {
+    transform: translate3d(6px, -14px, 0) scale(0.98);
+  }
+}
