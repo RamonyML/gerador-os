@@ -46,3 +46,15 @@ export function canViewUpgradeCommissions(profile: UserProfile | null): boolean 
     profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
   )
 }
+
+/**
+ * Editar definições de turnos e a grade mensal da escala do setor.
+ * Operadores só visualizam; gestão fica com gerente/supervisor (e dev/admin).
+ */
+export function canManageWorkSchedule(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return (
+    profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
+  )
+}

@@ -14,6 +14,24 @@ service cloud.firestore {
         && userData().active != false;
     }
 
+    /** Gerente/supervisor ou papel técnico — edição da escala e turnos. */
+    function isScheduleEditor() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+          || userData().hierarchy == 'supervisor'
+        );
+    }
+
+    /** Leitura da escala do setor (ou dev/admin em qualquer setor). */
+    function canAccessSectorSchedule(sectorField) {
+      return userData().sector == sectorField
+        || userData().isDev == true
+        || userData().isAdmin == true;
+    }
+
     /** Gestão ampla de upgrades (lista/export/dashboard/comissões no app). */
     function isUpgradeManager() {
       return isActiveUser()
@@ -128,6 +146,41 @@ service cloud.firestore {
     match /logs/{logId} {
       allow create: if isActiveUser();
       allow read, update, delete: if false;
+    }
+
+    /** Turnos disponíveis por setor (rótulos/cores). */
+    match /escalaTurnos/{sectorId} {
+      allow read: if isActiveUser() && canAccessSectorSchedule(sectorId);
+      allow create, update: if isScheduleEditor()
+        && canAccessSectorSchedule(sectorId)
+        && request.resource.data.shifts is list;
+      allow delete: if isScheduleEditor() && canAccessSectorSchedule(sectorId);
+    }
+
+    /** Grade mensal: documento ID `{sector}_{yyyy-MM}`. */
+    match /escalaMes/{mesId} {
+      allow read: if isActiveUser()
+        && resource.data.sector is string
+        && resource.data.yearMonth is string
+        && resource.data.days is map
+        && canAccessSectorSchedule(resource.data.sector);
+
+      allow create: if isScheduleEditor()
+        && request.resource.data.sector is string
+        && request.resource.data.yearMonth is string
+        && request.resource.data.days is map
+        && canAccessSectorSchedule(request.resource.data.sector);
+
+      allow update: if isScheduleEditor()
+        && resource.data.sector is string
+        && request.resource.data.sector == resource.data.sector
+        && request.resource.data.yearMonth is string
+        && request.resource.data.days is map
+        && canAccessSectorSchedule(resource.data.sector);
+
+      allow delete: if isScheduleEditor()
+        && resource.data.sector is string
+        && canAccessSectorSchedule(resource.data.sector);
     }
 
     match /{document=**} {

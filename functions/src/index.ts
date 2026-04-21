@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase-admin/app'
 import { FieldValue, getFirestore } from 'firebase-admin/firestore'
-import { getAuth } from 'firebase-admin/auth'
+import { getAuth, type UserRecord } from 'firebase-admin/auth'
 import { setGlobalOptions } from 'firebase-functions/v2/options'
 import { HttpsError, onCall } from 'firebase-functions/v2/https'
 
@@ -118,6 +118,31 @@ function assertValidSectorHierarchy(sector: string, hierarchy: string): void {
   }
 }
 
+/** Mesma prioridade razoável que `manageUsersList`: Auth, depois Firestore (`displayName`, `nome`, `name`). */
+function resolveOperatorDisplayName(
+  u: UserRecord,
+  prof: Record<string, unknown> | null | undefined,
+): string | null {
+  const authName =
+    typeof u.displayName === 'string' ? u.displayName.trim() : ''
+  if (authName) return authName
+
+  if (!prof) return null
+
+  const pick = (v: unknown): string | null => {
+    if (typeof v !== 'string') return null
+    const t = v.trim()
+    return t.length > 0 ? t : null
+  }
+
+  return (
+    pick(prof.displayName) ??
+    pick(prof.nome) ??
+    pick(prof.name) ??
+    null
+  )
+}
+
 export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   if (!request.auth?.uid) {
     throw new HttpsError('unauthenticated', 'Faça login.')
@@ -171,6 +196,74 @@ export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       isAdmin: prof?.isAdmin === true,
       profileMissing,
     })
+  }
+
+  return {
+    users: out,
+    nextPageToken: list.pageToken ?? null,
+  }
+})
+
+/**
+ * Lista e-mail + nome de exibição do **próprio setor** (perfil ativo).
+ * Qualquer colaborador autenticado pode chamar — p.ex. escala exibindo nomes
+ * sem depender de `manageUsersList` (só gestores).
+ * Dev/admin podem informar `sector` para consultar outro setor.
+ */
+export const sectorRoster = onCall(CALLABLE_HTTP_OPTS, async (request) => {
+  if (!request.auth?.uid) {
+    throw new HttpsError('unauthenticated', 'Faça login.')
+  }
+  const actor = await loadActorProfile(request.auth.uid)
+  if (!actor || !actor.active) {
+    throw new HttpsError('permission-denied', 'Sem permissão.')
+  }
+
+  let targetSector = actor.sector
+  const sectorArg =
+    typeof request.data?.sector === 'string'
+      ? String(request.data.sector).trim()
+      : ''
+  if (sectorArg) {
+    if (actor.isDev !== true && actor.isAdmin !== true) {
+      throw new HttpsError(
+        'permission-denied',
+        'Somente administrador pode consultar outro setor.',
+      )
+    }
+    if (!VALID_SECTORS.has(sectorArg)) {
+      throw new HttpsError('invalid-argument', 'Setor inválido.')
+    }
+    targetSector = sectorArg
+  }
+
+  const maxPerPage = 500
+  let pageToken: string | undefined =
+    typeof request.data?.pageToken === 'string'
+      ? request.data.pageToken
+      : undefined
+
+  const list = await getAuth().listUsers(maxPerPage, pageToken)
+  const db = getFirestore()
+
+  type Row = { email: string; displayName: string | null }
+  const out: Row[] = []
+
+  for (const u of list.users) {
+    if (u.disabled) continue
+    const profSnap = await db.doc(`users/${u.uid}`).get()
+    const prof = profSnap.exists ? profSnap.data()! : null
+    const sector =
+      prof && typeof prof.sector === 'string' ? prof.sector : undefined
+    if (!sector || sector !== targetSector) continue
+    if (prof?.active === false) continue
+
+    const emailRaw = u.email
+    if (!emailRaw) continue
+    const email = emailRaw.trim().toLowerCase()
+    const displayName = resolveOperatorDisplayName(u, prof)
+
+    out.push({ email, displayName })
   }
 
   return {

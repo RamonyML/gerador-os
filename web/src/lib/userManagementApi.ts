@@ -126,6 +126,40 @@ export async function manageUsersList(
   })
 }
 
+/** E-mail + nome para o mesmo setor do usuário (qualquer perfil ativo). */
+export type SectorRosterRow = {
+  email: string
+  displayName: string | null
+}
+
+export type SectorRosterResponse = {
+  users: SectorRosterRow[]
+  nextPageToken: string | null
+}
+
+export async function sectorRoster(payload?: {
+  sector?: string
+  pageToken?: string | null
+}): Promise<SectorRosterResponse> {
+  return invokeCallable<SectorRosterResponse>('sectorRoster', {
+    sector: payload?.sector,
+    pageToken: payload?.pageToken ?? undefined,
+  })
+}
+
+/** Todas as páginas do Auth (itera tokens). */
+export async function fetchFullSectorRoster(sector?: string): Promise<SectorRosterRow[]> {
+  const all: SectorRosterRow[] = []
+  let token: string | null | undefined = undefined
+  for (;;) {
+    const res = await sectorRoster({ sector, pageToken: token ?? null })
+    all.push(...res.users)
+    token = res.nextPageToken ?? null
+    if (!token) break
+  }
+  return all
+}
+
 export async function manageUsersCreate(payload: {
   email: string
   password: string

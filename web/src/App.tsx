@@ -16,6 +16,7 @@ import { SobrePage } from './pages/SobrePage'
 import { UpgradesHubPage } from './pages/UpgradesHubPage'
 import { UpgradesCommissionsPage } from './pages/UpgradesCommissionsPage'
 import { RequireUpgradeCommissions } from './components/RequireUpgradeCommissions'
+import { EscalaPage } from './pages/EscalaPage'
 
 export default function App() {
   return (
@@ -54,6 +55,7 @@ export default function App() {
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
+        <Route path="/escala" element={<EscalaPage />} />
         <Route path="/upgrades" element={<UpgradesHubPage />} />
         <Route
           path="/upgrades/comissoes"

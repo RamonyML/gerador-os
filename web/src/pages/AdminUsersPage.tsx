@@ -4,13 +4,16 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
   FormControlLabel,
+  InputAdornment,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Paper,
   Select,
@@ -26,7 +29,7 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import { Add, Edit } from '@mui/icons-material'
+import { Add, Edit, Search as SearchIcon } from '@mui/icons-material'
 import { AddUserHeroIllustration } from '../components/AddUserHeroIllustration'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
@@ -69,7 +72,10 @@ export function AdminUsersPage() {
 
   const [rows, setRows] = useState<ManagedUserRow[]>([])
   const [nextPageToken, setNextPageToken] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  /** Primeira página / atualizar lista — consulta ao Auth + Firestore por usuário pode levar alguns segundos. */
+  const [loadingInitial, setLoadingInitial] = useState(true)
+  /** Paginação “carregar mais” (não bloqueia a tabela já exibida). */
+  const [loadingMore, setLoadingMore] = useState(false)
   const [listError, setListError] = useState<string | null>(null)
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -86,8 +92,12 @@ export function AdminUsersPage() {
   const [flagAdmin, setFlagAdmin] = useState(false)
   const [flagDev, setFlagDev] = useState(false)
 
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterSector, setFilterSector] = useState<Sector | ''>('')
+  const [filterHierarchy, setFilterHierarchy] = useState<Hierarchy | ''>('')
+
   const loadFirstPage = useCallback(async () => {
-    setLoading(true)
+    setLoadingInitial(true)
     setListError(null)
     try {
       const res = await manageUsersList()
@@ -98,13 +108,13 @@ export function AdminUsersPage() {
       setRows([])
       setNextPageToken(null)
     } finally {
-      setLoading(false)
+      setLoadingInitial(false)
     }
   }, [])
 
   const loadMore = useCallback(async () => {
     if (!nextPageToken) return
-    setLoading(true)
+    setLoadingMore(true)
     setListError(null)
     try {
       const res = await manageUsersList(nextPageToken)
@@ -113,7 +123,7 @@ export function AdminUsersPage() {
     } catch (e) {
       setListError(callableErrorMessage(e))
     } finally {
-      setLoading(false)
+      setLoadingMore(false)
     }
   }, [nextPageToken])
 
@@ -125,6 +135,28 @@ export function AdminUsersPage() {
     if (profile?.sector) return profile.sector
     return 'suporte'
   }, [profile?.sector])
+
+  const filteredRows = useMemo(() => {
+    let list = rows
+    const q = searchQuery.trim().toLowerCase()
+    if (q) {
+      list = list.filter((r) => {
+        const name = rowDisplayName(r).toLowerCase()
+        const mail = (r.email ?? '').toLowerCase()
+        return name.includes(q) || mail.includes(q)
+      })
+    }
+    if (filterSector) {
+      list = list.filter((r) => r.sector === filterSector)
+    }
+    if (filterHierarchy) {
+      list = list.filter((r) => r.hierarchy === filterHierarchy)
+    }
+    return list
+  }, [rows, searchQuery, filterSector, filterHierarchy])
+
+  const hasActiveFilters =
+    searchQuery.trim().length > 0 || filterSector !== '' || filterHierarchy !== ''
 
   const openCreate = () => {
     setEditing(null)
@@ -244,83 +276,232 @@ export function AdminUsersPage() {
         <Button variant="contained" startIcon={<Add />} onClick={() => openCreate()}>
           Novo usuário
         </Button>
-        <Button variant="outlined" onClick={() => void loadFirstPage()} disabled={loading}>
+        <Button
+          variant="outlined"
+          onClick={() => void loadFirstPage()}
+          disabled={loadingInitial}
+        >
           Atualizar lista
         </Button>
       </Stack>
+
+      <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          p: 2,
+          mb: 2,
+          borderRadius: 2,
+          opacity: loadingInitial && rows.length === 0 ? 0.7 : 1,
+        }}
+      >
+        <Stack spacing={2}>
+          <TextField
+            size="small"
+            placeholder="Buscar por nome ou e-mail…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            fullWidth
+            disabled={loadingInitial && rows.length === 0}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" color="action" aria-hidden />
+                  </InputAdornment>
+                ),
+              },
+              htmlInput: { 'aria-label': 'Buscar usuários por nome ou e-mail' },
+            }}
+          />
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            useFlexGap
+            sx={{ flexWrap: 'wrap', alignItems: { sm: 'flex-start' } }}
+          >
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 200 } }}
+              disabled={loadingInitial && rows.length === 0}
+            >
+              <InputLabel id="lista-filtro-setor">Setor</InputLabel>
+              <Select
+                labelId="lista-filtro-setor"
+                label="Setor"
+                value={filterSector}
+                onChange={(e) => setFilterSector(e.target.value as Sector | '')}
+              >
+                <MenuItem value="">Todos os setores</MenuItem>
+                {SECTORS.map((s) => (
+                  <MenuItem key={s} value={s}>
+                    {SECTOR_LABELS[s]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 200 } }}
+              disabled={loadingInitial && rows.length === 0}
+            >
+              <InputLabel id="lista-filtro-funcao">Função</InputLabel>
+              <Select
+                labelId="lista-filtro-funcao"
+                label="Função"
+                value={filterHierarchy}
+                onChange={(e) => setFilterHierarchy(e.target.value as Hierarchy | '')}
+              >
+                <MenuItem value="">Todas as funções</MenuItem>
+                {(Object.keys(HIERARCHY_LABELS) as Hierarchy[]).map((h) => (
+                  <MenuItem key={h} value={h}>
+                    {HIERARCHY_LABELS[h]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {hasActiveFilters ? (
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => {
+                  setSearchQuery('')
+                  setFilterSector('')
+                  setFilterHierarchy('')
+                }}
+              >
+                Limpar filtros
+              </Button>
+            ) : null}
+          </Stack>
+          {rows.length > 0 ? (
+            <Typography variant="caption" color="text.secondary" component="div">
+              Exibindo <strong>{filteredRows.length}</strong> de <strong>{rows.length}</strong>{' '}
+              usuário(s) já carregado(s).
+              {nextPageToken
+                ? ' Carregue mais linhas para incluir mais pessoas na busca e nos filtros.'
+                : null}
+            </Typography>
+          ) : null}
+        </Stack>
+      </Paper>
 
       <TableContainer
         component={Paper}
         elevation={0}
         variant="outlined"
-        sx={{ borderRadius: 2.5, overflow: 'hidden' }}
+        sx={{
+          borderRadius: 2.5,
+          overflow: 'hidden',
+          position: 'relative',
+          minHeight: loadingInitial && rows.length === 0 ? 280 : undefined,
+        }}
       >
-        <Table size="small">
+        {loadingInitial ? (
+          <LinearProgress
+            color="primary"
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 2,
+              borderRadius: '9px 9px 0 0',
+            }}
+          />
+        ) : null}
+        <Table size="small" sx={{ position: 'relative' }}>
           <TableHead>
             <TableRow>
               <TableCell>Nome / e-mail</TableCell>
               <TableCell>Setor</TableCell>
               <TableCell>Função</TableCell>
-              <TableCell align="center">Perfil Firestore</TableCell>
               <TableCell align="center">Ativo</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((r) => (
-              <TableRow key={r.uid} hover>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {rowDisplayName(r)}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    {r.email ?? '—'}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  {r.sector ? SECTOR_LABELS[r.sector as Sector] ?? r.sector : '—'}
-                </TableCell>
-                <TableCell>
-                  {r.hierarchy ? HIERARCHY_LABELS[r.hierarchy as Hierarchy] ?? r.hierarchy : '—'}
-                </TableCell>
-                <TableCell align="center">
-                  {r.profileMissing ? (
-                    <Chip size="small" color="warning" label="Incompleto" />
-                  ) : (
-                    <Chip size="small" color="success" label="OK" />
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {!r.disabled && r.profileActive !== false ? (
-                    <Chip size="small" label="Sim" />
-                  ) : (
-                    <Chip size="small" color="default" label="Não" />
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  <Button size="small" startIcon={<Edit />} onClick={() => openEdit(r)}>
-                    Editar
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-            {!loading && rows.length === 0 ? (
+            {loadingInitial && rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Nenhum usuário listado (ou sem permissão de escopo).
-                  </Typography>
+                <TableCell colSpan={5} align="center" sx={{ py: 8, border: 'none' }}>
+                  <Stack spacing={2} sx={{ alignItems: 'center' }}>
+                    <CircularProgress aria-label="Carregando lista de usuários" />
+                    <Typography variant="body2" color="text.secondary">
+                      Consultando usuários no banco de dados…
+                    </Typography>
+                  </Stack>
                 </TableCell>
               </TableRow>
-            ) : null}
+            ) : (
+              <>
+                {filteredRows.map((r) => (
+                  <TableRow key={r.uid} hover>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {rowDisplayName(r)}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                        {r.email ?? '—'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      {r.sector ? SECTOR_LABELS[r.sector as Sector] ?? r.sector : '—'}
+                    </TableCell>
+                    <TableCell>
+                      {r.hierarchy ? HIERARCHY_LABELS[r.hierarchy as Hierarchy] ?? r.hierarchy : '—'}
+                    </TableCell>
+                    <TableCell align="center">
+                      {!r.disabled && r.profileActive !== false ? (
+                        <Chip size="small" label="Sim" />
+                      ) : (
+                        <Chip size="small" color="error" label="Não" />
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button size="small" startIcon={<Edit />} onClick={() => openEdit(r)}>
+                        Editar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {!loadingInitial && rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <Typography variant="body2" color="text.secondary">
+                        Nenhum usuário listado (ou sem permissão de escopo).
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+                {!loadingInitial && rows.length > 0 && filteredRows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <Typography variant="body2" color="text.secondary">
+                        Nenhum usuário corresponde à pesquisa ou aos filtros. Ajuste os critérios ou clique
+                        em «Limpar filtros».
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+              </>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
       {nextPageToken ? (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-          <Button variant="outlined" onClick={() => void loadMore()} disabled={loading}>
-            Carregar mais
+          <Button
+            variant="outlined"
+            onClick={() => void loadMore()}
+            disabled={loadingMore || loadingInitial}
+            startIcon={
+              loadingMore ? (
+                <CircularProgress color="inherit" size={18} aria-hidden />
+              ) : undefined
+            }
+          >
+            {loadingMore ? 'Carregando…' : 'Carregar mais'}
           </Button>
         </Box>
       ) : null}

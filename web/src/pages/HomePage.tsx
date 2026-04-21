@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { Alert, Box, Chip, Container, Paper, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Alert, Box, Chip, Container, Fade, Paper, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
@@ -7,6 +8,7 @@ import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomi
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { useNavigate } from 'react-router-dom'
 import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
@@ -36,6 +38,13 @@ export function HomePage() {
   const { user, profile, profileMissing } = useAuth()
   const navigate = useNavigate()
   const primary = theme.palette.primary.main
+  const success = theme.palette.success.main
+  const [quickLinksVisible, setQuickLinksVisible] = useState(false)
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setQuickLinksVisible(true))
+    return () => cancelAnimationFrame(id)
+  }, [])
 
   const showSupportHub = profile != null && canAccessSupportHub(profile)
   const showModels = profile != null && canManageOsTemplates(profile)
@@ -52,6 +61,18 @@ export function HomePage() {
       : `linear-gradient(135deg, ${alpha(primary, 0.22)} 0%, ${alpha('#000', 0.15)} 50%, transparent 100%)`
 
   const actions: QuickAction[] = [
+    ...(showSupportHub
+      ? [
+          {
+            key: 'suporte',
+            title: 'Hub Suporte',
+            description:
+              'Demandas por tipo: mudança de endereço, plano, manutenção e mais.',
+            to: '/suporte',
+            icon: <DashboardCustomizeOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
     {
       key: 'os',
       title: 'Gerar O.S.',
@@ -67,18 +88,14 @@ export function HomePage() {
       to: '/upgrades',
       icon: <TrendingUpOutlinedIcon sx={{ fontSize: 28 }} />,
     },
-    ...(showSupportHub
-      ? [
-          {
-            key: 'suporte',
-            title: 'Hub Suporte',
-            description:
-              'Demandas por tipo: mudança de endereço, plano, manutenção e mais.',
-            to: '/suporte',
-            icon: <DashboardCustomizeOutlinedIcon sx={{ fontSize: 28 }} />,
-          } satisfies QuickAction,
-        ]
-      : []),
+    {
+      key: 'escala',
+      title: 'Escala de trabalho',
+      description:
+        'Turnos fixos por tipo de dia — preencha só os nomes do seu setor.',
+      to: '/escala',
+      icon: <CalendarMonthOutlinedIcon sx={{ fontSize: 28 }} />,
+    },
     ...(showModels
       ? [
           {
@@ -190,83 +207,152 @@ export function HomePage() {
                   md: 'repeat(auto-fill, minmax(260px, 1fr))',
                 },
                 gap: 2,
+                alignItems: 'stretch',
               }}
             >
-              {actions.map((a) => (
-                <Paper
+              {actions.map((a, index) => {
+                const isSupportHub = a.key === 'suporte'
+                return (
+                <Box
                   key={a.key}
-                  elevation={0}
-                  onClick={() => navigate(a.to)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      navigate(a.to)
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                   sx={{
-                    p: 2.5,
-                    borderRadius: 2.5,
-                    border: 1,
-                    borderColor: 'divider',
-                    cursor: 'pointer',
-                    bgcolor: 'background.paper',
-                    transition: 'box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
-                    '&:hover': {
-                      borderColor: alpha(primary, 0.45),
-                      boxShadow:
-                        mode === 'light'
-                          ? `0 12px 32px ${alpha(primary, 0.12)}`
-                          : '0 12px 32px rgba(0,0,0,0.35)',
-                      transform: 'translateY(-2px)',
-                    },
-                    '&:focus-visible': {
-                      outline: `2px solid ${primary}`,
-                      outlineOffset: 2,
-                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: 0,
+                    minHeight: 0,
+                    height: '100%',
                   }}
                 >
-                  <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'flex-start' }}>
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        bgcolor: alpha(primary, mode === 'dark' ? 0.2 : 0.12),
-                        color: 'primary.main',
-                        flexShrink: 0,
-                      }}
+                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                    <Fade
+                      in={quickLinksVisible}
+                      timeout={420}
+                      style={{ transitionDelay: `${index * 75}ms` }}
                     >
-                      {a.icon}
-                    </Box>
-                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          minHeight: 0,
+                          height: '100%',
+                        }}
+                      >
+                      <Paper
+                        elevation={0}
+                        onClick={() => navigate(a.to)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            navigate(a.to)
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        sx={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          height: '100%',
+                          p: 2.5,
+                          borderRadius: 2.5,
+                          border: 1,
+                          cursor: 'pointer',
+                          transition:
+                            'box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
+                          ...(isSupportHub
+                            ? {
+                                bgcolor:
+                                  mode === 'light'
+                                    ? alpha(success, 0.12)
+                                    : alpha(success, 0.18),
+                                borderColor: alpha(success, mode === 'light' ? 0.42 : 0.5),
+                                '&:hover': {
+                                  borderColor: alpha(success, 0.62),
+                                  boxShadow:
+                                    mode === 'light'
+                                      ? `0 12px 32px ${alpha(success, 0.2)}`
+                                      : `0 12px 28px ${alpha(success, 0.12)}`,
+                                  transform: 'translateY(-2px)',
+                                },
+                                '&:focus-visible': {
+                                  outline: `2px solid ${success}`,
+                                  outlineOffset: 2,
+                                },
+                              }
+                            : {
+                                bgcolor: 'background.paper',
+                                borderColor: 'divider',
+                                '&:hover': {
+                                  borderColor: alpha(primary, 0.45),
+                                  boxShadow:
+                                    mode === 'light'
+                                      ? `0 12px 32px ${alpha(primary, 0.12)}`
+                                      : '0 12px 32px rgba(0,0,0,0.35)',
+                                  transform: 'translateY(-2px)',
+                                },
+                                '&:focus-visible': {
+                                  outline: `2px solid ${primary}`,
+                                  outlineOffset: 2,
+                                },
+                              }),
+                        }}
+                      >
                       <Box
                         sx={{
                           display: 'flex',
                           flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          gap: 1,
+                          gap: 2,
+                          alignItems: 'flex-start',
+                          flex: 1,
                         }}
                       >
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                          {a.title}
-                        </Typography>
-                        <ArrowForwardRoundedIcon
-                          sx={{ fontSize: 20, color: 'text.disabled', flexShrink: 0 }}
-                        />
+                        <Box
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: isSupportHub
+                              ? alpha(success, mode === 'dark' ? 0.28 : 0.2)
+                              : alpha(primary, mode === 'dark' ? 0.2 : 0.12),
+                            color: isSupportHub ? 'success.main' : 'primary.main',
+                            flexShrink: 0,
+                          }}
+                        >
+                          {a.icon}
+                        </Box>
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: 1,
+                            }}
+                          >
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {a.title}
+                            </Typography>
+                            <ArrowForwardRoundedIcon
+                              sx={{ fontSize: 20, color: 'text.disabled', flexShrink: 0 }}
+                            />
+                          </Box>
+                          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                            {a.description}
+                          </Typography>
+                        </Box>
                       </Box>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                        {a.description}
-                      </Typography>
-                    </Box>
+                    </Paper>
+                      </Box>
+                    </Fade>
                   </Box>
-                </Paper>
-              ))}
+                </Box>
+                )
+              })}
             </Box>
           </Box>
 

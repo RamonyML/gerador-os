@@ -24,8 +24,8 @@ export function AppLayout() {
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  /** No dashboard as rotas ficam nos cards; o menu completo volta nas demais telas. */
-  const hideNavLinks = pathname === '/'
+  /** No painel inicial os atalhos principais estão nos cards; a barra fica mais enxuta. */
+  const isHome = pathname === '/'
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -57,7 +57,7 @@ export function AppLayout() {
               p: 0,
             }}
           >
-            {hideNavLinks ? null : (
+            {isHome ? null : (
               <Box
                 component="img"
                 src={brandLogoSrc(mode)}
@@ -70,21 +70,14 @@ export function AppLayout() {
             </Typography>
           </Box>
 
-          <Button color="inherit" size="small" onClick={() => navigate('/sobre')}>
-            Sobre
-          </Button>
-
-          <Button color="inherit" size="small" onClick={() => navigate('/upgrades')}>
-            Upgrades
-          </Button>
-
-          {hideNavLinks ? null : (
+          {isHome ? (
+            <Button color="inherit" size="small" onClick={() => navigate('/sobre')}>
+              Sobre
+            </Button>
+          ) : (
             <>
               <Button color="inherit" onClick={() => navigate('/')}>
                 Início
-              </Button>
-              <Button color="inherit" onClick={() => navigate('/gerar-os')}>
-                Gerar O.S
               </Button>
               {showSupport ? (
                 <Button color="inherit" onClick={() => navigate('/suporte')}>
@@ -99,11 +92,20 @@ export function AppLayout() {
                   Modelos
                 </Button>
               ) : null}
+              <Button color="inherit" onClick={() => navigate('/escala')}>
+                Escala
+              </Button>
+              <Button color="inherit" onClick={() => navigate('/upgrades')}>
+                Upgrades
+              </Button>
               {showUsers ? (
                 <Button color="inherit" onClick={() => navigate('/admin/usuarios')}>
                   Usuários
                 </Button>
               ) : null}
+              <Button color="inherit" onClick={() => navigate('/sobre')}>
+                Sobre
+              </Button>
             </>
           )}
 

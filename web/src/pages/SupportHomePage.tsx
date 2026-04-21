@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Alert,
@@ -28,6 +28,16 @@ export function SupportHomePage() {
   const state = useOsTemplates(profile)
   const navigate = useNavigate()
   const primary = theme.palette.primary.main
+  const [categoriesEntered, setCategoriesEntered] = useState(false)
+
+  useEffect(() => {
+    if (state.status === 'loading') {
+      setCategoriesEntered(false)
+      return
+    }
+    const id = requestAnimationFrame(() => setCategoriesEntered(true))
+    return () => cancelAnimationFrame(id)
+  }, [state.status])
 
   const templates = state.status === 'ready' ? state.templates : []
 
@@ -139,7 +149,20 @@ export function SupportHomePage() {
             </Alert>
           ) : null}
 
-          <Box>
+          {state.status !== 'loading' ? (
+          <Box
+            sx={{
+              opacity: categoriesEntered ? 1 : 0,
+              transform: categoriesEntered ? 'translateY(0)' : 'translateY(-14px)',
+              transition:
+                'opacity 0.58s cubic-bezier(0.22, 1, 0.36, 1), transform 0.58s cubic-bezier(0.22, 1, 0.36, 1)',
+              '@media (prefers-reduced-motion: reduce)': {
+                opacity: 1,
+                transform: 'none',
+                transition: 'none',
+              },
+            }}
+          >
             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
               Categorias
             </Typography>
@@ -258,6 +281,7 @@ export function SupportHomePage() {
               })}
             </Box>
           </Box>
+          ) : null}
         </Box>
       </Container>
     </Box>

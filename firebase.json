@@ -38,6 +38,13 @@
           "region": "southamerica-east1"
         }
       },
+      {
+        "source": "/fbfunctions/sectorRoster",
+        "function": {
+          "functionId": "sectorRoster",
+          "region": "southamerica-east1"
+        }
+      },
       { "source": "**", "destination": "/index.html" }
     ]
   },
