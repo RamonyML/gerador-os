@@ -42,6 +42,22 @@ const VALID_SECTORS = new Set([
 
 const VALID_HIERARCHIES = new Set(['gerente', 'supervisor', 'operador'])
 
+/** Conta dev protegida: só outro dev pode criar/editar este e-mail via gestão de usuários. */
+const PROTECTED_ACCOUNT_EMAIL = 'ramonyml@gmail.com'
+
+function normalizeEmailLower(e: string | undefined): string {
+  return (e ?? '').trim().toLowerCase()
+}
+
+function assertProtectedAccountManageable(actor: ActorProfile, targetEmail: string | undefined): void {
+  if (normalizeEmailLower(targetEmail) !== PROTECTED_ACCOUNT_EMAIL) return
+  if (actor.isDev === true) return
+  throw new HttpsError(
+    'permission-denied',
+    'Esta conta só pode ser alterada por um desenvolvedor.',
+  )
+}
+
 type ActorProfile = {
   sector: string
   hierarchy: string
@@ -297,6 +313,7 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       'Informe e-mail e senha (mínimo 6 caracteres).',
     )
   }
+  assertProtectedAccountManageable(actor, email)
   if (!displayName) {
     throw new HttpsError('invalid-argument', 'Informe o nome completo.')
   }
@@ -373,6 +390,8 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
 
   const existingUser = await getAuth().getUser(uid)
 
+  assertProtectedAccountManageable(actor, existingUser.email ?? undefined)
+
   const nextSector =
     request.data?.sector !== undefined
       ? String(request.data.sector)
@@ -427,6 +446,9 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   const emailRaw = request.data?.email
   const email =
     emailRaw !== undefined ? String(emailRaw).trim().toLowerCase() : undefined
+  if (email !== undefined) {
+    assertProtectedAccountManageable(actor, email)
+  }
   const passwordRaw = request.data?.password
   const password =
     passwordRaw !== undefined && String(passwordRaw).length > 0

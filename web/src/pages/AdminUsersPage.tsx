@@ -26,6 +26,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -46,6 +47,7 @@ import {
   type Hierarchy,
   type Sector,
 } from '../types/profile'
+import { isProtectedManagementAccount } from '../lib/protectedUserManagement'
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
   gerente: 'Gestor',
@@ -152,7 +154,11 @@ export function AdminUsersPage() {
     if (filterHierarchy) {
       list = list.filter((r) => r.hierarchy === filterHierarchy)
     }
-    return list
+    return [...list].sort((a, b) =>
+      rowDisplayName(a).localeCompare(rowDisplayName(b), 'pt', {
+        sensitivity: 'base',
+      }),
+    )
   }, [rows, searchQuery, filterSector, filterHierarchy])
 
   const hasActiveFilters =
@@ -200,6 +206,14 @@ export function AdminUsersPage() {
     setSaving(true)
     setFormError(null)
     try {
+      if (
+        editing &&
+        !isDev &&
+        isProtectedManagementAccount(editing.email)
+      ) {
+        setFormError('Esta conta só pode ser alterada por um desenvolvedor.')
+        return
+      }
       if (!editing) {
         await manageUsersCreate({
           email: email.trim(),
@@ -434,7 +448,9 @@ export function AdminUsersPage() {
               </TableRow>
             ) : (
               <>
-                {filteredRows.map((r) => (
+                {filteredRows.map((r) => {
+                  const editLocked = !isDev && isProtectedManagementAccount(r.email)
+                  return (
                   <TableRow key={r.uid} hover>
                     <TableCell>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
@@ -458,12 +474,29 @@ export function AdminUsersPage() {
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <Button size="small" startIcon={<Edit />} onClick={() => openEdit(r)}>
-                        Editar
-                      </Button>
+                      <Tooltip
+                        title={
+                          editLocked
+                            ? 'Somente desenvolvedor pode editar esta conta.'
+                            : ''
+                        }
+                        disableHoverListener={!editLocked}
+                      >
+                        <span>
+                          <Button
+                            size="small"
+                            startIcon={<Edit />}
+                            disabled={editLocked}
+                            onClick={() => openEdit(r)}
+                          >
+                            Editar
+                          </Button>
+                        </span>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
-                ))}
+                  )
+                })}
                 {!loadingInitial && rows.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5}>
