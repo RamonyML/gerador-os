@@ -38,6 +38,7 @@ const VALID_SECTORS = new Set([
   'financeiro',
   'comercial',
   'cadastro',
+  'ti',
 ])
 
 const VALID_HIERARCHIES = new Set(['gerente', 'supervisor', 'operador'])

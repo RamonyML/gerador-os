@@ -9,6 +9,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
 import { useNavigate } from 'react-router-dom'
 import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
@@ -16,6 +17,7 @@ import { useColorMode } from '../contexts/ColorModeContext'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { canManageOsTemplates, canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
+import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
@@ -49,6 +51,7 @@ export function HomePage() {
   const showSupportHub = profile != null && canAccessSupportHub(profile)
   const showModels = profile != null && canManageOsTemplates(profile)
   const showUsers = profile != null && canManageUsers(profile)
+  const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
 
   const greetingName =
     profile?.displayName?.trim() ||
@@ -95,6 +98,15 @@ export function HomePage() {
         'Turnos fixos por tipo de dia — preencha só os nomes do seu setor.',
       to: '/escala',
       icon: <CalendarMonthOutlinedIcon sx={{ fontSize: 28 }} />,
+    },
+    {
+      key: 'chamados',
+      title: 'Chamados internos (T.I)',
+      description: showHelpdeskManager
+        ? 'Receba, resgate e encerre chamados internos com parecer resolutivo.'
+        : 'Abra chamados para o T.I e acompanhe o andamento dos seus pedidos.',
+      to: '/chamados',
+      icon: <SupportAgentOutlinedIcon sx={{ fontSize: 28 }} />,
     },
     ...(showModels
       ? [

@@ -127,6 +127,9 @@ export function AppLayout() {
               <Button color="inherit" onClick={() => navigate('/upgrades')}>
                 Upgrades
               </Button>
+              <Button color="inherit" onClick={() => navigate('/chamados')}>
+                Chamados
+              </Button>
               {showUsers ? (
                 <Button color="inherit" onClick={() => navigate('/admin/usuarios')}>
                   Usuários

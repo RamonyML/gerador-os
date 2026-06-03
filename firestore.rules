@@ -32,6 +32,16 @@ service cloud.firestore {
         || userData().isAdmin == true;
     }
 
+    /** Agente do helpdesk (chamados internos): setor T.I, ou dev/admin. */
+    function helpdeskAgent() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().sector == 'ti'
+        );
+    }
+
     /** Gestão ampla de upgrades (lista/export/dashboard/comissões no app). */
     function isUpgradeManager() {
       return isActiveUser()
@@ -262,6 +272,86 @@ service cloud.firestore {
       allow delete: if isScheduleEditor()
         && resource.data.sector is string
         && canAccessSectorSchedule(resource.data.sector);
+    }
+
+    /**
+     * Chamados internos (helpdesk estilo GLPI).
+     *
+     * Modelo do documento:
+     * - title, description: string
+     * - category: string; priority: 'baixa'|'normal'|'alta'|'critica'
+     * - status: 'aberto'|'em_atendimento'|'aguardando_solicitante'|'resolvido'
+     * - authorUid/authorName/authorEmail/authorSector
+     * - assigneeUid/assigneeName (responsável do T.I, ou null)
+     * - resolution: { text, byUid, byName, at } | null  (parecer resolutivo)
+     * - createdAt/updatedAt/resolvedAt
+     *
+     * Regras:
+     * - Leitura: o autor do chamado ou um agente do T.I.
+     * - Criação: qualquer usuário ativo abre como `aberto`, sem responsável.
+     * - Atualização: agente do T.I altera livremente (status, responsável,
+     *   parecer); o autor só atualiza sem mexer em status/responsável/parecer.
+     * - Encerrar (`resolvido`) exige agente do T.I e parecer resolutivo (texto).
+     */
+    match /tickets/{ticketId} {
+      allow read: if isActiveUser()
+        && (
+          resource.data.authorUid == request.auth.uid
+          || helpdeskAgent()
+        );
+
+      allow create: if isActiveUser()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.status == 'aberto'
+        && request.resource.data.assigneeUid == null
+        && request.resource.data.resolution == null
+        && request.resource.data.title is string
+        && request.resource.data.description is string
+        && request.resource.data.category is string
+        && request.resource.data.priority in ['baixa', 'normal', 'alta', 'critica']
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isActiveUser()
+        && request.resource.data.authorUid == resource.data.authorUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (
+          helpdeskAgent()
+          || (
+            resource.data.authorUid == request.auth.uid
+            && request.resource.data.status == resource.data.status
+            && request.resource.data.assigneeUid == resource.data.assigneeUid
+            && request.resource.data.resolution == resource.data.resolution
+          )
+        )
+        && (
+          request.resource.data.status != 'resolvido'
+          || (
+            helpdeskAgent()
+            && request.resource.data.resolution.text is string
+          )
+        );
+
+      allow delete: if isActiveUser() && userData().isDev == true;
+
+      /** Linha do tempo: solicitante e T.I podem comentar; sem editar/excluir. */
+      match /comments/{commentId} {
+        allow read: if isActiveUser()
+          && (
+            helpdeskAgent()
+            || get(/databases/$(database)/documents/tickets/$(ticketId)).data.authorUid == request.auth.uid
+          );
+
+        allow create: if isActiveUser()
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.createdAt is timestamp
+          && (
+            helpdeskAgent()
+            || get(/databases/$(database)/documents/tickets/$(ticketId)).data.authorUid == request.auth.uid
+          );
+
+        allow update, delete: if false;
+      }
     }
 
     match /{document=**} {
