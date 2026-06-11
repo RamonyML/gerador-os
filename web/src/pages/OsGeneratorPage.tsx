@@ -32,6 +32,11 @@ import {
   templatesMatchingDemand,
 } from '../data/supportDemands'
 import { buildMudEndPadraoTextos } from '../data/mudEnd/padrao'
+import { buildMudEndComFibraTextos } from '../data/mudEnd/comFibra'
+import { buildMudEndEquipamentosTextos } from '../data/mudEnd/equipamentos'
+import { buildMudEndAltplanPropostaTextos } from '../data/mudEnd/altplanProposta'
+import { buildMudEndAltplanPagoTextos } from '../data/mudEnd/altplanPago'
+import { buildMudEndInviabilidadeTextos } from '../data/mudEnd/inviabilidade'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -285,6 +290,37 @@ export function OsGeneratorPage() {
         base,
         buildMudEndPadraoTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
+    } else if (selected?.slug === 'mud-end-com-fibra') {
+      Object.assign(
+        base,
+        buildMudEndComFibraTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'mud-end-buscar-equipamentos') {
+      Object.assign(
+        base,
+        buildMudEndEquipamentosTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'mud-end-altplan-proposta') {
+      Object.assign(
+        base,
+        buildMudEndAltplanPropostaTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'mud-end-altplan-pago') {
+      Object.assign(
+        base,
+        buildMudEndAltplanPagoTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'mud-end-inviabilidade') {
+      Object.assign(base, buildMudEndInviabilidadeTextos(values))
     }
     return base
   }, [values, profile, user, selected?.slug])
@@ -347,11 +383,16 @@ export function OsGeneratorPage() {
         ? demandMeta.description
         : 'Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho (protocolo, O.S., encerramento).'
 
+  const accent: 'green' | 'red' = selected?.slug?.startsWith('mud-end-inviab')
+    ? 'red'
+    : 'green'
+
   return (
     <AppPageChrome
       overline={headerOverline}
       title={headerTitle}
       maxWidth="xl"
+      accentColor={accent === 'red' ? '#c70000' : undefined}
       subtitle={
         <Typography variant="body1" color="text.secondary" component="div">
           {headerSubtitle}
@@ -463,6 +504,7 @@ export function OsGeneratorPage() {
               <OsTemplateFieldsForm
                 fields={selected.fields}
                 values={values}
+                accent={accent}
                 onChange={(id, v) =>
                   setValues((prev) => ({ ...prev, [id]: v }))
                 }

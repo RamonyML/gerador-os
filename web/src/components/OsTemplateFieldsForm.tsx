@@ -35,6 +35,7 @@ import {
   toBrDateTimeString,
 } from '../lib/dateFieldValue'
 import { formatPhoneBrMask } from '../lib/phoneBrFormat'
+import { formatSinalFibraMask } from '../lib/sinalFibraMask'
 
 type Props = {
   fields: OsTemplateField[]
@@ -42,6 +43,8 @@ type Props = {
   onChange: (id: string, value: string) => void
   /** Necessário para preencher logradouro/bairro ao buscar CEP. */
   onPatchValues?: (patch: Record<string, string>) => void
+  /** Tom dos títulos de seção (default verde/primary). */
+  accent?: 'green' | 'red'
 }
 
 /** Ids de destino compatíveis com o legado (MUD END usa `adress`). */
@@ -120,7 +123,9 @@ export function OsTemplateFieldsForm({
   values,
   onChange,
   onPatchValues,
+  accent = 'green',
 }: Props) {
+  const sectionColor = accent === 'red' ? 'error.main' : 'primary.main'
   const hasCepField = fields.some((f) => f.id === 'cep')
   const cepTargets = useMemo(() => resolveCepFillIds(fields), [fields])
   const visibleFields = useMemo(
@@ -142,7 +147,7 @@ export function OsTemplateFieldsForm({
               variant="subtitle1"
               component="h2"
               sx={{
-                color: 'primary.main',
+                color: sectionColor,
                 fontWeight: 700,
                 fontSize: '1rem',
                 letterSpacing: 0.2,
@@ -275,7 +280,6 @@ function CepField({
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
-          maxLength: 8,
           'aria-busy': loading,
         },
         input: {
@@ -365,6 +369,17 @@ function HighlightSelect({
   onChange: (id: string, value: string) => void
 }) {
   const options = f.options ?? []
+  const isRed = f.tone === 'red'
+  const gradient = isRed
+    ? 'linear-gradient(135deg, #a31515 0%, #e23b3b 100%)'
+    : 'linear-gradient(135deg, #157f3d 0%, #2fbf6a 100%)'
+  const gradientHover = isRed
+    ? 'linear-gradient(135deg, #8d1212cc 0%, #d23232 100%)'
+    : 'linear-gradient(135deg, #12713680 0%, #2bb463 100%)'
+  const shadow = isRed
+    ? '0 2px 10px rgba(163, 21, 21, 0.25)'
+    : '0 2px 10px rgba(21, 127, 61, 0.25)'
+  const itemColor = isRed ? 'error.main' : 'success.main'
   return (
     <FormControl fullWidth>
       <Select
@@ -390,8 +405,8 @@ function HighlightSelect({
           fontSize: '1.05rem',
           fontWeight: 700,
           borderRadius: 2,
-          background: 'linear-gradient(135deg, #157f3d 0%, #2fbf6a 100%)',
-          boxShadow: '0 2px 10px rgba(21, 127, 61, 0.25)',
+          background: gradient,
+          boxShadow: shadow,
           '& .MuiSelect-select': {
             display: 'flex',
             alignItems: 'center',
@@ -399,7 +414,7 @@ function HighlightSelect({
           },
           '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
           '&:hover': {
-            background: 'linear-gradient(135deg, #12713680 0%, #2bb463 100%)',
+            background: gradientHover,
           },
           '& .MuiSelect-icon': { color: '#fff' },
         }}
@@ -411,7 +426,7 @@ function HighlightSelect({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1.25,
-                color: 'success.main',
+                color: itemColor,
               }}
             >
               <FieldOptionIcon name={opt.icon} />
@@ -500,6 +515,25 @@ function FieldInput({
             inputMode: 'numeric',
             autoComplete: 'tel',
             maxLength: 16,
+          },
+        }}
+      />
+    )
+  }
+
+  if (kind === 'signal') {
+    return (
+      <TextField
+        label={f.label}
+        placeholder={f.placeholder ?? '00.00'}
+        value={value}
+        onChange={(e) => onChange(f.id, formatSinalFibraMask(e.target.value))}
+        fullWidth
+        size="small"
+        slotProps={{
+          htmlInput: {
+            inputMode: 'decimal',
+            maxLength: 5,
           },
         }}
       />

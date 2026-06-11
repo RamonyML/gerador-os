@@ -11,6 +11,8 @@ type Props = {
   maxWidth?: 'lg' | 'xl' | false
   /** Ex.: botão primário alinhado ao título em telas maiores. */
   headerRight?: ReactNode
+  /** Cor de destaque do hero (default = primary). Use para temas alternativos. */
+  accentColor?: string
   children: ReactNode
 }
 
@@ -23,11 +25,12 @@ export function AppPageChrome({
   subtitle,
   maxWidth = 'lg',
   headerRight,
+  accentColor,
   children,
 }: Props) {
   const theme = useTheme()
   const { mode } = useColorMode()
-  const primary = theme.palette.primary.main
+  const primary = accentColor ?? theme.palette.primary.main
 
   const heroGradient =
     mode === 'light'

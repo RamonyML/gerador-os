@@ -1,4 +1,5 @@
 import type { OsTemplateField } from '../../types/osTemplate'
+import { formatSinalFibraSaida } from '../../lib/sinalFibraMask'
 
 /**
  * MUD END — fluxo único com variações de solicitação.
@@ -28,10 +29,10 @@ const EQUIP_ESQUECEU_SIM =
 const EQUIP_ESQUECEU_NAO =
   'VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONEI O CLIENTE E O MESMO DISSE QUE VAI BUSCAR OS EQUIPAMENTOS ATÉ O DIA DA MUDANÇA.'
 
-const T_TITULAR = 'titular-solicita-titular-acompanha'
-const T_TERCEIRO_TITULAR = 'terceiro-solicita-titular-acompanha'
-const T_TERCEIRO_TERCEIRO = 'terceiro-solicita-terceiro-acompanha'
-const T_TITULAR_TERCEIRO = 'titular-solicita-terceiro-acompanha'
+export const T_TITULAR = 'titular-solicita-titular-acompanha'
+export const T_TERCEIRO_TITULAR = 'terceiro-solicita-titular-acompanha'
+export const T_TERCEIRO_TERCEIRO = 'terceiro-solicita-terceiro-acompanha'
+export const T_TITULAR_TERCEIRO = 'titular-solicita-terceiro-acompanha'
 
 export const MUD_END_PADRAO_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -91,12 +92,14 @@ export function buildMudEndPadraoTextos(
   const contato = digits(v.contato)
   const contatoSol = digits(v.contatoSol)
   const contatoAut = digits(v.contatoAut)
-  const sinalONU = upper(v.sinalONU)
+  const equipPrefix = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
+  const sinalSaida = formatSinalFibraSaida(v.sinalONU)
   const adress = upper(v.adress)
   const complemento = upper(v.complemento)
   const bairro = upper(v.bairro)
   const tipoComp = upper(v.tipoComp)
   const comprovante = upper(v.comprovante)
+  const comprovanteFinal = comprovante === 'OUTROS' ? tipoComp : comprovante
   const nomeComprov = upper(v.nomeComprov)
   const grauComp = upper(v.grauComp)
   const num = digits(v.num)
@@ -110,7 +113,7 @@ export function buildMudEndPadraoTextos(
 
 ${SEP_AST}
 
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.
 
 ${SEP_AST}
 
@@ -121,7 +124,7 @@ COMPLEMENTO: ${complemento}
 CEP: ${v.cep ?? ''}
 BAIRRO: ${bairro}
 
-COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO
 NOME NO COMPROVANTE:  ${nomeComprov} (${grauComp})
 
 ${SEP_AST}
@@ -152,7 +155,7 @@ MUDANÇA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.`
 
 ${SEP_AST}
     
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.
     
 ${SEP_AST}
     
@@ -163,7 +166,7 @@ COMPLEMENTO: ${complemento}
 CEP: ${v.cep ?? ''}
 BAIRRO: ${bairro}
 
-COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO.
+COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO.
 NOME NO COMPROVANTE:  ${nomeComprov} (${grauComp})
 
 ${SEP_AST}
@@ -191,7 +194,7 @@ MUDANÇA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.`
 
 ${SEP_AST}
 
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.
 
 ${SEP_AST}
 
@@ -203,7 +206,7 @@ CEP: ${v.cep ?? ''}
 BAIRRO: ${bairro}
 ${quandoMud}
 
-COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO
 NOME NO COMPROVANTE:  ${nomeComprov} (${grauComp})
 
 ${SEP_AST}
@@ -231,7 +234,7 @@ MUDANÇA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.`
 
 ${SEP}
 
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.
 
 ${SEP}
 
@@ -258,7 +261,7 @@ ${SEP}
 
 >>> Este deve ser o ultimo comentário <<<
 
-COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO
 NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`
 
   const os = osBody(
@@ -329,9 +332,9 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'sinalONU',
-    label: 'Sinal ONU',
-    control: 'text',
-    placeholder: '-19.20 DBM ou SEM SINAL',
+    label: 'Sinal da fibra',
+    control: 'signal',
+    placeholder: 'Ex.: 12.34 (sai -12.34DBM)',
     section: S_ID,
     layout: { md: 3 },
   },
@@ -454,7 +457,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: 'Insira o CEP da rua',
     section: S_END,
-    layout: { md: 2 },
+    layout: { md: 3 },
   },
   {
     id: 'adress',
@@ -462,7 +465,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: 'Preenchido pelo CEP',
     section: S_END,
-    layout: { md: 4 },
+    layout: { md: 7 },
   },
   {
     id: 'num',
@@ -478,7 +481,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: 'Preenchido pelo CEP',
     section: S_END,
-    layout: { md: 4 },
+    layout: { md: 5 },
   },
   {
     id: 'complemento',
@@ -486,7 +489,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: 'Casa frente, fundos, sobrado, cond. etc',
     section: S_END,
-    layout: { md: 3 },
+    layout: { md: 4 },
   },
   {
     id: 'prumada',
@@ -514,7 +517,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
       field: 'tipoSolicitacao',
       equals: [T_TITULAR, T_TITULAR_TERCEIRO],
     },
-    layout: { md: 6 },
+    layout: { md: 12 },
   },
   {
     id: 'mudou',
@@ -575,7 +578,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
       { value: 'DMAE', label: 'DMAE' },
       { value: 'CONTRATO DE LOCAÇÃO', label: 'Contrato de Locação' },
       { value: 'CONTRATO DE HABITAÇÃO', label: 'Contrato de Habitação' },
-      { value: '', label: 'Outros (preencher tipo ao lado)' },
+      { value: 'OUTROS', label: 'Outros (preencher tipo ao lado)' },
     ],
     layout: { md: 3 },
   },
@@ -585,6 +588,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: 'Informe o tipo do comprovante',
     section: S_END,
+    showWhen: { field: 'comprovante', equals: 'OUTROS' },
     layout: { md: 3 },
   },
   {
@@ -640,7 +644,7 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
       { value: 'DINHEIRO', label: 'DINHEIRO' },
       { value: 'CARTAO', label: 'CARTAO' },
     ],
-    layout: { md: 2 },
+    layout: { md: 3 },
   },
   {
     id: 'protocolo',

@@ -11,7 +11,12 @@ import {
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
-type FluxoItem = { label: string; to: string; primary?: boolean }
+type FluxoItem = {
+  label: string
+  to: string
+  primary?: boolean
+  danger?: boolean
+}
 
 const PADRAO: FluxoItem[] = [
   {
@@ -21,30 +26,31 @@ const PADRAO: FluxoItem[] = [
   },
   {
     label: 'Mud End buscando equipamentos',
-    to: '/suporte/demanda/mudanca-endereco',
+    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-buscar-equipamentos',
+    primary: true,
   },
   {
     label: 'Mud End com fibra MZnet',
-    to: '/suporte/demanda/mudanca-endereco',
+    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-com-fibra',
+    primary: true,
   },
   {
     label: 'Mud End sem viabilidade',
-    to: '/suporte/demanda/mudanca-endereco',
+    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-inviabilidade',
+    danger: true,
   },
 ]
 
 const RENOVANDO: FluxoItem[] = [
   {
     label: 'Mud End + Alt Plano pago',
-    to: '/suporte/demanda/mudanca-endereco',
-  },
-  {
-    label: 'Mud End + Alt Plano isento',
-    to: '/suporte/demanda/mudanca-endereco',
+    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-pago',
+    primary: true,
   },
   {
     label: 'Mud End + Alt Plano isento (proposta)',
-    to: '/suporte/demanda/mudanca-endereco',
+    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-proposta',
+    primary: true,
   },
 ]
 
@@ -78,8 +84,8 @@ function FluxoColumn({
               key={item.label}
               component={RouterLink}
               to={item.to}
-              variant={item.primary ? 'contained' : 'outlined'}
-              color={item.primary ? 'primary' : 'inherit'}
+              variant={item.primary || item.danger ? 'contained' : 'outlined'}
+              color={item.danger ? 'error' : item.primary ? 'primary' : 'inherit'}
               fullWidth
               sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
             >

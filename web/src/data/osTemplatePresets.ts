@@ -25,6 +25,11 @@ import { getManutRoteadorResetLojaDefaults } from './manutencao/roteadorResetLoj
 import { getManutSinalAltoPadraoDefaults } from './manutencao/sinalAltoPadrao'
 import { getManutVisitaInstrutivaDefaults } from './manutencao/visitaInstrutiva'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
+import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
+import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
+import { getMudEndAltplanPropostaDefaults } from './mudEnd/altplanProposta'
+import { getMudEndAltplanPagoDefaults } from './mudEnd/altplanPago'
+import { getMudEndInviabilidadeDefaults } from './mudEnd/inviabilidade'
 import type { OsTemplateField } from '../types/osTemplate'
 
 /** Retorno comum para definir um fluxo de O.S em código. */
@@ -56,6 +61,36 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Mudança de endereço',
     label: 'Mudança de endereço — padrão',
     getDefaults: getMudEndPadraoDefaults,
+  },
+  {
+    id: 'mud-end-com-fibra',
+    category: 'Mudança de endereço',
+    label: 'Mudança de endereço — com fibra existente',
+    getDefaults: getMudEndComFibraDefaults,
+  },
+  {
+    id: 'mud-end-buscar-equipamentos',
+    category: 'Mudança de endereço',
+    label: 'Mudança de endereço — buscar equipamentos',
+    getDefaults: getMudEndEquipamentosDefaults,
+  },
+  {
+    id: 'mud-end-altplan-proposta',
+    category: 'Mudança de endereço',
+    label: 'Mudança de endereço — alt plano proposta',
+    getDefaults: getMudEndAltplanPropostaDefaults,
+  },
+  {
+    id: 'mud-end-altplan-pago',
+    category: 'Mudança de endereço',
+    label: 'Mudança de endereço — alt plano pago',
+    getDefaults: getMudEndAltplanPagoDefaults,
+  },
+  {
+    id: 'mud-end-inviabilidade',
+    category: 'Mudança de endereço',
+    label: 'Mudança de endereço — inviabilidade',
+    getDefaults: getMudEndInviabilidadeDefaults,
   },
   {
     id: 'altplan-padrao-remoto',

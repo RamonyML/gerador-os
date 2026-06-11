@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { MUD_END_PADRAO_OUTPUT, buildMudEndPadraoTextos } from './padrao'
 import { renderTemplate } from '../../lib/renderTemplate'
 import { splitOsPreviewSections } from '../../lib/splitOsPreviewSections'
+import { formatSinalFibraSaida } from '../../lib/sinalFibraMask'
 
 /**
  * Garante paridade caractere-a-caractere com
@@ -47,13 +48,15 @@ function legado(v: Entrada) {
   const cliente = v.cliente.toUpperCase()
   const canal = v.canal
   const contato = v.contato.replace(/\D/g, '')
-  const sinalONU = v.sinalONU.toUpperCase()
+  const equipPrefix = v.onuOnt.toUpperCase().startsWith('ONT') ? 'ONT' : 'ONU'
+  const sinalSaida = formatSinalFibraSaida(v.sinalONU)
   const complemento = v.complemento.toUpperCase()
   const adress = v.adress.toUpperCase()
   const cep = v.cep
   const bairro = v.bairro.toUpperCase()
   const tipoComp = v.tipoComp.toUpperCase()
   const comprovante = v.comprovante.toUpperCase()
+  const comprovanteFinal = comprovante === 'OUTROS' ? tipoComp : comprovante
   const nomeComprov = v.nomeComprov.toUpperCase()
   const grauComp = v.grauComp.toUpperCase()
   const num = v.num.replace(/\D/g, '')
@@ -79,7 +82,7 @@ function legado(v: Entrada) {
 
 ${SEP}
 
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.
 
 ${SEP}
 
@@ -106,7 +109,7 @@ ${SEP}
 
 >>> Este deve ser o ultimo comentário <<<
 
-COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO
 NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`
 
   const textoOS = `${cliente.split(' ')[0]} ENTROU EM CONTATO VIA ${canal} (${contato}) E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". INFORMEI O VALOR DO SERVIÇO R$100,00 (INCLUI PEÇAS E SERVIÇOS), CLIENTE SOLICITOU PAGAR NO ATO COM ${formaPag}. ${cliente.split(' ')[0]} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA PARA ${dataVisita} ${horaVisita} HRS.
@@ -170,7 +173,7 @@ const CENARIO_A: Entrada = {
   cliente: 'João da Silva',
   canal: 'WHATSAPP',
   contato: '(34) 99999-8888',
-  sinalONU: '-19.20 dbm',
+  sinalONU: '19.20',
   onuOnt: 'ONU = ZTE // CONECTOR = VERDE.',
   extend: '<b>(POSSUI WI-FI EXTEND)</b> ',
   cep: '38400000',
@@ -198,7 +201,7 @@ const CENARIO_B: Entrada = {
   cliente: 'Ana Souza',
   canal: 'LIGAÇÃO',
   contato: '34988887777',
-  sinalONU: 'sem sinal',
+  sinalONU: '8.50',
   onuOnt: 'ONT = ONT TP LINK 530 // CONECTOR = VERDE.',
   extend: '',
   cep: '38405100',
@@ -210,7 +213,7 @@ const CENARIO_B: Entrada = {
   mudou: 'AINDA NÃO SE MUDOU, PORÉM',
   quandoMud: 'vai mudar na próxima semana',
   equipSituacao: '',
-  comprovante: '',
+  comprovante: 'OUTROS',
   tipoComp: 'declaração de residência',
   nomeComprov: 'ana souza',
   grauComp: 'ASSINANTE',

@@ -11,6 +11,8 @@ export type FieldControl =
   | 'datetime'
   /** Telefone BR com máscara (00) 00000-0000. */
   | 'phone'
+  /** Sinal da fibra com máscara 00.00 (saída -00.00DBM). */
+  | 'signal'
 
 export interface FieldOption {
   value: string
@@ -43,6 +45,8 @@ export interface OsTemplateField {
   section?: string
   /** Renderiza o campo com destaque (ex.: select-subtítulo do formulário). */
   highlight?: boolean
+  /** Tom do destaque do campo (default verde). */
+  tone?: 'green' | 'red'
   /** Exibe o campo somente quando outro campo tiver um dos valores informados. */
   showWhen?: {
     field: string
@@ -74,6 +78,7 @@ export function getFieldControl(f: OsTemplateField): FieldControl {
   if (f.control === 'date') return 'date'
   if (f.control === 'datetime') return 'datetime'
   if (f.control === 'phone') return 'phone'
+  if (f.control === 'signal') return 'signal'
   return f.multiline === true ? 'textarea' : 'text'
 }
 
