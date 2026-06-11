@@ -38,6 +38,7 @@ import { endOfMonth, format, isSameDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { alpha, useTheme } from '@mui/material/styles'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { EscalaMatrizAtendente } from '../components/EscalaMatrizAtendente'
 import { Reveal } from '../components/Reveal'
 import { MonthNavigator } from '../features/upgrades/MonthNavigator'
 import { useAuth } from '../contexts/AuthContext'
@@ -64,6 +65,7 @@ import {
   displayNameForSchedule,
   prettyLocalPartFromEmail,
 } from '../lib/escalaDisplayNames'
+import { setOperatorShiftForDay } from '../lib/escalaMatriz'
 import { canManageWorkSchedule } from '../lib/permissions'
 import {
   SECTOR_LABELS,
@@ -147,9 +149,9 @@ export function EscalaPage() {
   })
 
   /** Visão padrão ao abrir: plantonistas (somente sábados e domingos). */
-  const [viewMode, setViewMode] = useState<'plantonistas' | 'completa'>(
-    'plantonistas',
-  )
+  const [viewMode, setViewMode] = useState<
+    'plantonistas' | 'completa' | 'porAtendente'
+  >('plantonistas')
 
   /** Linhas da grade: horários por setor (Comercial tem jornada própria). */
   const gridSlots = useMemo(() => {
@@ -173,6 +175,7 @@ export function EscalaPage() {
 
   const [roster, setRoster] = useState<SectorRosterRow[]>([])
   const [rosterError, setRosterError] = useState<string | null>(null)
+  const [rosterLoading, setRosterLoading] = useState(true)
 
   /** Clique no dia — visão em tabela. */
   const [dayDialog, setDayDialog] = useState<{
@@ -210,9 +213,11 @@ export function EscalaPage() {
   const loadRoster = useCallback(async () => {
     if (!effectiveSector || !profile) {
       setRoster([])
+      setRosterLoading(false)
       return
     }
     setRosterError(null)
+    setRosterLoading(true)
     try {
       const sectorArg =
         profile.isDev === true || profile.isAdmin === true
@@ -223,6 +228,8 @@ export function EscalaPage() {
     } catch (e) {
       setRosterError(callableErrorMessage(e))
       setRoster([])
+    } finally {
+      setRosterLoading(false)
     }
   }, [effectiveSector, profile])
 
@@ -345,6 +352,15 @@ export function EscalaPage() {
     setCellDialog(null)
   }
 
+  /** Edição inline da visão "Por atendente": define o turno de uma pessoa no dia. */
+  const handleSetCell = useCallback(
+    (dayNum: number, email: string, shiftId: string | null) => {
+      if (!canEdit) return
+      setDraftDays((prev) => setOperatorShiftForDay(prev, dayNum, email, shiftId))
+    },
+    [canEdit],
+  )
+
   const monthLabelShort = format(month, 'MM/yyyy')
   const today = new Date()
 
@@ -420,7 +436,8 @@ export function EscalaPage() {
             color="primary"
             size="small"
             onChange={(_, v) => {
-              if (v) setViewMode(v as 'plantonistas' | 'completa')
+              if (v)
+                setViewMode(v as 'plantonistas' | 'completa' | 'porAtendente')
             }}
             sx={{
               '& .MuiToggleButton-root': {
@@ -432,6 +449,7 @@ export function EscalaPage() {
           >
             <ToggleButton value="plantonistas">Escala de plantonistas</ToggleButton>
             <ToggleButton value="completa">Escala mensal completa</ToggleButton>
+            <ToggleButton value="porAtendente">Por atendente</ToggleButton>
           </ToggleButtonGroup>
 
           {canEdit ? (
@@ -468,6 +486,21 @@ export function EscalaPage() {
         {loadingMes ? (
           <Typography color="text.secondary">Carregando…</Typography>
         ) : (
+          viewMode === 'porAtendente' ? (
+            rosterLoading ? (
+              <Typography color="text.secondary">Carregando atendentes…</Typography>
+            ) : (
+              <EscalaMatrizAtendente
+                month={month}
+                days={draftDays}
+                roster={roster}
+                nameByEmail={nameByEmail}
+                sector={effectiveSector}
+                canEdit={canEdit}
+                onSetCell={handleSetCell}
+              />
+            )
+          ) : (
           (() => {
             const isPlantonistas = viewMode === 'plantonistas'
             /** Índices de coluna (Seg=0 … Dom=6). Plantonistas = só Sáb e Dom. */
@@ -769,6 +802,7 @@ export function EscalaPage() {
               </Stack>
             )
           })()
+          )
         )}
 
         {!loadingMes && loadedKey ? (

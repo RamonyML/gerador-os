@@ -49,7 +49,7 @@ export const SHIFT_IDS = {
   domHo1340: 'dom_ho_1340_2200',
   extra1220: 'extra_1220_2020',
   fer4h: 'fer_jornada_4h',
-  fer5h: 'fer_jornada_5h',
+  ferias: 'ferias',
 } as const
 
 function turnosSegSex(sector?: Sector | null): TurnoFixoMeta[] {
@@ -102,20 +102,14 @@ const DOM_HO2: TurnoFixoMeta = {
 export const TURNOS_EXTRAS: TurnoFixoMeta[] = [
   {
     id: SHIFT_IDS.extra1220,
-    headline: 'Esporádico',
+    headline: 'Intermediário',
     detail: '12:00 às 20:20 · uso raro',
     variant: 'extra',
   },
   {
     id: SHIFT_IDS.fer4h,
     headline: 'Feriado',
-    detail: 'Jornada ~4 h · quando aplicável',
-    variant: 'extra',
-  },
-  {
-    id: SHIFT_IDS.fer5h,
-    headline: 'Feriado',
-    detail: 'Jornada ~5 h · quando aplicável',
+    detail: 'Quando aplicável',
     variant: 'extra',
   },
 ]
