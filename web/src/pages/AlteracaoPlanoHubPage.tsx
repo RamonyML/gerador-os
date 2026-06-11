@@ -15,30 +15,34 @@ type FluxoItem = { label: string; to: string; primary?: boolean }
 
 const PADRAO: FluxoItem[] = [
   {
-    label: 'Remoto (titular)',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-padrao-remoto',
+    label: 'Remoto (titular / terceiro / PJ)',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-remoto',
     primary: true,
   },
   {
-    label: 'Remoto (terceiros)',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-remoto-terceiros',
+    label: 'Presencial (titular / terceiro)',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-presencial',
     primary: true,
   },
   {
     label: 'Sem troca: isento',
-    to: '/suporte/demanda/alteracao-plano',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-isenta',
+    primary: true,
   },
   {
     label: 'Sem troca: pago',
-    to: '/suporte/demanda/alteracao-plano',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-paga',
+    primary: true,
   },
   {
     label: 'Com troca: isento',
-    to: '/suporte/demanda/alteracao-plano',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-isenta',
+    primary: true,
   },
   {
     label: 'Com troca: pago',
-    to: '/suporte/demanda/alteracao-plano',
+    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-paga',
+    primary: true,
   },
 ]
 
@@ -111,10 +115,10 @@ export function AlteracaoPlanoHubPage() {
         Alteração de plano
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Escolha o tipo de alteração (espelho do hub legado). O fluxo{' '}
-        <strong>Remoto (padrão)</strong> abre o gerador com o modelo publicado como{' '}
-        <code>altplan-padrao-remoto</code>; os demais levam à lista de modelos até
-        migrarmos cada HTML.
+        Escolha o tipo de alteração (espelho do hub legado). Os fluxos{' '}
+        <strong>Remoto</strong> e <strong>Presencial</strong> abrem o gerador já
+        no formulário (variações de titular, terceiro e PJ no próprio modelo); os
+        demais levam à lista de modelos até migrarmos cada HTML.
       </Typography>
 
       <Box

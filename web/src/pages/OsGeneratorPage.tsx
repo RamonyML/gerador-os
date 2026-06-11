@@ -37,6 +37,12 @@ import { buildMudEndEquipamentosTextos } from '../data/mudEnd/equipamentos'
 import { buildMudEndAltplanPropostaTextos } from '../data/mudEnd/altplanProposta'
 import { buildMudEndAltplanPagoTextos } from '../data/mudEnd/altplanPago'
 import { buildMudEndInviabilidadeTextos } from '../data/mudEnd/inviabilidade'
+import { buildAltplanRemotoTextos } from '../data/altplan/remoto'
+import { buildAltplanPresencialTextos } from '../data/altplan/presencial'
+import { buildAltplanSemTrocaVisitaIsentaTextos } from '../data/altplan/semTrocaVisitaIsenta'
+import { buildAltplanSemTrocaVisitaPagaTextos } from '../data/altplan/semTrocaVisitaPaga'
+import { buildAltplanTrocaVisitaIsentaTextos } from '../data/altplan/trocaVisitaIsenta'
+import { buildAltplanTrocaVisitaPagaTextos } from '../data/altplan/trocaVisitaPaga'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -321,6 +327,42 @@ export function OsGeneratorPage() {
       )
     } else if (selected?.slug === 'mud-end-inviabilidade') {
       Object.assign(base, buildMudEndInviabilidadeTextos(values))
+    } else if (selected?.slug === 'altplan-remoto') {
+      Object.assign(base, buildAltplanRemotoTextos(values))
+    } else if (selected?.slug === 'altplan-presencial') {
+      Object.assign(base, buildAltplanPresencialTextos(values))
+    } else if (selected?.slug === 'altplan-sem-troca-visita-isenta') {
+      Object.assign(
+        base,
+        buildAltplanSemTrocaVisitaIsentaTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'altplan-sem-troca-visita-paga') {
+      Object.assign(
+        base,
+        buildAltplanSemTrocaVisitaPagaTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'altplan-troca-visita-isenta') {
+      Object.assign(
+        base,
+        buildAltplanTrocaVisitaIsentaTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
+    } else if (selected?.slug === 'altplan-troca-visita-paga') {
+      Object.assign(
+        base,
+        buildAltplanTrocaVisitaPagaTextos(
+          values,
+          String(base.operadorPrimeiroNome ?? ''),
+        ),
+      )
     }
     return base
   }, [values, profile, user, selected?.slug])

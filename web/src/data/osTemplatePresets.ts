@@ -1,5 +1,9 @@
-import { getAltplanRemotoPadraoExampleDefaults } from './altplanRemotoPadraoExample'
-import { getAltplanRemotoTerceirosExampleDefaults } from './altplanRemotoTerceirosExample'
+import { getAltplanRemotoDefaults } from './altplan/remoto'
+import { getAltplanPresencialDefaults } from './altplan/presencial'
+import { getAltplanSemTrocaVisitaIsentaDefaults } from './altplan/semTrocaVisitaIsenta'
+import { getAltplanSemTrocaVisitaPagaDefaults } from './altplan/semTrocaVisitaPaga'
+import { getAltplanTrocaVisitaIsentaDefaults } from './altplan/trocaVisitaIsenta'
+import { getAltplanTrocaVisitaPagaDefaults } from './altplan/trocaVisitaPaga'
 import { getManutFonteQueimadaComVisitaDefaults } from './manutencao/fonteQueimadaComVisita'
 import { getManutFonteQueimadaLojaDefaults } from './manutencao/fonteQueimadaLoja'
 import { getManutLentidaoIsentoDefaults } from './manutencao/lentidaoIsento'
@@ -93,16 +97,40 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     getDefaults: getMudEndInviabilidadeDefaults,
   },
   {
-    id: 'altplan-padrao-remoto',
+    id: 'altplan-remoto',
     category: 'Alteração de plano',
-    label: 'Alt plan — remoto (padrão, titular)',
-    getDefaults: getAltplanRemotoPadraoExampleDefaults,
+    label: 'Alteração de plano — remoto',
+    getDefaults: getAltplanRemotoDefaults,
   },
   {
-    id: 'altplan-remoto-terceiros',
+    id: 'altplan-presencial',
     category: 'Alteração de plano',
-    label: 'Alt plan — remoto (terceiros)',
-    getDefaults: getAltplanRemotoTerceirosExampleDefaults,
+    label: 'Alteração de plano — presencial',
+    getDefaults: getAltplanPresencialDefaults,
+  },
+  {
+    id: 'altplan-sem-troca-visita-isenta',
+    category: 'Alteração de plano',
+    label: 'Alteração de plano — sem troca visita isenta',
+    getDefaults: getAltplanSemTrocaVisitaIsentaDefaults,
+  },
+  {
+    id: 'altplan-sem-troca-visita-paga',
+    category: 'Alteração de plano',
+    label: 'Alteração de plano — sem troca visita paga',
+    getDefaults: getAltplanSemTrocaVisitaPagaDefaults,
+  },
+  {
+    id: 'altplan-troca-visita-isenta',
+    category: 'Alteração de plano',
+    label: 'Alteração de plano — com troca visita isenta',
+    getDefaults: getAltplanTrocaVisitaIsentaDefaults,
+  },
+  {
+    id: 'altplan-troca-visita-paga',
+    category: 'Alteração de plano',
+    label: 'Alteração de plano — com troca visita paga',
+    getDefaults: getAltplanTrocaVisitaPagaDefaults,
   },
   {
     id: 'manut-monitoramento-cliente-sem-sinal',
