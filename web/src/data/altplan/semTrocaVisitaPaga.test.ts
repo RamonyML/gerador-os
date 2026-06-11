@@ -215,3 +215,31 @@ describe('Alteração de plano — sem troca visita paga', () => {
     })
   }
 })
+
+describe('Alteração de plano — sem troca visita paga (ofertado)', () => {
+  for (const tipo of [STVP_TITULAR, STVP_TERCEIRO_TERCEIRO]) {
+    const base = { ...BASE, tipoSolicitacao: tipo }
+    const padrao = gerarNovo(base)
+    const ofertado = gerarNovo({ ...base, origem: 'ofertado' })
+
+    it(`Protocolo vira OFERTEI e remove QUESTIONADO — ${tipo}`, () => {
+      expect(ofertado.protocolo.startsWith('OFERTEI A ')).toBe(true)
+      expect(ofertado.protocolo).toContain('ALTERAÇÃO DE PLANO.')
+      expect(ofertado.protocolo).not.toContain('QUESTIONADO')
+      expect(ofertado.protocolo).not.toContain('ENTROU EM CONTATO')
+      expect(ofertado.protocolo).toContain('PLANO OFERTADO:')
+      expect(ofertado.protocolo).not.toContain('PLANO SOLICITADO:')
+    })
+
+    it(`O.S vira OFERTEI e usa PLANO OFERTADO — ${tipo}`, () => {
+      expect(ofertado.os.startsWith('OFERTEI A ')).toBe(true)
+      expect(ofertado.os).toContain('ALTERAÇÃO DE PLANO DE INTERNET:')
+      expect(ofertado.os).toContain('PLANO OFERTADO:')
+      expect(ofertado.os).not.toContain('PLANO ESCOLHIDO:')
+    })
+
+    it(`Agenda inalterada — ${tipo}`, () => {
+      expect(ofertado.agenda).toBe(padrao.agenda)
+    })
+  }
+})

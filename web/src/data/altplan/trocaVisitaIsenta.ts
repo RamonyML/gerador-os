@@ -5,6 +5,13 @@ import {
   ALTPLAN_PLANO_ESCOLHIDO_OPTS,
   ALTPLAN_ROTEADOR_OPTS,
 } from './remoto'
+import {
+  ORIGEM_OPTS,
+  ORIGEM_PADRAO,
+  aplicarOfertadoOS,
+  aplicarOfertadoProtocolo,
+  isOfertado,
+} from './ofertado'
 
 /**
  * ALTERAÇÃO DE PLANO — COM TROCA + VISITA ISENTA.
@@ -148,6 +155,15 @@ export function buildAltplanTrocaVisitaIsentaTextos(
   const sig = sinalSaida(rawValues)
   const agenda = `ALT PLANO ${cliente} PROT:${protocolo} ISENTO (${operadorPrimeiroNome}) - ${bairro} // ${roteadorSug}`
 
+  const ofertado = isOfertado(rawValues)
+  const finaliza = (textoProtocolo: string, os: string) => ({
+    altplanTrocaVisitaIsentaTextoProtocolo: ofertado
+      ? aplicarOfertadoProtocolo(textoProtocolo)
+      : textoProtocolo,
+    altplanTrocaVisitaIsentaTextoOS: ofertado ? aplicarOfertadoOS(os) : os,
+    altplanTrocaVisitaIsentaTextoAgenda: agenda,
+  })
+
   const introTitular = `${clientePrimeiro} ENTROU EM CONTATO VIA ${canal} (${contato}) SOLICITANDO ALTERAÇÃO DE PLANO.`
   const introTerceiro = `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) SOLICITANDO ALTERAÇÃO DE PLANO.`
 
@@ -165,11 +181,7 @@ export function buildAltplanTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${osIntroTitular} ${clientePrimeiro} CONCORDOU COM A VISITA, DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${autorizado} (${parente}) A ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA ISENTA DE CUSTOS AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaIsentaTextoOS: os,
-      altplanTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === TVI_TERCEIRO_TITULAR) {
@@ -183,11 +195,7 @@ export function buildAltplanTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${osIntroTerceiro} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA ISENTA DE CUSTOS AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaIsentaTextoOS: os,
-      altplanTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === TVI_TERCEIRO_TERCEIRO) {
@@ -201,11 +209,7 @@ export function buildAltplanTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${osIntroTerceiro} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA TÉCNICA ISENTA DE CUSTOS AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaIsentaTextoOS: os,
-      altplanTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   const textoProtocolo = [
@@ -216,11 +220,7 @@ export function buildAltplanTrocaVisitaIsentaTextos(
   const os = osComIndicacao(
     `${osIntroTitular} VISITA TÉCNICA ISENTA DE CUSTOS. VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
   )
-  return {
-    altplanTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-    altplanTrocaVisitaIsentaTextoOS: os,
-    altplanTrocaVisitaIsentaTextoAgenda: agenda,
-  }
+  return finaliza(textoProtocolo, os)
 }
 
 const CANAL_OPTS = [
@@ -281,6 +281,14 @@ export const ALTPLAN_TROCA_VISITA_ISENTA_FIELDS: OsTemplateField[] = [
         icon: 'users-round',
       },
     ],
+    layout: { md: 12 },
+  },
+  {
+    id: 'origem',
+    label: 'Origem da alteração',
+    control: 'radio',
+    defaultValue: ORIGEM_PADRAO,
+    options: ORIGEM_OPTS,
     layout: { md: 12 },
   },
   {
@@ -382,6 +390,7 @@ export const ALTPLAN_TROCA_VISITA_ISENTA_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: "Ex.: 'deseja cortar gastos'",
     section: S_PLANO,
+    showWhen: { field: 'origem', equals: ORIGEM_PADRAO },
     layout: { md: 12 },
   },
   {

@@ -5,6 +5,13 @@ import {
   ALTPLAN_PLANO_ESCOLHIDO_OPTS,
   ALTPLAN_ROTEADOR_OPTS,
 } from './remoto'
+import {
+  ORIGEM_OPTS,
+  ORIGEM_PADRAO,
+  aplicarOfertadoOS,
+  aplicarOfertadoProtocolo,
+  isOfertado,
+} from './ofertado'
 
 /**
  * ALTERAÇÃO DE PLANO — SEM TROCA + VISITA ISENTA.
@@ -122,6 +129,15 @@ export function buildAltplanSemTrocaVisitaIsentaTextos(
   const sig = sinalSaida(rawValues)
   const agenda = `ALT PLANO ${cliente} PROT:${protocolo} ISENTO (${operadorPrimeiroNome}) - ${bairro}`
 
+  const ofertado = isOfertado(rawValues)
+  const finaliza = (textoProtocolo: string, os: string) => ({
+    altplanSemTrocaVisitaIsentaTextoProtocolo: ofertado
+      ? aplicarOfertadoProtocolo(textoProtocolo)
+      : textoProtocolo,
+    altplanSemTrocaVisitaIsentaTextoOS: ofertado ? aplicarOfertadoOS(os) : os,
+    altplanSemTrocaVisitaIsentaTextoAgenda: agenda,
+  })
+
   if (tipo === STVI_TITULAR_TERCEIRO) {
     const textoProtocolo = [
       `${clientePrimeiro} ENTROU EM CONTATO VIA ${canal} (${contato}) SOLICITANDO ALTERAÇÃO DE PLANO.`,
@@ -144,11 +160,7 @@ export function buildAltplanSemTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${clientePrimeiro} SOLICITOU POR ${canal} (${contato}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${valores.planoAtual}. PLANO ESCOLHIDO: ${valores.planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${clientePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, PORÉM, DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DO APLICATIVO. ${clientePrimeiro} CONCORDOU COM A VISITA, DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${autorizado} (${parente}) A ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA ISENTA DE CUSTOS AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanSemTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanSemTrocaVisitaIsentaTextoOS: os,
-      altplanSemTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === STVI_TERCEIRO_TITULAR) {
@@ -173,11 +185,7 @@ export function buildAltplanSemTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) E SOLICITOU ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${valores.planoAtual}. PLANO ESCOLHIDO: ${valores.planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${solicitantePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, PORÉM, DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DO APLICATIVO. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA ISENTA DE CUSTOS AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanSemTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanSemTrocaVisitaIsentaTextoOS: os,
-      altplanSemTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === STVI_TERCEIRO_TERCEIRO) {
@@ -202,11 +210,7 @@ export function buildAltplanSemTrocaVisitaIsentaTextos(
     const os = osComIndicacao(
       `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) E SOLICITOU ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${valores.planoAtual}. PLANO ESCOLHIDO: ${valores.planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${solicitantePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, PORÉM, DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DO APLICATIVO. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA TÉCNICA ISENTA DE CUSTOS AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanSemTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-      altplanSemTrocaVisitaIsentaTextoOS: os,
-      altplanSemTrocaVisitaIsentaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   const textoProtocolo = [
@@ -229,11 +233,7 @@ export function buildAltplanSemTrocaVisitaIsentaTextos(
     `${clientePrimeiro} SOLICITOU POR ${canal} (${contato}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${valores.planoAtual}. PLANO ESCOLHIDO: ${valores.planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${clientePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, PORÉM, DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DO APLICATIVO. VISITA TÉCNICA ISENTA DE CUSTOS AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     true,
   )
-  return {
-    altplanSemTrocaVisitaIsentaTextoProtocolo: textoProtocolo,
-    altplanSemTrocaVisitaIsentaTextoOS: os,
-    altplanSemTrocaVisitaIsentaTextoAgenda: agenda,
-  }
+  return finaliza(textoProtocolo, os)
 }
 
 const CANAL_OPTS = [
@@ -289,6 +289,14 @@ export const ALTPLAN_SEM_TROCA_VISITA_ISENTA_FIELDS: OsTemplateField[] = [
         icon: 'users-round',
       },
     ],
+    layout: { md: 12 },
+  },
+  {
+    id: 'origem',
+    label: 'Origem da alteração',
+    control: 'radio',
+    defaultValue: ORIGEM_PADRAO,
+    options: ORIGEM_OPTS,
     layout: { md: 12 },
   },
   {
@@ -390,6 +398,7 @@ export const ALTPLAN_SEM_TROCA_VISITA_ISENTA_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: "Ex.: 'deseja cortar gastos'",
     section: S_PLANO,
+    showWhen: { field: 'origem', equals: ORIGEM_PADRAO },
     layout: { md: 12 },
   },
   {

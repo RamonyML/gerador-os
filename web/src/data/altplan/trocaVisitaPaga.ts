@@ -5,6 +5,13 @@ import {
   ALTPLAN_PLANO_ESCOLHIDO_OPTS,
   ALTPLAN_ROTEADOR_OPTS,
 } from './remoto'
+import {
+  ORIGEM_OPTS,
+  ORIGEM_PADRAO,
+  aplicarOfertadoOS,
+  aplicarOfertadoProtocolo,
+  isOfertado,
+} from './ofertado'
 
 /**
  * ALTERAÇÃO DE PLANO — COM TROCA + VISITA PAGA.
@@ -151,6 +158,15 @@ export function buildAltplanTrocaVisitaPagaTextos(
 
   const visitaPagaOS = `VISITA TÉCNICA COM CUSTO DE R$50,00 REFERENTE AO DESLOCAMENTO E SERÁ PAGO NO ATO EM ${formaPag}.`
 
+  const ofertado = isOfertado(rawValues)
+  const finaliza = (textoProtocolo: string, os: string) => ({
+    altplanTrocaVisitaPagaTextoProtocolo: ofertado
+      ? aplicarOfertadoProtocolo(textoProtocolo)
+      : textoProtocolo,
+    altplanTrocaVisitaPagaTextoOS: ofertado ? aplicarOfertadoOS(os) : os,
+    altplanTrocaVisitaPagaTextoAgenda: agenda,
+  })
+
   const introTitular = `${clientePrimeiro} ENTROU EM CONTATO VIA ${canal} (${contato}) SOLICITANDO ALTERAÇÃO DE PLANO.`
   const introTerceiro = `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) SOLICITANDO ALTERAÇÃO DE PLANO.`
 
@@ -168,11 +184,7 @@ export function buildAltplanTrocaVisitaPagaTextos(
     const os = osComIndicacao(
       `${osIntroTitular} ${clientePrimeiro} CONCORDOU COM A VISITA, DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${autorizado} (${parente}) A ACOMPANHAR O TÉCNICO E ASSINAR O.S. ${visitaPagaOS} VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaPagaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaPagaTextoOS: os,
-      altplanTrocaVisitaPagaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === TVP_TERCEIRO_TITULAR) {
@@ -186,11 +198,7 @@ export function buildAltplanTrocaVisitaPagaTextos(
     const os = osComIndicacao(
       `${osIntroTerceiro} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S. ${visitaPagaOS} AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaPagaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaPagaTextoOS: os,
-      altplanTrocaVisitaPagaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   if (tipo === TVP_TERCEIRO_TERCEIRO) {
@@ -204,11 +212,7 @@ export function buildAltplanTrocaVisitaPagaTextos(
     const os = osComIndicacao(
       `${osIntroTerceiro} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR O TÉCNICO E ASSINAR O.S. ${visitaPagaOS} AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
     )
-    return {
-      altplanTrocaVisitaPagaTextoProtocolo: textoProtocolo,
-      altplanTrocaVisitaPagaTextoOS: os,
-      altplanTrocaVisitaPagaTextoAgenda: agenda,
-    }
+    return finaliza(textoProtocolo, os)
   }
 
   const textoProtocolo = [
@@ -219,11 +223,7 @@ export function buildAltplanTrocaVisitaPagaTextos(
   const os = osComIndicacao(
     `${osIntroTitular} ${visitaPagaOS} VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
   )
-  return {
-    altplanTrocaVisitaPagaTextoProtocolo: textoProtocolo,
-    altplanTrocaVisitaPagaTextoOS: os,
-    altplanTrocaVisitaPagaTextoAgenda: agenda,
-  }
+  return finaliza(textoProtocolo, os)
 }
 
 const CANAL_OPTS = [
@@ -290,6 +290,14 @@ export const ALTPLAN_TROCA_VISITA_PAGA_FIELDS: OsTemplateField[] = [
         icon: 'users-round',
       },
     ],
+    layout: { md: 12 },
+  },
+  {
+    id: 'origem',
+    label: 'Origem da alteração',
+    control: 'radio',
+    defaultValue: ORIGEM_PADRAO,
+    options: ORIGEM_OPTS,
     layout: { md: 12 },
   },
   {
@@ -391,6 +399,7 @@ export const ALTPLAN_TROCA_VISITA_PAGA_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: "Ex.: 'deseja cortar gastos'",
     section: S_PLANO,
+    showWhen: { field: 'origem', equals: ORIGEM_PADRAO },
     layout: { md: 12 },
   },
   {
