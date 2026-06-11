@@ -4,7 +4,6 @@ export type Sector =
   | 'financeiro'
   | 'comercial'
   | 'cadastro'
-  | 'ti'
 
 export const SECTOR_LABELS: Record<Sector, string> = {
   suporte: 'Suporte',
@@ -12,7 +11,6 @@ export const SECTOR_LABELS: Record<Sector, string> = {
   financeiro: 'Financeiro',
   comercial: 'Comercial',
   cadastro: 'Cadastro',
-  ti: 'T.I',
 }
 
 export const SECTORS: Sector[] = [
@@ -21,7 +19,6 @@ export const SECTORS: Sector[] = [
   'financeiro',
   'comercial',
   'cadastro',
-  'ti',
 ]
 
 export type Hierarchy = 'gerente' | 'supervisor' | 'operador'
@@ -33,6 +30,8 @@ export interface UserProfile {
   email?: string
   isDev?: boolean
   isAdmin?: boolean
+  /** Função T.I: gerencia o ambiente de chamados (GLPI), independente do setor. */
+  isTi?: boolean
   active?: boolean
 }
 
@@ -47,6 +46,7 @@ export function parseUserProfile(data: Record<string, unknown>): UserProfile | n
     email: typeof data.email === 'string' ? data.email : undefined,
     isDev: data.isDev === true,
     isAdmin: data.isAdmin === true,
+    isTi: data.isTi === true,
     active: data.active !== false,
   }
 }

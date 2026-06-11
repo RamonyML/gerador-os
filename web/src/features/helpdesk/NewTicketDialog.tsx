@@ -23,6 +23,7 @@ import {
   type TicketCategory,
   type TicketPriority,
 } from '../../types/ticket'
+import { AttachmentPicker } from './AttachmentPicker'
 
 type Props = {
   open: boolean
@@ -36,6 +37,7 @@ export function NewTicketDialog({ open, actor, onClose, onCreated }: Props) {
   const [category, setCategory] = useState<TicketCategory>('suporte_sistemas')
   const [priority, setPriority] = useState<TicketPriority>('normal')
   const [description, setDescription] = useState('')
+  const [files, setFiles] = useState<File[]>([])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -44,6 +46,7 @@ export function NewTicketDialog({ open, actor, onClose, onCreated }: Props) {
     setCategory('suporte_sistemas')
     setPriority('normal')
     setDescription('')
+    setFiles([])
     setError(null)
   }
 
@@ -67,12 +70,17 @@ export function NewTicketDialog({ open, actor, onClose, onCreated }: Props) {
     setSaving(true)
     setError(null)
     try {
-      const id = await createTicket(db, actor, {
-        title: t,
-        description: d,
-        category,
-        priority,
-      })
+      const id = await createTicket(
+        db,
+        actor,
+        {
+          title: t,
+          description: d,
+          category,
+          priority,
+        },
+        files,
+      )
       reset()
       onCreated(id)
     } catch (e) {
@@ -140,6 +148,13 @@ export function NewTicketDialog({ open, actor, onClose, onCreated }: Props) {
             required
             fullWidth
           />
+          <AttachmentPicker
+            files={files}
+            onChange={setFiles}
+            onError={(msg) => msg && setError(msg)}
+            disabled={saving}
+            label="Anexar print ou foto"
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -151,7 +166,7 @@ export function NewTicketDialog({ open, actor, onClose, onCreated }: Props) {
           onClick={() => void submit()}
           disabled={saving || !title.trim() || !description.trim()}
         >
-          {saving ? 'Abrindo…' : 'Abrir chamado'}
+          {saving ? 'Enviando…' : 'Abrir chamado'}
         </Button>
       </DialogActions>
     </Dialog>

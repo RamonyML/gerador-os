@@ -389,6 +389,9 @@ export function HomePage() {
                   size="small"
                   variant="outlined"
                 />
+                {profile.isTi ? (
+                  <Chip label="T.I" size="small" color="primary" />
+                ) : null}
                 {profile.isAdmin ? (
                   <Chip label="Administrador" size="small" color="secondary" variant="outlined" />
                 ) : null}

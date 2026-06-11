@@ -43,6 +43,8 @@ import {
   TicketPriorityChip,
   TicketStatusChip,
 } from '../features/helpdesk/ticketChips'
+import { AttachmentGallery } from '../features/helpdesk/AttachmentGallery'
+import { AttachmentPicker } from '../features/helpdesk/AttachmentPicker'
 
 export function HelpdeskTicketPage() {
   const { ticketId } = useParams<{ ticketId: string }>()
@@ -57,6 +59,7 @@ export function HelpdeskTicketPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [commentText, setCommentText] = useState('')
+  const [commentFiles, setCommentFiles] = useState<File[]>([])
   const [posting, setPosting] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -120,12 +123,13 @@ export function HelpdeskTicketPage() {
   const postComment = async () => {
     if (!ticketId || !actor) return
     const text = commentText.trim()
-    if (!text) return
+    if (!text && commentFiles.length === 0) return
     setPosting(true)
     setActionError(null)
     try {
-      await addComment(db, ticketId, actor, text)
+      await addComment(db, ticketId, actor, text, commentFiles)
       setCommentText('')
+      setCommentFiles([])
     } catch (e) {
       setActionError(e instanceof Error ? e.message : 'Falha ao enviar atualização.')
     } finally {
@@ -231,6 +235,7 @@ export function HelpdeskTicketPage() {
               <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', mt: 0.5 }}>
                 {ticket.description}
               </Typography>
+              <AttachmentGallery attachments={ticket.attachments} />
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -320,9 +325,12 @@ export function HelpdeskTicketPage() {
                           {c.createdAt.toLocaleString('pt-BR')}
                         </Typography>
                       </Box>
-                      <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                        {c.text}
-                      </Typography>
+                      {c.text ? (
+                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                          {c.text}
+                        </Typography>
+                      ) : null}
+                      <AttachmentGallery attachments={c.attachments} size={84} />
                     </Box>
                   ))}
                 </Stack>
@@ -344,11 +352,23 @@ export function HelpdeskTicketPage() {
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
                     />
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                    <Box sx={{ mt: 1.5 }}>
+                      <AttachmentPicker
+                        files={commentFiles}
+                        onChange={setCommentFiles}
+                        onError={(msg) => msg && setActionError(msg)}
+                        disabled={posting}
+                      />
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1.5 }}>
                       <Button
                         variant="contained"
                         onClick={() => void postComment()}
-                        disabled={posting || commentText.trim().length === 0}
+                        disabled={
+                          posting ||
+                          (commentText.trim().length === 0 &&
+                            commentFiles.length === 0)
+                        }
                       >
                         {posting ? 'Enviando…' : 'Enviar atualização'}
                       </Button>

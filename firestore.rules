@@ -32,13 +32,13 @@ service cloud.firestore {
         || userData().isAdmin == true;
     }
 
-    /** Agente do helpdesk (chamados internos): setor T.I, ou dev/admin. */
+    /** Agente do helpdesk (chamados internos): função T.I, ou dev/admin. */
     function helpdeskAgent() {
       return isActiveUser()
         && (
           userData().isDev == true
           || userData().isAdmin == true
-          || userData().sector == 'ti'
+          || userData().isTi == true
         );
     }
 

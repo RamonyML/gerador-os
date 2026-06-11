@@ -10,10 +10,11 @@ export function canUseHelpdesk(profile: UserProfile | null): boolean {
 
 /**
  * Gestão dos chamados (estilo GLPI): receber, resgatar, atribuir, atualizar e
- * encerrar com parecer resolutivo. Restrito ao setor **T.I** (e dev/admin).
+ * encerrar com parecer resolutivo. Restrito a quem tem a **função T.I**
+ * (independente do setor) — e dev/admin têm acesso total.
  */
 export function canManageHelpdesk(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
   if (profile.isDev === true || profile.isAdmin === true) return true
-  return profile.sector === 'ti'
+  return profile.isTi === true
 }

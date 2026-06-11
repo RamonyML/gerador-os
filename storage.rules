@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Anexos de chamados internos (helpdesk/GLPI).
+    // Qualquer usuário autenticado pode enviar imagens de até 10MB e ler os anexos.
+    // O controle de quem vê cada chamado é feito na aplicação (URLs ficam no Firestore,
+    // protegido por regras) e pelo token de download gerado no upload.
+    match /tickets/{ticketId}/{allPaths=**} {
+      allow read: if request.auth != null;
+
+      allow write: if request.auth != null
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/(png|jpeg|jpg|webp|gif)');
+    }
+
+    // Tudo o que não estiver explicitamente liberado é negado.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

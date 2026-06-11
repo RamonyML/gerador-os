@@ -85,6 +85,20 @@ export type TicketResolution = {
   at: Date
 }
 
+/** Imagem anexada a um chamado ou a uma atualização da linha do tempo. */
+export type TicketAttachment = {
+  /** Caminho no Firebase Storage. */
+  path: string
+  /** URL de download (com token) usada para exibir/baixar a imagem. */
+  url: string
+  /** Nome original do arquivo. */
+  name: string
+  /** MIME type (ex.: `image/png`). */
+  contentType: string
+  /** Tamanho em bytes. */
+  size: number
+}
+
 export type Ticket = {
   id: string
   title: string
@@ -103,6 +117,7 @@ export type Ticket = {
   resolvedAt: Date | null
   resolution: TicketResolution | null
   commentsCount: number
+  attachments: TicketAttachment[]
 }
 
 export type TicketDraft = {
@@ -120,6 +135,7 @@ export type TicketComment = {
   /** `ti` quando o autor do comentário é agente do T.I; `solicitante` caso contrário. */
   authorRole: 'solicitante' | 'ti'
   createdAt: Date
+  attachments: TicketAttachment[]
 }
 
 export function isTicketStatus(value: unknown): value is TicketStatus {

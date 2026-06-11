@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Alert,
   Autocomplete,
@@ -10,14 +10,10 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
   InputLabel,
   MenuItem,
   Paper,
-  Radio,
-  RadioGroup,
   Select,
   Stack,
   Table,
@@ -27,10 +23,11 @@ import {
   TableHead,
   TableRow,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import {
   doc,
   getDoc,
@@ -49,10 +46,12 @@ import {
   parseEscalaMes,
 } from '../lib/escalaFirestore'
 import {
+  horariosTurnoSetor,
   tituloTurnoNoDialogo,
   TURNOS_EXTRAS,
   turnosPrincipaisParaData,
   type TurnoFixoMeta,
+  type TurnoVariant,
 } from '../lib/escalaTurnosFixos'
 import {
   callableErrorMessage,
@@ -73,58 +72,19 @@ import {
 import type { EscalaMesDays } from '../types/escala'
 import { escalaMesDocId } from '../types/escala'
 
-/** Semana começando no domingo (calendário comum no Brasil). */
-const WEEK_HEADERS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+/** Grade semanal começando na segunda (estilo escala). Colunas Seg → Dom. */
+const WEEK_HEADERS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
 
-type ReplicarModeloBase = 'dia1' | 'primeiraSegunda'
-
-function firstMondayDayOfMonth(year: number, monthIndex: number): number {
-  for (let d = 1; d <= 7; d += 1) {
-    if (new Date(year, monthIndex, d, 12, 0, 0, 0).getDay() === 1) return d
+function variantLabel(variant: TurnoVariant): string {
+  switch (variant) {
+    case 'homeoffice':
+      return 'Home office'
+    case 'extra':
+      return 'Extra'
+    case 'presencial':
+    default:
+      return 'Presencial'
   }
-  return 1
-}
-
-function diaModeloReplicacao(
-  modelo: ReplicarModeloBase,
-  year: number,
-  monthIndex: number,
-): number {
-  return modelo === 'dia1' ? 1 : firstMondayDayOfMonth(year, monthIndex)
-}
-
-function isDiaUtilSegSex(date: Date): boolean {
-  const dow = date.getDay()
-  return dow >= 1 && dow <= 5
-}
-
-/** Copia a escala do dia modelo para todas as segundas–sextas do mês. Fins de semana intocados. */
-function replicarEscalaParaDiasUteis(
-  atual: EscalaMesDays,
-  month: Date,
-  modelo: ReplicarModeloBase,
-): EscalaMesDays {
-  const y = month.getFullYear()
-  const m0 = month.getMonth()
-  const lastDay = endOfMonth(month).getDate()
-  const srcNum = diaModeloReplicacao(modelo, y, m0)
-  const template = atual[String(srcNum)] ?? {}
-
-  const cloneShiftMap = (): Record<string, string[]> => {
-    const out: Record<string, string[]> = {}
-    for (const [shiftId, emails] of Object.entries(template)) {
-      out[shiftId] = [...emails]
-    }
-    return out
-  }
-
-  const next = cloneDays(atual)
-  for (let dayNum = 1; dayNum <= lastDay; dayNum += 1) {
-    const date = new Date(y, m0, dayNum, 12, 0, 0, 0)
-    if (!isDiaUtilSegSex(date)) continue
-    next[String(dayNum)] = cloneShiftMap()
-  }
-  return next
 }
 
 function cloneDays(d: EscalaMesDays): EscalaMesDays {
@@ -147,23 +107,14 @@ function turnosColunasParaDia(
   dayNum: number,
   daysMap: EscalaMesDays,
   mostrarExtrasVazios: boolean,
+  sector?: Sector | null,
 ): TurnoFixoMeta[] {
-  const principais = turnosPrincipaisParaData(date)
+  const principais = turnosPrincipaisParaData(date, sector)
   if (mostrarExtrasVazios) return [...principais, ...TURNOS_EXTRAS]
   const extrasComPessoas = TURNOS_EXTRAS.filter(
     (ex) => (daysMap[String(dayNum)]?.[ex.id]?.length ?? 0) > 0,
   )
   return [...principais, ...extrasComPessoas]
-}
-
-function totalEscaladosNoDia(dayNum: number, daysMap: EscalaMesDays): number {
-  const dm = daysMap[String(dayNum)]
-  if (!dm) return 0
-  let n = 0
-  for (const emails of Object.values(dm)) {
-    n += emails.length
-  }
-  return n
 }
 
 export function EscalaPage() {
@@ -194,6 +145,20 @@ export function EscalaPage() {
     return d
   })
 
+  /** Visão padrão ao abrir: plantonistas (somente sábados e domingos). */
+  const [viewMode, setViewMode] = useState<'plantonistas' | 'completa'>(
+    'plantonistas',
+  )
+
+  /** Linhas da grade: horários por setor (Comercial tem jornada própria). */
+  const gridSlots = useMemo(() => {
+    const h = horariosTurnoSetor(effectiveSector)
+    return [
+      { key: 'manha', label: 'Manhã', time: h.manha },
+      { key: 'tarde', label: 'Tarde / Noite', time: h.tarde },
+    ]
+  }, [effectiveSector])
+
   const yearMonth = format(month, 'yyyy-MM')
 
   const [days, setDays] = useState<EscalaMesDays>({})
@@ -221,7 +186,6 @@ export function EscalaPage() {
   } | null>(null)
 
   const [pendingEmails, setPendingEmails] = useState<string[]>([])
-  const [extraEmailsRaw, setExtraEmailsRaw] = useState('')
 
   const calendarWeeks = useMemo(() => {
     const y = month.getFullYear()
@@ -229,20 +193,16 @@ export function EscalaPage() {
     const first = new Date(y, m0, 1, 12, 0, 0, 0)
     const lastDay = endOfMonth(month).getDate()
     const jsDow = first.getDay()
-    /** Coluna 0 = domingo */
-    const sundayFirstPad = jsDow
+    /** Coluna 0 = segunda-feira (Seg → Dom). */
+    const mondayFirstPad = (jsDow + 6) % 7
     const cells: (number | null)[] = []
-    for (let i = 0; i < sundayFirstPad; i++) cells.push(null)
+    for (let i = 0; i < mondayFirstPad; i++) cells.push(null)
     for (let d = 1; d <= lastDay; d++) cells.push(d)
     while (cells.length % 7 !== 0) cells.push(null)
     const rows: (number | null)[][] = []
     for (let i = 0; i < cells.length; i += 7) rows.push(cells.slice(i, i + 7))
     return rows
   }, [month])
-
-  const [replicarDialogOpen, setReplicarDialogOpen] = useState(false)
-  const [modeloReplicacao, setModeloReplicacao] =
-    useState<ReplicarModeloBase>('dia1')
 
   const nameByEmail = useMemo(() => buildEmailToDisplayNameMap(roster), [roster])
 
@@ -315,8 +275,8 @@ export function EscalaPage() {
       roster.map((r) => ({
         email: r.email.trim().toLowerCase(),
         label: r.displayName?.trim()
-          ? `${r.displayName} (${r.email})`
-          : `${prettyLocalPartFromEmail(r.email)} (${r.email})`,
+          ? r.displayName.trim()
+          : prettyLocalPartFromEmail(r.email),
       })),
     [roster],
   )
@@ -363,48 +323,17 @@ export function EscalaPage() {
     setSaveError(null)
   }
 
-  const aplicarReplicacaoUteis = () => {
-    const next = replicarEscalaParaDiasUteis(draftDays, month, modeloReplicacao)
-    setDraftDays(next)
-    setReplicarDialogOpen(false)
-  }
-
-  const diaModeloLabel = useMemo(() => {
-    const y = month.getFullYear()
-    const m0 = month.getMonth()
-    const n = diaModeloReplicacao(modeloReplicacao, y, m0)
-    const dt = new Date(y, m0, n, 12, 0, 0, 0)
-    return format(dt, "d 'de' MMMM", { locale: ptBR })
-  }, [month, modeloReplicacao])
-
-  /** Replicação só faz sentido se o dia modelo for dia útil (evita copiar IDs de turno de sáb/dom). */
-  const diaModeloEUteis = useMemo(() => {
-    const y = month.getFullYear()
-    const m0 = month.getMonth()
-    const n = diaModeloReplicacao(modeloReplicacao, y, m0)
-    return isDiaUtilSegSex(new Date(y, m0, n, 12, 0, 0, 0))
-  }, [month, modeloReplicacao])
-
   const openEditShift = (dayNum: number, shift: TurnoFixoMeta) => {
     if (!canEdit) return
     const initial = draftDays[String(dayNum)]?.[shift.id] ?? []
     setPendingEmails([...initial])
-    setExtraEmailsRaw('')
     setDayDialog(null)
     setCellDialog({ dayNum, shift })
   }
 
-  function parseExtraEmails(raw: string): string[] {
-    return raw
-      .split(/[,;\s]+/)
-      .map((s) => s.trim().toLowerCase())
-      .filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))
-  }
-
   const applyCellDialog = () => {
     if (!cellDialog) return
-    const fromExtra = parseExtraEmails(extraEmailsRaw)
-    const merged = [...new Set([...pendingEmails, ...fromExtra])]
+    const merged = [...new Set(pendingEmails)]
     const dayKey = String(cellDialog.dayNum)
     setDraftDays((prev) => {
       const next = cloneDays(prev)
@@ -420,10 +349,10 @@ export function EscalaPage() {
 
   const subtitle = effectiveSector ? (
     <>
-      Escala do setor <strong>{SECTOR_LABELS[effectiveSector]}</strong>. Clique em um dia no calendário
-      para ver os operadores por turno.{' '}
+      Escala do setor <strong>{SECTOR_LABELS[effectiveSector]}</strong>. Grade semanal por turno; clique
+      no número do dia para ver o detalhe completo.{' '}
       {canEdit
-        ? 'Gestores editam pelos ícones de lápis em cada turno.'
+        ? 'Gestores clicam em uma célula de turno para editar os operadores.'
         : 'Somente leitura.'}
     </>
   ) : null
@@ -472,17 +401,57 @@ export function EscalaPage() {
           </Alert>
         ) : null}
 
-        <Alert severity="info" icon={<InfoOutlinedIcon />} sx={{ borderRadius: 2 }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Turnos fixos
-          </Typography>
-          <Typography variant="body2" color="text.secondary" component="div">
-            Calendário com semana começando no domingo; sábado e domingo com fundo verde claro. Segunda a
-            sexta: presencial 08:00–16:20 e 13:40–22:00 · Sábado: presencial manhã, HO tarde · Domingo:
-            dois turnos HO · Gestores podem replicar a escala de um dia modelo para todos os dias úteis do
-            mês.
-          </Typography>
-        </Alert>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: 1.5,
+            alignItems: { xs: 'stretch', sm: 'center' },
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+          }}
+        >
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            color="primary"
+            size="small"
+            onChange={(_, v) => {
+              if (v) setViewMode(v as 'plantonistas' | 'completa')
+            }}
+            sx={{
+              '& .MuiToggleButton-root': {
+                textTransform: 'none',
+                fontWeight: 700,
+                px: 2,
+              },
+            }}
+          >
+            <ToggleButton value="plantonistas">Escala de plantonistas</ToggleButton>
+            <ToggleButton value="completa">Escala mensal completa</ToggleButton>
+          </ToggleButtonGroup>
+
+          {canEdit ? (
+            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+              <Button
+                variant="text"
+                size="small"
+                disabled={!dirty || saving}
+                onClick={handleDiscard}
+              >
+                Descartar
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={!dirty || saving || loadingMes}
+                onClick={() => void handleSaveMes()}
+              >
+                {saving ? 'Salvando…' : 'Salvar mês'}
+              </Button>
+            </Stack>
+          ) : null}
+        </Box>
 
         {loadError ? <Alert severity="error">{loadError}</Alert> : null}
         {rosterError ? (
@@ -493,170 +462,309 @@ export function EscalaPage() {
         ) : null}
         {saveError ? <Alert severity="error">{saveError}</Alert> : null}
 
-        {canEdit ? (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              border: 1,
-              borderColor: 'divider',
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-              alignItems: { xs: 'stretch', sm: 'center' },
-              justifyContent: 'space-between',
-            }}
-          >
-            <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="body2" color="text.secondary">
-                Alterações ficam locais até você salvar o mês inteiro.
-              </Typography>
-              <Stack
-                direction={{ xs: 'column', md: 'row' }}
-                spacing={1}
-                useFlexGap
-                sx={{ flexWrap: 'wrap', alignItems: { xs: 'stretch', md: 'center' } }}
-              >
-                <Button
-                  variant="outlined"
-                  size="small"
-                  disabled={saving || loadingMes}
-                  onClick={() => setReplicarDialogOpen(true)}
-                >
-                  Replicar para dias úteis…
-                </Button>
-              </Stack>
-            </Stack>
-            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-              <Button
-                variant="contained"
-                size="small"
-                disabled={!dirty || saving || loadingMes}
-                onClick={() => void handleSaveMes()}
-              >
-                {saving ? 'Salvando…' : 'Salvar mês'}
-              </Button>
-              <Button
-                variant="text"
-                size="small"
-                disabled={!dirty || saving}
-                onClick={handleDiscard}
-              >
-                Descartar
-              </Button>
-            </Stack>
-          </Paper>
-        ) : null}
-
         {loadingMes ? (
           <Typography color="text.secondary">Carregando…</Typography>
         ) : (
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 1, sm: 2 },
-              borderRadius: 2,
-              border: 1,
-              borderColor: 'divider',
-              overflow: 'hidden',
-            }}
-          >
-            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
-              {format(month, 'MMMM yyyy', { locale: ptBR })}
-            </Typography>
+          (() => {
+            const isPlantonistas = viewMode === 'plantonistas'
+            /** Índices de coluna (Seg=0 … Dom=6). Plantonistas = só Sáb e Dom. */
+            const visibleCols = isPlantonistas ? [5, 6] : [0, 1, 2, 3, 4, 5, 6]
+            const gridCols = `128px repeat(${visibleCols.length}, minmax(0, 1fr))`
+            const gridMinWidth = isPlantonistas ? 480 : 820
+            const lastCol = visibleCols.length - 1
 
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-                gap: 0.75,
-                mb: 1,
-              }}
-            >
-              {WEEK_HEADERS.map((h) => (
-                <Typography
-                  key={h}
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ textAlign: 'center', fontWeight: 700 }}
-                >
-                  {h}
+            const weeks = calendarWeeks.filter((week) =>
+              isPlantonistas ? visibleCols.some((di) => week[di] != null) : true,
+            )
+
+            if (weeks.length === 0) {
+              return (
+                <Typography color="text.secondary">
+                  Sem fins de semana neste mês.
                 </Typography>
-              ))}
-            </Box>
+              )
+            }
 
-            {calendarWeeks.map((week, wi) => (
-              <Box
-                key={wi}
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-                  gap: 0.75,
-                  mb: 0.75,
-                }}
-              >
-                {week.map((dayNum, di) => {
-                  if (dayNum == null) {
-                    return <Box key={`e-${wi}-${di}`} sx={{ minHeight: 52 }} />
-                  }
+            return (
+              <Stack spacing={2}>
+                {weeks.map((week, wi) => {
                   const y = month.getFullYear()
                   const m0 = month.getMonth()
-                  const date = new Date(y, m0, dayNum, 12, 0, 0, 0)
-                  const dow = date.getDay()
-                  const weekend = dow === 0 || dow === 6
-                  const n = totalEscaladosNoDia(dayNum, draftDays)
-                  const isToday = isSameDay(date, today)
-
-                  const bgUteis = alpha(
-                    theme.palette.grey[500],
-                    theme.palette.mode === 'dark' ? 0.08 : 0.05,
-                  )
-                  const bgFimSemana = alpha(
+                  const headerBg = alpha(theme.palette.grey[500], 0.08)
+                  const weekendBg = alpha(
                     theme.palette.success.main,
-                    theme.palette.mode === 'dark' ? 0.14 : 0.11,
+                    theme.palette.mode === 'dark' ? 0.12 : 0.08,
                   )
+                  const labelBg = alpha(theme.palette.grey[500], 0.06)
 
                   return (
-                    <Box
-                      key={dayNum}
-                      component="button"
-                      type="button"
-                      onClick={() => setDayDialog({ dayNum, date })}
+                    <Paper
+                      key={wi}
+                      elevation={0}
                       sx={{
-                        cursor: 'pointer',
+                        borderRadius: 2,
                         border: 1,
-                        borderColor: isToday ? 'primary.main' : 'divider',
-                        borderRadius: 1.5,
-                        minHeight: 52,
-                        py: 0.75,
-                        px: 0.5,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        gap: 0.25,
-                        bgcolor: weekend ? bgFimSemana : bgUteis,
-                        '&:hover': {
-                          borderColor: 'primary.main',
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                        },
+                        borderColor: 'divider',
+                        overflow: 'hidden',
                       }}
                     >
-                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                        {dayNum}
-                      </Typography>
-                      {n > 0 ? (
-                        <Chip label={n} size="small" sx={{ height: 20, fontSize: 11 }} />
-                      ) : (
-                        <Box sx={{ height: 20 }} />
-                      )}
-                    </Box>
+                      <Box sx={{ overflowX: 'auto' }}>
+                        <Box
+                          sx={{
+                            minWidth: gridMinWidth,
+                            display: 'grid',
+                            gridTemplateColumns: gridCols,
+                          }}
+                        >
+                          {/* Canto: rótulo do mês */}
+                          <Box
+                            sx={{
+                              p: 1,
+                              bgcolor: labelBg,
+                              borderBottom: 1,
+                              borderRight: 1,
+                              borderColor: 'divider',
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ fontWeight: 700, textTransform: 'capitalize' }}
+                            >
+                              {format(month, 'MMM yyyy', { locale: ptBR })}
+                            </Typography>
+                          </Box>
+
+                          {/* Cabeçalho dos dias */}
+                          {visibleCols.map((di, ci) => {
+                            const dayNum = week[di]
+                            const weekend = di >= 5
+                            if (dayNum == null) {
+                              return (
+                                <Box
+                                  key={`h-${wi}-${di}`}
+                                  sx={{
+                                    p: 1,
+                                    bgcolor: weekend ? weekendBg : headerBg,
+                                    borderBottom: 1,
+                                    borderRight: ci < lastCol ? 1 : 0,
+                                    borderColor: 'divider',
+                                  }}
+                                />
+                              )
+                            }
+                            const date = new Date(y, m0, dayNum, 12, 0, 0, 0)
+                            const isToday = isSameDay(date, today)
+                            return (
+                              <Box
+                                key={`h-${wi}-${di}`}
+                                component="button"
+                                type="button"
+                                onClick={() => setDayDialog({ dayNum, date })}
+                                sx={{
+                                  cursor: 'pointer',
+                                  textAlign: 'left',
+                                  border: 0,
+                                  borderBottom: 1,
+                                  borderRight: ci < lastCol ? 1 : 0,
+                                  borderColor: 'divider',
+                                  bgcolor: weekend ? weekendBg : headerBg,
+                                  p: 1,
+                                  display: 'flex',
+                                  alignItems: 'baseline',
+                                  justifyContent: 'space-between',
+                                  gap: 0.5,
+                                  '&:hover': {
+                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                  },
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    fontWeight: 700,
+                                    color: 'text.secondary',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {WEEK_HEADERS[di]}
+                                </Typography>
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{
+                                    fontWeight: 800,
+                                    color: isToday ? 'primary.main' : 'text.primary',
+                                  }}
+                                >
+                                  {dayNum}
+                                </Typography>
+                              </Box>
+                            )
+                          })}
+
+                          {/* Linhas de turno */}
+                          {gridSlots.map((slot, si) => (
+                            <Fragment key={slot.key}>
+                              <Box
+                                sx={{
+                                  p: 1,
+                                  bgcolor: labelBg,
+                                  borderRight: 1,
+                                  borderBottom: si < gridSlots.length - 1 ? 1 : 0,
+                                  borderColor: 'divider',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                                  {slot.label}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  {slot.time}
+                                </Typography>
+                              </Box>
+
+                              {visibleCols.map((di, ci) => {
+                                const dayNum = week[di]
+                                const weekend = di >= 5
+                                const cellBorder = {
+                                  borderRight: ci < lastCol ? 1 : 0,
+                                  borderBottom:
+                                    si < gridSlots.length - 1 ? 1 : 0,
+                                  borderColor: 'divider',
+                                }
+                                if (dayNum == null) {
+                                  return (
+                                    <Box
+                                      key={`c-${wi}-${si}-${di}`}
+                                      sx={{
+                                        ...cellBorder,
+                                        bgcolor: weekend ? weekendBg : labelBg,
+                                        minHeight: 88,
+                                      }}
+                                    />
+                                  )
+                                }
+                                const date = new Date(y, m0, dayNum, 12, 0, 0, 0)
+                                const shift = turnosPrincipaisParaData(
+                                  date,
+                                  effectiveSector,
+                                )[si]
+                                const emails = shift
+                                  ? draftDays[String(dayNum)]?.[shift.id] ?? []
+                                  : []
+                                const clickable = canEdit && shift != null
+
+                                return (
+                                  <Box
+                                    key={`c-${wi}-${si}-${di}`}
+                                    component={clickable ? 'button' : 'div'}
+                                    type={clickable ? 'button' : undefined}
+                                    onClick={
+                                      clickable
+                                        ? () => openEditShift(dayNum, shift)
+                                        : undefined
+                                    }
+                                    sx={{
+                                      ...cellBorder,
+                                      textAlign: 'left',
+                                      border: clickable ? 0 : undefined,
+                                      ...(clickable ? cellBorder : {}),
+                                      width: '100%',
+                                      minHeight: 88,
+                                      p: 1,
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      gap: 0.5,
+                                      bgcolor: weekend
+                                        ? weekendBg
+                                        : 'background.paper',
+                                      cursor: clickable ? 'pointer' : 'default',
+                                      transition: 'background-color .15s',
+                                      ...(clickable
+                                        ? {
+                                            '&:hover': {
+                                              bgcolor: alpha(
+                                                theme.palette.primary.main,
+                                                0.1,
+                                              ),
+                                            },
+                                          }
+                                        : {}),
+                                    }}
+                                  >
+                                    {shift ? (
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          fontWeight: 700,
+                                          letterSpacing: 0.3,
+                                          textTransform: 'uppercase',
+                                          fontSize: 10,
+                                          color:
+                                            shift.variant === 'homeoffice'
+                                              ? 'warning.main'
+                                              : 'success.main',
+                                        }}
+                                      >
+                                        {variantLabel(shift.variant)}
+                                      </Typography>
+                                    ) : null}
+                                    {emails.length === 0 ? (
+                                      <Typography
+                                        variant="body2"
+                                        color="text.disabled"
+                                      >
+                                        —
+                                      </Typography>
+                                    ) : (
+                                      <Box
+                                        sx={{
+                                          display: 'flex',
+                                          flexWrap: 'wrap',
+                                          gap: 0.5,
+                                        }}
+                                      >
+                                        {emails.map((em) => (
+                                          <Chip
+                                            key={em}
+                                            label={displayNameForSchedule(
+                                              em,
+                                              nameByEmail,
+                                            )}
+                                            size="small"
+                                            variant="outlined"
+                                            sx={{
+                                              height: 24,
+                                              borderRadius: 1.5,
+                                              borderColor: 'divider',
+                                              bgcolor: alpha(
+                                                theme.palette.background.paper,
+                                                0.6,
+                                              ),
+                                              fontSize: 12,
+                                              '& .MuiChip-label': { px: 1 },
+                                            }}
+                                          />
+                                        ))}
+                                      </Box>
+                                    )}
+                                  </Box>
+                                )
+                              })}
+                            </Fragment>
+                          ))}
+                        </Box>
+                      </Box>
+                    </Paper>
                   )
                 })}
-              </Box>
-            ))}
-          </Paper>
+              </Stack>
+            )
+          })()
         )}
 
         {!loadingMes && loadedKey ? (
@@ -665,58 +773,6 @@ export function EscalaPage() {
           </Typography>
         ) : null}
       </Stack>
-
-      <Dialog
-        open={replicarDialogOpen}
-        onClose={() => setReplicarDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Replicar para dias úteis</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            A escala do dia <strong>{diaModeloLabel}</strong> será copiada para{' '}
-            <strong>todas as segundas-feiras a sextas-feiras</strong> deste mês. Sábados e domingos não
-            são alterados. Use «Salvar mês» para gravar no Firestore.
-          </Typography>
-          {!diaModeloEUteis ? (
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              O dia modelo não é segunda a sexta (ex.: dia 1 em fim de semana). Escolha «Primeira
-              segunda-feira» ou monte a escala num dia útil antes de replicar.
-            </Alert>
-          ) : null}
-          <FormControl component="fieldset" variant="standard">
-            <FormLabel component="legend">Dia modelo</FormLabel>
-            <RadioGroup
-              value={modeloReplicacao}
-              onChange={(e) =>
-                setModeloReplicacao(e.target.value as ReplicarModeloBase)
-              }
-            >
-              <FormControlLabel
-                value="dia1"
-                control={<Radio size="small" />}
-                label="Sempre o dia 1 do mês"
-              />
-              <FormControlLabel
-                value="primeiraSegunda"
-                control={<Radio size="small" />}
-                label="Primeira segunda-feira do mês"
-              />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setReplicarDialogOpen(false)}>Cancelar</Button>
-          <Button
-            variant="contained"
-            onClick={aplicarReplicacaoUteis}
-            disabled={!diaModeloEUteis}
-          >
-            Aplicar
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Detalhe do dia — tabela por turno */}
       <Dialog
@@ -741,6 +797,7 @@ export function EscalaPage() {
                       dayDialog.dayNum,
                       draftDays,
                       canEdit,
+                      effectiveSector,
                     ).map((meta) => (
                       <TableCell
                         key={meta.id}
@@ -782,6 +839,7 @@ export function EscalaPage() {
                       dayDialog.dayNum,
                       draftDays,
                       canEdit,
+                      effectiveSector,
                     ).map((meta) => {
                       const emails = draftDays[String(dayDialog.dayNum)]?.[meta.id] ?? []
                       const nomes = emails.map((em) => displayNameForSchedule(em, nameByEmail))
@@ -852,15 +910,6 @@ export function EscalaPage() {
                 margin="normal"
               />
             )}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Incluir por e-mail (opcional)"
-            placeholder="email1@empresa.com, email2@empresa.com"
-            value={extraEmailsRaw}
-            onChange={(e) => setExtraEmailsRaw(e.target.value)}
-            helperText="Separados por vírgula, se a pessoa não aparecer na busca."
           />
         </DialogContent>
         <DialogActions>

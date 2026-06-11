@@ -3,7 +3,30 @@
  * IDs estáveis para chaves no Firestore (`escalaMes/{sector}_{yyyy-MM}` → days).
  */
 
+import type { Sector } from '../types/profile'
+
 export type DiaCalendarioTipo = 'segunda_a_sexta' | 'sabado' | 'domingo'
+
+/** Horários dos dois turnos principais de seg–sex (variam por setor). */
+export interface HorariosTurno {
+  manha: string
+  tarde: string
+}
+
+const HORARIOS_PADRAO: HorariosTurno = {
+  manha: '08:00 às 16:20',
+  tarde: '13:40 às 22:00',
+}
+
+const HORARIOS_COMERCIAL: HorariosTurno = {
+  manha: '08:00 às 18:00',
+  tarde: '11:00 às 20:00',
+}
+
+/** Comercial tem jornada própria; demais setores usam o padrão. */
+export function horariosTurnoSetor(sector?: Sector | null): HorariosTurno {
+  return sector === 'comercial' ? HORARIOS_COMERCIAL : HORARIOS_PADRAO
+}
 
 export type TurnoVariant = 'presencial' | 'homeoffice' | 'extra'
 
@@ -29,18 +52,22 @@ export const SHIFT_IDS = {
   fer5h: 'fer_jornada_5h',
 } as const
 
-const SEG_P1: TurnoFixoMeta = {
-  id: SHIFT_IDS.segSex0816,
-  headline: 'Presencial · manhã',
-  detail: '08:00 às 16:20 · segunda a sexta',
-  variant: 'presencial',
-}
-
-const SEG_P2: TurnoFixoMeta = {
-  id: SHIFT_IDS.segSex1340,
-  headline: 'Presencial · tarde/noite',
-  detail: '13:40 às 22:00 · segunda a sexta',
-  variant: 'presencial',
+function turnosSegSex(sector?: Sector | null): TurnoFixoMeta[] {
+  const h = horariosTurnoSetor(sector)
+  return [
+    {
+      id: SHIFT_IDS.segSex0816,
+      headline: 'Presencial · manhã',
+      detail: `${h.manha} · segunda a sexta`,
+      variant: 'presencial',
+    },
+    {
+      id: SHIFT_IDS.segSex1340,
+      headline: 'Presencial · tarde/noite',
+      detail: `${h.tarde} · segunda a sexta`,
+      variant: 'presencial',
+    },
+  ]
 }
 
 const SAB_PRES: TurnoFixoMeta = {
@@ -111,11 +138,14 @@ export function labelTipoDia(t: DiaCalendarioTipo): string {
   }
 }
 
-/** Turnos principais do dia (seg–sex / sáb / dom). */
-export function turnosPrincipaisParaData(date: Date): TurnoFixoMeta[] {
+/** Turnos principais do dia (seg–sex / sáb / dom). Seg–sex variam por setor. */
+export function turnosPrincipaisParaData(
+  date: Date,
+  sector?: Sector | null,
+): TurnoFixoMeta[] {
   switch (tipoDiaNoMesmoFuso(date)) {
     case 'segunda_a_sexta':
-      return [SEG_P1, SEG_P2]
+      return turnosSegSex(sector)
     case 'sabado':
       return [SAB_PRES, SAB_HO]
     case 'domingo':

@@ -38,7 +38,6 @@ const VALID_SECTORS = new Set([
   'financeiro',
   'comercial',
   'cadastro',
-  'ti',
 ])
 
 const VALID_HIERARCHIES = new Set(['gerente', 'supervisor', 'operador'])
@@ -106,6 +105,11 @@ function canAssignDevFlag(actor: ActorProfile): boolean {
 
 /** Dev ou administrador podem conceder papel administrativo (sem ser dev). */
 function canAssignAdminFlag(actor: ActorProfile): boolean {
+  return actor.active === true && (actor.isDev === true || actor.isAdmin === true)
+}
+
+/** Função T.I (gestão de chamados/GLPI): atribuível por dev ou administrador. */
+function canAssignTiFlag(actor: ActorProfile): boolean {
   return actor.active === true && (actor.isDev === true || actor.isAdmin === true)
 }
 
@@ -212,6 +216,7 @@ export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       profileActive: prof ? prof.active !== false : null,
       isDev: prof?.isDev === true,
       isAdmin: prof?.isAdmin === true,
+      isTi: prof?.isTi === true,
       profileMissing,
     })
   }
@@ -307,6 +312,7 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   const active = request.data?.active !== false
   const wantIsAdmin = request.data?.isAdmin === true
   const wantIsDev = request.data?.isDev === true
+  const wantIsTi = request.data?.isTi === true
 
   if (!email || !password || password.length < 6) {
     throw new HttpsError(
@@ -329,6 +335,12 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   }
   if (wantIsDev && !canAssignDevFlag(actor)) {
     throw new HttpsError('permission-denied', 'Só desenvolvedor pode definir dev.')
+  }
+  if (wantIsTi && !canAssignTiFlag(actor)) {
+    throw new HttpsError(
+      'permission-denied',
+      'Sem permissão para definir a função T.I.',
+    )
   }
 
   let userRecord
@@ -361,6 +373,7 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   }
   if (wantIsAdmin) profile.isAdmin = true
   if (wantIsDev) profile.isDev = true
+  if (wantIsTi) profile.isTi = true
 
   await getFirestore().doc(`users/${userRecord.uid}`).set(profile)
 
@@ -424,6 +437,10 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
     request.data?.isDev !== undefined
       ? request.data.isDev === true
       : existingData.isDev === true
+  const wantIsTi =
+    request.data?.isTi !== undefined
+      ? request.data.isTi === true
+      : existingData.isTi === true
 
   if (
     (request.data?.isAdmin === true || request.data?.isAdmin === false) &&
@@ -441,6 +458,15 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
     throw new HttpsError(
       'permission-denied',
       'Só desenvolvedor pode alterar o flag dev.',
+    )
+  }
+  if (
+    (request.data?.isTi === true || request.data?.isTi === false) &&
+    !canAssignTiFlag(actor)
+  ) {
+    throw new HttpsError(
+      'permission-denied',
+      'Sem permissão para alterar a função T.I.',
     )
   }
 
@@ -523,6 +549,9 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   }
   if (canAssignDevFlag(actor)) {
     profileUpdate.isDev = wantIsDev === true
+  }
+  if (canAssignTiFlag(actor)) {
+    profileUpdate.isTi = wantIsTi === true
   }
 
   await db.doc(`users/${uid}`).set(profileUpdate, { merge: true })

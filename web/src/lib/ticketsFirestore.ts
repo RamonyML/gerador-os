@@ -9,6 +9,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
   type Firestore,
@@ -20,11 +21,13 @@ import {
   isTicketPriority,
   isTicketStatus,
   type Ticket,
+  type TicketAttachment,
   type TicketComment,
   type TicketDraft,
   type TicketResolution,
   type TicketStatus,
 } from '../types/ticket'
+import { uploadTicketImages } from './ticketAttachments'
 
 const TICKETS_COLLECTION = 'tickets'
 
@@ -58,6 +61,24 @@ export function ticketActorFromProfile(
 function parseDateOrNull(v: unknown): Date | null {
   if (v instanceof Timestamp) return v.toDate()
   return null
+}
+
+function parseAttachments(data: unknown): TicketAttachment[] {
+  if (!Array.isArray(data)) return []
+  const out: TicketAttachment[] = []
+  for (const item of data) {
+    if (!item || typeof item !== 'object') continue
+    const a = item as Record<string, unknown>
+    if (typeof a.url !== 'string' || typeof a.path !== 'string') continue
+    out.push({
+      path: a.path,
+      url: a.url,
+      name: typeof a.name === 'string' ? a.name : 'imagem',
+      contentType: typeof a.contentType === 'string' ? a.contentType : '',
+      size: typeof a.size === 'number' ? a.size : 0,
+    })
+  }
+  return out
 }
 
 function parseResolution(data: unknown): TicketResolution | null {
@@ -115,6 +136,7 @@ function parseTicket(id: string, data: Record<string, unknown>): Ticket | null {
     resolution: parseResolution(data.resolution),
     commentsCount:
       typeof data.commentsCount === 'number' ? data.commentsCount : 0,
+    attachments: parseAttachments(data.attachments),
   }
 }
 
@@ -122,13 +144,21 @@ function sortTickets(list: Ticket[]): Ticket[] {
   return [...list].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 }
 
-/** Cria um chamado interno. Sempre nasce com status `aberto` e sem responsável. */
+/**
+ * Cria um chamado interno. Sempre nasce com status `aberto` e sem responsável.
+ * Quando há imagens, elas são enviadas ao Storage antes de gravar o documento.
+ */
 export async function createTicket(
   db: Firestore,
   actor: TicketActor,
   draft: TicketDraft,
+  files: File[] = [],
 ): Promise<string> {
-  const ref = await addDoc(collection(db, TICKETS_COLLECTION), {
+  const ref = doc(collection(db, TICKETS_COLLECTION))
+  const attachments = files.length
+    ? await uploadTicketImages(ref.id, files, 'root')
+    : []
+  await setDoc(ref, {
     title: draft.title.trim(),
     description: draft.description.trim(),
     category: draft.category,
@@ -143,6 +173,7 @@ export async function createTicket(
     resolution: null,
     resolvedAt: null,
     commentsCount: 0,
+    attachments,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
@@ -306,16 +337,19 @@ function parseComment(
   const authorUid = data.authorUid
   const authorName = data.authorName
   const createdAt = data.createdAt
-  if (typeof text !== 'string' || text.trim().length === 0) return null
+  const attachments = parseAttachments(data.attachments)
+  const hasText = typeof text === 'string' && text.trim().length > 0
+  if (!hasText && attachments.length === 0) return null
   if (typeof authorUid !== 'string' || authorUid.length === 0) return null
   if (typeof authorName !== 'string') return null
   return {
     id,
-    text,
+    text: typeof text === 'string' ? text : '',
     authorUid,
     authorName,
     authorRole: data.authorRole === 'ti' ? 'ti' : 'solicitante',
     createdAt: createdAt instanceof Timestamp ? createdAt.toDate() : new Date(0),
+    attachments,
   }
 }
 
@@ -352,14 +386,21 @@ export async function addComment(
   ticketId: string,
   actor: TicketActor,
   text: string,
+  files: File[] = [],
 ): Promise<void> {
   const trimmed = text.trim()
-  if (!trimmed) throw new Error('Escreva uma atualização.')
+  if (!trimmed && files.length === 0) {
+    throw new Error('Escreva uma atualização ou anexe uma imagem.')
+  }
+  const attachments = files.length
+    ? await uploadTicketImages(ticketId, files, 'comments')
+    : []
   await addDoc(collection(db, TICKETS_COLLECTION, ticketId, 'comments'), {
     text: trimmed,
     authorUid: actor.uid,
     authorName: actor.name,
     authorRole: actor.isAgent ? 'ti' : 'solicitante',
+    attachments,
     createdAt: serverTimestamp(),
   })
   try {

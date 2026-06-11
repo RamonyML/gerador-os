@@ -93,6 +93,7 @@ export function AdminUsersPage() {
   const [active, setActive] = useState(true)
   const [flagAdmin, setFlagAdmin] = useState(false)
   const [flagDev, setFlagDev] = useState(false)
+  const [flagTi, setFlagTi] = useState(false)
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterSector, setFilterSector] = useState<Sector | ''>('')
@@ -179,6 +180,7 @@ export function AdminUsersPage() {
     setActive(true)
     setFlagAdmin(false)
     setFlagDev(false)
+    setFlagTi(false)
     setDialogOpen(true)
   }
 
@@ -194,6 +196,7 @@ export function AdminUsersPage() {
     setActive(accountActive)
     setFlagAdmin(row.isAdmin === true)
     setFlagDev(row.isDev === true)
+    setFlagTi(row.isTi === true)
     setDialogOpen(true)
   }
 
@@ -224,6 +227,7 @@ export function AdminUsersPage() {
           active,
           ...(canEditAdminFlag ? { isAdmin: flagAdmin } : {}),
           ...(isDev ? { isDev: flagDev } : {}),
+          ...(canEditAdminFlag ? { isTi: flagTi } : {}),
         })
       } else {
         const payload: Parameters<typeof manageUsersUpdate>[0] = {
@@ -237,6 +241,7 @@ export function AdminUsersPage() {
         if (password.trim()) payload.password = password.trim()
         if (canEditAdminFlag) payload.isAdmin = flagAdmin
         if (isDev) payload.isDev = flagDev
+        if (canEditAdminFlag) payload.isTi = flagTi
         await manageUsersUpdate(payload)
       }
       setDialogOpen(false)
@@ -461,7 +466,23 @@ export function AdminUsersPage() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {r.sector ? SECTOR_LABELS[r.sector as Sector] ?? r.sector : '—'}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <span>
+                          {r.sector
+                            ? SECTOR_LABELS[r.sector as Sector] ?? r.sector
+                            : '—'}
+                        </span>
+                        {r.isTi ? (
+                          <Chip size="small" color="primary" label="T.I" />
+                        ) : null}
+                      </Box>
                     </TableCell>
                     <TableCell>
                       {r.hierarchy ? HIERARCHY_LABELS[r.hierarchy as Hierarchy] ?? r.hierarchy : '—'}
@@ -627,6 +648,17 @@ export function AdminUsersPage() {
                   />
                 }
                 label="Administrador (gestão de usuários em todos os setores)"
+              />
+            ) : null}
+            {canEditAdminFlag ? (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={flagTi}
+                    onChange={(e) => setFlagTi(e.target.checked)}
+                  />
+                }
+                label="Função T.I (gerencia chamados/GLPI, independente do setor)"
               />
             ) : null}
             {isDev ? (

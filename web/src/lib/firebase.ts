@@ -3,6 +3,7 @@ import { getAnalytics, isSupported } from 'firebase/analytics'
 import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions'
+import { connectStorageEmulator, getStorage } from 'firebase/storage'
 
 /** Região das HTTPS callable Functions (igual a `REGION` em `functions/src/index.ts`). */
 export const FUNCTIONS_REGION =
@@ -21,12 +22,14 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
+export const storage = getStorage(app)
 
 /** Liga aos emuladores locais quando `VITE_USE_FIREBASE_EMULATORS=true`. */
 const useEmulators = import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true'
 if (useEmulators) {
   connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
   connectFirestoreEmulator(db, '127.0.0.1', 8080)
+  connectStorageEmulator(storage, '127.0.0.1', 9199)
 }
 
 export function getFirebaseFunctions() {

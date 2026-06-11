@@ -1,5 +1,6 @@
 import { Chip } from '@mui/material'
 import type { ChipProps } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
 import {
   TICKET_PRIORITY_LABELS,
   TICKET_STATUS_LABELS,
@@ -9,7 +10,7 @@ import {
 
 const STATUS_COLOR: Record<TicketStatus, ChipProps['color']> = {
   aberto: 'info',
-  em_atendimento: 'primary',
+  em_atendimento: 'info',
   aguardando_solicitante: 'warning',
   resolvido: 'success',
 }
@@ -28,12 +29,25 @@ export function TicketStatusChip({
   status: TicketStatus
   size?: ChipProps['size']
 }) {
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+  const emAtendimento = status === 'em_atendimento'
+
   return (
     <Chip
       size={size}
       label={TICKET_STATUS_LABELS[status]}
       color={STATUS_COLOR[status]}
       variant={status === 'aberto' ? 'outlined' : 'filled'}
+      sx={
+        emAtendimento
+          ? {
+              bgcolor: alpha(theme.palette.info.main, isDark ? 0.28 : 0.15),
+              color: isDark ? theme.palette.info.light : theme.palette.info.dark,
+              fontWeight: 600,
+            }
+          : undefined
+      }
     />
   )
 }
