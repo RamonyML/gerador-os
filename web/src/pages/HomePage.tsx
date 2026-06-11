@@ -5,7 +5,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import { alpha, useTheme } from '@mui/material/styles'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
@@ -118,13 +117,6 @@ export function HomePage() {
           } satisfies QuickAction,
         ]
       : []),
-    {
-      key: 'os',
-      title: 'Gerar O.S.',
-      description: 'Monte textos a partir dos fluxos de ordem de serviço do sistema.',
-      to: '/gerar-os',
-      icon: <DescriptionOutlinedIcon sx={{ fontSize: 28 }} />,
-    },
     {
       key: 'upgrades',
       title: 'Registro de Upgrades',
