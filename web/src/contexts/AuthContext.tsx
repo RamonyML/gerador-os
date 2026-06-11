@@ -16,6 +16,7 @@ import {
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../lib/firebase'
 import { parseUserProfile, type UserProfile } from '../types/profile'
+import { upsertMyPublicProfile } from '../lib/usersPublic'
 
 type AuthContextValue = {
   user: User | null
@@ -55,6 +56,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         const parsed = parseUserProfile(snap.data() as Record<string, unknown>)
         setProfile(parsed)
+        const publicName =
+          parsed?.displayName?.trim() ||
+          nextUser.displayName ||
+          nextUser.email?.split('@')[0] ||
+          null
+        void upsertMyPublicProfile(db, nextUser.uid, {
+          displayName: publicName,
+          photoURL: nextUser.photoURL ?? null,
+        }).catch(() => {
+          /* cartão público é best-effort; ignora falha */
+        })
       } finally {
         setInitializing(false)
       }

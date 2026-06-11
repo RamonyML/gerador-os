@@ -46,6 +46,7 @@ import {
 } from '../features/helpdesk/ticketChips'
 import { AttachmentGallery } from '../features/helpdesk/AttachmentGallery'
 import { AttachmentPicker } from '../features/helpdesk/AttachmentPicker'
+import { subscribeUsersPublic, type PublicProfile } from '../lib/usersPublic'
 
 function initialsFrom(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -63,6 +64,9 @@ export function HelpdeskTicketPage() {
 
   const [ticket, setTicket] = useState<Ticket | null>(null)
   const [comments, setComments] = useState<TicketComment[]>([])
+  const [publicProfiles, setPublicProfiles] = useState<
+    Record<string, PublicProfile>
+  >({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -117,6 +121,19 @@ export function HelpdeskTicketPage() {
       unsubComments()
     }
   }, [ticketId])
+
+  useEffect(() => {
+    return subscribeUsersPublic(
+      db,
+      (map) => setPublicProfiles(map),
+      () => {
+        /* fotos são opcionais; ignora erro do mapa público */
+      },
+    )
+  }, [])
+
+  const resolvePhoto = (uid: string, fallback: string | null): string | undefined =>
+    publicProfiles[uid]?.photoURL ?? fallback ?? undefined
 
   const isAuthor = !!ticket && !!user && ticket.authorUid === user.uid
   const canComment = isAgent || isAuthor
@@ -245,7 +262,7 @@ export function HelpdeskTicketPage() {
             >
               <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 1 }}>
                 <Avatar
-                  src={ticket.authorPhotoURL ?? undefined}
+                  src={resolvePhoto(ticket.authorUid, ticket.authorPhotoURL)}
                   sx={{
                     width: 36,
                     height: 36,
@@ -344,7 +361,7 @@ export function HelpdeskTicketPage() {
                       sx={{ px: 2.5, py: 2, display: 'flex', gap: 1.5 }}
                     >
                       <Avatar
-                        src={c.authorPhotoURL ?? undefined}
+                        src={resolvePhoto(c.authorUid, c.authorPhotoURL)}
                         sx={{
                           width: 36,
                           height: 36,

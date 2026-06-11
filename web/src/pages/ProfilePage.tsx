@@ -25,7 +25,8 @@ import { sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { Reveal } from '../components/Reveal'
 import { useAuth } from '../contexts/AuthContext'
-import { auth } from '../lib/firebase'
+import { auth, db } from '../lib/firebase'
+import { upsertMyPublicProfile } from '../lib/usersPublic'
 import {
   AVATAR_ACCEPT,
   getCroppedAvatarBlob,
@@ -111,6 +112,10 @@ export function ProfilePage() {
       const blob = await getCroppedAvatarBlob(imageSrc, croppedArea)
       const url = await uploadAvatar(auth.currentUser.uid, blob)
       await updateProfile(auth.currentUser, { photoURL: url })
+      await upsertMyPublicProfile(db, auth.currentUser.uid, {
+        displayName,
+        photoURL: url,
+      })
       await refreshUser()
       closeCropper()
     } catch (err) {
