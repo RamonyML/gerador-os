@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Chip,
@@ -46,11 +47,18 @@ import {
 import { AttachmentGallery } from '../features/helpdesk/AttachmentGallery'
 import { AttachmentPicker } from '../features/helpdesk/AttachmentPicker'
 
+function initialsFrom(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase()
+  return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
+}
+
 export function HelpdeskTicketPage() {
   const { ticketId } = useParams<{ ticketId: string }>()
   const navigate = useNavigate()
   const theme = useTheme()
-  const { user, profile } = useAuth()
+  const { user, profile, photoURL } = useAuth()
   const isAgent = canManageHelpdesk(profile)
 
   const [ticket, setTicket] = useState<Ticket | null>(null)
@@ -70,9 +78,15 @@ export function HelpdeskTicketPage() {
   const actor = useMemo(
     () =>
       user
-        ? ticketActorFromProfile(user.uid, user.email ?? null, profile, isAgent)
+        ? ticketActorFromProfile(
+            user.uid,
+            user.email ?? null,
+            profile,
+            isAgent,
+            photoURL,
+          )
         : null,
-    [user, profile, isAgent],
+    [user, profile, isAgent, photoURL],
   )
 
   useEffect(() => {
@@ -229,6 +243,29 @@ export function HelpdeskTicketPage() {
               elevation={0}
               sx={{ border: 1, borderColor: 'divider', borderRadius: 2.5, p: 2.5 }}
             >
+              <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 1 }}>
+                <Avatar
+                  src={ticket.authorPhotoURL ?? undefined}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    flexShrink: 0,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    bgcolor: 'grey.500',
+                  }}
+                >
+                  {initialsFrom(ticket.authorName)}
+                </Avatar>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {ticket.authorName}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Solicitante
+                  </Typography>
+                </Box>
+              </Box>
               <Typography variant="overline" color="text.secondary">
                 Descrição
               </Typography>
@@ -302,35 +339,55 @@ export function HelpdeskTicketPage() {
               ) : (
                 <Stack divider={<Divider />}>
                   {comments.map((c) => (
-                    <Box key={c.id} sx={{ px: 2.5, py: 2 }}>
-                      <Box
+                    <Box
+                      key={c.id}
+                      sx={{ px: 2.5, py: 2, display: 'flex', gap: 1.5 }}
+                    >
+                      <Avatar
+                        src={c.authorPhotoURL ?? undefined}
                         sx={{
-                          display: 'flex',
-                          gap: 1,
-                          alignItems: 'center',
-                          mb: 0.5,
-                          flexWrap: 'wrap',
+                          width: 36,
+                          height: 36,
+                          flexShrink: 0,
+                          mt: 0.25,
+                          fontSize: 13,
+                          fontWeight: 700,
+                          bgcolor:
+                            c.authorRole === 'ti' ? 'primary.main' : 'grey.500',
                         }}
                       >
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                          {c.authorName}
-                        </Typography>
-                        <Chip
-                          size="small"
-                          variant="outlined"
-                          color={c.authorRole === 'ti' ? 'primary' : 'default'}
-                          label={c.authorRole === 'ti' ? 'T.I' : 'Solicitante'}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          {c.createdAt.toLocaleString('pt-BR')}
-                        </Typography>
+                        {initialsFrom(c.authorName)}
+                      </Avatar>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: 1,
+                            alignItems: 'center',
+                            mb: 0.5,
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                            {c.authorName}
+                          </Typography>
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            color={c.authorRole === 'ti' ? 'primary' : 'default'}
+                            label={c.authorRole === 'ti' ? 'T.I' : 'Solicitante'}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            {c.createdAt.toLocaleString('pt-BR')}
+                          </Typography>
+                        </Box>
+                        {c.text ? (
+                          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                            {c.text}
+                          </Typography>
+                        ) : null}
+                        <AttachmentGallery attachments={c.attachments} size={84} />
                       </Box>
-                      {c.text ? (
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                          {c.text}
-                        </Typography>
-                      ) : null}
-                      <AttachmentGallery attachments={c.attachments} size={84} />
                     </Box>
                   ))}
                 </Stack>

@@ -286,7 +286,7 @@ export function ProfilePage() {
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, mb: 2 }}>
               Para alterar sua senha, enviaremos um link seguro de redefinição para o seu
-              e-mail, conforme o Firebase Authentication.
+              e-mail.
             </Typography>
 
             {resetMsg ? (

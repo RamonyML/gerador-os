@@ -109,6 +109,7 @@ export type Ticket = {
   authorUid: string
   authorName: string
   authorEmail: string | null
+  authorPhotoURL: string | null
   authorSector: Sector | null
   assigneeUid: string | null
   assigneeName: string | null
@@ -132,6 +133,8 @@ export type TicketComment = {
   text: string
   authorUid: string
   authorName: string
+  /** Foto de perfil do autor no momento do comentário (pode ser null). */
+  authorPhotoURL: string | null
   /** `ti` quando o autor do comentário é agente do T.I; `solicitante` caso contrário. */
   authorRole: 'solicitante' | 'ti'
   createdAt: Date

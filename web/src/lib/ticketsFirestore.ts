@@ -35,6 +35,7 @@ export type TicketActor = {
   uid: string
   name: string
   email: string | null
+  photoURL: string | null
   sector: Sector | null
   isAgent: boolean
 }
@@ -44,6 +45,7 @@ export function ticketActorFromProfile(
   email: string | null,
   profile: UserProfile | null,
   isAgent: boolean,
+  photoURL: string | null = null,
 ): TicketActor {
   const name =
     profile?.displayName?.trim() ||
@@ -53,6 +55,7 @@ export function ticketActorFromProfile(
     uid,
     name,
     email,
+    photoURL,
     sector: profile?.sector ?? null,
     isAgent,
   }
@@ -123,6 +126,8 @@ function parseTicket(id: string, data: Record<string, unknown>): Ticket | null {
     authorUid,
     authorName,
     authorEmail: typeof data.authorEmail === 'string' ? data.authorEmail : null,
+    authorPhotoURL:
+      typeof data.authorPhotoURL === 'string' ? data.authorPhotoURL : null,
     authorSector:
       typeof data.authorSector === 'string'
         ? (data.authorSector as Sector)
@@ -167,6 +172,7 @@ export async function createTicket(
     authorUid: actor.uid,
     authorName: actor.name,
     authorEmail: actor.email,
+    authorPhotoURL: actor.photoURL ?? null,
     authorSector: actor.sector,
     assigneeUid: null,
     assigneeName: null,
@@ -347,6 +353,8 @@ function parseComment(
     text: typeof text === 'string' ? text : '',
     authorUid,
     authorName,
+    authorPhotoURL:
+      typeof data.authorPhotoURL === 'string' ? data.authorPhotoURL : null,
     authorRole: data.authorRole === 'ti' ? 'ti' : 'solicitante',
     createdAt: createdAt instanceof Timestamp ? createdAt.toDate() : new Date(0),
     attachments,
@@ -399,6 +407,7 @@ export async function addComment(
     text: trimmed,
     authorUid: actor.uid,
     authorName: actor.name,
+    authorPhotoURL: actor.photoURL ?? null,
     authorRole: actor.isAgent ? 'ti' : 'solicitante',
     attachments,
     createdAt: serverTimestamp(),

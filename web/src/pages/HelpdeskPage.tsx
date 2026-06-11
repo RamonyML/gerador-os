@@ -94,7 +94,7 @@ function TicketRow({
 
 export function HelpdeskPage() {
   const navigate = useNavigate()
-  const { user, profile, profileMissing } = useAuth()
+  const { user, profile, profileMissing, photoURL } = useAuth()
   const isAgent = canManageHelpdesk(profile)
 
   const [view, setView] = useState<'gestao' | 'meus'>(isAgent ? 'gestao' : 'meus')
@@ -104,9 +104,15 @@ export function HelpdeskPage() {
   const actor = useMemo(
     () =>
       user
-        ? ticketActorFromProfile(user.uid, user.email ?? null, profile, isAgent)
+        ? ticketActorFromProfile(
+            user.uid,
+            user.email ?? null,
+            profile,
+            isAgent,
+            photoURL,
+          )
         : null,
-    [user, profile, isAgent],
+    [user, profile, isAgent, photoURL],
   )
 
   const effectiveView = isAgent ? view : 'meus'
