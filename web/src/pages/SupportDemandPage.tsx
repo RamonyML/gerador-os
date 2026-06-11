@@ -1,19 +1,7 @@
 import { useMemo } from 'react'
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
-import {
-  Alert,
-  Box,
-  Breadcrumbs,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import { Alert, Box, Button, Container, Typography } from '@mui/material'
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
 import {
@@ -21,6 +9,10 @@ import {
   isKnownDemandCategory,
   templatesMatchingDemand,
 } from '../data/supportDemands'
+import { accentHexForSupportDemandSlot } from '../data/supportCardSwatches'
+import { AppPageChrome } from '../components/AppPageChrome'
+import { NavCard } from '../components/NavCard'
+import { Reveal } from '../components/Reveal'
 
 export function SupportDemandPage() {
   const { demandId } = useParams<{ demandId: string }>()
@@ -28,10 +20,12 @@ export function SupportDemandPage() {
   const state = useOsTemplates(profile)
   const navigate = useNavigate()
 
-  const meta = useMemo(
-    () => SUPPORT_DEMANDS.find((d) => d.id === demandId),
+  const slotIndex = useMemo(
+    () => SUPPORT_DEMANDS.findIndex((d) => d.id === demandId),
     [demandId],
   )
+  const meta = slotIndex >= 0 ? SUPPORT_DEMANDS[slotIndex] : undefined
+  const accent = accentHexForSupportDemandSlot(slotIndex < 0 ? 0 : slotIndex)
 
   const templates = state.status === 'ready' ? state.templates : []
   const list = useMemo(
@@ -53,84 +47,70 @@ export function SupportDemandPage() {
     )
   }
 
+  const Icon = meta?.Icon
+
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
-      <Breadcrumbs sx={{ mb: 2 }}>
-        <Link
+    <AppPageChrome
+      overline="Demandas · Suporte"
+      title={meta?.title ?? demandId}
+      subtitle={
+        meta?.description ? (
+          <Typography variant="body1" color="text.secondary">
+            {meta.description}
+          </Typography>
+        ) : undefined
+      }
+      accentColor={accent}
+      headerRight={
+        <Button
           component={RouterLink}
           to="/suporte"
-          underline="hover"
-          color="primary"
+          variant="outlined"
+          color="inherit"
+          startIcon={<ArrowBackRoundedIcon />}
+          sx={{ borderColor: 'divider' }}
         >
-          Suporte
-        </Link>
-        <Typography color="text.primary">{meta?.title ?? demandId}</Typography>
-      </Breadcrumbs>
-
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate('/suporte')}
-        sx={{ mb: 2 }}
-      >
-        Todas as demandas
-      </Button>
-
-      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-        {meta?.title}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        {meta?.description}
-      </Typography>
-
+          Todas as categorias
+        </Button>
+      }
+    >
       {state.status === 'loading' ? (
         <Typography color="text.secondary">Carregando…</Typography>
       ) : null}
-      {state.status === 'error' ? (
-        <Alert severity="error">{state.message}</Alert>
-      ) : null}
+      {state.status === 'error' ? <Alert severity="error">{state.message}</Alert> : null}
 
       {state.status === 'ready' && list.length === 0 ? (
-        <Alert severity="info" sx={{ mb: 2 }}>
-          Nenhum fluxo nesta categoria no momento. Use o gerador geral ou peça
-          inclusão de novos fluxos à equipe técnica.
+        <Alert severity="info" sx={{ mb: 2, borderRadius: 2 }}>
+          Nenhum fluxo nesta categoria no momento. Use o gerador geral ou peça inclusão de novos
+          fluxos à equipe técnica.
         </Alert>
       ) : null}
 
-      <Stack spacing={1.5}>
-        {list.map((t) => (
-          <Card key={t.id} variant="outlined">
-            <CardContent
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                alignItems: { sm: 'center' },
-                justifyContent: 'space-between',
-                gap: 2,
-                py: 2,
-              }}
-            >
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {t.title}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  v{t.version} · {t.slug}
-                </Typography>
-              </Box>
-              <Button
-                variant="contained"
-                size="medium"
-                endIcon={<OpenInNewIcon />}
-                onClick={() =>
-                  navigate(`/gerar-os?demanda=${demandId}&tpl=${encodeURIComponent(t.id)}`)
-                }
-              >
-                Abrir gerador
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </Stack>
+      {list.length > 0 ? (
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 2,
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+          }}
+        >
+          {list.map((t, index) => (
+            <Reveal key={t.id} delay={index * 60} sx={{ height: '100%' }}>
+              <NavCard
+                to={`/gerar-os?demanda=${demandId}&tpl=${encodeURIComponent(t.id)}`}
+                accent={accent}
+                icon={Icon ? <Icon sx={{ fontSize: 26 }} /> : <span />}
+                title={t.title}
+                description={`v${t.version} · ${t.slug}`}
+              />
+            </Reveal>
+          ))}
+        </Box>
+      ) : null}
 
       <Box sx={{ mt: 3 }}>
         <Button
@@ -140,6 +120,6 @@ export function SupportDemandPage() {
           Abrir gerador só com filtro desta categoria
         </Button>
       </Box>
-    </Container>
+    </AppPageChrome>
   )
 }

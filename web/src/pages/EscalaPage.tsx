@@ -38,6 +38,7 @@ import { endOfMonth, format, isSameDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { alpha, useTheme } from '@mui/material/styles'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { Reveal } from '../components/Reveal'
 import { MonthNavigator } from '../features/upgrades/MonthNavigator'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../lib/firebase'
@@ -363,6 +364,8 @@ export function EscalaPage() {
       title="Escala de trabalho"
       subtitle={subtitle}
       maxWidth="lg"
+      illustration="schedule"
+      illustrationAlt="Planejamento de escala"
       headerRight={
         <Box
           sx={{
@@ -498,8 +501,8 @@ export function EscalaPage() {
                   const labelBg = alpha(theme.palette.grey[500], 0.06)
 
                   return (
+                    <Reveal key={wi} delay={wi * 90}>
                     <Paper
-                      key={wi}
                       elevation={0}
                       sx={{
                         borderRadius: 2,
@@ -760,6 +763,7 @@ export function EscalaPage() {
                         </Box>
                       </Box>
                     </Paper>
+                    </Reveal>
                   )
                 })}
               </Stack>

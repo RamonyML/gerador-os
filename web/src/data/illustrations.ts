@@ -1,0 +1,16 @@
+/**
+ * Ilustrações (estilo Storyset) das áreas principais do sistema.
+ * Arquivos servidos estaticamente de `web/public/illustrations/`.
+ */
+export const ILLUSTRATIONS = {
+  support: '/illustrations/illus-support.png',
+  technology: '/illustrations/illus-technology.png',
+  collaboration: '/illustrations/illus-collaboration.png',
+  operations: '/illustrations/illus-operations.png',
+  schedule: '/illustrations/illus-schedule.png',
+  helpdesk: '/illustrations/illus-helpdesk.png',
+  announcements: '/illustrations/illus-announcements.png',
+  account: '/illustrations/illus-account.png',
+} as const
+
+export type IllustrationKey = keyof typeof ILLUSTRATIONS

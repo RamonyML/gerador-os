@@ -149,6 +149,8 @@ export function HelpdeskPage() {
               : 'Abra chamados para o T.I e acompanhe o andamento dos seus pedidos.'}
           </Typography>
         }
+        illustration="helpdesk"
+        illustrationAlt="Central de chamados T.I"
         headerRight={
           <Button
             variant="contained"

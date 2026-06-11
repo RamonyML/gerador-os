@@ -22,8 +22,12 @@ type AuthContextValue = {
   profile: UserProfile | null
   profileMissing: boolean
   initializing: boolean
+  /** Foto de perfil atual (Firebase Auth `photoURL`). */
+  photoURL: string | null
   signIn: (email: string, password: string) => Promise<void>
   logOut: () => Promise<void>
+  /** Recarrega o usuário do Auth (ex.: após atualizar a foto de perfil). */
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -32,10 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [initializing, setInitializing] = useState(true)
+  const [photoURL, setPhotoURL] = useState<string | null>(null)
 
   useEffect(() => {
     return onAuthStateChanged(auth, async (nextUser) => {
       setUser(nextUser)
+      setPhotoURL(nextUser?.photoURL ?? null)
       if (!nextUser) {
         setProfile(null)
         setInitializing(false)
@@ -63,6 +69,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signOut(auth)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    const current = auth.currentUser
+    if (!current) return
+    await current.reload()
+    setUser(auth.currentUser)
+    setPhotoURL(auth.currentUser?.photoURL ?? null)
+  }, [])
+
   const profileMissing = user !== null && profile === null
 
   const value = useMemo(
@@ -71,10 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       profileMissing,
       initializing,
+      photoURL,
       signIn,
       logOut,
+      refreshUser,
     }),
-    [user, profile, profileMissing, initializing, signIn, logOut],
+    [user, profile, profileMissing, initializing, photoURL, signIn, logOut, refreshUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

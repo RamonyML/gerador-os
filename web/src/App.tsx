@@ -19,6 +19,7 @@ import { EscalaPage } from './pages/EscalaPage'
 import { AvisosPage } from './pages/AvisosPage'
 import { HelpdeskPage } from './pages/HelpdeskPage'
 import { HelpdeskTicketPage } from './pages/HelpdeskTicketPage'
+import { ProfilePage } from './pages/ProfilePage'
 
 export default function App() {
   return (
@@ -65,6 +66,7 @@ export default function App() {
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
+        <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/escala" element={<EscalaPage />} />
         <Route path="/upgrades" element={<UpgradesHubPage />} />
         <Route path="/chamados" element={<HelpdeskPage />} />

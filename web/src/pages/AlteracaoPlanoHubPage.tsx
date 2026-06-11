@@ -1,142 +1,124 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { Link as RouterLink } from 'react-router-dom'
+import { Chip, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import SettingsRemoteOutlinedIcon from '@mui/icons-material/SettingsRemoteOutlined'
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
+import RouterOutlinedIcon from '@mui/icons-material/RouterOutlined'
+import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined'
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined'
+import { HubCatalog, type HubSection } from '../components/HubCatalog'
 
-type FluxoItem = { label: string; to: string; primary?: boolean }
-
-const PADRAO: FluxoItem[] = [
-  {
-    label: 'Remoto (titular / terceiro / PJ)',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-remoto',
-    primary: true,
-  },
-  {
-    label: 'Presencial (titular / terceiro)',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-presencial',
-    primary: true,
-  },
-  {
-    label: 'Sem troca: isento',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-isenta',
-    primary: true,
-  },
-  {
-    label: 'Sem troca: pago',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-paga',
-    primary: true,
-  },
-  {
-    label: 'Com troca: isento',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-isenta',
-    primary: true,
-  },
-  {
-    label: 'Com troca: pago',
-    to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-paga',
-    primary: true,
-  },
-]
-
-const OFERTADO: FluxoItem[] = [
-  { label: 'Remoto', to: '/suporte/demanda/alteracao-plano' },
-  { label: 'Sem troca: isento', to: '/suporte/demanda/alteracao-plano' },
-  { label: 'Sem troca: pago', to: '/suporte/demanda/alteracao-plano' },
-  { label: 'Com troca: isento', to: '/suporte/demanda/alteracao-plano' },
-  { label: 'Com troca: pago', to: '/suporte/demanda/alteracao-plano' },
-]
-
-function FluxoColumn({
-  title,
-  accent,
-  items,
-}: {
-  title: string
-  accent: 'primary' | 'success'
-  items: FluxoItem[]
-}) {
-  return (
-    <Card variant="outlined" sx={{ borderRadius: 2, height: '100%' }}>
-      <CardContent sx={{ p: 2 }}>
-        <Typography
-          variant="h6"
-          component="h2"
-          sx={{
-            fontWeight: 700,
-            textAlign: 'center',
-            mb: 2,
-            color: `${accent}.main`,
-          }}
-        >
-          {title}
-        </Typography>
-        <Stack spacing={1}>
-          {items.map((item) => (
-            <Button
-              key={item.label}
-              component={RouterLink}
-              to={item.to}
-              variant={item.primary ? 'contained' : 'outlined'}
-              color={item.primary ? 'primary' : 'inherit'}
-              fullWidth
-              sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-            >
-              {item.label}
-            </Button>
-          ))}
-        </Stack>
-      </CardContent>
-    </Card>
-  )
-}
+const ICON_SX = { fontSize: 26 } as const
 
 export function AlteracaoPlanoHubPage() {
-  const navigate = useNavigate()
+  const theme = useTheme()
+  const success = theme.palette.success.main
+
+  const sections: HubSection[] = [
+    {
+      title: 'Padrão',
+      items: [
+        {
+          label: 'Remoto (titular / terceiro / PJ)',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-remoto',
+          description: 'Acordo remoto com variações de titular, terceiro e PJ no próprio formulário.',
+          icon: <SettingsRemoteOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Presencial (titular / terceiro)',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-presencial',
+          description: 'Atendimento presencial em loja, com variações de titular e terceiro.',
+          icon: <StorefrontOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Sem troca: isento',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-isenta',
+          description: 'Mantém o roteador atual; visita técnica sem custo.',
+          icon: <RouterOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Sem troca: pago',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-sem-troca-visita-paga',
+          description: 'Mantém o roteador atual; visita técnica com custo.',
+          icon: <RouterOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Com troca: isento',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-isenta',
+          description: 'Inclui troca de roteador; visita técnica sem custo.',
+          icon: <SwapHorizOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Com troca: pago',
+          to: '/gerar-os?demanda=alteracao-plano&slug=altplan-troca-visita-paga',
+          description: 'Inclui troca de roteador; visita técnica com custo.',
+          icon: <SwapHorizOutlinedIcon sx={ICON_SX} />,
+        },
+      ],
+    },
+    {
+      title: 'Ofertado',
+      accent: success,
+      items: [
+        {
+          label: 'Remoto',
+          to: '/suporte/demanda/alteracao-plano',
+          description: 'Lista de modelos ofertados desta categoria.',
+          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Sem troca: isento',
+          to: '/suporte/demanda/alteracao-plano',
+          description: 'Lista de modelos ofertados desta categoria.',
+          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Sem troca: pago',
+          to: '/suporte/demanda/alteracao-plano',
+          description: 'Lista de modelos ofertados desta categoria.',
+          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Com troca: isento',
+          to: '/suporte/demanda/alteracao-plano',
+          description: 'Lista de modelos ofertados desta categoria.',
+          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Com troca: pago',
+          to: '/suporte/demanda/alteracao-plano',
+          description: 'Lista de modelos ofertados desta categoria.',
+          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
+        },
+      ],
+    },
+  ]
 
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate('/suporte')}
-        sx={{ mb: 2 }}
-      >
-        Todas as demandas
-      </Button>
-
-      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-        Alteração de plano
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Escolha o tipo de alteração (espelho do hub legado). Os fluxos{' '}
-        <strong>Remoto</strong> e <strong>Presencial</strong> abrem o gerador já
-        no formulário (variações de titular, terceiro e PJ no próprio modelo); os
-        demais levam à lista de modelos até migrarmos cada HTML.
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'grid',
-          gap: 2,
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-        }}
-      >
-        <FluxoColumn title="Padrão" accent="primary" items={PADRAO} />
-        <FluxoColumn title="Ofertado" accent="success" items={OFERTADO} />
-      </Box>
-
-      <Box sx={{ mt: 3 }}>
-        <Link component={RouterLink} to="/suporte/demanda/alteracao-plano" underline="hover">
-          Ver todos os modelos desta categoria
-        </Link>
-      </Box>
-    </Container>
+    <HubCatalog
+      overline="Demandas · Suporte"
+      title="Alteração de plano"
+      subtitle={
+        <Typography variant="body1" color="text.secondary">
+          Escolha o tipo de alteração. Os fluxos <strong>Remoto</strong> e{' '}
+          <strong>Presencial</strong> abrem o gerador já no formulário (variações de titular,
+          terceiro e PJ no próprio modelo); o modo <strong>ofertado</strong> está disponível como
+          alternância dentro de cada fluxo padrão.
+        </Typography>
+      }
+      backTo="/suporte"
+      backLabel="Todas as categorias"
+      sections={sections}
+      footer={
+        <Chip
+          component={RouterLink}
+          to="/suporte/demanda/alteracao-plano"
+          clickable
+          variant="outlined"
+          label="Ver todos os modelos desta categoria"
+          sx={{ alignSelf: 'flex-start' }}
+        />
+      }
+    />
   )
 }

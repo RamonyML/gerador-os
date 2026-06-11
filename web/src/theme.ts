@@ -1,26 +1,50 @@
 import { createTheme } from '@mui/material/styles'
+import type { Shadows } from '@mui/material/styles'
 
-/** Tema claro — verdes corporativos */
+/** Tema claro — verdes corporativos sobre canvas suave (estética SaaS). */
 const LIGHT = {
   primary: '#1B5E20',
   primaryHover: '#2E7D32',
   secondary: '#2E7D32',
-  bg: '#FFFFFF',
+  bg: '#F4F6F8',
   paper: '#FFFFFF',
-  text: '#212121',
+  text: '#1A2027',
 } as const
 
-/** Tema escuro — verdes mais claros para contraste */
+/** Tema escuro — verdes mais claros para contraste, superfícies elevadas. */
 const DARK = {
   primary: '#66BB6A',
   primaryHover: '#81C784',
   secondary: '#81C784',
-  bg: '#121212',
-  paper: '#1E1E1E',
-  text: '#E0E0E0',
+  bg: '#0E1014',
+  paper: '#171A20',
+  text: '#E6E8EB',
 } as const
 
 export type AppColorMode = 'light' | 'dark'
+
+/**
+ * Escala de sombras suaves (estilo SaaS): camadas leves de profundidade,
+ * sem o "drop-shadow" duro do Material clássico.
+ */
+function softShadows(isDark: boolean): Shadows {
+  const rgb = isDark ? '0, 0, 0' : '16, 24, 40'
+  const baseA = isDark ? 0.4 : 0.06
+  const stepA = isDark ? 0.012 : 0.006
+  const shadows: string[] = ['none']
+  for (let i = 1; i <= 24; i += 1) {
+    const y1 = Math.max(1, Math.round(i * 0.5))
+    const b1 = Math.round(i * 1.2 + 2)
+    const y2 = Math.max(2, Math.round(i * 1.1))
+    const b2 = Math.round(i * 2.4 + 6)
+    const a = baseA + i * stepA
+    shadows.push(
+      `0px ${y1}px ${b1}px rgba(${rgb}, ${(a * 0.5).toFixed(3)}), ` +
+        `0px ${y2}px ${b2}px rgba(${rgb}, ${a.toFixed(3)})`,
+    )
+  }
+  return shadows as unknown as Shadows
+}
 
 export function createAppTheme(mode: AppColorMode) {
   const isDark = mode === 'dark'
@@ -64,7 +88,8 @@ export function createAppTheme(mode: AppColorMode) {
       body2: { color: isDark ? 'rgba(224, 224, 224, 0.85)' : 'rgba(33, 33, 33, 0.87)' },
       button: { textTransform: 'none', fontWeight: 500 },
     },
-    shape: { borderRadius: 10 },
+    shape: { borderRadius: 14 },
+    shadows: softShadows(isDark),
     components: {
       MuiCssBaseline: {
         styleOverrides: {
@@ -93,11 +118,38 @@ export function createAppTheme(mode: AppColorMode) {
         },
       },
       MuiButton: {
+        defaultProps: {
+          disableElevation: true,
+        },
         styleOverrides: {
           root: {
+            borderRadius: 10,
+            transition:
+              'background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease',
             '&.MuiButton-containedPrimary:hover': {
               backgroundColor: c.primaryHover,
+              boxShadow: `0 8px 20px ${
+                isDark ? 'rgba(0,0,0,0.45)' : 'rgba(27, 94, 32, 0.22)'
+              }`,
             },
+          },
+        },
+      },
+      MuiCard: {
+        defaultProps: {
+          elevation: 0,
+        },
+        styleOverrides: {
+          root: {
+            backgroundImage: 'none',
+            border: `1px solid ${isDark ? 'rgba(224,224,224,0.10)' : 'rgba(16,24,40,0.08)'}`,
+          },
+        },
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            fontWeight: 600,
           },
         },
       },

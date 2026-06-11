@@ -2,6 +2,9 @@ import type { ReactNode } from 'react'
 import { Box, Container, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { useColorMode } from '../contexts/ColorModeContext'
+import { Reveal } from './Reveal'
+import { HeroIllustration } from './HeroIllustration'
+import { ILLUSTRATIONS, type IllustrationKey } from '../data/illustrations'
 
 type Props = {
   overline: string
@@ -13,6 +16,10 @@ type Props = {
   headerRight?: ReactNode
   /** Cor de destaque do hero (default = primary). Use para temas alternativos. */
   accentColor?: string
+  /** Ilustração (estilo Storyset) exibida à direita do hero em telas md+. */
+  illustration?: IllustrationKey
+  /** Texto alternativo da ilustração. */
+  illustrationAlt?: string
   children: ReactNode
 }
 
@@ -26,6 +33,8 @@ export function AppPageChrome({
   maxWidth = 'lg',
   headerRight,
   accentColor,
+  illustration,
+  illustrationAlt,
   children,
 }: Props) {
   const theme = useTheme()
@@ -37,18 +46,21 @@ export function AppPageChrome({
       ? `linear-gradient(135deg, ${alpha(primary, 0.12)} 0%, ${alpha(primary, 0.03)} 45%, transparent 100%)`
       : `linear-gradient(135deg, ${alpha(primary, 0.2)} 0%, ${alpha('#000', 0.12)} 48%, transparent 100%)`
 
+  const hasIllustration = illustration != null
+
   const inner = (
+    <Reveal>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
+          flexDirection: { xs: 'column', md: 'row' },
           gap: 2,
-          alignItems: { xs: 'flex-start', sm: 'flex-start' },
+          alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
         }}
       >
-        <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ minWidth: 0, flex: hasIllustration ? '1 1 auto' : undefined }}>
           <Typography
             variant="overline"
             color="text.secondary"
@@ -66,13 +78,35 @@ export function AppPageChrome({
           {subtitle ? (
             <Box sx={{ mt: 0.5, maxWidth: 800 }}>{subtitle}</Box>
           ) : null}
+          {/* Quando há ilustração, os controles ficam abaixo do título (lado direito reservado à arte). */}
+          {hasIllustration && headerRight ? (
+            <Box sx={{ mt: 2 }}>{headerRight}</Box>
+          ) : null}
         </Box>
-        {headerRight ? (
+
+        {hasIllustration ? (
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'block' },
+              width: '100%',
+              maxWidth: 300,
+              flexShrink: 0,
+              ml: 2,
+            }}
+          >
+            <HeroIllustration
+              src={ILLUSTRATIONS[illustration]}
+              alt={illustrationAlt ?? ''}
+              maxWidth={300}
+            />
+          </Box>
+        ) : headerRight ? (
           <Box sx={{ flexShrink: 0, alignSelf: { xs: 'stretch', sm: 'center' } }}>{headerRight}</Box>
         ) : null}
       </Box>
       {children}
     </Box>
+    </Reveal>
   )
 
   return (

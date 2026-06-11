@@ -1,150 +1,106 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { Link as RouterLink } from 'react-router-dom'
+import { Chip, Typography } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
+import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined'
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
+import SettingsInputAntennaOutlinedIcon from '@mui/icons-material/SettingsInputAntennaOutlined'
+import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined'
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
+import { HubCatalog, type HubSection } from '../components/HubCatalog'
 
-type FluxoItem = {
-  label: string
-  to: string
-  primary?: boolean
-  danger?: boolean
-}
-
-const PADRAO: FluxoItem[] = [
-  {
-    label: 'Mud End padrão',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-padrao',
-    primary: true,
-  },
-  {
-    label: 'Mud End buscando equipamentos',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-buscar-equipamentos',
-    primary: true,
-  },
-  {
-    label: 'Mud End com fibra MZnet',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-com-fibra',
-    primary: true,
-  },
-  {
-    label: 'Mud End sem viabilidade',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-inviabilidade',
-    danger: true,
-  },
-]
-
-const RENOVANDO: FluxoItem[] = [
-  {
-    label: 'Mud End + Alt Plano pago',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-pago',
-    primary: true,
-  },
-  {
-    label: 'Mud End + Alt Plano isento (proposta)',
-    to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-proposta',
-    primary: true,
-  },
-]
-
-function FluxoColumn({
-  title,
-  accent,
-  items,
-}: {
-  title: string
-  accent: 'primary' | 'success'
-  items: FluxoItem[]
-}) {
-  return (
-    <Card variant="outlined" sx={{ borderRadius: 2, height: '100%' }}>
-      <CardContent sx={{ p: 2 }}>
-        <Typography
-          variant="h6"
-          component="h2"
-          sx={{
-            fontWeight: 700,
-            textAlign: 'center',
-            mb: 2,
-            color: `${accent}.main`,
-          }}
-        >
-          {title}
-        </Typography>
-        <Stack spacing={1}>
-          {items.map((item) => (
-            <Button
-              key={item.label}
-              component={RouterLink}
-              to={item.to}
-              variant={item.primary || item.danger ? 'contained' : 'outlined'}
-              color={item.danger ? 'error' : item.primary ? 'primary' : 'inherit'}
-              fullWidth
-              sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
-            >
-              {item.label}
-            </Button>
-          ))}
-        </Stack>
-      </CardContent>
-    </Card>
-  )
-}
+const ICON_SX = { fontSize: 26 } as const
 
 export function MudancaEnderecoHubPage() {
-  const navigate = useNavigate()
+  const theme = useTheme()
+  const success = theme.palette.success.main
+  const error = theme.palette.error.main
+
+  const sections: HubSection[] = [
+    {
+      title: 'Padrão',
+      items: [
+        {
+          label: 'Mud End padrão',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-padrao',
+          description: 'Fluxo padrão para mudança de endereço.',
+          icon: <HomeWorkOutlinedIcon sx={ICON_SX} />,
+          badge: (
+            <Chip
+              size="small"
+              label="Recomendado"
+              sx={{
+                height: 24,
+                bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.2 : 0.12),
+                color: 'primary.main',
+              }}
+            />
+          ),
+        },
+        {
+          label: 'Mud End buscando equipamentos',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-buscar-equipamentos',
+          description: 'Inclui retirada e entrega de equipamentos no novo endereço.',
+          icon: <Inventory2OutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Mud End com fibra MZnet',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-com-fibra',
+          description: 'Mudança de endereço para locais com fibra MZnet.',
+          icon: <SettingsInputAntennaOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Mud End sem viabilidade',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-inviabilidade',
+          description: 'Para casos em que não há viabilidade técnica no novo endereço.',
+          icon: <ReportProblemOutlinedIcon sx={ICON_SX} />,
+          accent: error,
+        },
+      ],
+    },
+    {
+      title: 'Renovando Fidelidade',
+      accent: success,
+      items: [
+        {
+          label: 'Mud End + Alt Plano pago',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-pago',
+          description: 'Mudança de endereço renovando fidelidade, com visita paga.',
+          icon: <PaymentsOutlinedIcon sx={ICON_SX} />,
+        },
+        {
+          label: 'Mud End + Alt Plano isento (proposta)',
+          to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-altplan-proposta',
+          description: 'Mudança com proposta de alteração de plano isenta.',
+          icon: <DescriptionOutlinedIcon sx={ICON_SX} />,
+        },
+      ],
+    },
+  ]
 
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate('/suporte')}
-        sx={{ mb: 2 }}
-      >
-        Todas as demandas
-      </Button>
-
-      <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
-        Mudança de endereço
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Selecione o tipo de mudança (espelho do hub legado). O fluxo{' '}
-        <strong>Mud End padrão</strong> abre o gerador já com o modelo{' '}
-        <code>mud-end-padrao</code>; os demais levam à lista de modelos até
-        migrarmos cada HTML.
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'grid',
-          gap: 2,
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-        }}
-      >
-        <FluxoColumn title="Padrão" accent="primary" items={PADRAO} />
-        <FluxoColumn
-          title="Renovando Fidelidade"
-          accent="success"
-          items={RENOVANDO}
-        />
-      </Box>
-
-      <Box sx={{ mt: 3 }}>
-        <Link
+    <HubCatalog
+      overline="Demandas · Suporte"
+      title="Mudança de endereço"
+      subtitle={
+        <Typography variant="body1" color="text.secondary">
+          Selecione o tipo de mudança para gerar a O.S. Cada fluxo abre o gerador já com o modelo
+          correspondente e suas variações de titular e terceiro.
+        </Typography>
+      }
+      backTo="/suporte"
+      backLabel="Todas as categorias"
+      sections={sections}
+      footer={
+        <Chip
           component={RouterLink}
           to="/suporte/demanda/mudanca-endereco"
-          underline="hover"
-        >
-          Ver todos os modelos desta categoria
-        </Link>
-      </Box>
-    </Container>
+          clickable
+          variant="outlined"
+          label="Ver todos os modelos desta categoria"
+          sx={{ alignSelf: 'flex-start' }}
+        />
+      }
+    />
   )
 }

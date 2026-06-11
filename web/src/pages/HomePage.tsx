@@ -1,19 +1,25 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { Alert, Box, Chip, Container, Fade, Paper, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Chip, Container, Fade, Paper, Typography } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import { alpha, useTheme } from '@mui/material/styles'
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
-import { useNavigate } from 'react-router-dom'
+import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined'
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
+import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined'
 import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
-import { brandLogoSrc } from '../lib/brandAssets'
+import { NavCard } from '../components/NavCard'
+import { HeroIllustration } from '../components/HeroIllustration'
+import { Reveal } from '../components/Reveal'
+import { ILLUSTRATIONS } from '../data/illustrations'
 import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
@@ -33,11 +39,18 @@ type QuickAction = {
   icon: ReactNode
 }
 
+function initialsFrom(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase()
+  return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
+}
+
 export function HomePage() {
   const theme = useTheme()
   const { mode } = useColorMode()
-  const { user, profile, profileMissing } = useAuth()
-  const navigate = useNavigate()
+  const isDark = mode === 'dark'
+  const { user, profile, profileMissing, photoURL } = useAuth()
   const primary = theme.palette.primary.main
   const success = theme.palette.success.main
   const [quickLinksVisible, setQuickLinksVisible] = useState(false)
@@ -52,14 +65,45 @@ export function HomePage() {
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
 
   const greetingName =
-    profile?.displayName?.trim() ||
-    user?.email?.split('@')[0] ||
-    'usuário'
+    profile?.displayName?.trim() || user?.email?.split('@')[0] || 'usuário'
+  const envLabel = import.meta.env.PROD ? 'Produção' : 'Desenvolvimento'
 
-  const heroGradient =
-    mode === 'light'
-      ? `linear-gradient(135deg, ${alpha(primary, 0.14)} 0%, ${alpha(primary, 0.04)} 42%, transparent 100%)`
-      : `linear-gradient(135deg, ${alpha(primary, 0.22)} 0%, ${alpha('#000', 0.15)} 50%, transparent 100%)`
+  const heroGradient = isDark
+    ? `linear-gradient(135deg, ${alpha(primary, 0.26)} 0%, ${alpha(primary, 0.08)} 42%, ${alpha('#000', 0.1)} 100%)`
+    : `linear-gradient(135deg, ${alpha(primary, 0.16)} 0%, ${alpha(primary, 0.05)} 46%, ${alpha('#fff', 0)} 100%)`
+
+  const infoPills: { key: string; icon: ReactNode; text: string }[] = [
+    {
+      key: 'instancia',
+      icon: (
+        <Box
+          sx={{
+            width: 9,
+            height: 9,
+            borderRadius: '50%',
+            bgcolor: success,
+            boxShadow: `0 0 0 3px ${alpha(success, 0.2)}`,
+          }}
+        />
+      ),
+      text: app.options.projectId ?? 'Firebase',
+    },
+    { key: 'ambiente', icon: <CloudOutlinedIcon sx={{ fontSize: 16 }} />, text: envLabel },
+    ...(profile
+      ? [
+          {
+            key: 'setor',
+            icon: <BadgeOutlinedIcon sx={{ fontSize: 16 }} />,
+            text: SECTOR_LABELS[profile.sector] ?? profile.sector,
+          },
+          {
+            key: 'cargo',
+            icon: <WorkspacePremiumOutlinedIcon sx={{ fontSize: 16 }} />,
+            text: HIERARCHY_LABELS[profile.hierarchy] ?? profile.hierarchy,
+          },
+        ]
+      : []),
+  ]
 
   const actions: QuickAction[] = [
     ...(showSupportHub
@@ -92,8 +136,7 @@ export function HomePage() {
     {
       key: 'escala',
       title: 'Escala de trabalho',
-      description:
-        'Turnos fixos por tipo de dia — preencha só os nomes do seu setor.',
+      description: 'Turnos fixos por tipo de dia — preencha só os nomes do seu setor.',
       to: '/escala',
       icon: <CalendarMonthOutlinedIcon sx={{ fontSize: 28 }} />,
     },
@@ -120,70 +163,102 @@ export function HomePage() {
   ]
 
   return (
-    <Box
-      sx={{
-        flex: 1,
-        width: '100%',
-        background: heroGradient,
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}
-    >
+    <Box sx={{ flex: 1, width: '100%', bgcolor: 'background.default' }}>
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Box
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 3, md: 3.5 } }}>
+          {/* Hero */}
+          <Reveal>
+          <Paper
+            elevation={0}
             sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' },
-              gap: 2,
-              alignItems: { xs: 'flex-start', sm: 'center' },
-              justifyContent: 'space-between',
+              position: 'relative',
+              overflow: 'hidden',
+              borderRadius: 4,
+              border: 1,
+              borderColor: 'divider',
+              background: heroGradient,
+              p: { xs: 3, sm: 4 },
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
-              <Box
-                component="img"
-                src={brandLogoSrc(mode)}
-                alt=""
-                sx={{
-                  height: { xs: 40, sm: 48 },
-                  width: 'auto',
-                  objectFit: 'contain',
-                  display: { xs: 'none', sm: 'block' },
-                }}
-              />
-              <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: { xs: 2, md: 4 },
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ minWidth: 0, flex: '1 1 auto' }}>
                 <Typography
                   variant="overline"
                   color="text.secondary"
-                  sx={{ letterSpacing: '0.08em', fontWeight: 600 }}
+                  sx={{ letterSpacing: '0.1em', fontWeight: 700 }}
                 >
                   Painel
                 </Typography>
                 <Typography
-                  variant="h4"
+                  variant="h3"
                   component="h1"
-                  sx={{ fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 }}
+                  sx={{
+                    fontWeight: 800,
+                    letterSpacing: '-0.025em',
+                    lineHeight: 1.12,
+                    fontSize: { xs: '1.9rem', sm: '2.3rem' },
+                  }}
                 >
-                  Olá, {greetingName}
+                  Olá, {greetingName}!
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5, maxWidth: 560 }}>
-                  Selecione abaixo a área ou ferramenta necessária para sua operação. As opções exibidas
-                  respeitam seu perfil e seu nível de acesso no sistema.
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ mt: 1, maxWidth: 540 }}
+                >
+                  Selecione uma área para iniciar sua operação. As opções respeitam seu perfil e seu
+                  nível de acesso.
                 </Typography>
+
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2.5 }}>
+                  {infoPills.map((pill) => (
+                    <Box
+                      key={pill.key}
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 0.75,
+                        px: 1.25,
+                        py: 0.625,
+                        borderRadius: 999,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: 'text.secondary',
+                        border: 1,
+                        borderColor: 'divider',
+                        bgcolor: isDark ? alpha('#fff', 0.06) : alpha('#fff', 0.7),
+                        backdropFilter: 'blur(6px)',
+                        '& svg': { color: 'primary.main' },
+                      }}
+                    >
+                      {pill.icon}
+                      {pill.text}
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+
+              <Box
+                sx={{
+                  display: { xs: 'none', md: 'block' },
+                  width: { md: 300, lg: 340 },
+                  flexShrink: 0,
+                  filter: isDark ? `drop-shadow(0 12px 30px ${alpha('#000', 0.4)})` : undefined,
+                }}
+              >
+                <HeroIllustration src={ILLUSTRATIONS.operations} alt="Operações" />
               </Box>
             </Box>
-            <Chip
-              size="small"
-              label={app.options.projectId ?? 'Firebase'}
-              variant="outlined"
-              sx={{
-                borderColor: alpha(primary, 0.35),
-                color: 'text.secondary',
-                fontFamily: 'inherit',
-              }}
-            />
-          </Box>
+          </Paper>
+          </Reveal>
 
           {profileMissing ? (
             <Alert severity="warning" sx={{ borderRadius: 2 }}>
@@ -193,8 +268,9 @@ export function HomePage() {
             </Alert>
           ) : null}
 
+          {/* Cards de navegação */}
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
               Acesso rápido
             </Typography>
             <Box
@@ -203,7 +279,7 @@ export function HomePage() {
                 gridTemplateColumns: {
                   xs: '1fr',
                   sm: 'repeat(2, 1fr)',
-                  md: 'repeat(auto-fill, minmax(260px, 1fr))',
+                  md: 'repeat(auto-fill, minmax(280px, 1fr))',
                 },
                 gap: 2,
                 alignItems: 'stretch',
@@ -212,210 +288,124 @@ export function HomePage() {
               {actions.map((a, index) => {
                 const isSupportHub = a.key === 'suporte'
                 return (
-                <Box
-                  key={a.key}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minWidth: 0,
-                    minHeight: 0,
-                    height: '100%',
-                  }}
-                >
-                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-                    <Fade
-                      in={quickLinksVisible}
-                      timeout={420}
-                      style={{ transitionDelay: `${index * 75}ms` }}
-                    >
-                      <Box
-                        sx={{
-                          flex: 1,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          minHeight: 0,
-                          height: '100%',
-                        }}
-                      >
-                      <Paper
-                        elevation={0}
-                        onClick={() => navigate(a.to)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            navigate(a.to)
-                          }
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        sx={{
-                          flex: 1,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          height: '100%',
-                          p: 2.5,
-                          borderRadius: 2.5,
-                          border: 1,
-                          cursor: 'pointer',
-                          transition:
-                            'box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
-                          ...(isSupportHub
-                            ? {
-                                bgcolor:
-                                  mode === 'light'
-                                    ? alpha(success, 0.12)
-                                    : alpha(success, 0.18),
-                                borderColor: alpha(success, mode === 'light' ? 0.42 : 0.5),
-                                '&:hover': {
-                                  borderColor: alpha(success, 0.62),
-                                  boxShadow:
-                                    mode === 'light'
-                                      ? `0 12px 32px ${alpha(success, 0.2)}`
-                                      : `0 12px 28px ${alpha(success, 0.12)}`,
-                                  transform: 'translateY(-2px)',
-                                },
-                                '&:focus-visible': {
-                                  outline: `2px solid ${success}`,
-                                  outlineOffset: 2,
-                                },
-                              }
-                            : {
-                                bgcolor: 'background.paper',
-                                borderColor: 'divider',
-                                '&:hover': {
-                                  borderColor: alpha(primary, 0.45),
-                                  boxShadow:
-                                    mode === 'light'
-                                      ? `0 12px 32px ${alpha(primary, 0.12)}`
-                                      : '0 12px 32px rgba(0,0,0,0.35)',
-                                  transform: 'translateY(-2px)',
-                                },
-                                '&:focus-visible': {
-                                  outline: `2px solid ${primary}`,
-                                  outlineOffset: 2,
-                                },
-                              }),
-                        }}
-                      >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          gap: 2,
-                          alignItems: 'flex-start',
-                          flex: 1,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: isSupportHub
-                              ? alpha(success, mode === 'dark' ? 0.28 : 0.2)
-                              : alpha(primary, mode === 'dark' ? 0.2 : 0.12),
-                            color: isSupportHub ? 'success.main' : 'primary.main',
-                            flexShrink: 0,
-                          }}
-                        >
-                          {a.icon}
-                        </Box>
-                        <Box sx={{ minWidth: 0, flex: 1 }}>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              gap: 1,
-                            }}
-                          >
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                              {a.title}
-                            </Typography>
-                            <ArrowForwardRoundedIcon
-                              sx={{ fontSize: 20, color: 'text.disabled', flexShrink: 0 }}
-                            />
-                          </Box>
-                          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                            {a.description}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Paper>
-                      </Box>
-                    </Fade>
-                  </Box>
-                </Box>
+                  <Fade
+                    key={a.key}
+                    in={quickLinksVisible}
+                    timeout={420}
+                    style={{ transitionDelay: `${index * 70}ms` }}
+                  >
+                    <Box sx={{ height: '100%' }}>
+                      <NavCard
+                        to={a.to}
+                        icon={a.icon}
+                        title={a.title}
+                        description={a.description}
+                        accent={isSupportHub ? success : primary}
+                        featured={isSupportHub}
+                      />
+                    </Box>
+                  </Fade>
                 )
               })}
             </Box>
           </Box>
 
+          {/* Seu perfil */}
           {!profileMissing && profile ? (
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 2, sm: 2.5 },
-                borderRadius: 2.5,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-              }}
-            >
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>
+            <Reveal delay={120}>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
                 Seu perfil
               </Typography>
-              <Box
+              <Paper
+                elevation={0}
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  gap: 1,
-                  mb: 2,
+                  p: { xs: 2.5, sm: 3 },
+                  borderRadius: 4,
+                  border: 1,
+                  borderColor: 'divider',
+                  bgcolor: 'background.paper',
                 }}
               >
-                <Chip
-                  label={SECTOR_LABELS[profile.sector] ?? profile.sector}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                />
-                <Chip
-                  label={HIERARCHY_LABELS[profile.hierarchy] ?? profile.hierarchy}
-                  size="small"
-                  variant="outlined"
-                />
-                {profile.isTi ? (
-                  <Chip label="T.I" size="small" color="primary" />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: 2.5,
+                    alignItems: { xs: 'flex-start', sm: 'center' },
+                  }}
+                >
+                  <Avatar
+                    src={photoURL ?? undefined}
+                    sx={{
+                      width: 64,
+                      height: 64,
+                      bgcolor: 'primary.main',
+                      fontSize: 22,
+                      fontWeight: 700,
+                      boxShadow: `0 8px 22px ${alpha(primary, 0.3)}`,
+                    }}
+                  >
+                    {initialsFrom(greetingName)}
+                  </Avatar>
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                      {profile.displayName || greetingName}
+                    </Typography>
+                    {user?.email ? (
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }} noWrap>
+                        {user.email}
+                      </Typography>
+                    ) : null}
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1.5 }}>
+                      <Chip
+                        label={SECTOR_LABELS[profile.sector] ?? profile.sector}
+                        size="small"
+                        sx={{
+                          bgcolor: alpha(primary, isDark ? 0.22 : 0.12),
+                          color: 'primary.main',
+                          fontWeight: 700,
+                        }}
+                      />
+                      <Chip
+                        label={HIERARCHY_LABELS[profile.hierarchy] ?? profile.hierarchy}
+                        size="small"
+                        variant="outlined"
+                      />
+                      {profile.isTi ? (
+                        <Chip label="T.I" size="small" color="primary" />
+                      ) : null}
+                      {profile.isAdmin ? (
+                        <Chip label="Administrador" size="small" color="secondary" />
+                      ) : null}
+                      {profile.isDev ? (
+                        <Chip label="Dev" size="small" variant="outlined" />
+                      ) : null}
+                    </Box>
+                  </Box>
+                  <Button
+                    component={RouterLink}
+                    to="/perfil"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<ManageAccountsOutlinedIcon />}
+                    sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' }, flexShrink: 0 }}
+                  >
+                    Editar perfil
+                  </Button>
+                </Box>
+                {canManageUsers(profile) ? (
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 2.5, pt: 2, borderTop: 1, borderColor: 'divider' }}
+                  >
+                    Gestão de contas: use o atalho <strong>Usuários</strong> acima.
+                  </Typography>
                 ) : null}
-                {profile.isAdmin ? (
-                  <Chip label="Administrador" size="small" color="secondary" variant="outlined" />
-                ) : null}
-                {profile.isDev ? <Chip label="Dev" size="small" variant="outlined" /> : null}
-              </Box>
-              <Typography variant="body2" color="text.secondary" component="div">
-                {profile.displayName ? (
-                  <>
-                    Nome: <strong>{profile.displayName}</strong>
-                    <br />
-                  </>
-                ) : null}
-                {user?.email ? (
-                  <>
-                    E-mail: <strong>{user.email}</strong>
-                  </>
-                ) : null}
-              </Typography>
-              {canManageUsers(profile) ? (
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-                  Gestão de contas: use o card <strong>Usuários</strong> acima.
-                </Typography>
-              ) : null}
-            </Paper>
+              </Paper>
+            </Box>
+            </Reveal>
           ) : null}
         </Box>
       </Container>

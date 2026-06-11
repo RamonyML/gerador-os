@@ -28,6 +28,7 @@ import { useNotices } from '../hooks/useNotices'
 import type { NoticePriority, NoticeStatus, NoticeTarget } from '../types/notices'
 import { db } from '../lib/firebase'
 import { NoticeDialog } from '../components/NoticeDialog'
+import { AppPageChrome } from '../components/AppPageChrome'
 
 function targetLabel(target: NoticeTarget) {
   if (target.scope === 'all') return 'Para todos'
@@ -111,18 +112,20 @@ export function AvisosPage() {
   }
 
   return (
-    <Box sx={{ flex: 1, width: '100%' }}>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4 }, px: { xs: 2, sm: 3 } }}>
+    <>
+      <AppPageChrome
+        overline="Comunicados"
+        title="Avisos"
+        subtitle={
+          <Typography variant="body1" color="text.secondary">
+            Comunicados gerais ou direcionados por setor. Os avisos aparecem aqui permanentemente.
+          </Typography>
+        }
+        maxWidth="lg"
+        illustration="announcements"
+        illustrationAlt="Comunicados e avisos"
+      >
         <Stack spacing={2.5}>
-          <Box>
-            <Typography variant="h5" component="h1" sx={{ fontWeight: 800 }}>
-              Avisos
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 680 }}>
-              Comunicados gerais ou direcionados por setor. Os avisos aparecem aqui permanentemente.
-            </Typography>
-          </Box>
-
           {canCreate ? (
             <Paper
               elevation={0}
@@ -382,7 +385,7 @@ export function AvisosPage() {
             </Button>
           </Box>
         </Stack>
-      </Container>
+      </AppPageChrome>
       <NoticeDialog
         notice={selectedId ? notices.state.notices.find((n) => n.id === selectedId) ?? null : null}
         open={selectedId != null}
@@ -392,7 +395,7 @@ export function AvisosPage() {
         }}
         isUnread={selectedId ? unreadIds.has(selectedId) : false}
       />
-    </Box>
+    </>
   )
 }
 

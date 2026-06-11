@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   Alert,
   Box,
   Chip,
   CircularProgress,
   Container,
-  Paper,
   Typography,
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
@@ -19,14 +16,16 @@ import {
   SUPPORT_DEMANDS,
   templatesMatchingDemand,
 } from '../data/supportDemands'
-import { SupportHubHeroIllustration } from '../components/SupportHubHeroIllustration'
+import { HeroIllustration } from '../components/HeroIllustration'
+import { NavCard } from '../components/NavCard'
+import { Reveal } from '../components/Reveal'
+import { ILLUSTRATIONS } from '../data/illustrations'
 
 export function SupportHomePage() {
   const theme = useTheme()
   const { mode } = useColorMode()
   const { profile } = useAuth()
   const state = useOsTemplates(profile)
-  const navigate = useNavigate()
   const primary = theme.palette.primary.main
   const [categoriesEntered, setCategoriesEntered] = useState(false)
 
@@ -71,6 +70,7 @@ export function SupportHomePage() {
     >
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Reveal>
           <Box
             sx={{
               display: 'flex',
@@ -118,9 +118,10 @@ export function SupportHomePage() {
                     : `drop-shadow(0 10px 30px ${alpha('#000', 0.35)})`,
               }}
             >
-              <SupportHubHeroIllustration accent={primary} />
+              <HeroIllustration src={ILLUSTRATIONS.support} alt="Suporte" />
             </Box>
           </Box>
+          </Reveal>
 
           {state.status === 'loading' ? (
             <Box
@@ -181,102 +182,35 @@ export function SupportHomePage() {
                 const n = counts.get(d.id) ?? 0
                 const Icon = d.Icon
                 const accentMain = accentHexForSupportDemandSlot(slotIndex)
-                const iconBg = alpha(accentMain, mode === 'dark' ? 0.22 : 0.14)
 
                 const hubRoute: Record<string, string> = {
                   'alteracao-plano': '/suporte/alteracao-plano',
                   'mudanca-endereco': '/suporte/mudanca-endereco',
                 }
-                const go = () =>
-                  navigate(hubRoute[d.id] ?? `/suporte/demanda/${d.id}`)
+                const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
 
                 return (
-                  <Paper
+                  <NavCard
                     key={d.id}
-                    elevation={0}
-                    onClick={() => go()}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        go()
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
-                    sx={{
-                      p: 2.5,
-                      borderRadius: 2.5,
-                      border: 1,
-                      borderColor: 'divider',
-                      cursor: 'pointer',
-                      bgcolor: 'background.paper',
-                      transition:
-                        'box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
-                      '&:hover': {
-                        borderColor: alpha(accentMain, 0.55),
-                        boxShadow:
-                          mode === 'light'
-                            ? `0 12px 32px ${alpha(accentMain, 0.14)}`
-                            : '0 12px 32px rgba(0,0,0,0.35)',
-                        transform: 'translateY(-2px)',
-                      },
-                      '&:focus-visible': {
-                        outline: `2px solid ${accentMain}`,
-                        outlineOffset: 2,
-                      },
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'flex-start' }}>
-                      <Box
+                    to={to}
+                    accent={accentMain}
+                    icon={<Icon sx={{ fontSize: 26 }} />}
+                    title={d.title}
+                    description={d.description}
+                    badge={
+                      <Chip
+                        size="small"
+                        label={`${n} modelo${n === 1 ? '' : 's'}`}
                         sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 2,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          bgcolor: iconBg,
+                          height: 24,
+                          fontWeight: 600,
+                          bgcolor: alpha(accentMain, mode === 'dark' ? 0.2 : 0.1),
                           color: accentMain,
+                          border: 'none',
                         }}
-                      >
-                        <Icon sx={{ fontSize: 26 }} />
-                      </Box>
-                      <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'flex-start',
-                            justifyContent: 'space-between',
-                            gap: 1,
-                          }}
-                        >
-                          <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
-                            {d.title}
-                          </Typography>
-                          <ArrowForwardRoundedIcon
-                            sx={{ fontSize: 20, color: 'text.disabled', flexShrink: 0, mt: 0.25 }}
-                          />
-                        </Box>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-                          {d.description}
-                        </Typography>
-                        <Chip
-                          size="small"
-                          label={`${n} modelo${n === 1 ? '' : 's'}`}
-                          sx={{
-                            mt: 1.5,
-                            height: 24,
-                            fontWeight: 600,
-                            bgcolor: alpha(accentMain, mode === 'dark' ? 0.2 : 0.1),
-                            color: accentMain,
-                            border: 'none',
-                          }}
-                        />
-                      </Box>
-                    </Box>
-                  </Paper>
+                      />
+                    }
+                  />
                 )
               })}
             </Box>

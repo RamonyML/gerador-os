@@ -18,7 +18,9 @@ import {
   canViewUpgradeAnalytics,
   canViewUpgradeCommissions,
 } from '../lib/permissions'
-import { UpgradesHeroIllustration } from '../components/UpgradesHeroIllustration'
+import { HeroIllustration } from '../components/HeroIllustration'
+import { ILLUSTRATIONS } from '../data/illustrations'
+import { Reveal } from '../components/Reveal'
 import { UpgradeAnalyticsDashboard } from '../features/upgrades/UpgradeAnalyticsDashboard'
 import { UpgradeAuditDashboard } from '../features/upgrades/UpgradeAuditDashboard'
 import { UpgradeForm } from '../features/upgrades/UpgradeForm'
@@ -44,6 +46,7 @@ export function UpgradesHubPage() {
 
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
+      <Reveal>
       <Box
         sx={{
           display: 'flex',
@@ -52,6 +55,14 @@ export function UpgradesHubPage() {
           alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
           mb: 3,
+          p: { xs: 2.5, md: 3 },
+          borderRadius: 4,
+          border: 1,
+          borderColor: 'divider',
+          background:
+            theme.palette.mode === 'light'
+              ? `linear-gradient(135deg, ${alpha(primary, 0.14)} 0%, ${alpha(primary, 0.04)} 46%, transparent 100%)`
+              : `linear-gradient(135deg, ${alpha(primary, 0.24)} 0%, ${alpha('#000', 0.12)} 50%, transparent 100%)`,
         }}
       >
         <Box sx={{ minWidth: 0, flex: '1 1 520px' }}>
@@ -92,9 +103,10 @@ export function UpgradesHubPage() {
                 : `drop-shadow(0 10px 30px ${alpha('#000', 0.35)})`,
           }}
         >
-          <UpgradesHeroIllustration accent={primary} />
+          <HeroIllustration src={ILLUSTRATIONS.technology} alt="Tecnologia" />
         </Box>
       </Box>
+      </Reveal>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tab} onChange={handleTabChange}>

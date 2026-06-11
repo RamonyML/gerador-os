@@ -31,7 +31,8 @@ import {
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { Add, Edit, Search as SearchIcon } from '@mui/icons-material'
-import { AddUserHeroIllustration } from '../components/AddUserHeroIllustration'
+import { HeroIllustration } from '../components/HeroIllustration'
+import { ILLUSTRATIONS } from '../data/illustrations'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
 import {
@@ -65,7 +66,6 @@ function rowDisplayName(row: ManagedUserRow): string {
 
 export function AdminUsersPage() {
   const theme = useTheme()
-  const primary = theme.palette.primary.main
   const { profile } = useAuth()
   const isDev = profile?.isDev === true
   const canEditAdminFlag =
@@ -281,7 +281,7 @@ export function AdminUsersPage() {
                   : `drop-shadow(0 8px 24px ${alpha('#000', 0.35)})`,
             }}
           >
-            <AddUserHeroIllustration accent={primary} />
+            <HeroIllustration src={ILLUSTRATIONS.collaboration} alt="Colaboração" />
           </Box>
         }
       >

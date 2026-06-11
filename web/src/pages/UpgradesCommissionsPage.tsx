@@ -39,6 +39,7 @@ import {
   calcularComissaoReceptivos,
 } from '../lib/comissoesRules'
 import { gerarRelatorioComissoesPdf } from '../lib/comissoesPdf'
+import { Reveal } from '../components/Reveal'
 import { TipoUpgrade, type Upgrade } from '../types/upgrades'
 
 type ComissaoOperador = {
@@ -190,6 +191,7 @@ export function UpgradesCommissionsPage() {
   }
 
   return (
+    <Reveal>
     <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 1200, mx: 'auto' }}>
       <Box
         sx={{
@@ -401,5 +403,6 @@ export function UpgradesCommissionsPage() {
         </Typography>
       </Alert>
     </Box>
+    </Reveal>
   )
 }
