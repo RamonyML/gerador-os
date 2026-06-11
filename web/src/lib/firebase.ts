@@ -1,8 +1,8 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics, isSupported } from 'firebase/analytics'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getFunctions } from 'firebase/functions'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions'
 
 /** Região das HTTPS callable Functions (igual a `REGION` em `functions/src/index.ts`). */
 export const FUNCTIONS_REGION =
@@ -22,8 +22,19 @@ export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 
+/** Liga aos emuladores locais quando `VITE_USE_FIREBASE_EMULATORS=true`. */
+const useEmulators = import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true'
+if (useEmulators) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
+  connectFirestoreEmulator(db, '127.0.0.1', 8080)
+}
+
 export function getFirebaseFunctions() {
-  return getFunctions(app, FUNCTIONS_REGION)
+  const functions = getFunctions(app, FUNCTIONS_REGION)
+  if (useEmulators) {
+    connectFunctionsEmulator(functions, '127.0.0.1', 5001)
+  }
+  return functions
 }
 
 /** Analytics só no browser e se `measurementId` estiver definido. */

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Alert, Box, Chip, Container, Fade, Paper, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
@@ -15,7 +14,7 @@ import { app } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { brandLogoSrc } from '../lib/brandAssets'
-import { canManageOsTemplates, canManageUsers } from '../lib/permissions'
+import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
@@ -49,7 +48,6 @@ export function HomePage() {
   }, [])
 
   const showSupportHub = profile != null && canAccessSupportHub(profile)
-  const showModels = profile != null && canManageOsTemplates(profile)
   const showUsers = profile != null && canManageUsers(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
 
@@ -79,7 +77,7 @@ export function HomePage() {
     {
       key: 'os',
       title: 'Gerar O.S.',
-      description: 'Monte textos a partir dos templates salvos no Firestore.',
+      description: 'Monte textos a partir dos fluxos de ordem de serviço do sistema.',
       to: '/gerar-os',
       icon: <DescriptionOutlinedIcon sx={{ fontSize: 28 }} />,
     },
@@ -108,17 +106,6 @@ export function HomePage() {
       to: '/chamados',
       icon: <SupportAgentOutlinedIcon sx={{ fontSize: 28 }} />,
     },
-    ...(showModels
-      ? [
-          {
-            key: 'modelos',
-            title: 'Modelos de O.S.',
-            description: 'Crie e edite presets usados na geração de ordens.',
-            to: '/admin/modelos-os',
-            icon: <AssignmentOutlinedIcon sx={{ fontSize: 28 }} />,
-          } satisfies QuickAction,
-        ]
-      : []),
     ...(showUsers
       ? [
           {

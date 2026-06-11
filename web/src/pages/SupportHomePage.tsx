@@ -96,8 +96,8 @@ export function SupportHomePage() {
                 Demandas por categoria
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5, maxWidth: 640 }}>
-                Escolha o tipo de demanda para acessar os modelos de O.S. alinhados à sua operação. Os
-                números indicam quantos fluxos ativos existem no Firestore em cada categoria.
+                Escolha o tipo de demanda para acessar os fluxos de O.S. alinhados à sua operação. Os
+                números indicam quantos fluxos existem em cada categoria.
               </Typography>
               {totalModelos !== null ? (
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
@@ -138,7 +138,7 @@ export function SupportHomePage() {
             >
               <CircularProgress size={22} thickness={5} />
               <Typography variant="body2" color="text.secondary">
-                Carregando modelos do Firestore…
+                Carregando fluxos…
               </Typography>
             </Box>
           ) : null}
@@ -183,12 +183,12 @@ export function SupportHomePage() {
                 const accentMain = accentHexForSupportDemandSlot(slotIndex)
                 const iconBg = alpha(accentMain, mode === 'dark' ? 0.22 : 0.14)
 
+                const hubRoute: Record<string, string> = {
+                  'alteracao-plano': '/suporte/alteracao-plano',
+                  'mudanca-endereco': '/suporte/mudanca-endereco',
+                }
                 const go = () =>
-                  navigate(
-                    d.id === 'alteracao-plano'
-                      ? '/suporte/alteracao-plano'
-                      : `/suporte/demanda/${d.id}`,
-                  )
+                  navigate(hubRoute[d.id] ?? `/suporte/demanda/${d.id}`)
 
                 return (
                   <Paper

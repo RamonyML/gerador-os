@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Button,
-  Chip,
   CircularProgress,
   FormControl,
   InputLabel,
@@ -32,30 +31,21 @@ import {
   isKnownDemandCategory,
   templatesMatchingDemand,
 } from '../data/supportDemands'
+import { buildMudEndPadraoTextos } from '../data/mudEnd/padrao'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
-const EXEMPLO_FIRESTORE_JSON = `{
-  "sector": "suporte",
-  "slug": "atendimento-demo",
-  "title": "Atendimento — demonstração",
-  "version": 1,
-  "active": true,
-  "demandCategory": "geral",
-  "outputTemplate": "Cliente: {{cliente}}\\nProtocolo: {{protocolo}}\\nBairro: {{bairro}}\\nOperador: {{operador.nome}}\\nObservações: {{observacoes}}",
-  "fields": [
-    { "id": "cliente", "label": "Cliente", "placeholder": "Nome do cliente" },
-    { "id": "protocolo", "label": "Protocolo", "placeholder": "Número" },
-    { "id": "bairro", "label": "Bairro", "placeholder": "" },
-    { "id": "observacoes", "label": "Observações", "placeholder": "", "multiline": true }
-  ]
-}`
+/** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
+const DEMAND_GENERATOR_BLURB: Record<string, string> = {
+  'mudanca-endereco':
+    'Reinstalação dos equipamentos do cliente em um novo endereço. Confirme a viabilidade de fibra, registre o comprovante de endereço, faça o agendamento e gere os textos de Protocolo, O.S e Agenda.',
+}
 
 function buildInitialValues(template: OsTemplate | null): Record<string, string> {
   if (!template) return {}
   const o: Record<string, string> = {}
   for (const f of template.fields) {
-    o[f.id] = ''
+    o[f.id] = f.defaultValue ?? ''
   }
   return o
 }
@@ -167,6 +157,16 @@ export function OsGeneratorPage() {
     base.clienteUpper = nome.toUpperCase()
     base.bairroUpper = String(values.bairro ?? '').trim().toUpperCase()
 
+    // Mudança de endereço (espelha os .toUpperCase()/replace do HTML legado).
+    base.adressUpper = String(values.adress ?? '').trim().toUpperCase()
+    base.numNumerico = String(values.num ?? '').replace(/\D/g, '')
+    base.complementoUpper = String(values.complemento ?? '').trim().toUpperCase()
+    base.quandoMudUpper = String(values.quandoMud ?? '').trim().toUpperCase()
+    base.tipoCompUpper = String(values.tipoComp ?? '').trim().toUpperCase()
+    base.nomeComprovUpper = String(values.nomeComprov ?? '').trim().toUpperCase()
+    base.grauCompUpper = String(values.grauComp ?? '').trim().toUpperCase()
+    base.extendAgenda = String(values.extend ?? '').replace(/<b>|<\/b>/g, '**')
+
     base.equipamentoOuOnu =
       String(values.equipamento ?? '').trim().toUpperCase() || 'ONU'
 
@@ -273,8 +273,21 @@ export function OsGeneratorPage() {
       nome: profile?.displayName ?? '',
       email: user?.email ?? profile?.email ?? '',
     }
+    base.operadorPrimeiroNome =
+      (profile?.displayName ?? '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)[0]
+        ?.toUpperCase() ?? ''
+
+    if (selected?.slug === 'mud-end-padrao') {
+      Object.assign(
+        base,
+        buildMudEndPadraoTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    }
     return base
-  }, [values, profile, user])
+  }, [values, profile, user, selected?.slug])
 
   const preview = useMemo(() => {
     if (!selected) return ''
@@ -308,6 +321,7 @@ export function OsGeneratorPage() {
   }, [activePreviewBody])
 
   const multiPreviewTabs = previewSections.length > 1
+  const hideTemplateSelector = Boolean(slugParam && selected)
 
   if (profileMissing || !profile) {
     return (
@@ -319,26 +333,31 @@ export function OsGeneratorPage() {
     )
   }
 
+  const headerTitle = demandMeta ? demandMeta.title : 'Gerar O.S.'
+  const headerOverline = (() => {
+    const label = selected?.title ?? ''
+    const variant = label.includes('—') ? label.split('—').pop()?.trim() : ''
+    if (variant) return variant.charAt(0).toUpperCase() + variant.slice(1)
+    return 'Operação'
+  })()
+  const headerSubtitle =
+    demandMeta && DEMAND_GENERATOR_BLURB[demandMeta.id]
+      ? DEMAND_GENERATOR_BLURB[demandMeta.id]
+      : demandMeta
+        ? demandMeta.description
+        : 'Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho (protocolo, O.S., encerramento).'
+
   return (
     <AppPageChrome
-      overline="Operação"
-      title="Gerar O.S."
+      overline={headerOverline}
+      title={headerTitle}
       maxWidth="xl"
       subtitle={
         <Typography variant="body1" color="text.secondary" component="div">
-          Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho
-          (protocolo, O.S., encerramento).
+          {headerSubtitle}
         </Typography>
       }
     >
-      {demandParam && demandMeta ? (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-          <Chip size="small" color="primary" variant="outlined" label={demandMeta.title} />
-          <Link component={RouterLink} to="/gerar-os" underline="hover" variant="body2">
-            Ver todos os modelos
-          </Link>
-        </Box>
-      ) : null}
 
       {state.status === 'loading' ? (
         <Box
@@ -382,22 +401,8 @@ export function OsGeneratorPage() {
 
       {state.status === 'ready' && templates.length === 0 ? (
         <Alert severity="info" sx={{ borderRadius: 2 }}>
-          Nenhum template ativo. Crie documentos em{' '}
-          <strong>osTemplates</strong> no Firestore. Exemplo:
-          <Box
-            component="pre"
-            sx={{
-              mt: 1,
-              p: 1.5,
-              borderRadius: 1,
-              bgcolor: 'action.hover',
-              fontSize: 12,
-              overflow: 'auto',
-              textAlign: 'left',
-            }}
-          >
-            {EXEMPLO_FIRESTORE_JSON}
-          </Box>
+          Nenhum fluxo disponível para o seu setor. Se isso parecer incorreto,
+          fale com um administrador ou com a equipe técnica.
         </Alert>
       ) : null}
 
@@ -424,31 +429,35 @@ export function OsGeneratorPage() {
             }}
           >
             <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
-              1 · Modelo e campos
+              {hideTemplateSelector
+                ? 'Preencha atentamente o formulário abaixo'
+                : '1 · Modelo e campos'}
             </Typography>
-            <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-              <InputLabel id="tpl-label">Modelo</InputLabel>
-              <Select
-                labelId="tpl-label"
-                label="Modelo"
-                value={selectedId}
-                onChange={(e) => handleSelectTemplate(e.target.value)}
-              >
-                {visibleTemplates.map((t) => (
-                  <MenuItem key={t.id} value={t.id}>
-                    {t.title}
-                    <Typography
-                      component="span"
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ ml: 0.75 }}
-                    >
-                      v{t.version}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {hideTemplateSelector ? null : (
+              <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+                <InputLabel id="tpl-label">Modelo</InputLabel>
+                <Select
+                  labelId="tpl-label"
+                  label="Modelo"
+                  value={selectedId}
+                  onChange={(e) => handleSelectTemplate(e.target.value)}
+                >
+                  {visibleTemplates.map((t) => (
+                    <MenuItem key={t.id} value={t.id}>
+                      {t.title}
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ ml: 0.75 }}
+                      >
+                        v{t.version}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
 
             {selected ? (
               <OsTemplateFieldsForm

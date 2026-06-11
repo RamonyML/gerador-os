@@ -85,7 +85,7 @@ function buildClearPatch(
   return p
 }
 
-/** Mantém a ordem do Firestore; quebra em blocos quando `section` muda. */
+/** Mantém a ordem definida no fluxo; quebra em blocos quando `section` muda. */
 function groupFieldsBySection(fields: OsTemplateField[]): {
   section: string
   fields: OsTemplateField[]
@@ -103,6 +103,18 @@ function groupFieldsBySection(fields: OsTemplateField[]): {
   return out
 }
 
+function isFieldVisible(
+  field: OsTemplateField,
+  values: Record<string, string>,
+): boolean {
+  if (!field.showWhen) return true
+  const expected = field.showWhen.equals
+  const current = values[field.showWhen.field] ?? ''
+  return Array.isArray(expected)
+    ? expected.includes(current)
+    : current === expected
+}
+
 export function OsTemplateFieldsForm({
   fields,
   values,
@@ -111,7 +123,14 @@ export function OsTemplateFieldsForm({
 }: Props) {
   const hasCepField = fields.some((f) => f.id === 'cep')
   const cepTargets = useMemo(() => resolveCepFillIds(fields), [fields])
-  const sections = useMemo(() => groupFieldsBySection(fields), [fields])
+  const visibleFields = useMemo(
+    () => fields.filter((f) => isFieldVisible(f, values)),
+    [fields, values],
+  )
+  const sections = useMemo(
+    () => groupFieldsBySection(visibleFields),
+    [visibleFields],
+  )
 
   return (
     <Stack component="div" spacing={0} sx={{ width: '100%' }}>
@@ -242,10 +261,6 @@ function CepField({
     }
   }
 
-  const hintPadrao = hasFillTargets
-    ? 'Ao completar 8 dígitos, logradouro e bairro são preenchidos automaticamente (ViaCEP / Brasil API).'
-    : 'Para preenchimento automático, o modelo precisa dos campos de id adress (ou logradouro/endereco) e/ou bairro.'
-
   return (
     <TextField
       label={f.label}
@@ -256,7 +271,7 @@ function CepField({
       fullWidth
       size="small"
       error={Boolean(error)}
-      helperText={error || hintPadrao}
+      helperText={error || undefined}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
@@ -293,6 +308,124 @@ function CepField({
   )
 }
 
+function UserRoundIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="5" />
+      <path d="M20 21a8 8 0 0 0-16 0" />
+    </svg>
+  )
+}
+
+function UsersRoundIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 21a8 8 0 0 0-16 0" />
+      <circle cx="10" cy="8" r="5" />
+      <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+    </svg>
+  )
+}
+
+function FieldOptionIcon({ name }: { name?: string }) {
+  if (name === 'user-round') return <UserRoundIcon />
+  if (name === 'users-round') return <UsersRoundIcon />
+  return null
+}
+
+function HighlightSelect({
+  field: f,
+  value,
+  onChange,
+}: {
+  field: OsTemplateField
+  value: string
+  onChange: (id: string, value: string) => void
+}) {
+  const options = f.options ?? []
+  return (
+    <FormControl fullWidth>
+      <Select
+        value={value}
+        onChange={(e) => onChange(f.id, e.target.value)}
+        displayEmpty
+        aria-label={f.label}
+        renderValue={(val) => {
+          const opt = options.find((o) => o.value === val)
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <FieldOptionIcon name={opt?.icon} />
+              </Box>
+              <Box component="span" sx={{ textTransform: 'uppercase' }}>
+                {opt?.label ?? f.label}
+              </Box>
+            </Box>
+          )
+        }}
+        sx={{
+          color: '#fff',
+          fontSize: '1.05rem',
+          fontWeight: 700,
+          borderRadius: 2,
+          background: 'linear-gradient(135deg, #157f3d 0%, #2fbf6a 100%)',
+          boxShadow: '0 2px 10px rgba(21, 127, 61, 0.25)',
+          '& .MuiSelect-select': {
+            display: 'flex',
+            alignItems: 'center',
+            py: 1.5,
+          },
+          '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          '&:hover': {
+            background: 'linear-gradient(135deg, #12713680 0%, #2bb463 100%)',
+          },
+          '& .MuiSelect-icon': { color: '#fff' },
+        }}
+      >
+        {options.map((opt, i) => (
+          <MenuItem key={`${f.id}-opt-${i}`} value={opt.value}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+                color: 'success.main',
+              }}
+            >
+              <FieldOptionIcon name={opt.icon} />
+            </Box>
+            <Box component="span" sx={{ ml: opt.icon ? 1.25 : 0 }}>
+              {opt.label}
+            </Box>
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
+}
+
 function FieldInput({
   field: f,
   value,
@@ -303,6 +436,10 @@ function FieldInput({
   onChange: (id: string, value: string) => void
 }) {
   const kind = getFieldControl(f)
+
+  if (f.highlight && kind === 'select' && f.options && f.options.length > 0) {
+    return <HighlightSelect field={f} value={value} onChange={onChange} />
+  }
 
   if (kind === 'date') {
     return (
@@ -365,7 +502,6 @@ function FieldInput({
             maxLength: 16,
           },
         }}
-        helperText="Somente números; a máscara é aplicada automaticamente."
       />
     )
   }
@@ -402,8 +538,10 @@ function FieldInput({
           {f.label}
         </FormLabel>
         <RadioGroup
+          row
           value={value}
           onChange={(e) => onChange(f.id, e.target.value)}
+          sx={{ columnGap: 2, rowGap: 0.5 }}
         >
           {f.options.map((opt, i) => (
             <FormControlLabel
@@ -411,7 +549,7 @@ function FieldInput({
               value={opt.value}
               control={<Radio />}
               label={opt.label}
-              sx={{ alignItems: 'flex-start', mb: 0.5 }}
+              sx={{ mr: 0 }}
             />
           ))}
         </RadioGroup>

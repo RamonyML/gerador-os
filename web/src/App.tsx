@@ -1,13 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/AppLayout'
 import { RequireAuth } from './components/RequireAuth'
-import { RequireTemplateManager } from './components/RequireTemplateManager'
-import { AdminOsTemplatesPage } from './pages/AdminOsTemplatesPage'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { OsGeneratorPage } from './pages/OsGeneratorPage'
 import { SupportHomePage } from './pages/SupportHomePage'
 import { AlteracaoPlanoHubPage } from './pages/AlteracaoPlanoHubPage'
+import { MudancaEnderecoHubPage } from './pages/MudancaEnderecoHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
 import { RequireUserManager } from './components/RequireUserManager'
@@ -50,6 +49,14 @@ export default function App() {
           }
         />
         <Route
+          path="/suporte/mudanca-endereco"
+          element={
+            <RequireSupport>
+              <MudancaEnderecoHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
           path="/suporte/demanda/:demandId"
           element={
             <RequireSupport>
@@ -72,14 +79,6 @@ export default function App() {
           }
         />
         <Route path="/sobre" element={<SobrePage />} />
-        <Route
-          path="/admin/modelos-os"
-          element={
-            <RequireTemplateManager>
-              <AdminOsTemplatesPage />
-            </RequireTemplateManager>
-          }
-        />
         <Route
           path="/admin/usuarios"
           element={

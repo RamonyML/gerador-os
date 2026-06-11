@@ -5,6 +5,11 @@
     "inventory:suporte": "node scripts/build-legacy-suporte-inventory.mjs",
     "dev": "npm run dev --prefix web --",
     "build": "npm run build --prefix web",
+    "lint": "npm run lint --prefix web",
+    "format": "npm run format --prefix web",
+    "test": "npm run test --prefix web",
+    "test:e2e": "npm run test:e2e --prefix web",
+    "emulators": "npm run build --prefix functions && firebase emulators:start",
     "deploy": "npm run build --prefix web && npm run build --prefix functions && firebase deploy",
     "deploy:functions": "npm run build --prefix functions && firebase deploy --only functions"
   },

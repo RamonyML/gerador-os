@@ -24,10 +24,10 @@ import { getManutRoteadorResetDefaults } from './manutencao/roteadorReset'
 import { getManutRoteadorResetLojaDefaults } from './manutencao/roteadorResetLoja'
 import { getManutSinalAltoPadraoDefaults } from './manutencao/sinalAltoPadrao'
 import { getManutVisitaInstrutivaDefaults } from './manutencao/visitaInstrutiva'
-import { getMudEndExampleDefaults } from './mudEndExample'
+import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import type { OsTemplateField } from '../types/osTemplate'
 
-/** Retorno comum para preencher o formulário do admin (novo documento). */
+/** Retorno comum para definir um fluxo de O.S em código. */
 export type OsTemplatePresetPayload = {
   slug: string
   title: string
@@ -44,19 +44,18 @@ export type OsTemplatePreset = {
 }
 
 /**
- * Atalhos para publicar modelos no Firestore (código-fonte), não confundir com
- * os documentos já salvos na coleção `osTemplates`.
- * Novos exemplos: adicione uma entrada aqui — a UI usa um único select.
+ * Catálogo de fluxos de O.S em código (fonte única via osTemplateRegistry.ts).
+ * Novos fluxos: adicione um módulo em data/ e registre uma entrada aqui.
  *
  * Para fluxos tipo manutenção/suporte: use três marcadores explícitos — `=== Texto Protocolo ===`,
  * `=== Texto O.S ===` e `=== Texto da Agenda ===` (linhas só com `=` no corpo do texto não viram abas).
  */
 export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
   {
-    id: 'mud-end-protocolo',
+    id: 'mud-end-padrao',
     category: 'Mudança de endereço',
-    label: 'MUD END — protocolo (HTML legado)',
-    getDefaults: getMudEndExampleDefaults,
+    label: 'Mudança de endereço — padrão',
+    getDefaults: getMudEndPadraoDefaults,
   },
   {
     id: 'altplan-padrao-remoto',

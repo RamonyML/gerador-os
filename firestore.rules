@@ -145,63 +145,7 @@ service cloud.firestore {
     }
 
     match /osTemplates/{templateId} {
-      // Leitura: dev vê tudo; no setor, operador só ativo, gerente/supervisor/admin veem também inativos
-      allow read: if request.auth != null && (
-        userData().isDev == true
-        || (
-          userData().sector == resource.data.sector
-          && (
-            resource.data.active == true
-            || userData().isAdmin == true
-            || userData().hierarchy == 'gerente'
-            || userData().hierarchy == 'supervisor'
-          )
-        )
-      );
-
-      allow create: if request.auth != null
-        && userData().active != false
-        && request.resource.data.sector is string
-        && request.resource.data.slug is string
-        && request.resource.data.title is string
-        && request.resource.data.outputTemplate is string
-        && request.resource.data.fields is list
-        && (
-          userData().isDev == true
-          || userData().isAdmin == true
-          || (
-            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
-            && userData().sector == request.resource.data.sector
-          )
-        );
-
-      allow update: if request.auth != null
-        && userData().active != false
-        && request.resource.data.sector is string
-        && request.resource.data.slug is string
-        && request.resource.data.title is string
-        && request.resource.data.outputTemplate is string
-        && request.resource.data.fields is list
-        && (
-          userData().isDev == true
-          || userData().isAdmin == true
-          || (
-            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
-            && userData().sector == resource.data.sector
-            && request.resource.data.sector == resource.data.sector
-          )
-        );
-
-      allow delete: if request.auth != null
-        && userData().active != false
-        && (
-          userData().isDev == true
-          || userData().isAdmin == true
-          || (
-            (userData().hierarchy == 'gerente' || userData().hierarchy == 'supervisor')
-            && userData().sector == resource.data.sector
-          )
-        );
+      allow read, write: if false;
     }
 
     /**

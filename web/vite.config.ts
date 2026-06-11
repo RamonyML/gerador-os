@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
@@ -25,6 +26,19 @@ export default defineConfig(({ mode }) => {
           secure: true,
           rewrite: (path) => path.replace(/^\/__fbfunctions/, ''),
         },
+      },
+    },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: ['./src/test/setup.ts'],
+      css: true,
+      include: ['src/**/*.{test,spec}.{ts,tsx}'],
+      exclude: ['node_modules', 'dist', 'e2e'],
+      coverage: {
+        provider: 'v8',
+        reportsDirectory: './coverage',
+        exclude: ['e2e/**', '**/*.config.*', 'src/test/**'],
       },
     },
   }

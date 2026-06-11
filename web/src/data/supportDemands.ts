@@ -11,7 +11,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 
-/** Chave salva em `osTemplates.demandCategory` (padrão no parser: `geral`). */
+/** Chave de agrupamento no hub Suporte (`demandCategory` em cada fluxo). */
 export const DEFAULT_DEMAND_CATEGORY = 'geral' as const
 
 export type SupportDemandMeta = {

@@ -91,9 +91,8 @@ export function SupportDemandPage() {
 
       {state.status === 'ready' && list.length === 0 ? (
         <Alert severity="info" sx={{ mb: 2 }}>
-          Nenhum modelo ativo nesta categoria. Peça a um gerente para publicar um
-          modelo em <strong>Modelos</strong> com esta classificação, ou use o gerador
-          geral.
+          Nenhum fluxo nesta categoria no momento. Use o gerador geral ou peça
+          inclusão de novos fluxos à equipe técnica.
         </Alert>
       ) : null}
 

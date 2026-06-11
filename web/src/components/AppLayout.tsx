@@ -19,7 +19,7 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
-import { canManageOsTemplates, canManageUsers } from '../lib/permissions'
+import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { useNotices } from '../hooks/useNotices'
@@ -28,7 +28,6 @@ import { NoticeDialog } from './NoticeDialog'
 
 export function AppLayout() {
   const { user, profile, logOut } = useAuth()
-  const showModels = profile != null && canManageOsTemplates(profile)
   const showUsers = profile != null && canManageUsers(profile)
   const showSupport = profile != null && canAccessSupportHub(profile)
   const { mode, toggle } = useColorMode()
@@ -111,14 +110,6 @@ export function AppLayout() {
               {showSupport ? (
                 <Button color="inherit" onClick={() => navigate('/suporte')}>
                   Suporte
-                </Button>
-              ) : null}
-              {showModels ? (
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/admin/modelos-os')}
-                >
-                  Modelos
                 </Button>
               ) : null}
               <Button color="inherit" onClick={() => navigate('/escala')}>
