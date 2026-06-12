@@ -16,6 +16,7 @@ import { alpha, useTheme, type Theme } from '@mui/material/styles'
 import {
   SHIFT_IDS,
   TURNOS_EXTRAS,
+  metaTurnoPorId,
   turnosPrincipaisParaData,
   type TurnoFixoMeta,
 } from '../lib/escalaTurnosFixos'
@@ -320,38 +321,72 @@ export function EscalaMatrizAtendente({
                         }}
                       >
                         {shifts.length === 0 ? (
-                          <Box
-                            sx={{
-                              width: 4,
-                              height: 4,
-                              borderRadius: '50%',
-                              bgcolor: alpha(theme.palette.text.disabled, 0.5),
-                            }}
-                          />
+                          <Tooltip
+                            title="Folga"
+                            placement="top"
+                            arrow
+                            disableInteractive
+                          >
+                            <Box
+                              sx={{
+                                width: 4,
+                                height: 4,
+                                borderRadius: '50%',
+                                bgcolor: alpha(theme.palette.text.disabled, 0.5),
+                              }}
+                            />
+                          </Tooltip>
                         ) : (
                           shifts.map((shiftId) => {
                             const meta = shiftCellMeta(shiftId)
                             const pal = kindPalette(theme, meta.kind)
+                            const info = metaTurnoPorId(shiftId, dm.date, sector)
                             return (
-                              <Box
+                              <Tooltip
                                 key={shiftId}
-                                sx={{
-                                  minWidth: 18,
-                                  height: 20,
-                                  px: 0.5,
-                                  borderRadius: 0.75,
-                                  bgcolor: alpha(pal.main, 0.18),
-                                  color: pal.main,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: 11,
-                                  fontWeight: 800,
-                                  lineHeight: 1,
-                                }}
+                                placement="top"
+                                arrow
+                                disableInteractive
+                                title={
+                                  info ? (
+                                    <Box sx={{ py: 0.25 }}>
+                                      <Typography
+                                        variant="caption"
+                                        sx={{ fontWeight: 700, display: 'block' }}
+                                      >
+                                        {info.headline}
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        sx={{ display: 'block', opacity: 0.85 }}
+                                      >
+                                        {info.detail}
+                                      </Typography>
+                                    </Box>
+                                  ) : (
+                                    'Turno definido'
+                                  )
+                                }
                               >
-                                {meta.code}
-                              </Box>
+                                <Box
+                                  sx={{
+                                    minWidth: 18,
+                                    height: 20,
+                                    px: 0.5,
+                                    borderRadius: 0.75,
+                                    bgcolor: alpha(pal.main, 0.18),
+                                    color: pal.main,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: 11,
+                                    fontWeight: 800,
+                                    lineHeight: 1,
+                                  }}
+                                >
+                                  {meta.code}
+                                </Box>
+                              </Tooltip>
                             )
                           })
                         )}

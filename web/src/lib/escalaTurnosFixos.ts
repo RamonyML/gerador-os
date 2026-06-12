@@ -147,6 +147,32 @@ export function turnosPrincipaisParaData(
   }
 }
 
+/** Metadado do turno de férias (não faz parte dos turnos principais/extras). */
+export const FERIAS_META: TurnoFixoMeta = {
+  id: SHIFT_IDS.ferias,
+  headline: 'Férias',
+  detail: 'Período de férias',
+  variant: 'extra',
+}
+
+/**
+ * Resolve o metadado descritivo de um turno a partir do seu id, considerando o
+ * dia (principais variam por seg–sex/sáb/dom) e o setor. Usado p.ex. no tooltip
+ * da visão "Por atendente" para mostrar a informação definida pela gestão.
+ */
+export function metaTurnoPorId(
+  shiftId: string,
+  date: Date,
+  sector?: Sector | null,
+): TurnoFixoMeta | null {
+  const candidatos = [
+    ...turnosPrincipaisParaData(date, sector),
+    ...TURNOS_EXTRAS,
+    FERIAS_META,
+  ]
+  return candidatos.find((m) => m.id === shiftId) ?? null
+}
+
 /** Título completo para o diálogo de edição. */
 export function tituloTurnoNoDialogo(
   dayNum: number,
