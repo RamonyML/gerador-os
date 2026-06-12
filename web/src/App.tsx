@@ -7,6 +7,7 @@ import { OsGeneratorPage } from './pages/OsGeneratorPage'
 import { SupportHomePage } from './pages/SupportHomePage'
 import { AlteracaoPlanoHubPage } from './pages/AlteracaoPlanoHubPage'
 import { MudancaEnderecoHubPage } from './pages/MudancaEnderecoHubPage'
+import { ManutencaoHubPage } from './pages/ManutencaoHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
 import { RequireUserManager } from './components/RequireUserManager'
@@ -57,6 +58,14 @@ export default function App() {
           element={
             <RequireSupport>
               <MudancaEnderecoHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/manutencao"
+          element={
+            <RequireSupport>
+              <ManutencaoHubPage />
             </RequireSupport>
           }
         />

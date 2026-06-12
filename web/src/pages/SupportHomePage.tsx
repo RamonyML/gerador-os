@@ -186,6 +186,7 @@ export function SupportHomePage() {
                 const hubRoute: Record<string, string> = {
                   'alteracao-plano': '/suporte/alteracao-plano',
                   'mudanca-endereco': '/suporte/mudanca-endereco',
+                  manutencao: '/suporte/manutencao',
                 }
                 const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
 

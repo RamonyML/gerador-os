@@ -20,6 +20,7 @@ import {
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
+import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded'
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
 import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined'
@@ -39,6 +40,8 @@ import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
 
 const SIDEBAR_WIDTH = 268
+const SIDEBAR_COLLAPSED_WIDTH = 76
+const SIDEBAR_COLLAPSED_KEY = 'gerador-os:sidebarCollapsed'
 
 function initialsFrom(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -56,6 +59,23 @@ export function AppLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
+  const toggleCollapsed = () =>
+    setCollapsed((c) => {
+      const next = !c
+      try {
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? '1' : '0')
+      } catch {
+        /* ignore */
+      }
+      return next
+    })
   const [noticeAnchor, setNoticeAnchor] = useState<HTMLElement | null>(null)
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
   const notices = useNotices({ uid: user?.uid ?? null, profile })
@@ -87,8 +107,8 @@ export function AppLayout() {
     profile?.displayName?.trim() || user?.email?.split('@')[0] || 'Usuário'
   const sectorLabel = profile ? SECTOR_LABELS[profile.sector] ?? profile.sector : ''
 
-  const drawerContent = (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+  const renderDrawer = (isCollapsed: boolean) => (
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
       <Box
         component={RouterLink}
         to="/"
@@ -96,32 +116,60 @@ export function AppLayout() {
         sx={{
           display: 'flex',
           alignItems: 'center',
+          justifyContent: isCollapsed ? 'center' : 'flex-start',
           gap: 1.25,
-          px: 2.5,
+          px: isCollapsed ? 1 : 2.5,
           height: 64,
           textDecoration: 'none',
           color: 'inherit',
           flexShrink: 0,
+          transition: 'padding 0.25s ease',
         }}
       >
         <Box
           component="img"
           src={brandLogoSrc(mode)}
           alt=""
-          sx={{ height: 30, width: 'auto', display: 'block' }}
+          sx={{
+            height: isCollapsed ? 24 : 30,
+            width: 'auto',
+            display: 'block',
+            transition: 'height 0.25s ease',
+          }}
         />
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, letterSpacing: '-0.01em' }}>
+        <Typography
+          variant="subtitle1"
+          noWrap
+          sx={{
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+            opacity: isCollapsed ? 0 : 1,
+            maxWidth: isCollapsed ? 0 : 200,
+            overflow: 'hidden',
+            transition: 'opacity 0.2s ease, max-width 0.25s ease',
+          }}
+        >
           Gerador de O.S
         </Typography>
       </Box>
 
       <Divider sx={{ mx: 2 }} />
 
-      <Box sx={{ flex: 1, overflowY: 'auto', py: 1.5 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', py: 1.5 }}>
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ px: 3, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+          sx={{
+            display: 'block',
+            px: 3,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            opacity: isCollapsed ? 0 : 1,
+            height: isCollapsed ? 0 : 'auto',
+            overflow: 'hidden',
+            transition: 'opacity 0.2s ease',
+          }}
         >
           Navegação
         </Typography>
@@ -130,73 +178,96 @@ export function AppLayout() {
             const active = item.isActive(pathname)
             const Icon = item.icon
             return (
-              <ListItemButton
+              <Tooltip
                 key={item.to}
-                component={RouterLink}
-                to={item.to}
-                selected={active}
-                onClick={() => setMobileOpen(false)}
-                sx={{
-                  position: 'relative',
-                  mx: 1.25,
-                  my: 0.25,
-                  px: 1.5,
-                  py: 1,
-                  borderRadius: 2,
-                  color: active ? 'primary.main' : 'text.secondary',
-                  transition: 'background-color 0.2s ease, color 0.2s ease',
-                  '&.Mui-selected, &.Mui-selected:hover': {
-                    bgcolor: (t) =>
-                      alpha(t.palette.primary.main, mode === 'dark' ? 0.18 : 0.1),
-                  },
-                  '&:hover': {
-                    color: 'primary.main',
-                    bgcolor: (t) =>
-                      alpha(t.palette.primary.main, mode === 'dark' ? 0.12 : 0.06),
-                  },
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 4,
-                    top: 9,
-                    bottom: 9,
-                    width: 3,
-                    borderRadius: 3,
-                    bgcolor: 'primary.main',
-                    transform: active ? 'scaleY(1)' : 'scaleY(0)',
-                    transition: 'transform 0.25s ease',
-                  },
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    left: 50,
-                    right: 16,
-                    bottom: 7,
-                    height: 2,
-                    borderRadius: 2,
-                    bgcolor: 'primary.main',
-                    opacity: 0.7,
-                    transform: 'scaleX(0)',
-                    transformOrigin: 'left',
-                    transition: 'transform 0.25s ease',
-                  },
-                  '&:hover::after': { transform: active ? 'scaleX(0)' : 'scaleX(1)' },
-                }}
+                title={item.label}
+                placement="right"
+                disableHoverListener={!isCollapsed}
+                disableFocusListener={!isCollapsed}
+                disableTouchListener={!isCollapsed}
               >
-                <ListItemIcon
-                  sx={{ minWidth: 38, color: active ? 'primary.main' : 'text.secondary' }}
-                >
-                  <Icon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  slotProps={{
-                    primary: {
-                      sx: { fontSize: 14, fontWeight: active ? 700 : 500 },
+                <ListItemButton
+                  component={RouterLink}
+                  to={item.to}
+                  selected={active}
+                  onClick={() => setMobileOpen(false)}
+                  sx={{
+                    position: 'relative',
+                    mx: 1.25,
+                    my: 0.25,
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 2,
+                    justifyContent: isCollapsed ? 'center' : 'flex-start',
+                    color: active ? 'primary.main' : 'text.secondary',
+                    transition: 'background-color 0.2s ease, color 0.2s ease',
+                    '&.Mui-selected, &.Mui-selected:hover': {
+                      bgcolor: (t) =>
+                        alpha(t.palette.primary.main, mode === 'dark' ? 0.18 : 0.1),
                     },
+                    '&:hover': {
+                      color: 'primary.main',
+                      bgcolor: (t) =>
+                        alpha(t.palette.primary.main, mode === 'dark' ? 0.12 : 0.06),
+                    },
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 4,
+                      top: 9,
+                      bottom: 9,
+                      width: 3,
+                      borderRadius: 3,
+                      bgcolor: 'primary.main',
+                      transform: active ? 'scaleY(1)' : 'scaleY(0)',
+                      transition: 'transform 0.25s ease',
+                    },
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 50,
+                      right: 16,
+                      bottom: 7,
+                      height: 2,
+                      borderRadius: 2,
+                      bgcolor: 'primary.main',
+                      opacity: 0.7,
+                      transform: 'scaleX(0)',
+                      transformOrigin: 'left',
+                      transition: 'transform 0.25s ease',
+                      display: isCollapsed ? 'none' : 'block',
+                    },
+                    '&:hover::after': { transform: active ? 'scaleX(0)' : 'scaleX(1)' },
                   }}
-                />
-              </ListItemButton>
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: isCollapsed ? 0 : 38,
+                      justifyContent: 'center',
+                      color: active ? 'primary.main' : 'text.secondary',
+                      transition: 'min-width 0.25s ease',
+                    }}
+                  >
+                    <Icon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    sx={{
+                      my: 0,
+                      opacity: isCollapsed ? 0 : 1,
+                      maxWidth: isCollapsed ? 0 : 200,
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      transition: 'opacity 0.2s ease, max-width 0.25s ease',
+                    }}
+                    slotProps={{
+                      primary: {
+                        sx: { fontSize: 14, fontWeight: active ? 700 : 500 },
+                      },
+                    }}
+                  />
+                </ListItemButton>
+              </Tooltip>
             )
           })}
         </List>
@@ -204,16 +275,26 @@ export function AppLayout() {
 
       <Divider sx={{ mx: 2 }} />
 
-      <Box sx={{ p: 1.5, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Box
+        sx={{
+          p: 1.5,
+          flexShrink: 0,
+          display: 'flex',
+          flexDirection: isCollapsed ? 'column' : 'row',
+          alignItems: 'center',
+          gap: 0.5,
+        }}
+      >
         <Box
           component={RouterLink}
           to="/perfil"
           onClick={() => setMobileOpen(false)}
           sx={{
-            flex: 1,
+            flex: isCollapsed ? '0 0 auto' : 1,
             minWidth: 0,
             display: 'flex',
             alignItems: 'center',
+            justifyContent: isCollapsed ? 'center' : 'flex-start',
             gap: 1.25,
             p: 1,
             borderRadius: 2,
@@ -233,11 +314,21 @@ export function AppLayout() {
               bgcolor: 'primary.main',
               fontSize: 14,
               fontWeight: 700,
+              flexShrink: 0,
             }}
           >
             {initialsFrom(displayName)}
           </Avatar>
-          <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Box
+            sx={{
+              minWidth: 0,
+              flex: 1,
+              opacity: isCollapsed ? 0 : 1,
+              maxWidth: isCollapsed ? 0 : 200,
+              overflow: 'hidden',
+              transition: 'opacity 0.2s ease, max-width 0.25s ease',
+            }}
+          >
             <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
               {displayName}
             </Typography>
@@ -246,7 +337,7 @@ export function AppLayout() {
             </Typography>
           </Box>
         </Box>
-        <Tooltip title="Sair">
+        <Tooltip title="Sair" placement={isCollapsed ? 'right' : 'top'}>
           <IconButton size="small" onClick={() => void logOut()} aria-label="Sair">
             <LogoutOutlinedIcon fontSize="small" />
           </IconButton>
@@ -259,7 +350,15 @@ export function AppLayout() {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Box
         component="nav"
-        sx={{ width: { md: SIDEBAR_WIDTH }, flexShrink: { md: 0 } }}
+        sx={{
+          width: { md: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH },
+          flexShrink: { md: 0 },
+          transition: (t) =>
+            t.transitions.create('width', {
+              easing: t.transitions.easing.easeInOut,
+              duration: t.transitions.duration.standard,
+            }),
+        }}
         aria-label="Navegação principal"
       >
         <Drawer
@@ -277,7 +376,7 @@ export function AppLayout() {
             },
           }}
         >
-          {drawerContent}
+          {renderDrawer(false)}
         </Drawer>
         <Drawer
           variant="permanent"
@@ -285,17 +384,23 @@ export function AppLayout() {
           sx={{
             display: { xs: 'none', md: 'block' },
             '& .MuiDrawer-paper': {
-              width: SIDEBAR_WIDTH,
+              width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH,
               boxSizing: 'border-box',
               border: 'none',
               borderRight: 1,
               borderColor: 'divider',
               bgcolor: 'background.paper',
               backgroundImage: 'none',
+              overflowX: 'hidden',
+              transition: (t) =>
+                t.transitions.create('width', {
+                  easing: t.transitions.easing.easeInOut,
+                  duration: t.transitions.duration.standard,
+                }),
             },
           }}
         >
-          {drawerContent}
+          {renderDrawer(collapsed)}
         </Drawer>
       </Box>
 
@@ -319,6 +424,22 @@ export function AppLayout() {
             >
               <MenuRoundedIcon />
             </IconButton>
+
+            <Tooltip title={collapsed ? 'Expandir menu' : 'Recolher menu'}>
+              <IconButton
+                edge="start"
+                onClick={toggleCollapsed}
+                aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+                sx={{ display: { xs: 'none', md: 'inline-flex' }, mr: 0.5 }}
+              >
+                <MenuOpenRoundedIcon
+                  sx={{
+                    transform: collapsed ? 'rotate(180deg)' : 'none',
+                    transition: 'transform 0.25s ease',
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
 
             <Box
               component={RouterLink}

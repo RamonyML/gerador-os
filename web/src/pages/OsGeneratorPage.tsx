@@ -5,12 +5,8 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
-  InputLabel,
   Link,
-  MenuItem,
   Paper,
-  Select,
   Snackbar,
   Stack,
   Tab,
@@ -43,6 +39,7 @@ import { buildAltplanSemTrocaVisitaIsentaTextos } from '../data/altplan/semTroca
 import { buildAltplanSemTrocaVisitaPagaTextos } from '../data/altplan/semTrocaVisitaPaga'
 import { buildAltplanTrocaVisitaIsentaTextos } from '../data/altplan/trocaVisitaIsenta'
 import { buildAltplanTrocaVisitaPagaTextos } from '../data/altplan/trocaVisitaPaga'
+import { buildLuzVermelhaTextos } from '../data/manutencao/luzVermelha'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -94,16 +91,6 @@ export function OsGeneratorPage() {
   const selected = useMemo(
     () => visibleTemplates.find((t) => t.id === selectedId) ?? null,
     [visibleTemplates, selectedId],
-  )
-
-  const handleSelectTemplate = useCallback(
-    (id: string) => {
-      setSelectedId(id)
-      const t = visibleTemplates.find((x) => x.id === id) ?? null
-      setValues(buildInitialValues(t))
-      setPreviewTab(0)
-    },
-    [visibleTemplates],
   )
 
   useEffect(() => {
@@ -363,6 +350,11 @@ export function OsGeneratorPage() {
           String(base.operadorPrimeiroNome ?? ''),
         ),
       )
+    } else if (selected?.slug === 'manut-luz-vermelha') {
+      Object.assign(
+        base,
+        buildLuzVermelhaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
     }
     return base
   }, [values, profile, user, selected?.slug])
@@ -399,7 +391,6 @@ export function OsGeneratorPage() {
   }, [activePreviewBody])
 
   const multiPreviewTabs = previewSections.length > 1
-  const hideTemplateSelector = Boolean(slugParam && selected)
 
   if (profileMissing || !profile) {
     return (
@@ -423,7 +414,7 @@ export function OsGeneratorPage() {
       ? DEMAND_GENERATOR_BLURB[demandMeta.id]
       : demandMeta
         ? demandMeta.description
-        : 'Escolha o modelo à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho (protocolo, O.S., encerramento).'
+        : 'Preencha o formulário à esquerda; o texto atualiza à direita. Use as abas para copiar só um trecho (protocolo, O.S., agenda).'
 
   const accent: 'green' | 'red' = selected?.slug?.startsWith('mud-end-inviab')
     ? 'red'
@@ -512,35 +503,8 @@ export function OsGeneratorPage() {
             }}
           >
             <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
-              {hideTemplateSelector
-                ? 'Preencha atentamente o formulário abaixo'
-                : '1 · Modelo e campos'}
+              Preencha atentamente o formulário abaixo
             </Typography>
-            {hideTemplateSelector ? null : (
-              <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                <InputLabel id="tpl-label">Modelo</InputLabel>
-                <Select
-                  labelId="tpl-label"
-                  label="Modelo"
-                  value={selectedId}
-                  onChange={(e) => handleSelectTemplate(e.target.value)}
-                >
-                  {visibleTemplates.map((t) => (
-                    <MenuItem key={t.id} value={t.id}>
-                      {t.title}
-                      <Typography
-                        component="span"
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ ml: 0.75 }}
-                      >
-                        v{t.version}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
 
             {selected ? (
               <OsTemplateFieldsForm
