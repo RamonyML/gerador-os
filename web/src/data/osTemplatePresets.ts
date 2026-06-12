@@ -5,6 +5,8 @@ import { getAltplanSemTrocaVisitaPagaDefaults } from './altplan/semTrocaVisitaPa
 import { getAltplanTrocaVisitaIsentaDefaults } from './altplan/trocaVisitaIsenta'
 import { getAltplanTrocaVisitaPagaDefaults } from './altplan/trocaVisitaPaga'
 import { getManutLuzVermelhaDefaults } from './manutencao/luzVermelha'
+import { getManutLuzVermelhaPjDefaults } from './manutencao/luzVermelhaPj'
+import { getManutFibraExternaDefaults } from './manutencao/fibraExterna'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
 import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
@@ -114,6 +116,18 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Manutenção',
     label: 'Luz vermelha — padrão',
     getDefaults: getManutLuzVermelhaDefaults,
+  },
+  {
+    id: 'manut-luz-vermelha-pj',
+    category: 'Manutenção',
+    label: 'Luz vermelha — pessoa jurídica',
+    getDefaults: getManutLuzVermelhaPjDefaults,
+  },
+  {
+    id: 'manut-fibra-externa',
+    category: 'Manutenção',
+    label: 'Fibra óptica externa — rompimento externo',
+    getDefaults: getManutFibraExternaDefaults,
   },
 ]
 

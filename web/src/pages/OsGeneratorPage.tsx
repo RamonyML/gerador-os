@@ -40,6 +40,8 @@ import { buildAltplanSemTrocaVisitaPagaTextos } from '../data/altplan/semTrocaVi
 import { buildAltplanTrocaVisitaIsentaTextos } from '../data/altplan/trocaVisitaIsenta'
 import { buildAltplanTrocaVisitaPagaTextos } from '../data/altplan/trocaVisitaPaga'
 import { buildLuzVermelhaTextos } from '../data/manutencao/luzVermelha'
+import { buildLuzVermelhaPjTextos } from '../data/manutencao/luzVermelhaPj'
+import { buildFibraExternaTextos } from '../data/manutencao/fibraExterna'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -354,6 +356,16 @@ export function OsGeneratorPage() {
       Object.assign(
         base,
         buildLuzVermelhaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-luz-vermelha-pj') {
+      Object.assign(
+        base,
+        buildLuzVermelhaPjTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-fibra-externa') {
+      Object.assign(
+        base,
+        buildFibraExternaTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
     }
     return base
