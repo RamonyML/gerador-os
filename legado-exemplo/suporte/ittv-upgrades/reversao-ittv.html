@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUZ VERMELHA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1c683a;">
+  <a class="navbar-brand" style="color: rgb(255, 255, 255);">
+    <img src="/logo/mzlogo-mbranco.png" width="65" height="30" class="d-inline-block align-top" alt="Logo">
+    Gerador de O.S
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Início <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Modelos de O.S</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown" style="color: rgb(255, 255, 255);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tutoriais
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      </li>
+    </ul>
+  </div>
+</nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-altplan.html" class="text-success">Alteração de Plano</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Reversão ITTV</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+::selection {
+    background-color: #28a746;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">ALTERAÇÃO DE PLANO: REMOTO</h1>
+                <h3 class="mb-4 font-weight-bold" style="font-size: large;">REVERSÃO ITTV</h3>
+          </div>
+        </div>
+        <div class="form">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active font-weight-bold text-success" href="#">Padrão</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/suporte/ittv-upgrades/presencial/reversao-ittv-pres.html">Presencial</a>
+                </li>
+              </ul><br>                    <!-- Identificação do Cliente -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="cliente">Nome Completo:</label>
+                                <input type="text" class="form-control" id="cliente" placeholder="Nome completo">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="canal">Canal:</label>
+                                <select class="form-control" id="canal">
+                                    <option value="LIGAÇÃO">Telefone</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contato">Contato:</label>
+                                <input type="text" class="form-control" id="contato" placeholder="Somente os números">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dataLigacao">Data/Hora do contato:</label>
+                                <input type="text" class="flatpickr form-control" placeholder="dd/mm/aaaa hh:mm" id="dataLigacao">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sinalONU">Sinal ONU:</label>
+                                <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM ou SEM SINAL">
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="roteador">Roteador:</label>
+                                <select class="form-control" id="roteador">
+                                    <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+                                    <option value="TP LINK C-5">TP LINK C-5</option>
+                                    <option value="TP LINK G-5">TP LINK G-5</option>
+                                    <option value="GREATEK">GREATEK</option>
+                                    <option value="INTELBRAS">INTELBRAS</option>
+                                    <option value="HUAWEI AX2">HUAWEI AX2</option>
+                                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                                    <option value="ZTE H199-A">ZTE H199-A</option>
+                                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>               
+                                </select>
+                            </div>
+                        </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="dataContrato">Plano contratado em:</label>
+                            <input type="text" class="form-control" id="dataContrato" placeholder="mês/ano">
+                        </div>
+                    </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="protocolo">Nº Protocolo:</label>
+                                <input type="text" class="form-control" id="protocolo" placeholder="123.456">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="dataProtocolo">Data/Hora do Protocolo:</label>
+                                <input type="text" class="flatpickr form-control" placeholder="dd/mm/aaaa hh:mm" id="dataProtocolo">
+                            </div>
+                        </div>
+
+                    </div><br>
+                    <div class="buttons">
+                        <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                        <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="alert alert-warning" role="alert">
+                    Copie o texto de encerramento da O.S clicando <a href="#" class="alert-link" onclick="copiarEncerramento()">aqui</a>.
+                </div>        
+        <div class="output">
+            <div class="output-group">
+                <h4 class="font-weight-bold">Texto Protocolo:</h4>
+                <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+            </div>
+        
+            <div class="output-group">
+                <h4 class="font-weight-bold">Texto O.S:</h4>
+                <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+            </div>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.title = "ALTPLAN - ITTV";
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('.flatpickr', {
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
+    });
+});
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const roteador = document.getElementById('roteador').value;
+    const dataContrato = document.getElementById('dataContrato').value;
+    const dataHoraLigacao = document.getElementById('dataLigacao').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const dataHoraProtocolo = document.getElementById('dataProtocolo').value;
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (sinalONU === "" && !document.getElementById('onuSemSinal').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        sinalONU = "SEM SINAL";
+    }
+    
+    // Divida a entrada em data e hora para a ligação
+    const partesDataHoraLigacao = dataHoraLigacao.split(" ");
+    const dataLigacao = partesDataHoraLigacao[0];
+    const horaLigacao = partesDataHoraLigacao[1];
+    
+    // Divida a entrada em data e hora para o protocolo
+    const partesDataHoraProtocolo = dataHoraProtocolo.split(" ");
+    const dataProtocolo = partesDataHoraProtocolo[0];
+    const horaProtocolo = partesDataHoraProtocolo[1];
+
+    // Crie os textos com os valores
+const textoProtocolo = `${cliente.split(' ')[0]} ENTROU EM CONTATO VIA ${canal} (${contato}) INFORMANDO PROBLEMAS PARA ACESSAR O APLICATIVO ITTV.
+
+**************
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}
+
+**************
+
+QUESTIONADO, ${cliente.split(' ')[0]} DISSE QUE AO TENTAR ACESSAR O ITTV COM SEU LOGIN E SENHA É EXIBIDO A MENSAGEM DE "SENHA INCORRETA".
+
+FOI INFORMADO A ${cliente.split(' ')[0]} QUE O ITTV É UM BENEFÍCIO QUE POSSUI VIGÊNCIA DE 12 MESES E SEU ACESSO EXPIROU.
+PLANO ATUAL: 1.000 MEGA POR R$99,90 CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES
+
+
+NESTE MESMO CONTATO INFORMEI AO CLIENTE QUE TEMOS NOVAS CAMPANHAS DISPONÍVEIS E QUE CASO SEJA DO SEU INTERESSE, PODERÁ MIGRAR SEU PLANO E TER ALÉM DO ITTV PLUS +  O APP DEEZER PREMIUM GRATIS POR 12 MESES.
+
+
+PLANO OFERTADO: 1000 MEGA = R$99,90
+GRÁTIS: APP MZNET PLAY (+ 60 CANAIS GRADE ABERTA), APP MZNET PLAY PLUS (ITTV - + 100 CANAIS GRADE FECHADA E ABERTA) E APP DEEZER PREMIUM (APLICATIVO DE MUSICAS)
+FIDELIDADE DE 12 MESES.
+
+
+******
+
+${cliente.split(' ')[0]} CONCORDOU COM OS TERMOS DE ALTERAÇÃO E ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE. VALIDAÇÃO FEITA POR ${canal} (${contato}) DIA ${dataLigacao} ÀS ${horaLigacao} HRS.
+
+CIENTE QUE EM ATÉ 72 HORAS DEVERÁ ASSINAR O CONTRATO POR MEIO DO APLICATIVO "MZNET" OU COMPARECER NA EMPRESA PARA HOMOLOGAR A SOLICITAÇÃO.`;
+
+const textoOS = `${cliente.split(' ')[0]} SOLICITOU POR ${canal} (${contato}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: 1.000 MEGA/R$99,90. PLANO ESCOLHIDO: 1 GIGA (1.000 MEGA) R$99,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZ PLAY + ACESSO GRATUITO AO APP MZPLAY PLUS (ITTV PLUS) + ACESSO GRATUITO AO APP DEZZER. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. NÃO É NECESSÁRIA VISITA TÉCNICA, O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${cliente.split(' ')[0]} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, EQUIPAMENTO PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. PROTOCOLO Nº${protocolo} EM ${dataProtocolo} ÀS ${horaProtocolo} HRS.`;
+
+    const textoWhatsApp = `${cliente}
+PROT ${protocolo}
+1.000 MB= 99,90 PARA 1.000 MEGA (MZPLAY, PLAY PLUS E DEZZER)=99,90
+ROTEADOR: ${roteador}
+VAI ASSINAR VIA APLICATIVO`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoWhatsApp').value = textoWhatsApp;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    // Limpe os campos de entrada
+    const camposEntrada = document.querySelectorAll('input, select');
+    camposEntrada.forEach(campo => {
+        campo.value = '';
+    });
+
+    // Limpe os campos de saída
+    const textos = document.querySelectorAll('.output textarea');
+    textos.forEach(texto => {
+        texto.value = '';
+    });
+}
+    </script>
+        <script>
+            function copiarEncerramento() {
+                const roteador = document.getElementById('roteador').value;
+                const dataAtual = new Date();
+                const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
+                const horaFormatada = dataAtual.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    
+                const texto = `ALTERAÇÃO DE PLANO EXECUTADA REMOTAMENTE COM SUCESSO.
+ASSINATURA DIGITAL + SELFIE EM ANEXO.
+NÃO HOUVE INTERVENÇÃO TÉCNICA DEVIDO O ROTEADOR EM COMODATO SER COMPATÍVEL AO PLANO ACORDADO (${roteador}).
+    
+CLIENTE SEM DÚVIDAS.
+    
+DATA/HORA DO ENCERRAMENTO: ${dataFormatada} ÀS ${horaFormatada}HRS`;
+    
+                navigator.clipboard.writeText(texto).then(() => {
+                    alert('Texto de encerramento da O.S copiado para a área de transferência!');
+                }).catch(err => {
+                    console.error('Erro ao copiar texto: ', err);
+                });
+            }
+        </script>
+    
+
+
+</body>
+</html>

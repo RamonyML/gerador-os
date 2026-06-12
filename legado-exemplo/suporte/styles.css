@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+
+}
+
+body {
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+a {
+    text-decoration: none;
+    color: #28462c; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+}
+
+a:hover {
+    color: #62c46f;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+    font-weight: bold;
+}
+a:hover ~ span {
+    display: block;
+}
+  span {
+    display: none;
+    color: #132c19;
+    text-align: center;
+    background-color: rgba(171, 255, 199, 0.479);
+    width: 80%;
+    padding: 8px;
+    border-radius: 10px;
+    position: relative;
+    top: -65px;
+    left: 60%;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 0px;
+    border-left: 17px solid #008000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    position: relative; /* Permite posicionar a logo */
+    border-left: 17px solid #008000; /* Detalhe em verde */
+    padding-left: 15px; /* Espaçamento à esquerda */
+    opacity: 95%;
+    
+}
+.menu {
+    display: flex;
+    flex-direction: column;
+}
+.menu-item {
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.submenu {
+    margin-left: 20px;
+    display: none;
+}
+.submenu-item {
+    cursor: pointer;
+    text-decoration: none;
+}
+.ativo {
+    display: block;
+}
+/* Estiliza a logo */
+.logo {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+.menu-item a {
+color: #111;
+}
+
+.menu-item a:hover {
+color: #008000;
+}
+body {
+    background-image: url('/fundo.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    color: #ffffff;
+    width: 96%;
+    height: 70px;    
+    text-align: right;
+    line-height: 100px;
+    font-size: 12px;
+}

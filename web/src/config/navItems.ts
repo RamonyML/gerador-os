@@ -4,6 +4,8 @@ import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomi
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
@@ -19,6 +21,7 @@ export type NavItem = {
 type NavFlags = {
   showSupport: boolean
   showUsers: boolean
+  showCondominios: boolean
 }
 
 const exact = (to: string) => (pathname: string) => pathname === to
@@ -29,7 +32,11 @@ const startsWith = (prefix: string) => (pathname: string) =>
  * Fonte única dos itens da navegação. Reaproveita exatamente os destinos e as
  * regras de permissão usadas anteriormente na barra superior.
  */
-export function buildNavItems({ showSupport, showUsers }: NavFlags): NavItem[] {
+export function buildNavItems({
+  showSupport,
+  showUsers,
+  showCondominios,
+}: NavFlags): NavItem[] {
   const items: Array<NavItem | null> = [
     { label: 'Início', to: '/', icon: HomeOutlinedIcon, isActive: exact('/') },
     showSupport
@@ -58,6 +65,20 @@ export function buildNavItems({ showSupport, showUsers }: NavFlags): NavItem[] {
       icon: SupportAgentOutlinedIcon,
       isActive: startsWith('/chamados'),
     },
+    {
+      label: 'Agenda',
+      to: '/agenda',
+      icon: EventNoteOutlinedIcon,
+      isActive: startsWith('/agenda'),
+    },
+    showCondominios
+      ? {
+          label: 'Condomínios',
+          to: '/condominios',
+          icon: ApartmentOutlinedIcon,
+          isActive: startsWith('/condominios'),
+        }
+      : null,
     showUsers
       ? {
           label: 'Usuários',

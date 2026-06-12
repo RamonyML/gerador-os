@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suporte MZNET</title>
+  <script type="module" src="auth.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+    body {
+      background-color: #ffffff;
+    }
+
+    .icon img {
+  transition: transform 0.2s;
+}
+
+.icon img:hover {
+  transform: scale(1.1);
+}
+
+
+    .container {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 9vh;
+    flex-direction: column; /* Empilha os elementos verticalmente */
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+  }
+
+  .row {
+    max-width: 800px; /* Define a largura máxima da linha */
+    width: 100%; /* Garante que a linha ocupe todo o espaço disponível */
+  }
+
+  h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 35px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+    .navbar {
+      background-color: #38af47;
+    }
+    .footer {
+      background-color: #ffffff00;
+      color: #32633e;
+      text-align: right;
+      padding: 10px 20px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 4%;
+      margin-right: 20px;
+    }
+
+    .bg-light {
+      background-color: #ffffff00;
+      color: #32633e;
+      text-align: left;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 4%;
+
+    }
+    .icon {
+      text-align: center;
+      padding: 20px;
+    }
+
+    body {
+  background-image: url('/fundos/fundo003.jpg');
+  background-size: cover; /* Cobre toda a tela */
+  background-repeat: no-repeat; /* Sem repetição */
+  background-position: center center; /* Centraliza a imagem */
+  background-attachment: fixed; /* Faz o fundo ficar fixo ao rolar a página */
+  height: 100vh; /* Garante altura mínima da tela */
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+    ::selection {
+    background-color: #ffffff00;
+    color: #28a746; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+.bug-button {
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    background-color: #ffffff00;
+    color: rgb(63, 63, 63);
+    padding: 15px;
+    border-radius: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.bug-button:hover {
+    background-color: #dadada9d;
+    text-decoration: none;
+}
+.bug-button i {
+    font-size: 28px; /* Aumenta apenas o ícone */
+}
+
+.bug-button i:hover {
+    color: #228a5e;
+    text-decoration: none;
+
+
+}
+  </style>
+</head>
+<body>
+  
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">
+    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+      <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+      Gerador de O.S
+    </a>
+    <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link text-white" href="/index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/suporte/modelos/index.html">Modelos de O.S</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Tutoriais
+          </a>
+          <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+            <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+            <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Outros</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/suporte/separadores/separadores.html" target="_blank">Separadores MAC</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+        <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+      </div>
+    </div>
+  </nav>
+  
+    <!-- Botão de Logout -->
+  <div class="title">
+    <div class="container mt-5">
+      <div class="form-header">
+        <h1 class="mb-4 font-weight-bold">SUPORTE</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-altplan.html">
+          <img src="/icons/altplano3.png" alt="Ícone 1" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>ALTERAÇÃO DE PLANO</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-mudend.html">
+          <img src="/icons/end.png" alt="Ícone 2" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>MUDANÇA DE ENDEREÇO</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-man.html">
+          <img src="/icons/suporte-tecnico.png" alt="Ícone 3" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>MANUTENÇÃO</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-stb.html">
+          <img src="/icons/tv-box.png" alt="Ícone 4" width="110" height="110">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>CONVERSORES DE MÍDIA</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-extend.html">
+          <img src="/icons/casa-inteligente.png" alt="Ícone 5" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>WI-FI EXTEND</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/altera-senha/altera-senha.html">
+          <img src="/icons/chave-inteligente.png" alt="Ícone 6" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>SENHA/SSID WI-FI</b></p>
+      </div>
+      <div class="col-md-4 icon">
+        <a href="/suporte/dash-feedback.html">
+          <img src="/icons/feedback3.png" alt="Ícone 7" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>FEEDBACK</b></p>
+      </div>
+
+      <div class="col-md-4 icon">
+        <a href="#">
+          <img src="/icons/camera.png" alt="Ícone 7" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>LIBERAÇÃO DE PORTAS</b></p>
+      </div>
+
+      <div class="col-md-4 icon">
+        <a href="/suporte/termo-resp/termo-resp-padrao.html">
+          <img src="/icons/contrato.png" alt="Ícone 7" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>TERMO DE RESPONSABILIDADE</b></p>
+      </div>
+
+      <div class="col-md-4 icon">
+        <a href="#">
+          <img src="/icons/instrucao2.png" alt="Ícone 7" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>VISITA INSTRUTIVA</b></p>
+      </div>
+
+      <div class="col-md-4 icon">
+        <a href="/suporte/pesquisa-cep/pesquisa-end.html">
+          <img src="/icons/endereco.png" alt="Ícone 7" width="100" height="100">
+        </a>
+        <p style="font-size: 18px; color: #333;"><b>PESQUISA DE ENDEREÇOS</b></p>
+      </div>
+
+    </div>
+  </div>
+  <a href="/report.html" class="bug-button" title="Reportar problemas ou sugestões" target="_blank">
+    <i class="fas fa-bug"></i>
+  </a>
+  <!-- Rodapé -->  
+  <footer class="footer" style="margin-right: 20px;">
+    <p>Versão 3.1.1</p>
+  </footer>
+
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- dashboard.html ou outra página protegida -->
+<script type="module">
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+  import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+  
+  const auth = getAuth(app);
+
+  // Verifica se o usuário está autenticado
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      console.log("Usuário não autenticado, redirecionando...");
+      window.location.href = "/login.html"; // Redireciona para a página de login
+    } else {
+      console.log("Usuário autenticado!", user);
+      // Exibe o conteúdo após a verificação
+      document.getElementById("main-content").style.display = "block";
+    }
+  });
+
+  // Adiciona o evento de logout
+  document.getElementById('logoutButton').addEventListener('click', () => {
+    signOut(auth).then(() => {
+      console.log("Usuário deslogado com sucesso!");
+      window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+    }).catch((error) => {
+      console.error("Erro ao deslogar: ", error);
+    });
+  });
+
+  onAuthStateChanged(auth, (user) => {
+        const emailSpan = document.getElementById("userEmail");
+        if (user) {
+          emailSpan.innerText = `Logado como: ${user.email}`;
+        } else {
+          emailSpan.innerText = `Usuário não autenticado`;
+        }
+      });
+
+</script>
+<script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

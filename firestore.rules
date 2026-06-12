@@ -42,6 +42,31 @@ service cloud.firestore {
         );
     }
 
+    /** Setores com acesso ao ambiente de condomínios (financeiro fica de fora). */
+    function condominioSectorAllowed() {
+      return userData().sector in ['suporte', 'instalacao', 'cadastro', 'comercial'];
+    }
+
+    /** Consulta ao cadastro de condomínios: setores permitidos, ou dev/admin. */
+    function canReadCondominios() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || condominioSectorAllowed()
+        );
+    }
+
+    /** Edição do cadastro de condomínios: gerente de setor permitido, ou dev/admin. */
+    function isCondominioEditor() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (userData().hierarchy == 'gerente' && condominioSectorAllowed())
+        );
+    }
+
     /** Gestão ampla de upgrades (lista/export/dashboard/comissões no app). */
     function isUpgradeManager() {
       return isActiveUser()
@@ -317,6 +342,35 @@ service cloud.firestore {
 
         allow update, delete: if false;
       }
+    }
+
+    /**
+     * Cadastro de condomínios (viabilidade/inviabilidade de fibra óptica).
+     * Leitura: setores suporte/instalação/cadastro/comercial (ou dev/admin).
+     * Edição: gerente desses setores (ou dev/admin).
+     */
+    match /condominios/{condId} {
+      allow read: if canReadCondominios();
+      allow create, update, delete: if isCondominioEditor();
+    }
+
+    /**
+     * Agenda de visitas técnicas. Documento ID `{area}_{yyyy-MM-dd}`,
+     * area em ['agenda', 'manutencao']. Cada documento é a grade do dia
+     * (técnicos x horários) com células de agendamento e a sub-área de negados.
+     *
+     * v1: qualquer usuário ativo lê e edita (regras finas serão definidas depois).
+     */
+    match /agendaDias/{diaId} {
+      allow read: if isActiveUser();
+      allow create, update: if isActiveUser()
+        && request.resource.data.area in ['agenda', 'manutencao']
+        && request.resource.data.date is string
+        && request.resource.data.slots is list
+        && request.resource.data.tecnicos is list
+        && request.resource.data.cells is map
+        && request.resource.data.negados is list;
+      allow delete: if isActiveUser() && userData().isDev == true;
     }
 
     match /{document=**} {

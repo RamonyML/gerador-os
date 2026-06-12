@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste API ViaCEP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Teste da API ViaCEP</h1>
+    
+    <div class="test-section">
+        <h3>Teste 1: Busca por Logradouro</h3>
+        <button onclick="testLogradouro()">Testar busca por "eucaliptos"</button>
+        <div id="result1" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Teste 2: Busca por CEP</h3>
+        <button onclick="testCEP()">Testar busca por "38400-000"</button>
+        <div id="result2" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Teste 3: Verificar conectividade</h3>
+        <button onclick="testConnectivity()">Testar conectividade básica</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <script>
+        async function testLogradouro() {
+            const resultDiv = document.getElementById('result1');
+            resultDiv.innerHTML = 'Testando...';
+            resultDiv.className = 'result';
+            
+            try {
+                const url = 'https://viacep.com.br/ws/MG/Uberlandia/eucaliptos/json/';
+                console.log('Testando URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Dados recebidos:', data);
+                
+                resultDiv.innerHTML = `
+                    <strong>✅ Sucesso!</strong><br>
+                    Status: ${response.status}<br>
+                    Resultados encontrados: ${data.length}<br>
+                    Primeiro resultado: ${data[0] ? JSON.stringify(data[0], null, 2) : 'Nenhum'}
+                `;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                console.error('Erro no teste:', error);
+                resultDiv.innerHTML = `
+                    <strong>❌ Erro!</strong><br>
+                    ${error.message}<br>
+                    Tipo: ${error.name}
+                `;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        async function testCEP() {
+            const resultDiv = document.getElementById('result2');
+            resultDiv.innerHTML = 'Testando...';
+            resultDiv.className = 'result';
+            
+            try {
+                const url = 'https://viacep.com.br/ws/38400000/json/';
+                console.log('Testando URL:', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                console.log('Status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Dados recebidos:', data);
+                
+                if (data.erro) {
+                    throw new Error('CEP não encontrado');
+                }
+                
+                resultDiv.innerHTML = `
+                    <strong>✅ Sucesso!</strong><br>
+                    Status: ${response.status}<br>
+                    CEP: ${data.cep}<br>
+                    Logradouro: ${data.logradouro}<br>
+                    Bairro: ${data.bairro}<br>
+                    Cidade: ${data.localidade}<br>
+                    UF: ${data.uf}
+                `;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                console.error('Erro no teste:', error);
+                resultDiv.innerHTML = `
+                    <strong>❌ Erro!</strong><br>
+                    ${error.message}<br>
+                    Tipo: ${error.name}
+                `;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        async function testConnectivity() {
+            const resultDiv = document.getElementById('result3');
+            resultDiv.innerHTML = 'Testando...';
+            resultDiv.className = 'result';
+            
+            try {
+                // Teste simples de conectividade
+                const response = await fetch('https://viacep.com.br/', {
+                    method: 'HEAD'
+                });
+                
+                resultDiv.innerHTML = `
+                    <strong>✅ Conectividade OK!</strong><br>
+                    Status: ${response.status}<br>
+                    URL: https://viacep.com.br/<br>
+                    Servidor acessível
+                `;
+                resultDiv.className = 'result success';
+                
+            } catch (error) {
+                console.error('Erro de conectividade:', error);
+                resultDiv.innerHTML = `
+                    <strong>❌ Problema de conectividade!</strong><br>
+                    ${error.message}<br>
+                    Tipo: ${error.name}<br>
+                    Possíveis causas:<br>
+                    - Sem conexão com internet<br>
+                    - Firewall bloqueando<br>
+                    - DNS não resolvendo
+                `;
+                resultDiv.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html> 

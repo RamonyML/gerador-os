@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODELOS DE O.S</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #4CAF50;
+            border-radius: 20px;
+        }
+        .container-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .highlight {
+            position: relative;
+        }
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4CAF50;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col lg:flex-row min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar w-full lg:w-64 bg-white border-r border-gray-200 overflow-y-auto h-screen sticky top-0">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-xl font-bold text-gray-800">MODELOS DE O.S</h1>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="/suporte/modelos/index.html" class="block">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        VOLTAR
+                    </button>
+                </a>
+                
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">CATEGORIAS</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/suporte/modelos/modelos-manutenção/modelos-man.html" class="flex items-center px-3 py-2 text-green-600 font-medium bg-green-50 rounded-lg transition duration-300">
+                                <span class="ml-3">O.S DE MANUTENÇÃO</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/modelos/modelos-variadas/modelos-variadas.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">O.S VARIADAS</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">O.S DE MANUTENÇÃO</h1>
+                <div class="w-16 h-1 bg-green-500 mt-2 mb-4"></div>
+                <p class="text-gray-600">Modelos pré-definidos para ordens de serviço de manutenção</p>
+            </div>
+
+            <!-- TROCA DE ROTEADOR Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">TROCA DE ROTEADOR</h2>
+                        <p class="text-sm text-gray-500">ONT TP-LINK XC220 / XC230</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, o firmware da ONT está causando desconexões contínuas na rede do cliente.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO VIA XXXXXXX (XXXXXXX) E SOLICITOU SUPORTE. QUESTIONADO XXXXXXX DISSE QUE "DESDE A INSTALAÇÃO (EM XX/XX/XXXX COM INSTALAÇÃO DE ONT TPLINK XC220) ESTÁ TENDO PROBLEMAS PARA NAVEGAR NA INTERNET NA REDE WI-FI ATRAVÉS DOS CELULARES E EM SEU COMPUTADOR. "CLIENTE DIZ TER PROBLEMAS DE DESCONEXÕES REPETIDAS EM TODOS OS APARELHOS DA CASA". EM SISTEMA VERIFIQUEI QUE CONSTAM DESCONEXÕES. A CONEXÃO RESTABELECE COM SINAL DE -XX.XX DBM, MAS LOGO EM SEGUIDA OCORRE DESCONEXÃO NOVAMENTE E FICA SEM SINAL. PERGUNTEI A XXXXXXX SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. DEIVIT AUTORIZOU REALIZARMOS UMA VISITA TÉCNICA PARA TROCAR O ROTEADOR ISENTA DE CUSTOS, DESDE QUE OS APARELHOS ESTEJAM EM PERFEITO ESTADO DE CONSERVAÇÃO. VISITA AGENDADA PARA DIA XX/XX/XXXX ÁS XX:XX HRS.
+                        <br><br>
+                        TÉCNICO: CONFERIR INSTALAÇÃO, CONFERIR ENERGIA DAS TOMADAS, ANALISAR FONTE E ROTEADOR, CASO ENERGIA E FONTE ESTIVER NORMAL, E EQUIPAMENTO NÃO APRESENTAR SINAL DE MAL USO OU QUEDA, SUBSTITUIR ONT TPLINK POR SIMILAR. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WI-FI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div><br><hr><br>
+                <div class="flex items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">X-BOX / PS4 CONECTADO SEM INTERNET</h2>
+                        <p class="text-sm text-gray-500">Problemas de compatibilidade</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, geralmente é identificado incompatibilidade da ONT TP-LINK com o X-BOX. Certifique-se de realizar todas as tentativas de configuração de IPV6 antes de seguir com esta O.S.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO POR XXXXXXX (XXXXXXX) E SOLICITOU SUPORTE. QUESTIONADO, XXXXXXX DISSE QUE CONEXÃO COM A INTERNET ESTÁ NORMAL EM SEUS DISPOSITIVOS COM EXCEÇÃO DE SEU XBOX-ONE, CONECTADO VIA WI-FI NA ONT TPLINK DA MZNET (XC230). XXXXXXX SOLICITOU VISITA TÉCNICA PARA AJUDA-LO A DESCOBRIR A FONTE DO PROBLEMA. EM SISTEMA VERIFIQUEI QUE A CONEXÃO ESTÁ ATIVA (SINAL ONU -XX.XX DBM SEM OSCILAÇÃO) E CONSTAM XX APARELHOS CONECTADOS (XX VIA WI-FI), NÃO CONSTAM DESCONEXÕES ELÉTRICAS. EDEIVIT AUTORIZOU REALIZARMOS UMA VISITA TÉCNICA PARA TROCAR O ROTEADOR ISENTA DE CUSTOS, DESDE QUE OS APARELHOS ESTEJAM EM PERFEITO ESTADO DE CONSERVAÇÃO. VISITA AGENDADA PARA DIA XX/XX/XXXX ÁS XX:XX HRS
+                        <br><br>
+                        TÉCNICO: CONFERIR INSTALAÇÃO E EQUIPAMENTOS SE DANIFICADOS. TESTAR TODAS AS PORTAS LAN DO ROTEADOR PARA VERIFICAR SE HÁ PROBLEMA EM REDE. CASO POSSÍVEL, TESTAR TELEVISÃO OU OUTRO EQUIPAMENTO DO CLIENTE VIA LAN E VALIDAR O FUNCIONAMENTO, FILMAR E FOTOGRAFAR. HAVENDO PROBLEMA COM OS EQUIPAMENTOS OU NÃO QUE NÃO SEJA OCASIONADO, SUBSTITUIR ONT TPLINK XC230 POR ROTEADOR ZTE H199-A + ONU C-DATA. APÓS TROCA, RE-LIGAR CABOS E TESTAR TODAS AS PORTAS LAN DO ROTEADOR. SE MESMO APÓS TODO ESTE PROCESSO O ACESSO À INTERNET NO XBOX NÃO FUNCIONAR, ORIENTAR AO CLIENTE PARA QUE SOLICITE A SUPORTE TÉCNICO DE SEU EQUIPAMENTO. TEMPO ESTIMADO 40 MINUTOS.
+                    </p>
+                </div><br><hr><br>
+                <div class="flex items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">ONT TP-LINK COM SINAL -00.00 DBM</h2>
+                        <p class="text-sm text-gray-500">Problemas no receptor óptico</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, é identificado via UNM ou Smart-OLT ONT com sinal -00.00dBm. Certifique-se de realizar todas as tentativas de configuração de reinicio da ONT, e reprovisionamento antes de seguir com esta O.S.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO VIA XXXXXXX (XXXXXXX) E SOLICITOU SUPORTE. QUESTIONADO XXXXXXX DISSE QUE ESTÁ TENDO PROBLEMAS PARA NAVEGAR NA INTERNET NA REDE WI-FI E NO MOMENTO ESTÁ SEM CONEXÃO (TPLINK XC220). EM SISTEMA VERIFIQUEI QUE CONSTAM ALGUMAS DESCONEXÕES. A CONEXÃO RESTABELECE COM SINAL DE -00.00 DBM, MAS LOGO EM SEGUIDA OCORRE DESCONEXÃO NOVAMENTE E FICA SEM SINAL. PERGUNTEI A XXXXXXX SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI A XXXXXXX QUE É NECESSÁRIO VISITA TÉCNICA, QUE HAVENDO PROBLEMAS DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTO, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) COBRA-SE VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS DANIFICADOS. XXXXXXX DISSE ESTÁ CIENTE E CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SERÁ PAGO NO ATO EM XXXX. VISITA AGENDADA PARA DIA XX/XX/XXXX ÀS XX:30 HRS.
+                        <br><br>
+                        TÉCNICO: CONFERIR INSTALAÇÃO, CONFERIR ENERGIA DAS TOMADAS, ANALISAR FONTE E ROTEADOR, CASO ENERGIA E FONTE ESTIVER NORMAL, E EQUIPAMENTO NÃO APRESENTAR SINAL DE MAL USO OU QUEDA, SUBSTITUIR ONT TPLINK POR SIMILAR. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WI-FI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div>
+                <br><hr><br>
+                <div class="flex items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">ONT TP-LINK NÃO IDENTIFICANDO DISPOSITIVOS WI-FI/CABO</h2>
+                        <p class="text-sm text-gray-500">Problemas na firmware</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, a ONT não exibe os dispositivos conectados na interface da rede local. Certifique-se de realizar todas as tentativas de configuração de reinicio da ONT, <b>atualização da firmware</b>, e reprovisionamento antes de seguir com esta O.S.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXX ENTROU EM CONTATO POR XXXXXX (XX XXXXX-XXXX) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ CONECTADO E (SINAL ONU -XX.XX DBM SEM OSCILAÇÃO), PORÉM ONT TP-LINK 230 COM ERRO NO SINAL WI-FI. REAPROVISIONEI ONT NA TENTATIVA DE RESOLVER, PORÉM NÃO PROBLEMA NÃO FOI SOLUCIONADO. REALIZEI ATUALIZAÇÃO DA FIRMWARE, PORÉM TAMBÉM SEM SUCESSO. INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR, VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS. XXXXXX CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM XXXXXX. VISITA AGENDADA PARA XX/XX/2025 ÀS XX:30 HRS.
+
+                        <br><br>
+                        TÉCNICO: ANALISAR FONTE E ONT, CASO EQUIPAMENTO NÃO APRESENTAR SINAL DE MAL USO OU QUEDA, REALIZAR ATUALIZAÇÃO DE FIRMWARE E VERIFICAR SE O PROBLEMA FOI RESOLVIDO. CASO PROBLEMA PERSISTA SUBSTITUIR ONT TP LINK XC230 POR UMA OUTRA NOVA SIMILAR. SE COM A TROCA RESTABELECER CONEXÃO COM SINAL SERVIÇO NÃO TEM CUSTO. VALIDAR SOLUÇÃO COM CLIENTE E VERIFICAR SE HÁ ALGUMA OUTRA DÚVIDA A SER SANADA. AFERIR O PLANO CONTRATADO E TESTES PADRÕES DE NAVEGAÇÃO. TEMPO ESTIMADO 60 MIN
+                    </p>
+                </div>
+
+                
+
+            </div>
+
+            <!-- FIBRA | DROP Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">FIBRA | DROP</h2>
+                        <p class="text-sm text-gray-500">Problemas com cabo de fibra óptica</p>
+                    </div>
+                </div>
+
+                <!-- REMANEJAMENTO DE FIBRA Subsection -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">REMANEJAMENTO DE FIBRA</h3>
+                    
+                    <div class="bg-green-50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-green-800 font-medium">Neste caso, cliente que reside em um sobrado, solicitou que a fibra ótica fosse remanejada para que fosse realizado uma reforma na sacada onde cabo drop estava passando.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-gray-700">
+                            XXXXXXX ENTROU EM CONTATO POR XXXXXXX (XXXXXXX) PARA SOLICITAR SUPORTE. QUESTIONADO, DISSE "QUE ESTÁ REALIZANDO UMA REFORMA NA SACADA DA RESIDENCIA E PRECISA REALOCAR O CABO DROP". EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA. XXXXXXX CONCORDOU E SOLICITOU PAGAR EM PIX NO ATO DA VISITA. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XX HORAS.
+                            <br><br>
+                            TÉCNICO: VERIFICAR DROP INTERNO E EXTERNO, SE SOBRA TÉCNICA FOR SUFICIENTE, USAR PARA REPARO E RESTABELECER CONEXÃO. CASO NÃO SEJA PASSAR OUTRO DROP. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZAÇÃO COM CLIENTE. TEMPO ESTIMADO 60 MIN.
+                        </p>
+                    </div>
+                </div><hr><br>
+
+                <!-- ROMPIMENTO POR VEÍCULO Subsection -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3">ROMPIMENTO POR VEÍCULO ALTO OU ALGO EXTERNO</h3>
+                    
+                    <div class="bg-green-50 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-green-800 font-medium">Neste caso, cliente relatou que um caminhão alto rompeu o cabo drop em frente a sua casa.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="text-gray-700">
+                            XXXXXXX ENTROU EM CONTATO POR XXXXXXX (XXXXXXX) E DISSE QUE "CAMINHÃO PASSOU EM FRENTE A SUA RESIDÊNCIA E ARREBENTOU CABO DROP QUE ATENDE A SUA CONEXÃO". PERGUNTEI SOBRE ONU E O MESMO DISSE QUE ESTÁ COM LUZ VERMELHA PISCANDO. PERGUNTEI A XXXXXXX SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE SERÁ NECESSÁRIO VISITA TÉCNICA E CASO SEJA NECESSÁRIO A TROCA DO CABO DROP, IRÍAMOS TROCAR DO POSTE ATÉ OS EQUIPAMENTOS INTERNOS E POR SE TRATAR DE UM PROBLEMA NÃO OCASIONADO PELO CLIENTE A MANUTENÇÃO NÃO TEM CUSTO. XXXXXXX TAMBÉM FOI INFORMADO QUE CASO PROBLEMA IDENTIFICADO FOI OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS. XXXXXXX CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM DINHEIRO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA XX/XX/XXXX ÀS XX:XXHRS.
+                            <br><br>
+                            TÉCNICO: VERIFICAR CONECTOR E DROP INTERNO E EXTERNO, ACHANDO O PROBLEMA APRESENTAR AO CLIENTE. SENDO DEFEITO EM QUE É DE OBRIGAÇÃO DO PROVEDOR, TOMAR PROVIDÊNCIAS E RESTITUIR SEM CUSTO. SENDO OCASIONADO PEDIR AUTORIZAÇÃO DO CLIENTE PARA CORRIGIR E RESTABELECER LEMBRANDO DO VALOR A SER COBRADO NO ATO. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WI-FI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADO. TEMPO ESTIMADO 60 MIN.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

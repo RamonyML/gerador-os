@@ -119,6 +119,10 @@ export type Ticket = {
   resolution: TicketResolution | null
   commentsCount: number
   attachments: TicketAttachment[]
+  /** Última resposta (comentário ou encerramento) na linha do tempo. */
+  lastReplyAt: Date | null
+  lastReplyRole: 'solicitante' | 'ti' | null
+  lastReplyByUid: string | null
 }
 
 export type TicketDraft = {

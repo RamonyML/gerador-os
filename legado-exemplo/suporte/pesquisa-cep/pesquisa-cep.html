@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Endereço</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 100%;
+    max-width: 999px;
+    height: auto;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 0%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover {
+    color: #20c436;
+    text-decoration: none;
+}
+
+.form {
+    margin-top: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after {
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+/* Configura a imagem do fundo */
+body {
+    background-image: url('/fundos/fundo006.jpg');
+    background-size: cover; /* Faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/* Configura a logo */
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position: relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoAgenda {
+    height: 50px; /* Defina a altura desejada */
+}
+
+.loading-spinner {
+    display: none; /* Oculta o spinner por padrão */
+}
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+  
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+  
+</body>
+
+</html>

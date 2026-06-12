@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encerramento de O.S</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+
+}
+::selection {
+    background-color: #28a746;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+    /* Estilo personalizado */
+
+    body {
+      background-color: #f5f5f5;
+      background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+      background-repeat: no-repeat; /* Evita a repetição da imagem */
+      background-position: center;
+
+    }
+    h5 {
+      color: #357544;
+
+    }
+
+    a {
+    text-decoration: none;
+    color: #1a1a1a; /* Adicione a cor desejada para seus links */
+    }
+
+    a:hover {
+    color: #0fbd2c;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+  }
+
+    .navbar {
+      background-color: #28a746; /* Verde */
+    }
+    .navbar-brand, .navbar-nav .nav-link {
+      color: #ffffff; /* Texto branco */
+    }
+    .container {
+      margin-top: 50px;
+    }
+    .btn-success {
+      background-color: #28a745; /* Verde */
+      border-color: #28a745; /* Verde */
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">
+  <div class="container">
+    <a class="navbar-brand" href="/suporte/dashboard.html">
+      <img src="/logo/mzlogo-zverde.png" alt="Logo" width="90" height="40" class="d-inline-block align-middle mr-2">
+      Encerramento de O.S
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Luz vermelha</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Mud Ponto Interno</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Alteração de Plano</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Wi-Fi Extend</a>
+          </li>  
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Alteração de Plano</h2>
+  <h4>Com troca de equipamento</h4>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active font-weight-bold text-success" href="#">Com troca</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/suporte/encerramentos/altplano-troca/altplano-stroca.html">Sem troca</a>
+    </li>
+  </ul><br>                    <!-- Identificação do Cliente -->
+
+  <form id="formulario">
+    <div class="form-group">
+      <h5>DETALHES DA INSTALAÇÃO</h5>
+
+      <label for="desinstalacao_roteador">RETIROU ROTEADOR:</label>
+      <select class="form-control" id="desinstalacao_roteador">
+        <option value="">Selecione...</option>
+        <option value="MULTILASER">MULTILASER</option>
+        <option value="TP-LINK 840">TP-LINK 840</option>
+        <option value="TP LINK C-20">TP LINK C-20</option>
+        <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+        <option value="TP LINK C-5">TP LINK C-5</option>
+        <option value="TP LINK G-5">TP LINK G-5</option>
+        <option value="GREATEK">GREATEK</option>
+        <option value="INTELBRAS">INTELBRAS</option>
+        <option value="HUAWEI AX2">HUAWEI AX2</option>
+        <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+        <option value="ZTE H199-A">ZTE H199-A</option>
+        <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+        <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+        <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>               
+</select>
+    </div>
+    <div class="form-group">
+      <label for="mac_roteadorAtual">MAC:</label>
+      <input type="text" class="form-control" id="mac_roteadorAtual" required>
+    </div>
+
+    <div class="form-group">
+      <label for="instalacao_roteador">INSTALOU ROTEADOR:</label>
+      <select class="form-control" id="instalacao_roteador">
+        <option value="">Selecione...</option>
+        <option value="TP LINK C-20">TP LINK C-20</option>
+        <option value="TP LINK C-5">TP LINK C-5</option>
+        <option value="TP LINK G-5">TP LINK G-5</option>
+        <option value="GREATEK">GREATEK</option>
+        <option value="INTELBRAS">INTELBRAS</option>
+        <option value="HUAWEI AX2">HUAWEI AX2</option>
+        <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+        <option value="ZTE H199-A">ZTE H199-A</option>
+        <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+        <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+        <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>               
+</select>
+    </div>
+    <div class="form-group">
+      <label for="mac_roteador">MAC:</label>
+      <input type="text" class="form-control" id="mac_roteador" required>
+    </div>
+    <div class="form-group">
+      <label for="onu">ONU ATUAL:</label>
+      <select class="form-control" id="onu">
+        <option value="">Selecione...</option>
+        <option value="C-DATA">C-DATA</option>
+        <option value="ZTE">ZTE</option>
+        <option value="TENDA">TENDA</option>
+        <option value="SHORELINE">SHORELINE</option>
+        <option value="FIBERHOME">FIBERHOME</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mac_onu">MAC:</label>
+      <input type="text" class="form-control" id="mac_onu" required>
+    </div>
+    <div class="form-group">
+      <label for="fixacao_roteador">ROTEADOR FIXADO COM BUCHA E PARAFUSO:</label>
+      <select class="form-control" id="fixacao_roteador">
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+    </div>
+    <div id="localizacao_roteador" style="display:none;">
+      <div class="form-group">
+        <label for="local_roteador">LOCALIZAÇÃO DO EQUIPAMENTO:</label>
+        <input type="text" class="form-control" id="local_roteador" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="fixacao_onu">ONU FIXADA COM BUCHA E PARAFUSO:</label>
+      <select class="form-control" id="fixacao_onu">
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+    </div>
+    <div id="localizacao_onu" style="display:none;">
+      <div class="form-group">
+        <label for="local_onu">LOCALIZAÇÃO DO EQUIPAMENTO:</label>
+        <input type="text" class="form-control" id="local_onu" required>
+      </div>
+    </div><br>
+    <div class="form-group">
+      <h5>TESTES NO KIT DO TÉCNICO</h5>
+
+      <label for="teste_notebook_cabo">VELOCIDADE AFERIDA VIA CABO:</label>
+      <input type="number" class="form-control" id="teste_notebook_cabo" required placeholder="Apenas números (em Mb)">
+    </div>
+    <div class="form-group">
+      <label for="teste_notebook_wifi">VELOCIDADE AFERIDA VIA WI-FI 5G:</label>
+      <input type="number" class="form-control" id="teste_notebook_wifi" required placeholder="Apenas números (em Mb)">
+    </div><br>
+
+    <div class="form-group">
+      <h5>TESTES NO DISPOSITIVO DO CLIENTE</h5>
+      <div class="row">
+        <div class="col-md-3">
+          <label for="dispositivo">DISPOSITIVO 1:</label>
+          <select class="form-control" id="dispositivo">
+            <option value="">Selecione...</option>
+            <option value="CELULAR">Celular</option>
+            <option value="COMPUTADOR">Computador</option>
+            <option value="NOTEBOOK">Notebook</option>
+            <option value="SMART TV">Smart TV</option>
+            <option value="TABLET">Tablet</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="marca_modelo">MARCA/MODELO:</label>
+          <input type="text" class="form-control" id="marca_modelo">
+        </div>
+        <div class="col-md-3">
+          <label for="velocidade_aferida">VELOCIDADE AFERIDA:</label>
+          <input type="number" class="form-control" id="velocidade_aferida">
+        </div>
+        <div class="col-md-3">
+          <label for="meio_afericao">MEIO DE AFERIÇÃO:</label>
+          <select class="form-control" id="meio_afericao">
+            <option value="">Selecione...</option>
+            <option value="WI-FI 2.4G">WI-FI 2.4G</option>
+            <option value="WI-FI 5G">WI-FI 5G</option>
+            <option value="CABO">CABO</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3">
+          <label for="dispositivo2">DISPOSITIVO 2:</label>
+          <select class="form-control" id="dispositivo2">
+            <option value="">Selecione...</option>
+            <option value="CELULAR">Celular</option>
+            <option value="COMPUTADOR">Computador</option>
+            <option value="NOTEBOOK">Notebook</option>
+            <option value="SMART TV">Smart TV</option>
+            <option value="TABLET">Tablet</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="marca_modelo2">MARCA/MODELO:</label>
+          <input type="text" class="form-control" id="marca_modelo2">
+        </div>
+        <div class="col-md-3">
+          <label for="velocidade_aferida2">VELOCIDADE AFERIDA:</label>
+          <input type="number" class="form-control" id="velocidade_aferida2">
+        </div>
+        <div class="col-md-3">
+          <label for="meio_afericao2">MEIO DE AFERIÇÃO:</label>
+          <select class="form-control" id="meio_afericao2">
+            <option value="">Selecione...</option>
+            <option value="WI-FI 2.4G">WI-FI 2.4G</option>
+            <option value="WI-FI 5G">WI-FI 5G</option>
+            <option value="CABO">CABO</option>
+          </select>
+        </div>
+      </div>
+    </div> 
+
+    <div class="form-group">
+      <label for="teste_abrangencia">REALIZOU TESTES DE COBERTURA WI-FI?</label>
+      <select class="form-control" id="teste_abrangencia">
+        <option value="Sim">Sim</option>
+        <option value="Não">Não</option>
+      </select>
+    </div>
+    <div id="motivo_teste" style="display:none;">
+      <div class="form-group">
+        <label for="motivo_nao_teste">MOTIVO:</label>
+        <input type="text" class="form-control" id="motivo_nao_teste" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>DISPOSITIVO DO CLIENTE É COMPATÍVEL?</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="aparelho_compativel" id="aparelho_compativel_sim" value="É">
+        <label class="form-check-label" for="aparelho_compativel_sim">Sim</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="aparelho_compativel" id="aparelho_compativel_nao" value="NÃO É">
+        <label class="form-check-label" for="aparelho_compativel_nao">Não</label>
+      </div>
+    </div>
+<br>
+    <div class="form-group">
+      <h5>INSTALAÇÃO ELÉTRICA</h5>
+      <label for="ligacao_eletrica">CONECTADO EM:</label>
+      <select class="form-control" id="ligacao_eletrica">
+        <option value="">Selecione...</option>
+        <option value="Tomada Individual">Tomada Individual</option>
+        <option value="T/Benjamin">T/Benjamin</option>
+        <option value="Régua">Régua</option>
+        <option value="Extensão">Extensão</option>
+        <option value="Outros">Outros</option>
+      </select>
+    </div>
+    <div id="observacao_ligacao" style="display:none;">
+      <div class="form-group">
+        <label for="observacao_ligacao_outros">OBSERVAÇÃO:</label>
+        <input type="text" class="form-control" id="observacao_ligacao_outros" required placeholder="Descreva onde Roteador e ONU estão conectados à energia.">
+      </div>
+    </div><br>
+  <div class="form-group">
+    <h5>BENEFÍCIOS</h5>
+
+  <label>APLICATIVOS:</label><br>
+  <div class="form-group">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" id="aplicativo_mznet">
+      <label class="form-check-label" for="aplicativo_mznet">MZNET-PLAY INSTALADO</label>
+    </div>
+    <input type="text" class="form-control" id="descricao_aplicativo_mznet" placeholder="Marca/Modelo dispositivo">
+  </div>
+  
+  <div class="form-group">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" id="aplicativo_mznet_plus">
+      <label class="form-check-label" for="aplicativo_mznet_plus">MZNET-PLAY PLUS (ITTV) INSTALADO</label>
+    </div>
+    <input type="text" class="form-control" id="descricao_aplicativo_mznet_plus" placeholder="Marca/Modelo dispositivo">
+  </div>
+  
+  <div class="form-group">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" id="aplicativo_deezer">
+      <label class="form-check-label" for="aplicativo_deezer">DEEZER INSTALADO</label>
+    </div>
+    <input type="text" class="form-control" id="descricao_aplicativo_deezer" placeholder="Marca/Modelo dispositivo">
+  </div>
+    </div><br>
+    <div class="form-group">
+      <h5>ORDEM DE SERVIÇO COM CUSTOS?</h5>
+      <select class="form-control" id="custos">
+        <option value="Sem">Não</option>
+        <option value="Com">Sim</option>
+      </select>
+    </div>
+    <div id="info_custos" style="display:none;">
+      <div class="form-group">
+        <label for="valor">VALOR:</label>
+        <input type="number" class="form-control" id="valor" required>
+      </div>
+      <div class="form-group">
+        <label for="forma_pagamento">FORMA DE PAGAMENTO:</label>
+        <select class="form-control" id="forma_pagamento">
+          <option value="">Selecione...</option>
+          <option value="PIX">PIX</option>
+          <option value="DINHEIRO">DINHEIRO</option>
+          <option value="CARTAO">CARTAO</option>
+</select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>OBSERVAÇÕES</h5>
+
+      <input type="text" class="form-control" id="observacoes">
+    </div>
+
+    <!-- Botão para gerar texto -->
+    <!-- Botão para gerar texto -->
+    <button type="button" class="btn btn-success btn-block" onclick="gerarTexto()">GERAR TEXTO</button>
+  </form>
+<div class="mt-4">
+  <textarea id="texto_gerado" class="form-control" rows="5" readonly></textarea><br>
+  <button class="btn btn-secondary btn-block" onclick="copiarTexto('texto_gerado')">COPIAR</button>
+
+  </div><br><br><br>
+</div>
+
+<!-- jQuery e Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+ function gerarTexto() {
+    // Verifica se todos os campos obrigatórios foram preenchidos
+    if (!document.getElementById("mac_roteador").checkValidity() ||
+        !document.getElementById("mac_roteadorAtual").checkValidity() ||
+        !document.getElementById("mac_onu").checkValidity() ||
+        !document.getElementById("teste_notebook_cabo").checkValidity() ||
+        !document.getElementById("teste_notebook_wifi").checkValidity() ||
+        !document.getElementById("custos").checkValidity()) {
+      // Se algum campo obrigatório não foi preenchido, exibe uma mensagem de erro
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return; // Aborta a função para que o texto não seja gerado
+    }
+
+    var texto = `DESINSTALEI ROTEADOR ${document.getElementById("desinstalacao_roteador").value} MAC: ${document.getElementById("mac_roteadorAtual").value.toUpperCase()} E INSTALEI ROTEADOR ${document.getElementById("instalacao_roteador").value} MAC: ${document.getElementById("mac_roteador").value.toUpperCase()}.\n`;
+    texto += `ONU ${document.getElementById("onu").value} JÁ INSTALADA, MAC ${document.getElementById("mac_onu").value.toUpperCase()}\n`;
+    texto += `ROTEADOR FIXADO COM BUCHA E PARAFUSO: ${document.getElementById("fixacao_roteador").value.toUpperCase()}\n`;
+    if (document.getElementById("fixacao_roteador").value === "Não") {
+      texto += `LOCALIZAÇÃO DO EQUIPAMENTO: ${document.getElementById("local_roteador").value.toUpperCase()}\n`;
+    }
+    texto += `ONU FIXADA COM BUCHA E PARAFUSO: ${document.getElementById("fixacao_onu").value.toUpperCase()}\n`;
+    if (document.getElementById("fixacao_onu").value === "Não") {
+      texto += `LOCALIZAÇÃO DO EQUIPAMENTO: ${document.getElementById("local_onu").value.toUpperCase()}\n`;
+    }
+    texto += `
+TESTE NO NOTEBOOK DO KIT VIA CABO ${document.getElementById("teste_notebook_cabo").value.replace(/\D/g, '')} MBPS\n`;
+    texto += `TESTE NO NOTEBOOK DO KIT VIA WI-FI 5G ${document.getElementById("teste_notebook_wifi").value.replace(/\D/g, '')} MBPS\n`;
+    texto += `TESTE EM ${document.getElementById("dispositivo").value.toUpperCase()} DO CLIENTE: ${document.getElementById("marca_modelo").value.toUpperCase()} VIA ${document.getElementById("meio_afericao").value.toUpperCase()} AFERIU A VELOCIDADE DE ${document.getElementById("velocidade_aferida").value.replace(/\D/g, '')} MBPS\n`;
+
+    texto += `TESTE EM ${document.getElementById("dispositivo2").value.toUpperCase()} DO CLIENTE: ${document.getElementById("marca_modelo2").value.toUpperCase()} VIA ${document.getElementById("meio_afericao2").value.toUpperCase()} AFERIU A VELOCIDADE DE ${document.getElementById("velocidade_aferida2").value.replace(/\D/g, '')} MBPS\n`;
+
+
+    texto += `APARELHO COMPATÍVEL: ${document.querySelector('input[name="aparelho_compativel"]:checked').value.toUpperCase()} COMPATÍVEL COM A VELOCIDADE CONTRATADA.\n`;
+    texto += `REALIZOU TESTES DE COBERTURA WI-FI? ${document.getElementById("teste_abrangencia").value.toUpperCase()}\n`;
+    if (document.getElementById("teste_abrangencia").value === "Não") {
+      texto += `MOTIVO: ${document.getElementById("motivo_nao_teste").value.toUpperCase()}\n`;
+    }
+    texto += `
+LIGAÇÃO ELÉTRICA: ${document.getElementById("ligacao_eletrica").value.toUpperCase()}\n`;
+    texto += `\n`;
+    if (document.getElementById("ligacao_eletrica").value === "Outros") {
+      texto += `OBSERVAÇÃO: ${document.getElementById("observacao_ligacao_outros").value.toUpperCase()}\n`;
+    }
+
+    if (document.getElementById("aplicativo_mznet").checked) {
+      texto += `APLICATIVO MZNET-PLAY INSTALADO`;
+      if (document.getElementById("descricao_aplicativo_mznet").value.trim() !== "") {
+        texto += ` EM: ${document.getElementById("descricao_aplicativo_mznet").value.toUpperCase()}\n`;
+      }
+    }
+    if (document.getElementById("aplicativo_mznet_plus").checked) {
+      texto += `APLICATIVO MZNET-PLAY PLUS (ITTV) INSTALADO`;
+      if (document.getElementById("descricao_aplicativo_mznet_plus").value.trim() !== "") {
+        texto += ` EM: ${document.getElementById("descricao_aplicativo_mznet_plus").value.toUpperCase()}\n`;
+      }
+    }
+    if (document.getElementById("aplicativo_deezer").checked) {
+      texto += `APLICATIVO DEEZER INSTALADO`;
+      if (document.getElementById("descricao_aplicativo_deezer").value.trim() !== "") {
+        texto += ` EM: ${document.getElementById("descricao_aplicativo_deezer").value.toUpperCase()}\n`;
+      }
+    }
+    
+    texto += `
+O.S ${document.getElementById("custos").value.toUpperCase()} CUSTOS\n`;
+    if (document.getElementById("custos").value === "Com") {
+      texto += `VALOR: R$${document.getElementById("valor").value.replace(/\D/g, '')}\n`;
+      texto += `FORMA DE PAGAMENTO: ${document.getElementById("forma_pagamento").value}\n`;
+    }
+    texto += `
+OBSERVAÇÕES: ${document.getElementById("observacoes").value.toUpperCase()}\n`;
+
+    texto += `
+CLIENTE SEM DÚVIDAS.`;
+
+    document.getElementById("texto_gerado").value = texto;
+  }
+
+
+  // Funções para exibir campos condicionalmente
+  document.getElementById("dispositivo").addEventListener("change", function() {
+    if (this.value !== "") {
+        document.getElementById("linha_teste_dispositivo1").style.display = "block";
+    } else {
+        document.getElementById("linha_teste_dispositivo1").style.display = "none";
+    }
+});
+
+document.getElementById("dispositivo2").addEventListener("change", function() {
+    if (this.value !== "") {
+        document.getElementById("linha_teste_dispositivo2").style.display = "block";
+    } else {
+        document.getElementById("linha_teste_dispositivo2").style.display = "none";
+    }
+});
+
+
+
+
+
+  document.getElementById("fixacao_roteador").addEventListener("change", function() {
+    if (this.value === "Não") {
+      document.getElementById("localizacao_roteador").style.display = "block";
+    } else {
+      document.getElementById("localizacao_roteador").style.display = "none";
+    }
+  });
+
+  document.getElementById("fixacao_onu").addEventListener("change", function() {
+    if (this.value === "Não") {
+      document.getElementById("localizacao_onu").style.display = "block";
+    } else {
+      document.getElementById("localizacao_onu").style.display = "none";
+    }
+  });
+
+  document.getElementById("teste_abrangencia").addEventListener("change", function() {
+    if (this.value === "Não") {
+      document.getElementById("motivo_teste").style.display = "block";
+    } else {
+      document.getElementById("motivo_teste").style.display = "none";
+    }
+  });
+
+  document.getElementById("ligacao_eletrica").addEventListener("change", function() {
+    if (this.value === "Outros") {
+      document.getElementById("observacao_ligacao").style.display = "block";
+    } else {
+      document.getElementById("observacao_ligacao").style.display = "none";
+    }
+  });
+
+  document.getElementById("custos").addEventListener("change", function() {
+    if (this.value === "Com") {
+      document.getElementById("info_custos").style.display = "block";
+    } else {
+      document.getElementById("info_custos").style.display = "none";
+    }
+  });
+
+  function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+</script>
+
+
+
+</body>
+</html>

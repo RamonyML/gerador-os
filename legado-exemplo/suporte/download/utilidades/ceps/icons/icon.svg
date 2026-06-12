@@ -1,0 +1,15 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#38af47" stroke="#2f9e3d" stroke-width="4"/>
+  
+  <!-- Magnifying glass -->
+  <circle cx="45" cy="45" r="15" fill="none" stroke="white" stroke-width="6"/>
+  <line x1="55" y1="55" x2="75" y2="75" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Location pin -->
+  <circle cx="85" cy="35" r="8" fill="white"/>
+  <path d="M85 43 L85 55 L77 65 L93 65 L85 55 Z" fill="white"/>
+  
+  <!-- CEP text -->
+  <text x="64" y="95" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">CEP</text>
+</svg> 

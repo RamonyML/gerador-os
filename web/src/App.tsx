@@ -19,6 +19,9 @@ import { EscalaPage } from './pages/EscalaPage'
 import { AvisosPage } from './pages/AvisosPage'
 import { HelpdeskPage } from './pages/HelpdeskPage'
 import { HelpdeskTicketPage } from './pages/HelpdeskTicketPage'
+import { CondominiosPage } from './pages/CondominiosPage'
+import { RequireCondominios } from './components/RequireCondominios'
+import { AgendaPage } from './pages/AgendaPage'
 import { ProfilePage } from './pages/ProfilePage'
 
 export default function App() {
@@ -71,6 +74,15 @@ export default function App() {
         <Route path="/upgrades" element={<UpgradesHubPage />} />
         <Route path="/chamados" element={<HelpdeskPage />} />
         <Route path="/chamados/:ticketId" element={<HelpdeskTicketPage />} />
+        <Route path="/agenda" element={<AgendaPage />} />
+        <Route
+          path="/condominios"
+          element={
+            <RequireCondominios>
+              <CondominiosPage />
+            </RequireCondominios>
+          }
+        />
         <Route path="/avisos" element={<AvisosPage />} />
         <Route
           path="/upgrades/comissoes"

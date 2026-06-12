@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lentidão</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #0f7939;">
+        <a class="navbar-brand" style="color: rgb(255, 255, 255);">
+          <img src="/logo/mzlogo-mbranco.png" width="65" height="30" class="d-inline-block align-top" alt="Logo">
+          Gerador de O.S
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" style="color: rgb(255, 255, 255);" href="/index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Modelos de O.S</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" style="color: rgb(255, 255, 255);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Tutoriais
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Roteador resetado</a>
+                <a class="dropdown-item" href="#">Direcionamento de portas</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Outros</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: rgb(255, 255, 255);" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+            </li>  
+          </ul>
+        </div>
+      </nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-man.html" class="text-success">Manutenção</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Testes</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoAgenda {
+    height: 50px; /* Defina a altura desejada */
+}
+
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">TESTES: VISITA ISENTA</h1>
+                <h3 class="mb-4 font-weight-bold">Lentidão e/ou instabilidades</h3>
+          </div>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <b>ATENÇÃO:</b> O gerador deste tipo de ordem de serviço não fornece o texto de protocolo. Por ser um tipo de atendimento muito relativo, o operador deve descrever no protocolo os detalhes do que foi tratado.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-danger" role="alert">
+            <b>IMPORTANTE: </b> Esta é uma O.S isenta de custos e é utilizada <b>somente</b> com a autorização de Deivit ou Hiago.
+          </div>
+        </div>
+        <div class="form">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link" href="/suporte/lentidao/index-lentidao.html">Pessoa Física</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/suporte/lentidao/index-lentidao-pj.html">Pessoa Jurídica</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active font-weight-bold text-success" href="#">Isento</a>
+                  </li>  
+            </ul><hr>
+            <div class="btn-group" role="group" aria-label="Exemplo básico">
+                <a href="/suporte/lentidao/isento/index-lentidao.html" class="btn btn-success" role="button">ISENTO PF</a>
+                <a href="/suporte/lentidao/isento/index-lentidao-pj.html" class="btn btn-light" role="button">ISENTO PJ</a>
+              </div><hr>
+              
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cliente">Nome Completo:</label>
+                                <input type="text" class="form-control" id="cliente" placeholder="Nome completo">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="canal">Canal:</label>
+                                <select class="form-control" id="canal">
+                                    <option value="LIGAÇÃO">Telefone</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contato">Contato:</label>
+                                <input type="text" class="form-control" id="contato" placeholder="Somente os números">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="bairro">Bairro:</label>
+                                <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente">
+                            </div>
+                        </div>
+
+                    </div><hr>
+                    <!-- Detalhes da Solicitação -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>DETALHES DA SOLICITAÇÃO</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sinalONU">Sinal ONU:</label>
+                                <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="oscila">Sinal oscilando?:</label>
+                                <select class="form-control" id="oscila">
+                                    <option value="COM OSCILAÇÃO">Sim</option>
+                                    <option value="SEM OSCILAÇÃO">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="repetidor">Repetidor de sinal:</label>
+                                <select class="form-control" id="repetidor">
+                                    <option value=" CLIENTE TAMBÉM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTÁ LIGADO POR WI-FI">Repetidor via Wi-Fi</option>
+                                    <option value=" CLIENTE TAMBÉM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTÁ LIGADO POR CABO DE REDE">Repetidor via cabo</option>
+                                    <option value=" CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTÁ CONECTADO POR WI-FI (MESH)">Wi-Fi Extend via Mesh</option>
+                                    <option value=" CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTÁ CONECTADO POR CABO DE REDE">Wi-Fi Extend via cabo</option>
+                                    <option value=" CLIENTE NÃO POSSUI REPETIDOR DE SINAL">Sem repetidor</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="disp1">Total de aparelhos conectados à rede</label>
+                                <input type="number" class="form-control" id="disp1" placeholder="Apenas números">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="disp2">Via Wi-Fi:</label>
+                                <input type="number" class="form-control" id="disp2" placeholder="Apenas números">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="disp3">Via Cabo:</label>
+                                <input type="number" class="form-control" id="disp3" placeholder="Apenas números">
+                            </div>
+                        </div>
+                    </div><hr>
+                    <!-- Agendamento -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>AGENDAMENTO</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dataVisita">Data da Visita Técnica:</label>
+                                <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="horaVisita">Hora:</label>
+                                <select class="form-control" id="horaVisita">
+                                    <option value="08:30">08:30</option>
+                                    <option value="09:30">09:30</option>
+                                    <option value="10:30">10:30</option>
+                                    <option value="11:30">11:30</option>
+                                    <option value="13:30">13:30</option>
+                                    <option value="14:30">14:30</option>
+                                    <option value="15:30">15:30</option>
+                                    <option value="16:30">16:30</option>
+                                    <option value="17:30">17:30</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="protocolo">Nº Protocolo:</label>
+                                <input type="text" class="form-control" id="protocolo" placeholder="123.456">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="gestor">Isenção autorizada por:</label>
+                                <select class="form-control" id="gestor" required="true" requiredMessage="Informe o nome">
+                                    <option value="">Selecione...</option>
+                                    <option value="DEIVIT">DEIVIT</option>
+                                    <option value="HIAGO">HIAGO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="operador">Nome do operador:</label>
+                                <select class="form-control" id="operador" required="true" requiredMessage="Informe o nome">
+                                    <option value="">Selecione...</option>
+                                    <option value="ANDREZA">ANDREZA</option>
+                                    <option value="BRUNA">BRUNA</option>
+                                    <option value="DEIVIT">DEIVIT</option>
+                                    <option value="EDUARDO">EDUARDO</option>
+                                    <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                                    <option value="JHONATAN">JHONATAN</option>
+                                    <option value="JOSÉ Jr">JOSÉ Jr</option>
+                                    <option value="HALYSON">HALYSON</option>
+                                    <option value="HIAGO">HIAGO</option>
+                                    <option value="HIORRANNA">HIORRANNA</option>
+                                    <option value="IZABELA">IZABELA</option>
+                                    <option value="KAROLAYNE">KAROLAYNE</option>
+                                    <option value="LAUREN">LAUREN</option>
+                                    <option value="LUIS">LUIS</option>
+                                    <option value="PEDRO">PEDRO</option>
+                                    <option value="RAMONY">RAMONY</option>
+                                    <option value="RENATA">RENATA</option>
+                                    <option value="RONALD">RONALD</option>
+                                    <option value="VICTOR H.">VICTOR HUGO</option>
+                                    <option value="VITOR M.">VITOR MANOEL</option>
+                                    <option value="VAGNER">VAGNER</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div><br>            
+                <div class="buttons">
+                    <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                    <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+                </div>
+            </div><br>
+            <div class="alert alert-warning" role="alert">
+                Edite o texto da O.S conforme o seu atendimento. Lembre-se de ler o texto antes de registrar no MK.
+              </div>
+    <div class="output">    
+        <div class="output-group">
+            <h4 class="font-weight-bold">Texto O.S:</h4>
+            <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+            <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+        </div>
+    </div>
+    <div class="output">
+        <div class="output-group">
+            <h4 class="font-weight-bold">Texto Agenda:</h4>
+            <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+            <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+        </div>
+    </div>
+</div> 
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    document.title = "CONEX LENTA";
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const repetidor = document.getElementById('repetidor').value;
+    const oscila = document.getElementById('oscila').value;
+    const disp1 = document.getElementById('disp1').value;
+    const disp2 = document.getElementById('disp2').value;
+    const disp3 = document.getElementById('disp3').value;
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const operador = document.getElementById('operador').value;
+    const gestor = document.getElementById('gestor').value;
+
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+    
+// Crie os textos com os valores
+
+const textoOS = `${cliente.split(' ')[0]} ENTROU EM CONTATO VIA ${canal} (${contato}) E DISSE QUE ESTÁ COM LENTIDÃO NA CONEXÃO COM A INTERNET, QUESTIONADO INFORMOU QUE "TODOS OS DISPOSITIVOS DA RESIDÊNCIA FICAM COM A INTERNET LENTA REPETIDAS VEZES AO LONGO DO DIA E NÃO CONSEGUE AFERIR A VELOCIDADE DO PLANO EM NENHUM DE SEUS DISPOSITIVOS". REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ CONECTADO, SINAL ONU (${sinalONU} ${oscila}) NÃO CONSTAM DESCONEXÕES, NO MOMENTO HÁ ${disp1} DISPOSITIVOS CONECTADOS AO ROTEADOR, ${disp2} VIA WI-FI E ${disp3} POR CABO. ${repetidor}. ${cliente.split(' ')[0]} SOLICITOU VISITA TÉCNICA PARA VERIFICAR PROBLEMA QUE "DIZ TER". ${gestor} AUTORIZOU VISITA ISENTA DE CUSTOS DESDE QUE OS EQUIPAMENTOS ESTEJAM EM PERFEITO ESTADO DE CONSERVAÇÃO. ${cliente.split(' ')[0]} DISSE ESTAR CIENTE E CONCORDOU COM A VISITA QUE FOI AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.
+
+******************************************
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: PEDIR PARA QUE ${cliente.split(' ')[0]} APRESENTE OS “PROBLEMAS DE INTERNET” QUE DIZ TER. COMPARAR TESTES ENTRE DISPOSITIVOS DELES COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT TÉCNICO. VISITA ISENTA DE CUSTOS (CORTESIA). CASO APRESENTAR ALGUM PROBLEMA ATUALIZAR O ROTEADOR COM UMA NOVA FIRMWARE E TESTAR NOVAMENTE, E SE AINDA NÃO RESOLVER SUBSTITUIR O ROTEADOR POR UM NOVO. EXPLICAR E TIRAR TODAS AS DÚVIDAS DO CLIENTE. TEMPO ESTIMADO 60 MINUTOS.`;
+
+
+const textoAgenda = `MAN TESTES ${cliente} PROT:${protocolo} ISENTO (${operador}) - ${bairro}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+
+    </script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

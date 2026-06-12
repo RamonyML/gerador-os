@@ -1,26 +1,170 @@
 import type { ReactNode } from 'react'
+import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import {
-  Box,
-  Container,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Chip, Container, Paper, Tooltip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
-import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
-import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined'
+import {
+  Building2,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardCheck,
+  Clock,
+  FolderTree,
+  GraduationCap,
+  LayoutDashboard,
+  LifeBuoy,
+  MapPin,
+  MessageSquare,
+  MousePointerClick,
+  PlusCircle,
+  Rocket,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  TrendingUp,
+  Users,
+  Wrench,
+  Workflow,
+} from 'lucide-react'
 import { useColorMode } from '../contexts/ColorModeContext'
-import { brandLogoSrc } from '../lib/brandAssets'
+import { HeroIllustration } from '../components/HeroIllustration'
+import { ILLUSTRATIONS } from '../data/illustrations'
 
 /** Padrão decorativo discreto (equivalente ao SVG do legado). */
 const SUBTLE_PATTERN =
   'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%2322c55e\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
+
+/** O que a plataforma oferece hoje (recursos efetivamente disponíveis). */
+const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
+  {
+    icon: LayoutDashboard,
+    title: 'Hub de Suporte',
+    desc: 'Centralização dos fluxos operacionais utilizados pelo suporte técnico.',
+  },
+  {
+    icon: FolderTree,
+    title: 'Demandas por Categoria',
+    desc: 'Modelos de atendimento organizados por área e tipo de operação.',
+  },
+  {
+    icon: LifeBuoy,
+    title: 'Chamados Internos',
+    desc: 'Registro e acompanhamento das demandas internas da equipe.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Registro de Upgrades',
+    desc: 'Controle operacional dos upgrades realizados e suas comissões.',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Escala de Trabalho',
+    desc: 'Organização dos turnos e plantões da equipe.',
+  },
+  {
+    icon: MapPin,
+    title: 'Agenda de Visitas',
+    desc: 'Agendamento de visitas técnicas de instalação, mudança de endereço e manutenção.',
+  },
+  {
+    icon: Building2,
+    title: 'Condomínios',
+    desc: 'Consulta de viabilidade de fibra e registros de inviabilidade.',
+  },
+  {
+    icon: Users,
+    title: 'Gestão de Usuários',
+    desc: 'Controle de contas, perfis e permissões de acesso.',
+  },
+  {
+    icon: ClipboardCheck,
+    title: 'Padronização de Processos',
+    desc: 'Uniformidade na documentação e nos procedimentos.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Autenticação Segura',
+    desc: 'Controle de acesso através do Firebase Authentication.',
+  },
+]
+
+/** Resultados obtidos com a plataforma. */
+const RESULTS: { icon: LucideIcon; title: string; desc: string }[] = [
+  {
+    icon: Clock,
+    title: 'Redução de tempo',
+    desc: 'De 10–15 minutos para cerca de 3–5 minutos por documento.',
+  },
+  {
+    icon: CheckCircle2,
+    title: 'Padronização',
+    desc: 'Documentação uniforme e aprovada pela gerência.',
+  },
+  {
+    icon: ShieldAlert,
+    title: 'Menos erros',
+    desc: 'Geração assistida que minimiza falhas humanas.',
+  },
+  {
+    icon: Rocket,
+    title: 'Mais produtividade',
+    desc: 'Equipe focada no atendimento, não na digitação repetitiva.',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Melhor treinamento',
+    desc: 'Onboarding mais claro e rápido para novos colaboradores.',
+  },
+]
+
+/** Desenvolvimento contínuo: o sistema é um produto vivo. */
+const CONTINUOUS: { icon: LucideIcon; title: string; desc: string }[] = [
+  {
+    icon: MessageSquare,
+    title: 'Feedback dos operadores',
+    desc: 'A equipe sugere melhorias e reporta falhas no dia a dia.',
+  },
+  {
+    icon: Wrench,
+    title: 'Correções contínuas',
+    desc: 'Ajustes constantes de estabilidade e qualidade.',
+  },
+  {
+    icon: PlusCircle,
+    title: 'Novas funcionalidades',
+    desc: 'Recursos novos conforme a operação evolui.',
+  },
+  {
+    icon: MousePointerClick,
+    title: 'Melhorias de usabilidade',
+    desc: 'Interface cada vez mais simples e agradável.',
+  },
+  {
+    icon: Workflow,
+    title: 'Expansão dos fluxos',
+    desc: 'Novos processos operacionais integrados à plataforma.',
+  },
+]
+
+/**
+ * Tecnologias efetivamente presentes no projeto (stack real).
+ * Reflete as dependências reais do app — não inclui itens que não são usados.
+ */
+const TECHNOLOGIES = [
+  'React',
+  'TypeScript',
+  'Vite',
+  'Material UI',
+  'Emotion',
+  'Firebase Authentication',
+  'Cloud Firestore',
+  'Firebase Storage',
+  'Firebase Hosting',
+  'React Router',
+  'Recharts',
+  'Lucide Icons',
+  'jsPDF',
+]
 
 function FadeInSection({
   children,
@@ -62,13 +206,7 @@ function FadeInSection({
   )
 }
 
-function TooltipName({
-  children,
-  title,
-}: {
-  children: ReactNode
-  title: string
-}) {
+function TooltipName({ children, title }: { children: ReactNode; title: string }) {
   return (
     <Tooltip title={title} arrow placement="top">
       <Box
@@ -115,19 +253,63 @@ export function SobrePage() {
       ? `linear-gradient(145deg, ${alpha(primary, 0.16)} 0%, ${alpha(primary, 0.05)} 45%, ${theme.palette.background.default} 100%)`
       : `linear-gradient(145deg, ${alpha(primary, 0.22)} 0%, ${alpha('#000', 0.35)} 55%, ${theme.palette.background.default} 100%)`
 
+  const cardShadow =
+    mode === 'light' ? '0 8px 32px rgba(0,0,0,0.06)' : '0 8px 32px rgba(0,0,0,0.35)'
+
   const sectionBg =
     mode === 'light'
       ? alpha(theme.palette.primary.main, 0.04)
       : alpha(theme.palette.primary.main, 0.08)
 
-  const impactItems = [
-    'Redução significativa no tempo de elaboração de documentos',
-    'Maior precisão nas informações registradas',
-    'Padronização completa da documentação',
-    'Melhoria na qualidade do atendimento ao cliente',
-    'Aumento na produtividade da equipe de suporte',
-    'Melhor clareza no processo de treinamento de novos colaboradores',
-  ]
+  const iconBadgeSx = {
+    color: 'primary.main',
+    flexShrink: 0,
+    display: 'grid',
+    placeItems: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 2,
+    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.12),
+    border: 1,
+    borderColor: alpha(primary, mode === 'dark' ? 0.3 : 0.16),
+  } as const
+
+  const SectionHeading = ({
+    overline,
+    title,
+    subtitle,
+  }: {
+    overline?: string
+    title: string
+    subtitle?: string
+  }) => (
+    <Box sx={{ mb: 4 }}>
+      {overline ? (
+        <Typography
+          variant="overline"
+          sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: '0.08em' }}
+        >
+          {overline}
+        </Typography>
+      ) : null}
+      <Typography
+        variant="h4"
+        component="h2"
+        sx={{ fontWeight: 800, letterSpacing: '-0.02em', mt: overline ? 0.5 : 0 }}
+      >
+        {title}
+      </Typography>
+      {subtitle ? (
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ mt: 1.5, maxWidth: 720, lineHeight: 1.7 }}
+        >
+          {subtitle}
+        </Typography>
+      ) : null}
+    </Box>
+  )
 
   return (
     <Box sx={{ flex: 1, width: '100%', bgcolor: 'background.default' }}>
@@ -175,28 +357,10 @@ export function SobrePage() {
             transform: `translate(${parallaxY * -0.06}px, ${parallaxY * 0.12}px)`,
           }}
         />
-        <Box
-          aria-hidden
-          sx={{
-            position: 'absolute',
-            bottom: '8%',
-            left: '5%',
-            width: 200,
-            height: 200,
-            borderRadius: '50%',
-            background: alpha(primary, mode === 'dark' ? 0.1 : 0.06),
-            filter: 'blur(48px)',
-            transform: `translate(${parallaxY * 0.08}px, ${parallaxY * -0.1}px)`,
-          }}
-        />
 
         <Container
           maxWidth="lg"
-          sx={{
-            position: 'relative',
-            py: { xs: 5, md: 8 },
-            px: { xs: 2, sm: 3 },
-          }}
+          sx={{ position: 'relative', py: { xs: 5, md: 8 }, px: { xs: 2, sm: 3 } }}
         >
           <FadeInSection>
             <Box
@@ -209,6 +373,18 @@ export function SobrePage() {
               }}
             >
               <Box sx={{ flex: '1 1 auto', maxWidth: { lg: '58%' } }}>
+                <Chip
+                  label="Plataforma operacional"
+                  size="small"
+                  sx={{
+                    mb: 2,
+                    fontWeight: 700,
+                    color: 'primary.main',
+                    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.1),
+                    border: 1,
+                    borderColor: alpha(primary, 0.25),
+                  }}
+                />
                 <Typography
                   variant="h2"
                   component="h1"
@@ -228,34 +404,34 @@ export function SobrePage() {
                     fontWeight: 600,
                     color: 'primary.main',
                     letterSpacing: '-0.02em',
-                    fontSize: { xs: '1.15rem', sm: '1.35rem' },
+                    fontSize: { xs: '1.1rem', sm: '1.3rem' },
+                    lineHeight: 1.4,
                   }}
                 >
-                  Padronização e Automatização
+                  Plataforma de apoio operacional para o suporte técnico da MZ NET.
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ mt: 2, maxWidth: 560, lineHeight: 1.7 }}
+                >
+                  Muito além de gerar ordens de serviço: centraliza fluxos, organiza
+                  demandas e aumenta a eficiência das equipes no dia a dia.
                 </Typography>
               </Box>
               <Box
                 sx={{
-                  flex: '0 1 320px',
+                  flex: '0 1 380px',
                   width: '100%',
-                  maxWidth: 320,
+                  maxWidth: 380,
                   transform: `translateY(${parallaxY * -0.04}px)`,
                   transition: 'transform 0.1s linear',
                 }}
               >
-                <Box
-                  component="img"
-                  src={brandLogoSrc(mode)}
-                  alt="MZ NET"
-                  sx={{
-                    width: '100%',
-                    height: 'auto',
-                    objectFit: 'contain',
-                    filter:
-                      mode === 'light'
-                        ? 'drop-shadow(0 12px 28px rgba(0,0,0,0.08))'
-                        : 'drop-shadow(0 12px 32px rgba(0,0,0,0.35))',
-                  }}
+                <HeroIllustration
+                  src={ILLUSTRATIONS.collaboration}
+                  alt="Equipe de suporte colaborando na plataforma"
+                  maxWidth={380}
                 />
               </Box>
             </Box>
@@ -264,282 +440,320 @@ export function SobrePage() {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 }, px: { xs: 2, sm: 3 } }}>
-        <FadeInSection delayMs={50}>
-          <Box sx={{ textAlign: { xs: 'left', lg: 'center' }, mb: 6 }}>
-            <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}
-            >
-              Sobre o Projeto
-            </Typography>
-            <Typography
-              variant="h6"
-              color="text.secondary"
-              sx={{
-                mt: 2,
-                fontWeight: 400,
-                maxWidth: 640,
-                mx: { lg: 'auto' },
-                lineHeight: 1.6,
-              }}
-            >
-              Uma solução para otimizar o processo de elaboração de protocolos e Ordens de Serviços
-              geradas pelo suporte técnico.
-            </Typography>
-          </Box>
-        </FadeInSection>
-
-        <FadeInSection delayMs={100}>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-              gap: 3,
-            }}
-          >
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                boxShadow:
-                  mode === 'light'
-                    ? '0 8px 32px rgba(0,0,0,0.06)'
-                    : '0 8px 32px rgba(0,0,0,0.35)',
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-                Idealização e Desenvolvimento
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
-                O Gerador de O.S foi idealizado e desenvolvido por{' '}
-                <TooltipName title="Idealizador & Desenvolvedor Back/Front-End">
-                  Ramony Lima
-                </TooltipName>
-                .
-              </Typography>
-            </Paper>
-
-            <Paper
-              elevation={0}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                border: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-                boxShadow:
-                  mode === 'light'
-                    ? '0 8px 32px rgba(0,0,0,0.06)'
-                    : '0 8px 32px rgba(0,0,0,0.35)',
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-                Supervisão e Validação
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
-                Todas as O.S são padronizadas e validadas pela gerência, sob supervisão de{' '}
-                <TooltipName title="Gerente de Suporte">Deivit Rafael</TooltipName> e{' '}
-                <TooltipName title="Sub-gerente">Hiago Alves</TooltipName>, com grande contribuição de{' '}
-                <TooltipName title="Revisão e Formatação">Karolayne Pereira</TooltipName> na revisão e
-                formatação textual.
-              </Typography>
-            </Paper>
-          </Box>
-        </FadeInSection>
-
-        <FadeInSection delayMs={120}>
-          <Typography
-            variant="h5"
-            component="h3"
-            sx={{ fontWeight: 800, textAlign: 'center', mt: 7, mb: 4, letterSpacing: '-0.02em' }}
-          >
-            Objetivos e Benefícios
-          </Typography>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: '1fr 1fr 1fr' },
-              gap: 3,
-            }}
-          >
-            {[
-              {
-                icon: <SpeedOutlinedIcon sx={{ fontSize: 36 }} />,
-                title: 'Otimização de Tempo',
-                body: 'Redução significativa no tempo de elaboração de demandas, de 10-15 minutos para aproximadamente 3-5 minutos.',
-              },
-              {
-                icon: <TaskAltOutlinedIcon sx={{ fontSize: 36 }} />,
-                title: 'Padronização',
-                body: 'Garantia de uniformidade na documentação gerada, seguindo padrões estabelecidos e aprovados pela gerência.',
-              },
-              {
-                icon: <AutoAwesomeOutlinedIcon sx={{ fontSize: 36 }} />,
-                title: 'Automatização',
-                body: 'Geração automática de protocolos e O.S, minimizando erros humanos e aumentando a produtividade.',
-              },
-            ].map((item) => (
-              <Paper
-                key={item.title}
-                elevation={0}
-                sx={{
-                  p: 3,
-                  borderRadius: 3,
-                  border: 1,
-                  borderColor: alpha(primary, 0.2),
-                  bgcolor: sectionBg,
-                  display: 'flex',
-                  gap: 2,
-                  alignItems: 'flex-start',
-                }}
-              >
-                <Box
-                  sx={{
-                    color: 'primary.main',
-                    flexShrink: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.12),
-                  }}
-                >
-                  {item.icon}
-                </Box>
-                <Box>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-                    {item.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65 }}>
-                    {item.body}
-                  </Typography>
-                </Box>
-              </Paper>
-            ))}
-          </Box>
-        </FadeInSection>
-
-        <FadeInSection delayMs={140}>
+        {/* Evolução do Projeto */}
+        <FadeInSection delayMs={40}>
           <Paper
             elevation={0}
             sx={{
-              mt: 7,
-              p: { xs: 3, md: 4 },
-              borderRadius: 3,
-              border: 1,
-              borderColor: 'divider',
-              bgcolor: 'background.paper',
-              boxShadow:
-                mode === 'light'
-                  ? '0 8px 32px rgba(0,0,0,0.06)'
-                  : '0 8px 32px rgba(0,0,0,0.35)',
-            }}
-          >
-            <Typography variant="h5" component="h3" sx={{ fontWeight: 800, mb: 3 }}>
-              Impacto e Resultados
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 2, lineHeight: 1.75 }}>
-              O Gerador de O.S otimizou o <strong>processo de elaboração de protocolos e O.S</strong> no
-              suporte técnico da MZNet, proporcionando uma solução eficiente e padronizada para o registro
-              de atendimentos. Com sua implementação, conseguimos:
-            </Typography>
-            <List dense sx={{ py: 0, pl: 0 }}>
-              {impactItems.map((text) => (
-                <ListItem key={text} sx={{ px: 0, py: 0.5, alignItems: 'flex-start' }}>
-                  <ListItemIcon sx={{ minWidth: 28, mt: 0.6 }}>
-                    <Box
-                      sx={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: '50%',
-                        bgcolor: 'primary.main',
-                      }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text}
-                    slotProps={{
-                      primary: {
-                        variant: 'body1',
-                        color: 'text.secondary',
-                        sx: { lineHeight: 1.7 },
-                      },
-                    }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        </FadeInSection>
-
-        <FadeInSection delayMs={160}>
-          <Paper
-            elevation={0}
-            sx={{
-              mt: 5,
               p: { xs: 3, md: 4 },
               borderRadius: 3,
               border: 1,
               borderColor: alpha(primary, 0.25),
               background:
                 mode === 'light'
-                  ? `linear-gradient(120deg, ${alpha(primary, 0.08)} 0%, ${alpha(theme.palette.grey[100], 0.9)} 100%)`
-                  : `linear-gradient(120deg, ${alpha(primary, 0.14)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 100%)`,
+                  ? `linear-gradient(120deg, ${alpha(primary, 0.1)} 0%, ${alpha(theme.palette.grey[100], 0.9)} 100%)`
+                  : `linear-gradient(120deg, ${alpha(primary, 0.16)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 100%)`,
             }}
           >
-            <Typography variant="h5" component="h3" sx={{ fontWeight: 800, mb: 3 }}>
-              Desenvolvimento Contínuo e Validação
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+              <Box sx={iconBadgeSx}>
+                <Sparkles size={22} />
+              </Box>
+              <Typography variant="h5" component="h2" sx={{ fontWeight: 800 }}>
+                Evolução do Projeto
+              </Typography>
+            </Box>
+            <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+              O projeto nasceu como uma ferramenta para automatizar a criação de ordens de
+              serviço e protocolos, mas evoluiu para uma{' '}
+              <Box component="strong" sx={{ color: 'text.primary' }}>
+                plataforma operacional utilizada diariamente pelo suporte técnico da MZ NET
+              </Box>
+              . Hoje ela reúne, em um só lugar, os fluxos, as demandas e as ferramentas que
+              sustentam a operação da equipe.
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          </Paper>
+        </FadeInSection>
+
+        {/* O que a plataforma oferece */}
+        <FadeInSection delayMs={60}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Recursos"
+              title="O que a plataforma oferece"
+              subtitle="Funcionalidades disponíveis atualmente para apoiar a operação do suporte técnico."
+            />
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr',
+                  lg: '1fr 1fr 1fr',
+                },
+                gap: 2.5,
+              }}
+            >
+              {FEATURES.map(({ icon: Icon, title, desc }) => (
+                <Paper
+                  key={title}
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-3px)',
+                      boxShadow: cardShadow,
+                      borderColor: alpha(primary, 0.4),
+                    },
+                  }}
+                >
+                  <Box sx={{ ...iconBadgeSx, mb: 2 }}>
+                    <Icon size={22} />
+                  </Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.75 }}>
+                    {title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                    {desc}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+          </Box>
+        </FadeInSection>
+
+        {/* Resultados Obtidos */}
+        <FadeInSection delayMs={80}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Impacto"
+              title="Resultados obtidos"
+              subtitle="Ganhos concretos percebidos no dia a dia do suporte técnico."
+            />
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr',
+                  lg: 'repeat(5, 1fr)',
+                },
+                gap: 2.5,
+              }}
+            >
+              {RESULTS.map(({ icon: Icon, title, desc }) => (
+                <Paper
+                  key={title}
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: alpha(primary, 0.2),
+                    bgcolor: sectionBg,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.25,
+                  }}
+                >
+                  <Box sx={iconBadgeSx}>
+                    <Icon size={22} />
+                  </Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.55 }}>
+                    {desc}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+          </Box>
+        </FadeInSection>
+
+        {/* História do Projeto */}
+        <FadeInSection delayMs={100}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Origem"
+              title="A história do projeto"
+              subtitle="Como tudo começou e quem ajudou a construir e validar os padrões."
+            />
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: 3,
+              }}
+            >
               <Paper
                 elevation={0}
                 sx={{
                   p: 3,
-                  borderRadius: 2,
-                  bgcolor: 'background.paper',
+                  borderRadius: 3,
                   border: 1,
                   borderColor: 'divider',
+                  bgcolor: 'background.paper',
+                  boxShadow: cardShadow,
                 }}
               >
-                <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 700, mb: 1.5 }}>
-                  Evolução Contínua
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+                  Idealização e Desenvolvimento
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
-                  O Gerador de O.S é um projeto em constante desenvolvimento. Contamos com o valioso
-                  feedback de nossos operadores para identificar e resolver falhas, além de implementar
-                  melhorias que tornem a ferramenta ainda mais eficiente e adaptada às necessidades da
-                  equipe.
+                  O Gerador de O.S foi idealizado e desenvolvido por{' '}
+                  <TooltipName title="Idealizador & Desenvolvedor Back/Front-End">
+                    Ramony Lima
+                  </TooltipName>
+                  , a partir da necessidade de agilizar e padronizar a abertura de protocolos e
+                  ordens de serviço no suporte técnico.
                 </Typography>
               </Paper>
+
               <Paper
                 elevation={0}
                 sx={{
                   p: 3,
-                  borderRadius: 2,
-                  bgcolor: 'background.paper',
+                  borderRadius: 3,
                   border: 1,
                   borderColor: 'divider',
+                  bgcolor: 'background.paper',
+                  boxShadow: cardShadow,
                 }}
               >
-                <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 700, mb: 1.5 }}>
-                  Validação de Novos Padrões
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+                  Supervisão e Validação
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
-                  <strong>Importante:</strong> Qualquer ordem de serviço que divirja dos padrões
-                  estabelecidos neste gerador deve ser obrigatoriamente validada pela gerência antes de sua
-                  implementação. Este processo garante a manutenção da qualidade e consistência em nossa
-                  documentação.
+                  Todos os modelos são padronizados e validados pela gerência, sob supervisão de{' '}
+                  <TooltipName title="Gerente de Suporte">Deivit Rafael</TooltipName> e{' '}
+                  <TooltipName title="Sub-gerente">Hiago Alves</TooltipName>, com grande
+                  contribuição de{' '}
+                  <TooltipName title="Revisão e Formatação">Karolayne Pereira</TooltipName> na
+                  revisão e formatação textual.
                 </Typography>
               </Paper>
             </Box>
-          </Paper>
+          </Box>
+        </FadeInSection>
+
+        {/* Tecnologias Utilizadas */}
+        <FadeInSection delayMs={120}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Stack"
+              title="Tecnologias utilizadas"
+              subtitle="Conjunto de tecnologias efetivamente presentes no projeto."
+            />
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, md: 4 },
+                borderRadius: 3,
+                border: 1,
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+                boxShadow: cardShadow,
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1.25,
+              }}
+            >
+              {TECHNOLOGIES.map((tech) => (
+                <Chip
+                  key={tech}
+                  label={tech}
+                  sx={{
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    bgcolor: alpha(primary, mode === 'dark' ? 0.16 : 0.08),
+                    border: 1,
+                    borderColor: alpha(primary, 0.2),
+                    color: 'text.primary',
+                  }}
+                />
+              ))}
+            </Paper>
+          </Box>
+        </FadeInSection>
+
+        {/* Desenvolvimento Contínuo */}
+        <FadeInSection delayMs={140}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Produto vivo"
+              title="Desenvolvimento contínuo"
+              subtitle="O sistema está em evolução constante, guiado pela rotina real da equipe."
+            />
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: '1fr 1fr',
+                  lg: 'repeat(5, 1fr)',
+                },
+                gap: 2.5,
+              }}
+            >
+              {CONTINUOUS.map(({ icon: Icon, title, desc }) => (
+                <Paper
+                  key={title}
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.25,
+                  }}
+                >
+                  <Box sx={iconBadgeSx}>
+                    <Icon size={22} />
+                  </Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.55 }}>
+                    {desc}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+
+            <Paper
+              elevation={0}
+              sx={{
+                mt: 3,
+                p: 3,
+                borderRadius: 3,
+                border: 1,
+                borderColor: alpha(primary, 0.25),
+                bgcolor: sectionBg,
+              }}
+            >
+              <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 700, mb: 1 }}>
+                Validação de novos padrões
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
+                <Box component="strong" sx={{ color: 'text.primary' }}>
+                  Importante:
+                </Box>{' '}
+                qualquer ordem de serviço que divirja dos padrões estabelecidos nesta
+                plataforma deve ser obrigatoriamente validada pela gerência antes de sua
+                implementação. Esse processo garante a manutenção da qualidade e da
+                consistência da nossa documentação.
+              </Typography>
+            </Paper>
+          </Box>
         </FadeInSection>
       </Container>
 

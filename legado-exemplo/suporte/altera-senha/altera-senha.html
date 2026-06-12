@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alteração de Senha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(90deg, #f8f9fa 2px, transparent 2px) 0 0,
+                linear-gradient(0deg, #f8f9fa 2px, transparent 2px) 0 0,
+                linear-gradient(90deg, #f1f3f5 1px, transparent 1px) 0 0,
+                linear-gradient(0deg, #f1f3f5 1px, transparent 1px) 0 0;
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+            background-attachment: fixed;
+            opacity: 0.7;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 100% 0%, rgba(248, 249, 250, 0.9) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(241, 243, 245, 0.9) 0%, transparent 50%);
+            background-attachment: fixed;
+            z-index: -1;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+            background: none;
+            flex: 1;
+            margin-top: 5rem;
+            padding-top: 2rem;
+            min-height: calc(100vh - 4rem - 3rem);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .title-underline::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #38af47;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 50;
+        }
+
+        ::selection {
+            background-color: #28a746;
+            color: white;
+        }
+
+        .form-control {
+            @apply block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm;
+        }
+
+        .form-control.danger {
+            @apply border-red-300 focus:ring-red-500 focus:border-red-500;
+        }
+
+        .form-control.success {
+            @apply border-green-500 focus:ring-green-500 focus:border-green-500;
+        }
+
+        textarea.form-control {
+            @apply resize-none rounded-2xl;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 shadow-lg bg-gradient-to-r from-black to-green-600">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo e Links -->
+                <div class="flex items-center space-x-10">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+                        <span class="text-white font-bold text-lg">Gerador de O.S</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="/index.html" class="text-white text-sm font-medium">Home</a>
+                        <a href="/suporte/modelos.html" class="text-white text-sm font-medium">Modelos de O.S</a>
+                        
+                        <div class="relative group">
+                            <button class="text-white text-sm font-medium flex items-center">
+                                Tutoriais
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+                                <a href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Roteador resetado</a>
+                                <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">RokuTV</a>
+                                <div class="border-t border-gray-200 my-1"></div>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Outros</a>
+                            </div>
+                        </div>
+
+                        <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white text-sm font-medium">Encerramentos de O.S</a>
+                    </div>
+                </div>
+
+                <!-- Usuário e Logout -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <span id="userEmail" class="text-white text-sm">Usuário não autenticado</span>
+                    <button id="logoutButton" class="px-4 py-1.5 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sair
+                    </button>
+                </div>
+
+                <!-- Menu Mobile -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Abrir menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile -->
+    <div class="md:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 bg-gray-900 bg-opacity-90">
+            <a href="/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+            <a href="/suporte/modelos.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Modelos de O.S</a>
+            <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Encerramentos de O.S</a>
+            <div class="pt-4 pb-3 border-t border-gray-700">
+                <div class="flex items-center px-5">
+                    <div class="text-sm">
+                        <span id="mobileUserEmail" class="text-white">Usuário não autenticado</span>
+                    </div>
+                </div>
+                <div class="mt-3 px-2">
+                    <button id="mobileLogoutButton" class="block w-full px-3 py-2 rounded-md text-base font-medium text-white hover:bg-green-700">Sair</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="px-4 mt-20">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li>
+                <a href="/suporte/dashboard.html" class="text-green-600 hover:text-green-800">Suporte</a>
+            </li>
+            <li class="text-gray-500">/</li>
+            <li class="text-gray-700">Alteração de SSID e Senha</li>
+        </ol>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content w-full">
+        <div class="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-xl p-8 relative">
+                <!-- Logo -->
+                <a href="/index.html" class="absolute top-8 right-8">
+                    <img src="/mznet-logo.png" alt="MzNet Logo" class="w-24 h-auto">
+                </a>
+
+                <!-- Título -->
+                <div class="mb-12">
+                    <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">ALTERAÇÃO DE SENHA Wi-Fi</h1>
+                </div>
+
+                <form class="needs-validation space-y-8" novalidate>
+                    <!-- Identificação do Cliente -->
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <h2 class="text-xl font-semibold text-gray-800">IDENTIFICAÇÃO DO CLIENTE</h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                            <div class="col-span-full">
+                                <label for="cliente" class="block text-sm font-medium text-gray-700">Nome Completo:</label>
+                                <input type="text" id="cliente" class="form-control mt-1" placeholder="Nome completo" required>
+                            </div>
+
+                            <div>
+                                <label for="canal" class="block text-sm font-medium text-gray-700">Canal:</label>
+                                <select id="canal" class="form-control mt-1" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="LIGAÇÃO">Telefone</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="contato" class="block text-sm font-medium text-gray-700">Contato:</label>
+                                <input type="text" id="contato" class="form-control mt-1" placeholder="Somente os números" required>
+                            </div>
+
+                            <div class="lg:col-span-2">
+                                <label for="sinalONU" class="block text-sm font-medium text-gray-700">Sinal ONU:</label>
+                                <input type="text" id="sinalONU" class="form-control mt-1" placeholder="-19.20 DBM ou SEM SINAL" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Registro da Alteração -->
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 12.5a1 1 0 1 1 1-1 1 1 0 0 1-1 1zm1-4.5a1 1 0 0 1-2 0V7a1 1 0 0 1 2 0z"/>
+                            </svg>
+                            <h2 class="text-xl font-semibold text-gray-800">REGISTRO DA ALTERAÇÃO</h2>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            <div>
+                                <label for="solicitacao" class="block text-sm font-medium text-gray-700">Solicitação:</label>
+                                <select id="solicitacao" class="form-control mt-1" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="SENHA">SENHA</option>
+                                    <option value="SSID">SSID</option>
+                                    <option value="SSID E SENHA">SSID E SENHA</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="atualSSID" class="block text-sm font-medium text-gray-700">SSID atual:</label>
+                                <input type="text" id="atualSSID" class="form-control mt-1" placeholder="Insira o nome atual da rede">
+                            </div>
+
+                            <div>
+                                <label for="novoSSID" class="block text-sm font-medium text-gray-700">SSID nova:</label>
+                                <input type="text" id="novoSSID" class="form-control mt-1" placeholder="Insira o novo nome da rede">
+                            </div>
+
+                            <div>
+                                <label for="atualSenha" class="block text-sm font-medium text-gray-700">Senha atual:</label>
+                                <input type="text" id="atualSenha" class="form-control mt-1" placeholder="Insira a senha atual da rede">
+                            </div>
+
+                            <div>
+                                <label for="novaSenha" class="block text-sm font-medium text-gray-700">Senha nova:</label>
+                                <input type="text" id="novaSenha" class="form-control mt-1" placeholder="Insira a nova senha da rede">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
+                        <button type="button" onclick="gerarTextos()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+                            Gerar textos
+                        </button>
+                        <button type="button" onclick="limparCampos()" class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
+                            Limpar
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Resultado -->
+                <div class="mt-8">
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-semibold text-gray-800">Texto Protocolo:</h4>
+                        <div class="relative">
+                            <textarea id="textoProtocolo" class="w-full h-64 p-4 text-gray-700 border rounded-xl focus:ring-green-500 focus:border-green-500 resize-none" readonly></textarea>
+                            <button onclick="copiarTexto('textoProtocolo')" class="absolute bottom-4 right-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                                </svg>
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-2">
+        <div class="w-full px-4">
+            <p class="text-gray-600 text-sm text-right pr-2">Versão 3.1.1</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Seu código JavaScript existente
+        document.title = "ALT WI-FI";
+
+        // VALIDAÇÃO DOS CAMPOS
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.querySelector('form');
+            var inputs = form.querySelectorAll('input, select');
+
+            function validateFields() {
+                var allFilled = true;
+                inputs.forEach(function(input) {
+                    if (input.value.trim() === "") {
+                        input.classList.remove('primary', 'success');
+                        input.classList.add('danger');
+                        allFilled = false;
+                    } else {
+                        input.classList.remove('danger', 'success');
+                        input.classList.add('primary');
+                    }
+                });
+                return allFilled;
+            }
+
+            inputs.forEach(function(input) {
+                input.addEventListener('input', validateFields);
+            });
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (validateFields()) {
+                    inputs.forEach(function(input) {
+                        input.classList.remove('danger', 'primary');
+                        input.classList.add('success');
+                    });
+                    gerarTextos();
+                }
+            });
+        });
+
+        // Resto do seu código JavaScript existente
+        function gerarTextos() {
+            const form = document.querySelector('.needs-validation');
+            if (!form.checkValidity()) {
+                alert('Por favor, preencha todos os campos obrigatórios antes de gerar os textos.');
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const cliente = document.getElementById('cliente').value.toUpperCase();
+            const canal = document.getElementById('canal').value;
+            const contato = document.getElementById('contato').value.replace(/\D/g, '');
+            const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+            const solicitacao = document.getElementById('solicitacao').value.toUpperCase();
+            const novoSSID = document.getElementById('novoSSID').value;
+            const atualSSID = document.getElementById('atualSSID').value;
+            const atualSenha = document.getElementById('atualSenha').value;
+            const novaSenha = document.getElementById('novaSenha').value;
+
+            const textoProtocolo = `${cliente.split(' ')[0]} ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU A ALTERAÇÃO DA ${solicitacao} DO WI-FI.
+
+***********************
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU ${sinalONU} SEM OSCILAÇÃO.
+
+***********************
+
+QUESTIONADO ${cliente.split(' ')[0]} DESEJA ALTERAR A ${solicitacao} DE SUA REDE WI-FI POR MOTIVO PESSOAL.
+    
+SSID ATUAL: ${atualSSID}
+SSID NOVA: ${novoSSID}
+
+SENHA ATUAL: ${atualSenha}
+SENHA NOVA: ${novaSenha}
+
+    
+${solicitacao} ALTERADA COM SUCESSO E ${cliente.split(' ')[0]} CONFIRMOU CONEXÃO.`;
+
+            document.getElementById('textoProtocolo').value = textoProtocolo;
+        }
+
+        function copiarTexto(elementId) {
+            const texto = document.getElementById(elementId);
+            texto.select();
+            document.execCommand('copy');
+        }
+
+        function limparCampos() {
+            if (confirm("Tem certeza que deseja limpar todos os campos?")) {
+                const camposEntrada = document.querySelectorAll('input, select');
+                camposEntrada.forEach(campo => {
+                    campo.value = '';
+                    campo.classList.remove('danger', 'primary', 'success');
+                });
+                const textos = document.querySelectorAll('.output textarea');
+                textos.forEach(texto => {
+                    texto.value = '';
+                });
+            }
+        }
+
+        // Controle de campos baseado na seleção
+        document.getElementById('solicitacao').addEventListener('change', function() {
+            var solicitacao = this.value;
+            var ssidInputs = document.querySelectorAll('#atualSSID, #novoSSID');
+            var senhaInputs = document.querySelectorAll('#atualSenha, #novaSenha');
+
+            if (solicitacao === 'SENHA') {
+                ssidInputs.forEach(input => input.disabled = true);
+                senhaInputs.forEach(input => input.disabled = false);
+            } else if (solicitacao === 'SSID') {
+                ssidInputs.forEach(input => input.disabled = false);
+                senhaInputs.forEach(input => input.disabled = true);
+            } else if (solicitacao === 'SSID E SENHA') {
+                ssidInputs.forEach(input => input.disabled = false);
+                senhaInputs.forEach(input => input.disabled = false);
+            } else {
+                ssidInputs.forEach(input => input.disabled = true);
+                senhaInputs.forEach(input => input.disabled = true);
+            }
+        });
+    </script>
+
+    <!-- Firebase Auth -->
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';
+        
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                console.log("Usuário não autenticado, redirecionando...");
+                window.location.href = "/login.html";
+            } else {
+                console.log("Usuário autenticado!", user);
+                document.getElementById("userEmail").textContent = `Logado como: ${user.email}`;
+                document.getElementById("mobileUserEmail").textContent = `Logado como: ${user.email}`;
+            }
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Usuário deslogado com sucesso!");
+                window.location.href = "/login.html";
+            }).catch((error) => {
+                console.error("Erro ao deslogar: ", error);
+            });
+        });
+
+        document.getElementById('mobileLogoutButton')?.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Usuário deslogado com sucesso!");
+                window.location.href = "/login.html";
+            }).catch((error) => {
+                console.error("Erro ao deslogar: ", error);
+            });
+        });
+    </script>
+    <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

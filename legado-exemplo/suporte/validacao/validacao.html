@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validação de Texto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/diff-match-patch/javascript/diff_match_patch.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .title-underline::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #38af47;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #16a34a;
+            background: #dcfce7;
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+        .missing {
+            color: #ef4444;
+            background: #fee2e2;
+            border-radius: 4px;
+            padding: 0 2px;
+            text-decoration: line-through;
+            opacity: 0.8;
+        }
+        ::selection {
+            background-color: #28a746;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 shadow-lg bg-gradient-to-r from-black to-green-600">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-10">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+                        <span class="text-white font-bold text-lg">Gerador de O.S</span>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="/index.html" class="text-white text-sm font-medium">Home</a>
+                        <a href="/suporte/modelos.html" class="text-white text-sm font-medium">Modelos de O.S</a>
+                        <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white text-sm font-medium">Encerramentos de O.S</a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <span id="userEmail" class="text-white text-sm">Carregando usuário...</span>
+                    <button id="logoutButton" class="px-4 py-1.5 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Breadcrumb -->
+    <nav class="px-4 mt-20">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li>
+                <a href="/suporte/dashboard.html" class="text-green-600 hover:text-green-800">Suporte</a>
+            </li>
+            <li class="text-gray-500">/</li>
+            <li class="text-gray-700">Validação de Texto</li>
+        </ol>
+    </nav>
+    <!-- Main Content -->
+    <main class="main-content w-full flex-1">
+        <div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="glass-card rounded-xl p-8 relative">
+                <div class="mb-10">
+                    <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">Validação de Texto</h1>
+                    <p class="mt-2 text-gray-600">Cole o texto padrão e o texto do operador para comparar e destacar diferenças.</p>
+                </div>
+                <form class="space-y-8" onsubmit="event.preventDefault(); compareTexts();">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="text1" class="block text-sm font-medium text-gray-700">Texto Padrão</label>
+                            <textarea class="form-control mt-1 w-full rounded-xl border-gray-300 focus:ring-green-500 focus:border-green-500" id="text1" rows="14" placeholder="Cole aqui o texto padrão..."></textarea>
+                        </div>
+                        <div>
+                            <label for="text2" class="block text-sm font-medium text-gray-700">Texto do Operador</label>
+                            <textarea class="form-control mt-1 w-full rounded-xl border-gray-300 focus:ring-green-500 focus:border-green-500" id="text2" rows="14" placeholder="Cole aqui o texto do operador..."></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Comparar
+                        </button>
+                        <button type="button" onclick="limparCampos()" class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Limpar
+                        </button>
+                    </div>
+                </form>
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Resultado</h4>
+                    <div id="result" class="p-4 bg-gray-100 rounded-xl min-h-[60px] text-base text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="py-2">
+        <div class="w-full px-4">
+            <p class="text-gray-600 text-sm text-right pr-2">Versão 3.1.1</p>
+        </div>
+    </footer>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';
+        const auth = getAuth(app);
+        async function getOperadorName(email) {
+            try {
+                const response = await fetch('/js/operadores.json');
+                const data = await response.json();
+                return data.operadores[email] || email;
+            } catch (error) {
+                console.error("Erro ao buscar nome do operador:", error);
+                return email;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, async (user) => {
+                const userEmailSpan = document.getElementById("userEmail");
+                if (!user) {
+                    userEmailSpan.textContent = "Usuário não autenticado";
+                    window.location.href = "/login.html";
+                } else {
+                    const operadorName = await getOperadorName(user.email);
+                    userEmailSpan.textContent = `Olá, ${operadorName}!`;
+                }
+            });
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                signOut(auth).then(() => {
+                    window.location.href = "/login.html";
+                });
+            });
+        });
+    </script>
+    <script>
+        function compareTexts() {
+            const text1 = document.getElementById('text1').value.trim(); // Texto padrão
+            const text2 = document.getElementById('text2').value.trim(); // Texto do operador
+            const dmp = new diff_match_patch();
+            const NL = '⏎';
+            const SEP = '␣';
+            const t1 = text1.replace(/\n/g, NL).replace(/\s+/g, SEP);
+            const t2 = text2.replace(/\n/g, NL).replace(/\s+/g, SEP);
+            const diffs = dmp.diff_main(t1, t2);
+            dmp.diff_cleanupSemantic(diffs);
+            let result = '';
+            for (let i = 0; i < diffs.length; i++) {
+                const op = diffs[i][0];
+                const data = diffs[i][1];
+                let texto = data.replace(new RegExp(SEP, 'g'), ' ');
+                texto = texto.replace(new RegExp(NL, 'g'), '<br>');
+                if (op === 0) {
+                    result += texto;
+                } else if (op === 1) {
+                    result += `<span class=\"highlight\">${texto}</span>`;
+                } else if (op === -1) {
+                    result += `<span class=\"missing\">${texto}</span>`;
+                }
+            }
+            document.getElementById('result').innerHTML = result;
+        }
+    function limparCampos() {
+        if (confirm("Tem certeza que deseja limpar todos os campos?")) {
+            document.getElementById('text1').value = '';
+            document.getElementById('text2').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    }
+    </script>
+</body>
+</html>

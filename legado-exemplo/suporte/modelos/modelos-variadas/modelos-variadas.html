@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODELOS DE O.S VARIADAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #4CAF50;
+            border-radius: 20px;
+        }
+        .container-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .highlight {
+            position: relative;
+        }
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4CAF50;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col lg:flex-row min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar w-full lg:w-64 bg-white border-r border-gray-200 overflow-y-auto h-screen sticky top-0">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-xl font-bold text-gray-800">MODELOS DE O.S</h1>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="/suporte/modelos/index.html" class="block">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        VOLTAR
+                    </button>
+                </a>
+                
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">CATEGORIAS</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/suporte/modelos/modelos-manutenção/modelos-man.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">O.S DE MANUTENÇÃO</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/modelos/modelos-variadas/modelos-variadas.html" class="flex items-center px-3 py-2 text-green-600 font-medium bg-green-50 rounded-lg transition duration-300">
+                                <span class="ml-3">O.S VARIADAS</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">O.S VARIADAS</h1>
+                <div class="w-16 h-1 bg-green-500 mt-2 mb-4"></div>
+                <p class="text-gray-600">Modelos pré-definidos para ordens de serviço de manutenção</p>
+            </div>
+            <!-- PROBLEMAS EM SERVIÇO Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">PROBLEMAS EM SERVIÇO OU EQUIPAMENTO EM ESPECÍFICO</h2>
+                        <p class="text-sm text-gray-500">Problemas específicos com serviços de streaming</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, cliente relata problemas específicos com serviços de streaming em determinados dispositivos.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ESTEVE NA LOJA E RECLAMOU QUE ESTÁ COM PROBLEMAS PARA ASSISTIR OS CONTEÚDOS DA NETFLIX OU DO AMAZON EM SUA TV E NOTEBOOK. DISSE QUE "ESTÁ ASSISTINDO E DERREPENTE SAI DO PROGRAMA". QUESTIONADO SOBRE OUTROS SERVIÇOS DE INTERNET TAMBÉM PARAR DE FUNCIONAR, ELE DISSE QUE NÃO NOTOU, QUESTIONADO SE COMPAROU ESSES MESMOS SERVIÇOS NO CELULAR, DISSE QUE NÃO. XXXXXX FOI TAXATIVO EM SUA SOLICITAÇÃO, QUER UMA VISITA PRESENCIAL GRATUITA PARA TÉCNICO AJUDÁ-LO A DESCOBRIR O PROBLEMA, E QUE MESMO SENDO DEFEITO DO (S) DISPOSITIVO (S) OU MESMO FALTA DE CONHECIMENTO DE SUA PARTE ELE NÃO CONCORDA EM PAGAR A VISITA TÉCNICA, E PREFERE PEDIR O CANCELAMENTO DO CONTRATO SE EMPRESA INSISTIR NA COBRANÇA, MESMO ESTANDO EM PERÍODO DE FIDELIDADE. REMOTAMENTE VERIFIQUEI, CONEXÃO NORMAL, SINAL ONU (-19.20 DBM SEM OSCILAÇÃO), CONECTADO A MAIS DE 614 HORAS CONTÍNUAS, CONSUMO DE DADOS DE 30 DÍAS: 265GB DE DOWN/11GB UP, QUE EQUIVALE A 60 FILMES DE 1HORA E 40 MINUTOS. 04 DISPOSITIVOS CONECTADOS (3 VIA WIFI E 1 POR CABO). XXXXXX AUTORIZOU VISITA GRATUITA PARA EXPLICAÇÕES. AGENDADA PARA XX/XX/XXXX AS XX:XXHRS A PEDIDO DO CLIENTE.
+                        <br><br>
+                        TÉCNICO: PEDIR PARA QUE XXXXXX APRESENTE OS "PROBLEMAS DE INTERNET" QUE DIZ TER. VERIFICAR SE TV ESTÁ CONECTADA EM REDE OU WIFI, SE HÁ ATUALIZAÇÕES DISPONÍVEIS PARA ELA. CONFERIR SE É UM EQUIPAMENTO DE POUCO DESEMPENHO DE PROCESSAMENTO OU COM SOFTWARE DE SMART LIMITADO. SOBRE NOTEBOOK, TAL EQUIPAMENTO DEPENDE DE SISTEMA OPERACIONAL PARA BOM DESEMPENHO DOS PROGRAMAS. FAZER TESTES PADRÕES NOS DISPOSITIVOS DO CLIENTE E DO KIT TÉCNICO, COMPARAR, FOTOGRAFAR E EXPLICAR. EXPLICAR SOBRE COBERTURA E DESEMPENHO DA REDE WIFI E ATUALIZAR FIRMWARE DO ROUTER SE NECESSÁRIO. CONFERIR A INSTALAÇÃO E REDE ELÉTRICA ONDE EQUIPAMENTOS SÃO LIGADOS. TEMPO ESTIMADO: 60 MINUTOS.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ROMPIMENTO IDENTIFICADO Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">ROMPIMENTO IDENTIFICADO POR TÉCNICO DA EMPRESA</h2>
+                        <p class="text-sm text-gray-500">Danos na infraestrutura externa</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, técnico identificou rompimento na rede causado por alteração em poste pela concessionária de energia.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        AO PRESTAR SERVIÇO EXTERNO, XXXXXX (TÉCNICO DA EMPRESA) IDENTIFICOU UM ROMPIMENTO DE DROP DA NOSSA REDE NA RUA EDSON CASSIANO RIBEIRO, DANIFICADO APÓS ALTERAÇÃO DE UM POSTE FEITA PELA CEMIG. VERIFIQUEI ATRAVÉS DO ACESSO REMOTO QUE COM TAL ROMPIMENTO O ACESSO À INTERNET DE XXXXXXXXXX ESTÁ INDISPONÍVEL (ONU APAGADA). ENTREI EM CONTATO POR LIGAÇÃO E XXXXXX CONFIRMOU QUE ONU ESTÁ COM LUZ VERMELHA ACESA E ESTA SEM ACESSO À INTERNET DA MZNET. EXPLIQUEI O MOTIVO E IRÍAMOS FAZER O REPARO DOS CABOS DANIFICADOS E QUE SE FOSSE NECESSÁRIO A TROCA DO CABO DROP, IRÍAMOS TROCAR DO POSTE ATÉ OS EQUIPAMENTOS INTERNOS E POR SE TRATAR DE UM PROBLEMA NÃO OCASIONADO PELO CLIENTE A MANUTENÇÃO NÃO TEM CUSTO. VISITA AGENDADA PARA XX/XX/XXXX AS XX:XXHRS.
+                        <br><br>
+                        TÉCNICO: VERIFICAR DROP INTERNO E EXTERNO, SE SOBRA TÉCNICA FOR SUFICIENTE, USAR PARA REPARO E RESTABELECER CONEXÃO. CASO NÃO SEJA PASSAR OUTRO DROP. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZAÇÃO COM CLIENTE. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div>
+            </div>
+
+            <!-- TROCOU O POSTE Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">TROCOU O POSTE DE ENERGIA E PRECISA MUDAR O DROP</h2>
+                        <p class="text-sm text-gray-500">( R$50,00 OU R$100,00 )</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, cliente substituiu o padrão de energia e precisa realocar o cabo drop.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXX ENTROU EM CONTATO VIA XXXXXX (XXXXXXXXXXX) PARA SOLICITAR SUPORTE. XXXXXX DISSE "QUE SUBSTITUIU O PADRÃO DE ENERGIA DA CASA E PRECISA REALOCAR O CABO DROP. EXPLIQUEI QUE SE CONSEGUIR REAPROVEITAR CABO TANTO NO SEU TAMANHO QUANTO NA QUALIDADE DO SINAL DA LUZ (SE NÃO ATENUAR O SINAL DA LUZ) O SERVIÇO TERÁ VALOR DE R$50,00 QUE SE REFERE SÓ A MÃO DE OBRA DO TÉCNICO, MAS, CASO NÃO TENHA CONDIÇÕES DE APROVEITAR O CABO, ESTE DEVERÁ SER SUBSTITUÍDO INTEGRALMENTE. SENDO ASSIM, O VALOR DO REPARO É DE R$100,00 (SOMA DE PEÇAS E SERVIÇO). OBS: ONU CONECTADA COM SINAL -17.69, 03 DISPOSITIVOS EM USO. XXXXXX CONCORDOU E SOLICITOU PAGAR QUALQUER UM DOS VALORES, EM XXXXXX NO ATO DA VISITA. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XX HORAS.
+                        <br><br>
+                        TÉCNICO: RE-FIXAR DROP NO PADRÃO, CASO TAMANHO NÃO SEJA SUFICIENTE FAZER A TROCA DESDE A CTO ATÉ A ONU. EM AMBOS CASOS CLIENTE DEIXOU AUTORIZADO E PAGARÁ EM CARTÃO. APÓS TÉRMINO DO SERVIÇO, PERGUNTA A XXXXXX (OU QUEM ESTIVER ACOMPANHADO SERVIÇO) HÁ NECESSIDADE DE QUALQUER OUTRA ORIENTAÇÃO SOBRE A INTERNET.
+                    </p>
+                </div>
+            </div>
+
+            <!-- AFERIÇÃO DA BANDA Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">CLIENTE NÃO CONSEGUE FAZER AFERIÇÃO DA BANDA</h2>
+                        <p class="text-sm text-gray-500">APENAS COMPUTADOR</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, cliente relata problemas específicos com teste de velocidade apenas no computador.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXX ENTROU EM CONTATO POR XXXXXX (XXXXXX) E DISSE QUE NÃO CONSEGUE AFERIR VELOCIDADE DO PLANO CONTRATADO EM SEU COMPUTADOR DE MESA. QUESTIONADO, DISSE QUE COMPUTADOR ESTÁ LIGADO AO ROTEADOR POR CABO DE REDE. REMOTAMENTE VERIFIQUEI: ONU ACESA (SINAL -15.59 DBM SEM OSCILAÇÃO) NÃO CONSTA DESCONEXÕES, NO MOMENTO HÁ 04 APARELHOS CONECTADOS AO ROTEADOR (03 VIA WIFI E 01 POR CABO). XXXXXX SOLICITOU VISITA TÉCNICA, SEGUNDO ELE, ATÉ ONTEM (DIA XX/XX) CONSEGUIA AFERIR O PLANO NO REFERIDO COMPUTADOR. QUESTIONADO SOBRE DÚVIDA DO PLANO DISSE QUE NÃO, QUE A QUESTÃO É O TESTE NO COMPUTADOR. ENTÃO REFORCEI QUE ELE MESMO CONFERE QUE A PARTICULARIDADE É COM O COMPUTADOR E NÃO INTERNET, MESMO ASSIM FAZ QUESTÃO DA VISITA. EXPLIQUEI QUE HAVENDO PROBLEMAS NA CONEXÃO QUE SEJA DA RESPONSABILIDADE DO PROVEDOR RESTAURAR E VISITA NÃO TERÁ CUSTO, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) OU MESMO SOMENTE PARA INSTRUÇÃO DE USO, VISITA TEM CUSTO DE R$50,00 OU ATÉ   MESMO COBRANÇA DE EQUIPAMENTOS DANIFICADOS SE HOUVER. CIENTE, XXXXXX CONCORDA E HAVENDO A COBRANÇA DISSE QUE PAGARÁ NO ATO, EM XXXXXX. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XXHR.
+                        <br><br><br>
+                        <b>COMPUTADOR E CELULARES:</b> <i>(modelo alternativo)</i>
+                        <br><br>
+                        XXXXXX ENTROU EM CONTATO POR XXXXXX (XXXXXX) E DISSE QUE NÃO CONSEGUE AFERIR VELOCIDADE DO PLANO CONTRATADO EM SEU COMPUTADOR DE MESA. QUESTIONADO, DISSE QUE COMPUTADOR ESTÁ LIGADO AO ROTEADOR POR CABO DE REDE. REMOTAMENTE VERIFIQUEI: ONU ACESSA (SINAL -15.59 DBM SEM OSCILAÇÃO) NÃO CONSTA DESCONEXÕES, NO MOMENTO HÁ 04 APARELHOS CONECTADOS AO ROTEADOR (03 VIA WIFI E 01 POR CABO). XXXXXX SOLICITOU VISITA TÉCNICA, SEGUNDO ELE, ATÉ ONTEM (DIA XX/XX) CONSEGUIA AFERIR O PLANO NO REFERIDO COMPUTADOR. QUESTIONADO SOBRE DÚVIDA DO PLANO DISSE QUE NÃO, QUE EM CELULARES ESTÁ TESTANDO ATÉ 250 MEGA, ENTÃO REFORCEI QUE ELE MESMO CONFERE QUE A PARTICULARIDADE É COM O COMPUTADOR E NÃO INTERNET, MESMO ASSIM FAZ QUESTÃO DA VISITA. EXPLIQUEI QUE HAVENDO PROBLEMAS NA CONEXÃO QUE SEJA DA RESPONSABILIDADE DO PROVEDOR RESTAURAR E VISTA NÃO TERÁ CUSTO, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) OU MESMO SOMENTE PARA INSTRUÇÃO DE USO, VISITA TEM CUSTO DE R$50,00 OU ATÉ   MESMO COBRANÇA DE EQUIPAMENTOS DANIFICADOS SE HOUVER. CIENTE, XXXXXX CONCORDA E HAVENDO A COBRANÇA DISSE QUE PAGARÁ NO ATO, EM XXXXXX. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XXHR.
+                        <br><br>
+                        TÉCNICO: PEDIR PARA XXXXXX APRESENTAR PROBLEMA DE TESTE DE INTERNET COM O COMPUTADOR QUE ELE DIZ TER. COMPARAR MESMO TESTE COM NOTEBOOK DA EMPRESA A FIM DE DESCOBRIR: SE É O CABO DE REDE ENTRE ROTEADOR E PC, SE É A PORTA DO ROTEADOR QUE ESTÁ EM FAST OU SE É NO PRÓPRIO PC DO SR. XXXXXX, RELACIONADO A PLACA DE REDE OU SISTEMA OPERACIONAL. FOTOGRAFAR OU GRAVAR TESTES. SENDO PROBLEMA DE CONFIGURAÇÃO OU DEFEITO DE FÁBRICA NOS EQUIPAMENTOS DE INTERNET, VISITA NÃO TEM CUSTO. SENDO PROBLEMA NO EQUIPAMENTO DO CLIENTE OU ATÉ MESMO SOMENTE VISITA PARA EXPLICAR E TIRAR DÚVIDAS, VISITA TEM CUSTO DE R$50,00. APÓS SOLUCIONADO O PROBLEMA EM QUESTÃO, VERIFICAR SE SR. XXXXXX TEM ALGUMA OUTRA SOLICITAÇÃO A FAZER EM RELAÇÃO AO SERVIÇO DE INTERNET. TEMPO ESTIMADO: 40 MINUTOS.
+                    </p>
+                </div>
+            </div>
+
+            <!-- EQUIPAMENTOS ROUBADOS Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">EQUIPAMENTOS ROUBADOS</h2>
+                        <p class="text-sm text-gray-500">Reposição de equipamentos após furto</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, cliente teve equipamentos roubados e precisa repor os itens.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO POR XXXXXXX (XXXXXXX) E DISSE QUE "ROUBARAM SUA RESIDÊNCIA, BEM COMO OS EQUIPAMENTOS DE INTERNET QUE LHE FORAM EMPRESTADOS" QUESTIONADA QUAIS, DISSE QUE OS 02 (01 ROTEADOR E 01 ONU). EXPLIQUEI QUE EM CASOS COMO ESTE O CLIENTE DEVE REPOR À EMPRESA OS EQUIPAMENTOS, NEGOCIAMOS OS EQUIPAMENTOS ROUBADOS: 01 ONU C-DATA R$200,00 E 01 ROTEADOR C20 R$150,00 + R$50,00 DO SERVIÇO DE REINSTALAÇÃO DE NOVOS EQUIPAMENTOS DE COMODATO EMPRESTADOS ANTERIORMENTE (O QUE FORAM ROUBADOS), TOTALIZANDO R$400,00. XXXXXXX CONCORDOU COM OS TERMOS E SOLICITOU PAGAR NO ATO DA VISITA EM CARTÃO DE CRÉDITO EM 4X DE R$102,50. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XX HRS.
+                        <br><br>
+                        TÉCNICO: INSTALAR NOVO ROTEADOR E ONU, CONFIGURAR REDE WIFI COM NOME PADRÃO. APÓS RESTITUIR INTERNET DAR EXPLICAÇÕES SOBRE PLANO, WI-FI E DISPOSITIVOS. CONECTAR TODOS OS DISPOSITIVOS PRESENTES WI-FI E CABEADO SE HOUVER EQUIPAMENTO JUNTO DO ROTEADOR QUE NECESSITE SER CABEADO. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO ESTIVER NO PADRÃO. RECEBER O VALOR DOS EQUIPAMENTOS E SERVIÇOS NA FORMA COMBINADA. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CASA ROUBADA Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">CASA ROUBADA E DANOS AOS EQUIPAMENTOS OU DROP</h2>
+                        <p class="text-sm text-gray-500">Reparos após invasão residencial</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, cliente teve a residência invadida e equipamentos danificados.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO VIA XXXXXXX (XXXXXXX) E SOLICITOU VISITA TÉCNICA PARA RESTITUIR INTERNET, DISSE QUE "LADRÕES INVADIRAM SUA CASA, CORTARAM OS CABOS DAS FONTES DA ONU E ROTEADOR". REMOTAMENTE VERIFIQUEI QUE ESTÁ REALMENTE DESCONECTADO/ONU APAGADA. EXPLIQUEI QUE TEREMOS QUE TROCAR AS FONTES E O CUSTO É R$130,00 (02 FONTES + VISITA). CIENTE DE QUE CASO HAJA DANO NOS EQUIPAMENTOS (ONU E ROTEADOR) TAMBÉM SERÃO COBRADOS. XXXXXXX AUTORIZOU VISITA DISSE QUE PAGARÁ NO ATO EM XXXXXXX. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XX HRS.
+                        <br><br>
+                        TÉCNICO: ANALISAR ESTRUTURA INTERNA E COLOCAR NOVAS FONTES NOS EQUIPAMENTOS ONU E ROTEADOR, SE COM ISSO RESTABELECER A CONEXÃO SERVIÇO TERÁ O CUSTO DE R$130,00. CASO NÃO RESTABELECER VERIFICAR EQUIPAMENTOS E ANALISAR SE HÁ ALGUM DANO OU NÃO E NOTIFICAR O SUPORTE (CLIENTE CIENTE QUE EQUIPAMENTOS DANIFICADOS SERÃO COBRADOS). CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZAÇÃO COM CLIENTE. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div>
+            </div>
+
+            <!-- MUDANÇA DE PONTO INTERNO ISENTA Section -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">MUDANÇA DE PONTO INTERNO ISENTA MEDIANTE RENOVAÇÃO DO PLANO</h2>
+                        <p class="text-sm text-gray-500">Serviço isento por renovação contratual</p>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, a mudança de ponto interno é executada sem custo em razão da renovação do plano contratado pelo cliente. Conexão de referência, código: 5772.<br><b>(Pesquisar codigo na aba "Técnico")</b></p>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX COMPARECEU A LOJA E SOLICITOU MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DA: SALA, E REINSTALAR NA: SALA PORÉM EM PAREDE DIFERENTE. MOTIVO: PRECISA MUDAR O ROTEADOR DE LOCAL PARA EVITAR DANOS AO EQUIPAMENTO. EXPLIQUEI QUE DEVIDO À RENOVAÇÃO CONTRATUAL REALIZADA PELO CLIENTE EM XX/XX/XXXX VIDE PROTOCOLO XXXX.XXXX, O SERVIÇO DE MUDANÇA DE PONTO SERÁ EXECUTADO ISENTO DE CUSTOS, INDEPENDENTEMENTE DA NECESSIDADE DE APROVEITAMENTO OU SUBSTITUIÇÃO DO DROP (CABO/FIBRA). VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA XX/XX/XXXX ÀS XX:XX HRS.
+                        <br><br>
+                        TÉCNICO: EFETUAR A MUDANÇA DE PONTO DOS EQUIPAMENTOS PARA O LOCAL ESPECIFICADO PELO CLIENTE, CASO SEJA POSSÍVEL REAPROVEITAR CABO DROP USANDO A SOBRA E RECONECTORIZAR. SE NÃO DER TAMANHO, SERÁ NECESSÁRIA A PASSAGEM DE UM NOVO CABEAMENTO PARA CONCLUIR O SERVIÇO. REALIZAR TESTES E AFERIR VELOCIDADE DO PLANO, TESTAR E APRESENTAR ABRANGÊNCIA DO WI-FI COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT DE TESTES DA EMPRESA E COM OS DISPOSITIVOS DO CLIENTE E APRESENTAR VARIAÇÕES SE HOUVER. ATUALIZAR FIRMWARE DO ROTEADOR SE NECESSÁRIO. TEMPO ESTIMADO: 60 MIN.
+                    </p>
+                </div>
+            </div>
+
+            <!-- EQUIPAMENTO QUEIMADO Section -->
+            <div class="bg-white rounded-xl container-shadow p-6">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800">EQUIPAMENTO QUEIMADO POR DESCARGA ELÉTRICA</h2>
+                        <p class="text-sm text-gray-500">(QUEDA DE RAIO)</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-green-800 font-medium">Neste caso, equipamentos danificados por descarga elétrica após queda de raio.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        XXXXXXX ENTROU EM CONTATO POR XXXXXXX (XXXXXXX) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET, QUESTIONADO DISSE QUE "APÓS A QUEDA DE UM RAIO PRÓXIMO A SUA RESIDÊNCIA ONU ESTÁ COM 2 LUZES ACESAS (POWER E PON) E ROTEADOR ESTÁ LIGADO NORMALMENTE". REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU ESTÁ APAGADA. ORIENTEI XXXXXXX A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, PORÉM, CONEXÃO NÃO RESTABELECEU. INFORMEI XXXXXXX QUE É NECESSÁRIO VISITA TÉCNICA, E QUE HAVENDO PROBLEMAS DE QUEIMA NA FONTE DE ENERGIA OU EQUIPAMENTO NÃO OCASIONADO, SUBSTITUIÇÃO DO COMODATO NÃO HAVERÁ CUSTOS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) COBRA-SE VISITA TÉCNICA DE R$50,00 MAIS O CUSTO DA PEÇA OU EQUIPAMENTO A SER SUBSTITUÍDO (FONTE R$40,00) OU (ONU R$200,00), XXXXXXX DISSE ESTAR CIENTE, AUTORIZOU A VISITA E SOLICITOU QUE CASO HAJA CUSTOS INCLUIR NA MENSALIDADE VINCENDA DE XX/XX/XXXX. VISITA AGENDADA PARA XX/XX/XXXX ÀS XX:XX HRS.
+                        <br><br>
+                        TECNICO: CONFERIR ENERGIA DAS TOMADAS, ANALISAR FONTE E ONU, CASO ENERGIA E FONTE ESTIVER NORMAL, E EQUIPAMENTO NÃO APRESENTAR SINAL DE MAL USO OU QUEDA, SUBSTITUIR FONTE E/OU ONU QUEIMADO, RESTABELECER CONEXÃO E REALIZAR OS DEVIDOS TESTES. CASO ENERGIA NÃO ESTIVER NORMAL INSTRUIR CLIENTE A VERIFICA-LA E COBRAR VISITA DE R$50,00 + EQUIPAMENTO DANIFICADO A SEREM INCLUSO NA MENSALIDADE VINCENDA DE XX/XX/XXXX. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WIFI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 60 MIN.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Endereço</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        linear-gradient(90deg, #f8f9fa 2px, transparent 2px) 0 0,
+        linear-gradient(0deg, #f8f9fa 2px, transparent 2px) 0 0,
+        linear-gradient(90deg, #f1f3f5 1px, transparent 1px) 0 0,
+        linear-gradient(0deg, #f1f3f5 1px, transparent 1px) 0 0;
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-attachment: fixed;
+    opacity: 0.7;
+    z-index: -2;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 100% 0%, rgba(248, 249, 250, 0.9) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(241, 243, 245, 0.9) 0%, transparent 50%);
+    background-attachment: fixed;
+    z-index: -1;
+}
+
+.main-content {
+    position: relative;
+    z-index: 1;
+    background: none;
+    flex: 1;
+    margin-top: 5rem;
+    padding-top: 2rem;
+    min-height: calc(100vh - 4rem - 3rem);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.title-underline::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #38af47;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+.loading-spinner {
+    display: none;
+}
+
+nav {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 50;
+}
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 shadow-lg bg-gradient-to-r from-black to-green-600">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo e Links -->
+                <div class="flex items-center space-x-10">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+                        <span class="text-white font-bold text-lg">Gerador de O.S</span>
+                    </div>
+
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="/index.html" class="text-white text-sm font-medium">Home</a>
+                        <a href="/suporte/modelos.html" class="text-white text-sm font-medium">Modelos de O.S</a>
+                        
+                        <div class="relative group">
+                            <button class="text-white text-sm font-medium flex items-center">
+                                Tutoriais
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+                                <a href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Roteador resetado</a>
+                                <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">RokuTV</a>
+                                <div class="border-t border-gray-200 my-1"></div>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Outros</a>
+                            </div>
+                        </div>
+
+                        <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white text-sm font-medium">Encerramentos de O.S</a>
+                    </div>
+                </div>
+
+                <!-- Usuário e Logout -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <span id="userEmail" class="text-white text-sm">Usuário não autenticado</span>
+                    <button id="logoutButton" class="px-4 py-1.5 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sair
+                    </button>
+                </div>
+
+                <!-- Menu Mobile -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Abrir menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile -->
+    <div class="md:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 bg-gray-900 bg-opacity-90">
+            <a href="/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+            <a href="/suporte/modelos.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Modelos de O.S</a>
+            <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Encerramentos de O.S</a>
+            <div class="pt-4 pb-3 border-t border-gray-700">
+                <div class="flex items-center px-5">
+                    <div class="text-sm">
+                        <span id="mobileUserEmail" class="text-white">Usuário não autenticado</span>
+                    </div>
+                </div>
+                <div class="mt-3 px-2">
+                    <button id="mobileLogoutButton" class="block w-full px-3 py-2 rounded-md text-base font-medium text-white hover:bg-green-700">Sair</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="px-4 mt-20">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li>
+                <a href="/suporte/dashboard.html" class="text-green-600 hover:text-green-800">Suporte</a>
+            </li>
+            <li class="text-gray-500">/</li>
+            <li class="text-gray-700">Pesquisa de Endereço</li>
+        </ol>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content w-full">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <!-- Título e Alerta -->
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">Pesquisa de Endereço</h1>
+                <div class="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-green-700">
+                                Esta pesquisa está vinculada ao site dos 
+                                <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" class="font-medium underline hover:text-green-600" target="_blank">
+                                    Correios
+                                </a>, 
+                                porém, com filtro apenas em Uberlândia-MG.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Pesquisa -->
+            <div class="glass-card rounded-xl p-6 max-w-2xl mx-auto">
+                <div class="space-y-6">
+                    <!-- Pesquisa por Logradouro -->
+                    <div class="mb-4">
+                        <label for="logradouro" class="block text-sm font-medium text-gray-700">Digite o nome do logradouro:</label>
+                        <div class="mt-1">
+                            <div class="flex">
+                                <input type="text" id="logradouro" 
+                                       class="flex-1 rounded-l-lg border-gray-300 focus:ring-green-500 focus:border-green-500" 
+                                        placeholder="Ex: 'eucaliptos'"
+                                        onkeypress="if(event.key === 'Enter') buscarEndereco()">
+                                <button type="button" onclick="buscarEndereco()" class="px-3 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pesquisa por CEP -->
+                    <div class="mb-4">
+                        <label for="cepBusca" class="block text-sm font-medium text-gray-700">Digite o CEP:</label>
+                        <div class="mt-1">
+                            <div class="flex">
+                                <input type="text" id="cepBusca" 
+                                       class="flex-1 rounded-l-lg border-gray-300 focus:ring-green-500 focus:border-green-500" 
+                                        placeholder="Ex: 38400-000"
+                                        maxlength="9"
+                                        onkeypress="if(event.key === 'Enter') buscarPorCEP()">
+                                <button type="button" onclick="buscarPorCEP()" class="px-3 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <button onclick="limparCampos()" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Limpar
+                        </button>
+                        <div class="loading-spinner">
+                            <svg class="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Resultado da Pesquisa -->
+                    <div id="resultado" class="mt-6">
+                        <!-- Os resultados serão inseridos aqui -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-2">
+        <div class="w-full px-4">
+            <p class="text-gray-600 text-sm text-right pr-2">Versão 3.1.1</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        async function buscarEndereco() {
+            var logradouro = document.getElementById("logradouro").value;
+            var url = `https://viacep.com.br/ws/MG/Uberlandia/${logradouro}/json/`;
+            var spinner = document.querySelector('.loading-spinner');
+            spinner.style.display = 'inline-block';
+            
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                mostrarResultado(data);
+            } catch (error) {
+                console.error('Erro ao buscar endereço:', error);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        function mostrarResultado(enderecos) {
+            var resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.innerHTML = "";
+            
+            if (enderecos.length === 0) {
+                resultadoDiv.innerHTML = `
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    Nenhum endereço encontrado para o logradouro informado.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            var tableHtml = `
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CEP</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bairro</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Logradouro</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+            `;
+
+            enderecos.forEach(function(endereco) {
+                tableHtml += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${endereco.cep}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${endereco.bairro}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${endereco.logradouro}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    resultadoDiv.innerHTML = tableHtml;
+}
+
+function limparCampos() {
+    document.getElementById("logradouro").value = "";
+    document.getElementById("cepBusca").value = "";
+    document.getElementById("resultado").innerHTML = "";
+}
+
+        // Função para formatar o CEP
+        function formatarCEP(cep) {
+            cep = cep.replace(/\D/g, '');
+            if (cep.length > 5) {
+                cep = cep.substring(0, 5) + '-' + cep.substring(5);
+            }
+            return cep;
+        }
+
+        // Adiciona o evento de formatação ao campo de CEP
+        document.getElementById('cepBusca').addEventListener('input', function(e) {
+            this.value = formatarCEP(this.value);
+        });
+
+        // Função para buscar endereço por CEP
+        async function buscarPorCEP() {
+            const cepInput = document.getElementById('cepBusca');
+            const cep = cepInput.value.replace(/\D/g, '');
+            const spinner = document.querySelector('.loading-spinner');
+            
+            if (cep.length !== 8) {
+                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                return;
+            }
+
+            spinner.style.display = 'inline-block';
+            
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    throw new Error('CEP não encontrado');
+                }
+
+                // Formata os resultados em um array para usar a função existente
+                const resultados = [{
+                    cep: data.cep,
+                    logradouro: data.logradouro,
+                    bairro: data.bairro,
+                    localidade: data.localidade,
+                    uf: data.uf
+                }];
+
+                // Verifica se o endereço é de Uberlândia
+                if (data.localidade.toUpperCase() !== 'UBERLÂNDIA' || data.uf !== 'MG') {
+                    throw new Error('CEP não pertence a Uberlândia-MG');
+                }
+
+                mostrarResultado(resultados);
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = `
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    ${error.message === 'CEP não pertence a Uberlândia-MG' ? 
+                                      'Este CEP não pertence a Uberlândia-MG' : 
+                                      'CEP não encontrado. Verifique se o CEP está correto.'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
+
+    <!-- Firebase Auth -->
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';
+        
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                console.log("Usuário não autenticado, redirecionando...");
+                window.location.href = "/login.html";
+            } else {
+                console.log("Usuário autenticado!", user);
+                document.getElementById("userEmail").textContent = `Logado como: ${user.email}`;
+                document.getElementById("mobileUserEmail").textContent = `Logado como: ${user.email}`;
+            }
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Usuário deslogado com sucesso!");
+                window.location.href = "/login.html";
+            }).catch((error) => {
+                console.error("Erro ao deslogar: ", error);
+            });
+        });
+
+        document.getElementById('mobileLogoutButton')?.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Usuário deslogado com sucesso!");
+                window.location.href = "/login.html";
+            }).catch((error) => {
+                console.error("Erro ao deslogar: ", error);
+            });
+        });
+    </script>
+    <script type="module" src="../js/firebase-init.js"></script>
+</body>
+
+</html>

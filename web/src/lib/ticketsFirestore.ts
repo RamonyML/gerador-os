@@ -142,6 +142,15 @@ function parseTicket(id: string, data: Record<string, unknown>): Ticket | null {
     commentsCount:
       typeof data.commentsCount === 'number' ? data.commentsCount : 0,
     attachments: parseAttachments(data.attachments),
+    lastReplyAt: parseDateOrNull(data.lastReplyAt),
+    lastReplyRole:
+      data.lastReplyRole === 'ti'
+        ? 'ti'
+        : data.lastReplyRole === 'solicitante'
+          ? 'solicitante'
+          : null,
+    lastReplyByUid:
+      typeof data.lastReplyByUid === 'string' ? data.lastReplyByUid : null,
   }
 }
 
@@ -319,6 +328,9 @@ export async function resolveTicket(
     },
     resolvedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
+    lastReplyAt: serverTimestamp(),
+    lastReplyRole: 'ti',
+    lastReplyByUid: agent.uid,
   })
 }
 
@@ -416,6 +428,9 @@ export async function addComment(
     await updateDoc(doc(db, TICKETS_COLLECTION, ticketId), {
       commentsCount: increment(1),
       updatedAt: serverTimestamp(),
+      lastReplyAt: serverTimestamp(),
+      lastReplyRole: actor.isAgent ? 'ti' : 'solicitante',
+      lastReplyByUid: actor.uid,
     })
   } catch {
     // contador é best-effort; ignora falha (ex.: solicitante sem update no doc)

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Gerador de O.S</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-50: #f0fdf4;
+      --primary-100: #dcfce7;
+      --primary-200: #bbf7d0;
+      --primary-300: #86efac;
+      --primary-400: #4ade80;
+      --primary-500: #22c55e;
+      --primary-600: #138a3f;
+      --primary-700: #10662f;
+      --primary-800: #0f4222;
+      --primary-900: #0c3a1e;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-image: url('/fundo3.png');
+      background-color: #ffffff;
+    }
+
+    .login-container {
+      background: linear-gradient(135deg, var(--primary-50) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .input-field {
+      transition: all 0.3s ease;
+      border-left: 3px solid var(--primary-200);
+    }
+
+    .input-field:focus {
+      border-left-color: var(--primary-500);
+      box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1), 0 2px 4px -1px rgba(34, 197, 94, 0.06);
+    }
+
+    .btn-login {
+      background: linear-gradient(to right, var(--primary-500), var(--primary-600));
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3), 0 2px 4px -1px rgba(34, 197, 94, 0.1);
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(to right, var(--primary-600), var(--primary-700));
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3), 0 4px 6px -2px rgba(34, 197, 94, 0.1);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .forgot-password {
+      transition: all 0.3s ease;
+    }
+
+    .forgot-password:hover {
+      color: var(--primary-600);
+    }
+
+    .illustration {
+      background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+    }
+
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      animation: float 15s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(10px, 10px); }
+      50% { transform: translate(5px, -5px); }
+      75% { transform: translate(-5px, 5px); }
+    }
+
+    .floating-circle:nth-child(1) {
+  width: 120px;
+  height: 120px;
+  top: 5%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-circle:nth-child(2) {
+  width: 80px;
+  height: 80px;
+  top: 15%;
+  right: 15%;
+  animation-delay: 1s;
+}
+
+.floating-circle:nth-child(3) {
+  width: 60px;
+  height: 60px;
+  top: 45%;
+  left: 20%;
+  animation-delay: 2s;
+}
+
+.floating-circle:nth-child(4) {
+  width: 100px;
+  height: 100px;
+  bottom: 15%;
+  right: 5%;
+  animation-delay: 3s;
+}
+
+.floating-circle:nth-child(5) {
+  width: 90px;
+  height: 90px;
+  top: 60%;
+  right: 30%;
+  animation-delay: 4s;
+}
+
+.floating-circle:nth-child(6) {
+  width: 70px;
+  height: 70px;
+  bottom: 25%;
+  left: 15%;
+  animation-delay: 5s;
+}
+
+.floating-circle:nth-child(7) {
+  width: 110px;
+  height: 110px;
+  bottom: 5%;
+  left: 50%;
+  animation-delay: 6s;
+}
+
+
+    .card {
+      backdrop-filter: blur(8px);
+      background-image: url('/001.jpg');
+      background: rgba(255, 255, 255, 0.89);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .split-layout {
+        flex-direction: column;
+      }
+      .illustration {
+        display: none;
+      }
+    }
+    ::selection {
+    background-color: #ffffff00;
+    color: #28a746; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+  </style>
+</head>
+<body class="min-h-screen login-container">
+  <div class="split-layout flex h-screen">
+    <!-- Seção de ilustração -->
+    <div class="illustration hidden md:flex flex-col items-center justify-center w-1/2 relative overflow-hidden">
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      <div class="floating-circle"></div>
+      
+      <div class="relative z-10 text-center px-12">
+        <h1 class="text-4xl font-bold text-white mb-6">Bem-vindo de volta!</h1>
+        <p class="text-white text-opacity-90 mb-8">Acesse o Gerador de O.S com seu e-mail e senha.</p>
+        <img src="/logo/mzlogo-mbranco.png" alt="Ilustração de login" class="w-64 h-auto mx-auto">
+      </div>
+    </div>
+
+    <!-- Seção de login -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-8">
+      <div class="card rounded-2xl p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+          <div class="inline-block mb-6">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8V12L15 15" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h1 class="text-3xl font-semibold text-gray-800">Gerador de O.S</h1>
+          <p class="text-gray-500 mt-2">Use suas credenciais para entrar</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-envelope text-gray-400"></i>
+              </div>
+              <input 
+                type="email" 
+                id="email" 
+                class="input-field w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-100" 
+                placeholder="seu@email.com"
+                required
+              >
+            </div>
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-gray-400"></i>
+              </div>
+              <input 
+                type="password" 
+                id="password" 
+                class="input-field w-full pl-10 pr-12 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-100" 
+                placeholder="••••••••"
+                required
+              >
+              <button 
+                type="button" 
+                id="togglePassword" 
+                class="absolute inset-y-0 right-0 pr-3 flex items-center"
+              >
+                <i class="fas fa-eye text-gray-400 hover:text-green-500 cursor-pointer"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-green-500 focus:ring-green-400 border-gray-300 rounded">
+              <label for="remember-me" class="ml-2 block text-sm text-gray-700">Lembrar-me</label>
+            </div>
+            <a href="/forgot-password.html" class="text-sm forgot-password text-green-600 hover:text-green-700">Esqueceu a senha?</a>
+          </div>
+
+          <button type="submit" class="btn-login w-full py-3 px-4 rounded-lg text-white font-medium text-sm uppercase tracking-wider">
+            Entrar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Função para mostrar/ocultar a senha
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const eyeIcon = togglePassword.querySelector('i');
+
+    togglePassword.addEventListener('click', function () {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      
+      if (type === 'password') {
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      } else {
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      }
+    });
+
+    // Efeito hover suave nos inputs
+    const inputs = document.querySelectorAll('.input-field');
+    inputs.forEach(input => {
+      input.addEventListener('mouseenter', () => {
+        input.classList.add('bg-green-50');
+      });
+      input.addEventListener('mouseleave', () => {
+        input.classList.remove('bg-green-50');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Mudança de Ponto Interno</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #087539); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #abd6a5; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+            <li class="breadcrumb-item"><a href="/suporte/dash-feedback.html" class="text-success">Feedback</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Mudança de Ponto Interno</li>
+        </ol>
+    </nav>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap');
+        *{ font-family: 'Poppins', sans-serif; font-size: small; }
+        body { background-color: #f5f5f5; background-image: url('/fundos/fundo003.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center; }
+        .container { width: 950px; margin: 0 auto; padding: 20px; border-radius: 1%; background-color: #ffffff8e; border: 0.8px solid rgba(0, 0, 0, 0); }
+        h1 { text-align: left; color: #111111; font-size: 26px; }
+        h2 { text-align: left; color: #1a9238; font-size: 18px; }
+        .form-header { position:relative; }
+        .logo { position: absolute; top: 10px; right: 10px; }
+        label { display: block; margin-bottom: 5px; margin-top: 10px; font-size: 14px; }
+        .danger { border: 1px solid rgb(224, 224, 224); }
+        .primary { border: 1px solid rgb(199, 199, 199); }
+        .success { border: 1px solid rgb(10, 141, 10); }
+        textarea { resize: none; width: 60%; height: 250px !important; border: 1px solid #1a9238; border-radius: 18px; padding: 10px; }
+        .buttons { text-align: center; }
+        button { padding: 10px 20px; background-color: #1a9238; color: #fff; border: none; border-radius: 1px; cursor: pointer; }
+        .buttons button:hover { background-color: #116b28; }
+        ::selection { background-color: #1fa064; color: white; }
+    </style>
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">Feedback</h1>
+                <h2 class="mb-4">Mudança de Ponto Interno</h2>
+            </div>
+        </div><hr>
+        <form class="needs-validation" id="feedbackForm" novalidate>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Nome do Cliente</label>
+                    <input type="text" id="cliente" class="form-control" placeholder="Primeiro nome" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Canal</label>
+                    <select id="canal" class="form-select" required>
+                        <option value="">Selecione</option>
+                        <option value="LIGAÇÃO">Ligação</option>
+                        <option value="WHATSAPP">WhatsApp</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Contato (Telefone)</label>
+                    <input type="text" id="contato" class="form-control" placeholder="34 99999-9999" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data e Hora</label>
+                    <input type="text" id="dataHora" class="form-control" placeholder="01/01/2025 - 12:00" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cômodo Anterior</label>
+                    <input type="text" id="comodoAnterior" class="form-control" placeholder="Ex: Sala" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cômodo Atual</label>
+                    <input type="text" id="comodoAtual" class="form-control" placeholder="Ex: Quarto" required>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <input type="checkbox" id="dispensouTestes" class="form-check-input me-2">
+                    <label class="form-check-label" for="dispensouTestes">Cliente dispensou testes</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Equipamento testado</label>
+                    <select id="aparelho" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="CELULAR">Celular</option>
+                        <option value="DESKTOP">Desktop</option>
+                        <option value="NOTEBOOK">Notebook</option>
+                        <option value="TABLET">Tablet</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Marca/Modelo</label>
+                    <input type="text" id="marcaModelo" class="form-control" placeholder="Ex: Lenovo, Xiaomi...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vel. equip. cliente</label>
+                    <input type="text" id="velocidadeCliente" class="form-control" placeholder="Ex: 350" title="Apenas valor numérico em Mbps">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vel. notebook técnico (cabo)</label>
+                    <input type="text" id="velocidadeCabo" class="form-control" placeholder="Ex: 500" title="Apenas valor numérico em Mbps">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vel. notebook técnico (Wi-Fi)</label>
+                    <input type="text" id="velocidadeWifi" class="form-control" placeholder="Ex: 400" title="Apenas valor numérico em Mbps">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Forma de Pagamento</label>
+                    <select id="formaPagamento" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="CARTÃO DE DÉBITO">Cartão de Débito</option>
+                        <option value="CARTÃO DE CRÉDITO">Cartão de Crédito</option>
+                        <option value="DINHEIRO">Dinheiro</option>
+                        <option value="PIX">Pix</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Valor da O.S.</label>
+                    <input type="text" id="valorOS" class="form-control" placeholder="Ex: 50,00">
+                </div>
+            </div>
+        </form>
+        <hr>
+        <button onclick="gerarTexto()" class="btn btn-success w-100">Gerar Texto</button>
+        <textarea id="resultado" class="form-control" readonly></textarea>
+        <button class="btn btn-success btn-block w-100" onclick="copiarTexto()">Copiar Texto</button><br>
+        <button class="btn btn-secondary btn-block w-100" onclick="limparCampos()">Limpar Tudo</button>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Flatpickr
+    flatpickr("#dataHora", {
+        enableTime: true,
+        time_24hr: true,
+        locale: 'pt',
+        dateFormat: "d/m/Y \\À\\S H:i",
+    });
+    // Máscara telefone
+    IMask(document.getElementById("contato"), {
+        mask: "00 00000-0000"
+    });
+
+    // Desabilita campos de teste do cliente se dispensou testes
+    document.getElementById("dispensouTestes").addEventListener("change", function () {
+        const disabled = this.checked;
+        document.getElementById("aparelho").disabled = disabled;
+        document.getElementById("marcaModelo").disabled = disabled;
+        document.getElementById("velocidadeCliente").disabled = disabled;
+        if (disabled) {
+            document.getElementById("aparelho").value = "";
+            document.getElementById("marcaModelo").value = "";
+            document.getElementById("velocidadeCliente").value = "";
+        }
+    });
+
+    // Função de limpar campos
+    function limparCampos() {
+        const form = document.querySelector("form");
+        const inputs = form.querySelectorAll("input, select, textarea");
+        inputs.forEach(function (input) {
+            if (input.type !== "checkbox" && input.type !== "radio") {
+                input.value = "";
+            } else {
+                input.checked = false;
+            }
+            input.classList.remove("danger", "primary", "success");
+        });
+        document.getElementById("resultado").value = "";
+    }
+    // Função de copiar texto
+    function copiarTexto() {
+        const texto = document.getElementById("resultado");
+        if (texto.value.trim() !== "") {
+            navigator.clipboard.writeText(texto.value)
+                .then(() => {
+                    alert("Texto copiado para a área de transferência!");
+                })
+                .catch(err => {
+                    console.error("Erro ao copiar texto: ", err);
+                    alert("Não foi possível copiar o texto.");
+                });
+        } else {
+            alert("Não há texto para copiar.");
+        }
+    }
+    // Função de gerar texto
+    function gerarTexto() {
+        const cliente = document.getElementById("cliente").value.toUpperCase();
+        const canal = document.getElementById("canal").value;
+        const contato = document.getElementById("contato").value;
+        const dataHora = document.getElementById("dataHora").value;
+        const comodoAnterior = document.getElementById("comodoAnterior").value.toUpperCase();
+        const comodoAtual = document.getElementById("comodoAtual").value.toUpperCase();
+        const dispensouTestes = document.getElementById("dispensouTestes").checked;
+        const aparelho = document.getElementById("aparelho").value;
+        const marcaModelo = document.getElementById("marcaModelo").value;
+        const velocidadeCliente = document.getElementById("velocidadeCliente").value;
+        const velocidadeCabo = document.getElementById("velocidadeCabo").value;
+        const velocidadeWifi = document.getElementById("velocidadeWifi").value;
+        const formaPagamento = document.getElementById("formaPagamento").value;
+        const valorOS = document.getElementById("valorOS").value;
+        let texto = `FIZ FEEDBACK COM ${cliente} POR ${canal.toUpperCase()} (${contato}) DIA ${dataHora} HRS.\n`;
+        texto += `CLIENTE CONFIRMOU MUDANÇA DE PONTO INTERNO, CONFIRMOU QUE NO LOCAL INSTALADO FICOU DE SEU AGRADO.\n`;
+        texto += `EQUIPAMENTO DESINSTALADO DE: ${comodoAnterior}\n`;
+        texto += `REINSTALADO EM: ${comodoAtual}\n`;
+        texto += `CONFIRMOU QUE APÓS A TROCA FOI FEITO TODOS OS TESTES DE FUNCIONAMENTO DA INTERNET, TESTE DE ABRANGÊNCIA E AFERIÇÃO NOS APARELHOS DO TECNICO E EM SEUS PESSOAIS.\n`;
+        if (dispensouTestes) {
+            texto += `CLIENTE DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS.\n`;
+        } else {
+            texto += `APARELHO TESTADO: ${aparelho} ${marcaModelo} AFERIU ${velocidadeCliente}MBPS. NOTEBOOK DO TÉCNICO VIA CABO DE REDE AFERIU ${velocidadeCabo}MBPS E ${velocidadeWifi}MBPS VIA WI-FI NA REDE 5G.\n`;
+        }
+        texto += `EQUIPAMENTOS LIGADOS EM TOMADAS INDIVIDUAIS\n`;
+        texto += `O.S COM CUSTO DE R$ ${valorOS} PAGO NO ${formaPagamento ? formaPagamento.toUpperCase() : '---'}.\n`;
+        texto += `CLIENTE SEM DUVIDAS.`;
+        document.getElementById("resultado").value = texto;
+    }
+</script>
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+    const auth = getAuth(app);
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "/login.html";
+        } else {
+            document.getElementById("main-content")?.style?.display = "block";
+        }
+    });
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        signOut(auth).then(() => {
+            window.location.href = "/login.html";
+        }).catch((error) => {
+            console.error("Erro ao deslogar: ", error);
+        });
+    });
+    onAuthStateChanged(auth, (user) => {
+        const emailSpan = document.getElementById("userEmail");
+        if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+        } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+        }
+    });
+</script>
+<script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html> 

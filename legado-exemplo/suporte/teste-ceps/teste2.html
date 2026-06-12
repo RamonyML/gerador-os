@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Endereço</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            height: 100vh;
+        }
+
+        .left-container, .right-container {
+            padding: 20px;
+        }
+
+        .left-container {
+            flex: 1 1 300px;
+            max-width: 400px;
+        }
+
+        .right-container {
+            flex: 2 1 600px;
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-container">
+            <h2 class="mt-4">Pesquisa de Endereço</h2>
+            <div class="form-group mt-4">
+                <label for="logradouro">Digite o nome do logradouro:</label>
+                <input type="text" class="form-control" id="logradouro" placeholder="Ex: 'eucaliptos'" onkeypress="if(event.key === 'Enter') buscarEndereco()">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-success" onclick="buscarEndereco()">Pesquisar</button>
+                <button type="button" class="btn btn-danger ml-2" onclick="limparCampos()">Limpar</button>
+                <div class="spinner-border text-primary loading-spinner" role="status">
+                    <span class="sr-only">Carregando...</span>
+                </div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div id="resultado" class="mt-4"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        async function buscarEndereco() {
+            var logradouro = document.getElementById("logradouro").value;
+            var url = `https://viacep.com.br/ws/MG/Uberlandia/${logradouro}/json/`;
+            var spinner = document.querySelector('.loading-spinner');
+            spinner.style.display = 'inline-block';
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                mostrarResultado(data);
+            } catch (error) {
+                console.error('Erro ao buscar endereço:', error);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        function mostrarResultado(enderecos) {
+            var resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.innerHTML = "";
+            if (enderecos.length === 0) {
+                resultadoDiv.innerHTML = "<p>Nenhum endereço encontrado para o logradouro informado.</p>";
+                return;
+            }
+            var tableHtml = "<table class='table'><thead><tr><th>CEP</th><th>Bairro</th><th>Logradouro</th></tr></thead><tbody>";
+            enderecos.forEach(function (endereco) {
+                tableHtml += `<tr><td>${endereco.cep}</td><td>${endereco.bairro}</td><td>${endereco.logradouro}</td></tr>`;
+            });
+            tableHtml += "</tbody></table>";
+            resultadoDiv.innerHTML = tableHtml;
+        }
+
+        function limparCampos() {
+            document.getElementById("logradouro").value = "";
+            document.getElementById("resultado").innerHTML = "";
+        }
+    </script>
+</body>
+
+</html>

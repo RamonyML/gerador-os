@@ -9,6 +9,8 @@ import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
+import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
 import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined'
@@ -22,6 +24,7 @@ import { ILLUSTRATIONS } from '../data/illustrations'
 import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
+import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
@@ -62,6 +65,7 @@ export function HomePage() {
   const showSupportHub = profile != null && canAccessSupportHub(profile)
   const showUsers = profile != null && canManageUsers(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
+  const showCondominios = profile != null && canAccessCondominios(profile)
 
   const greetingName =
     profile?.displayName?.trim() || user?.email?.split('@')[0] || 'usuário'
@@ -141,6 +145,26 @@ export function HomePage() {
       to: '/chamados',
       icon: <SupportAgentOutlinedIcon sx={{ fontSize: 28 }} />,
     },
+    {
+      key: 'agenda',
+      title: 'Agenda',
+      description:
+        'Agende visitas técnicas de instalação, mudança de endereço e manutenção.',
+      to: '/agenda',
+      icon: <EventNoteOutlinedIcon sx={{ fontSize: 28 }} />,
+    },
+    ...(showCondominios
+      ? [
+          {
+            key: 'condominios',
+            title: 'Condomínios',
+            description:
+              'Consulte condomínios com viabilidade de fibra e registros de inviabilidade.',
+            to: '/condominios',
+            icon: <ApartmentOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
     ...(showUsers
       ? [
           {

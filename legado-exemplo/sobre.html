@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre o Gerador de O.S - MZNet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322c55e' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        /* Botão flutuante de feedback */
+        .feedback-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 50;
+            background: #22c55e;
+            color: #fff;
+            border-radius: 9999px;
+            box-shadow: 0 4px 16px rgba(34,197,94,0.15);
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        .feedback-btn:hover {
+            background: #16a34a;
+        }
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: max-content;
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 4px 8px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.85rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-black to-green-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center text-white hover:text-green-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm font-medium">Voltar ao Início</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative bg-white overflow-hidden mt-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32">
+                <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                    <div class="flex flex-col lg:flex-row items-center justify-between">
+                        <div class="sm:text-center lg:text-left lg:w-1/2">
+                            <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                                <span class="block">Gerador de O.S</span>
+                                <span class="block text-green-600 text-3xl mt-3">Padronização e Automatização</span>
+                            </h1>
+                        </div>
+                        <div class="mt-12 lg:mt-0 lg:w-1/3">
+                            <img src="/logo/mzlogo-padrao.png" alt="MZNet Logo" class="w-full h-auto object-contain">
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Sobre o Projeto -->
+            <div class="lg:text-center mb-16" data-aos="fade-up">
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Sobre o Projeto
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                    Uma solução para otimizar o processo de elaboração de protocolos e Ordens de Serviços geradas pelo suporte técnico.
+                </p>
+            </div>
+
+            <!-- Idealizadores e Desenvolvimento -->
+            <div class="mt-10" data-aos="fade-up" data-aos-delay="100">
+                <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Idealização e Desenvolvimento</h3>
+                        <p class="text-gray-600 mb-4">
+                            O Gerador de O.S foi idealizado e desenvolvidopor 
+                            <span class="font-semibold text-green-700 tooltip">Ramony Lima
+                                <span class="tooltiptext">Idealizador & Desenvolvedor Back/Front-End</span>
+                            </span>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Supervisão e Validação</h3>
+                        <p class="text-gray-600 mb-4">
+                            Todas as O.S são padronizadas e validadas pela gerência, sob supervisão de 
+                            <span class="font-semibold text-green-700 tooltip">Deivit Rafael
+                                <span class="tooltiptext">Gerente de Suporte</span>
+                            </span> e 
+                            <span class="font-semibold text-green-700 tooltip">Hiago Alves
+                                <span class="tooltiptext">Sub-gerente</span>
+                            </span>, com grande contribuição de 
+                            <span class="font-semibold text-green-700 tooltip">Karolayne Pereira
+                                <span class="tooltiptext">Revisão e Formatação</span>
+                            </span> na revisão e formatação textual.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objetivos e Benefícios -->
+            <div class="mt-16" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Objetivos e Benefícios</h3>
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="bg-green-50 p-6 rounded-lg flex items-start space-x-4">
+                        <svg class="h-8 w-8 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="7" y="3" width="10" height="2" rx="1"/>
+                            <rect x="7" y="19" width="10" height="2" rx="1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 5c0 5 5 5 5 7s-5 2-5 7m10-14c0 5-5 5-5 7s5 2 5 7" />
+                        </svg>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Otimização de Tempo</h4>
+                            <p class="text-gray-600">Redução significativa no tempo de elaboração de demandas, de 10-15 minutos para aproximadamente 3-5 minutos.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-lg flex items-start space-x-4">
+                        <svg class="h-8 w-8 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Padronização</h4>
+                            <p class="text-gray-600">Garantia de uniformidade na documentação gerada, seguindo padrões estabelecidos e aprovados pela gerência.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-lg flex items-start space-x-4">
+                        <svg class="h-8 w-8 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-2">Automatização</h4>
+                            <p class="text-gray-600">Geração automática de protocolos e O.S, minimizando erros humanos e aumentando a produtividade.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impacto e Resultados -->
+            <div class="mt-16 bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Impacto e Resultados</h3>
+                <div class="prose max-w-none text-gray-600">
+                    <p class="mb-4">
+                        O Gerador de O.S otimizou o <b>processo de elaboração de protocolos e O.S</b> no suporte técnico da MZNet, 
+                        proporcionando uma solução eficiente e padronizada para o registro de atendimentos. 
+                        Com sua implementação, conseguimos:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>Redução significativa no tempo de elaboração de documentos</li>
+                        <li>Maior precisão nas informações registradas</li>
+                        <li>Padronização completa da documentação</li>
+                        <li>Melhoria na qualidade do atendimento ao cliente</li>
+                        <li>Aumento na produtividade da equipe de suporte</li>
+                        <li>Melhor clareza no processo de treinamento de novos colaboradores</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Desenvolvimento Contínuo e Validação -->
+            <div class="mt-16 bg-gradient-to-r from-green-50 to-gray-50 p-8 rounded-lg shadow-lg border border-green-100" data-aos="fade-up" data-aos-delay="400">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Desenvolvimento Contínuo e Validação</h3>
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-xl font-semibold text-green-700 mb-3">Evolução Contínua</h4>
+                        <p class="text-gray-600">
+                            O Gerador de O.S é um projeto em constante desenvolvimento. Contamos com o valioso feedback 
+                            de nossos operadores para identificar e resolver falhas, além de implementar melhorias 
+                            que tornem a ferramenta ainda mais eficiente e adaptada às necessidades da equipe.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 class="text-xl font-semibold text-green-700 mb-3">Validação de Novos Padrões</h4>
+                        <p class="text-gray-600">
+                            <span class="font-semibold">Importante:</span> Qualquer ordem de serviço que divirja dos 
+                            padrões estabelecidos neste gerador deve ser obrigatoriamente validada pela gerência antes 
+                            de sua implementação. Este processo garante a manutenção da qualidade e consistência em 
+                            nossa documentação.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 mt-16">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-base text-gray-400">
+                    © <b>2025 Ramony Lima – Todos os direitos reservados.</b><br><i>Esta aplicação (Gerador de O.S / Sistema de Upgrades) está protegida pela Lei nº 9.609/1998 (Lei de Software – Brasil),<br>que assegura os direitos autorais do desenvolvedor.</i>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Scripts -->
+    <script type="module" src="/js/firebase-init.js"></script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';
+
+        const auth = getAuth(app);
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "/login.html";
+            }
+        });
+    </script>
+    <script>
+        // Bloqueia o clique direito do mouse
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('Clique direito desabilitado nesta página.');
+        });
+
+        // Inicializa o EmailJS
+        emailjs.init("GLhiU5Pw8gcBlhvzX");
+
+        function enviarFeedback() {
+            const feedback = document.querySelector('#feedbackModal textarea').value.trim();
+            if (!feedback) {
+                alert('Por favor, escreva seu feedback.');
+                return;
+            }
+            const btn = document.querySelector('#feedbackModal button[type=button]');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            emailjs.send('service_6emjzdj', 'template_a8wul62', {
+                subject: 'Feedback do Gerador de O.S',
+                message: feedback.replace(/\n/g, '<br>'),
+                from_name: 'Feedback Anônimo',
+                reply_to: 'noreply@mznet.com.br'
+            }).then(function() {
+                alert('Feedback enviado! Obrigado pela colaboração.');
+                document.getElementById('feedbackModal').classList.add('hidden');
+                document.querySelector('#feedbackModal textarea').value = '';
+            }, function(error) {
+                alert('Erro ao enviar feedback. Tente novamente mais tarde.');
+                console.error(error);
+            }).finally(() => {
+                btn.disabled = false;
+                btn.textContent = 'Enviar';
+            });
+        }
+    </script>
+    <!-- Botão flutuante de feedback -->
+    <button class="feedback-btn" onclick="document.getElementById('feedbackModal').classList.remove('hidden')">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.8l-4 1 1-4A8.96 8.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        Feedback
+    </button>
+    <!-- Modal de feedback -->
+    <div id="feedbackModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full shadow-lg relative">
+            <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700" onclick="document.getElementById('feedbackModal').classList.add('hidden')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <h3 class="text-lg font-bold mb-4 text-green-700">Envie seu feedback</h3>
+            <textarea class="w-full border border-gray-300 rounded-lg p-2 mb-4" rows="4" placeholder="Digite sua sugestão, elogio ou relato de problema..."></textarea>
+            <button class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200" type="button" onclick="enviarFeedback()">Enviar</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
+</body>
+</html> 

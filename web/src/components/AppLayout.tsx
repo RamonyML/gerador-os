@@ -1,5 +1,5 @@
 import { Outlet, Link as RouterLink, useLocation, useNavigate } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   AppBar,
   Avatar,
@@ -21,6 +21,8 @@ import {
 import { alpha } from '@mui/material/styles'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
+import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
@@ -28,8 +30,10 @@ import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
+import { canAccessCondominios } from '../lib/condominiosAccess'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { useNotices } from '../hooks/useNotices'
+import { useHelpdeskNotifications } from '../hooks/useHelpdeskNotifications'
 import { SECTOR_LABELS } from '../types/profile'
 import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
@@ -47,6 +51,7 @@ export function AppLayout() {
   const { user, profile, photoURL, logOut } = useAuth()
   const showUsers = profile != null && canManageUsers(profile)
   const showSupport = profile != null && canAccessSupportHub(profile)
+  const showCondominios = profile != null && canAccessCondominios(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -54,10 +59,17 @@ export function AppLayout() {
   const [noticeAnchor, setNoticeAnchor] = useState<HTMLElement | null>(null)
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
   const notices = useNotices({ uid: user?.uid ?? null, profile })
+  const helpdesk = useHelpdeskNotifications({ uid: user?.uid ?? null, profile })
+
+  useEffect(() => {
+    if (pathname.startsWith('/chamados')) helpdesk.markSeenAll()
+  }, [pathname, helpdesk.markSeenAll])
+
+  const totalUnread = notices.unreadCount + helpdesk.unreadCount
 
   const navItems = useMemo(
-    () => buildNavItems({ showSupport, showUsers }),
-    [showSupport, showUsers],
+    () => buildNavItems({ showSupport, showUsers, showCondominios }),
+    [showSupport, showUsers, showCondominios],
   )
 
   const openNoticeMenu = (el: HTMLElement) => setNoticeAnchor(el)
@@ -331,19 +343,19 @@ export function AppLayout() {
 
             <Tooltip
               title={
-                notices.unreadCount > 0
-                  ? `${notices.unreadCount} aviso(s) não lido(s)`
-                  : 'Avisos'
+                totalUnread > 0
+                  ? `${totalUnread} notificação(ões) não lida(s)`
+                  : 'Notificações'
               }
             >
               <IconButton
                 color="inherit"
-                aria-label="Avisos"
+                aria-label="Notificações"
                 onClick={(e) => openNoticeMenu(e.currentTarget)}
               >
                 <Badge
                   color="error"
-                  variant={notices.unreadCount > 0 ? 'dot' : 'standard'}
+                  variant={totalUnread > 0 ? 'dot' : 'standard'}
                   overlap="circular"
                 >
                   <NotificationsNoneOutlinedIcon />
@@ -366,11 +378,93 @@ export function AppLayout() {
                   Notificações
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {notices.unreadCount > 0
-                    ? `${notices.unreadCount} não lida(s)`
-                    : 'Nenhum aviso novo.'}
+                  {totalUnread > 0
+                    ? `${totalUnread} não lida(s)`
+                    : 'Tudo em dia por aqui.'}
                 </Typography>
               </Box>
+
+              {helpdesk.items.length > 0 && (
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <Box
+                    sx={{
+                      px: 2,
+                      pt: 1.25,
+                      pb: 0.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+                    >
+                      Chamados
+                    </Typography>
+                    <Tooltip title="Marcar chamados como vistos">
+                      <IconButton
+                        size="small"
+                        aria-label="Marcar chamados como vistos"
+                        onClick={() => helpdesk.markSeenAll()}
+                      >
+                        <MarkChatReadOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  <List disablePadding dense>
+                    {helpdesk.items.slice(0, 6).map((it) => (
+                      <ListItemButton
+                        key={it.id}
+                        onClick={() => {
+                          helpdesk.markSeenAll()
+                          closeNoticeMenu()
+                          navigate(`/chamados/${it.ticketId}`)
+                        }}
+                        sx={{ alignItems: 'flex-start', gap: 1 }}
+                      >
+                        <ListItemIcon sx={{ minWidth: 32, mt: 0.25, color: 'primary.main' }}>
+                          <ConfirmationNumberOutlinedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
+                              {it.kind === 'novo'
+                                ? 'Novo chamado aberto'
+                                : 'Nova resposta no seu chamado'}
+                            </Typography>
+                          }
+                          secondary={
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+                              <Typography variant="body2" color="text.secondary" noWrap>
+                                {it.title}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {it.kind === 'novo'
+                                  ? `Aberto por ${it.who}`
+                                  : `Resposta de ${it.who}`}
+                              </Typography>
+                            </Box>
+                          }
+                        />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Box>
+              )}
+
+              {(helpdesk.items.length > 0 || notices.unreadNotices.length > 0) && (
+                <Box sx={{ px: 2, pt: 1.25, pb: 0.5 }}>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+                  >
+                    Avisos
+                  </Typography>
+                </Box>
+              )}
               <List disablePadding dense>
                 {notices.unreadNotices.length === 0 ? (
                   <Box sx={{ px: 2, py: 2 }}>

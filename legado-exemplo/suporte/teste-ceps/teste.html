@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Endereço</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+    }
+    h1 {
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Consulta de Endereço</h1>
+    <div>
+        <label for="logradouro">Digite o logradouro:</label>
+        <input type="text" id="logradouro">
+        <button onclick="buscarEndereco()">Pesquisar</button>
+    </div>
+    <div id="resultado"></div>
+</div>
+
+<script>
+function buscarEndereco() {
+    const logradouro = document.getElementById('logradouro').value.trim();
+    if (logradouro === '') {
+        alert('Por favor, digite o logradouro.');
+        return;
+    }
+
+    const url = `https://viacep.com.br/ws/MG/Uberlandia/${encodeURIComponent(logradouro)}/json/`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Não foi possível obter os dados do servidor.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            mostrarResultado(data);
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Ocorreu um erro ao buscar o endereço. Por favor, tente novamente.');
+        });
+}
+
+function mostrarResultado(data) {
+    const resultadoDiv = document.getElementById('resultado');
+    resultadoDiv.innerHTML = '';
+
+    if (data.length === 0) {
+        resultadoDiv.innerHTML = '<p>Nenhum endereço encontrado para o logradouro informado.</p>';
+        return;
+    }
+
+    const table = document.createElement('table');
+    const headerRow = table.insertRow();
+    const headers = ['CEP', 'Logradouro', 'Bairro'];
+    headers.forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+    });
+
+    data.forEach(endereco => {
+        const row = table.insertRow();
+        const cepCell = row.insertCell();
+        cepCell.textContent = endereco.cep;
+        const logradouroCell = row.insertCell();
+        logradouroCell.textContent = endereco.logradouro;
+        const bairroCell = row.insertCell();
+        bairroCell.textContent = endereco.bairro;
+    });
+
+    resultadoDiv.appendChild(table);
+}
+</script>
+
+</body>
+</html>

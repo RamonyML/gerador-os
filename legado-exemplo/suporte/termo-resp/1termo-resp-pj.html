@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUD END</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Termo de Responsabilidade</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 7rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+::selection {
+    background-color: green;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+::selection {
+    background-color: #28a746;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">TERMO DE RESPONSABILIDADE</h1>
+          </div>
+        </div><br>
+        <div class="alert alert-success" role="alert">
+            O termo de responsabilidade de acesso ao roteador deve ser solicitado <b>preferencialmente</b> pelo sócio/proprietário.
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="/suporte/termo-resp/termo-resp-padrao.html">Pessoa Física</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold text-success" href="#">Pessoa Jurídica</a>
+            </li>
+          </ul>
+          <div class="form">
+            <div class="input-group">
+            </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="solicitante">Solicitante:</label>
+                                <input type="text" class="form-control" id="solicitante" placeholder="Nome completo de quem solicitou o acesso">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cargo">Cargo:</label>
+                                <input type="text" class="form-control" id="cargo" placeholder="Nome completo">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cliente">Razão Social:</label>
+                                <input type="text" class="form-control" id="cliente" placeholder="Nome da empresa conforme cadastrado no MK">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="canal">Canal:</label>
+                                <select class="form-control" id="canal">
+                                    <option value="ENTROU EM CONTATO POR LIGAÇÃO">Telefone</option>
+                                    <option value="ENTROU EM CONTATO POR WHATSAPP">WhatsApp</option>
+                                    <option value="COMPARECEU À LOJA">Presencial</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contato">Contato:</label>
+                                <input type="text" class="form-control" id="contato" placeholder="Somente os números">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sinalONU">Sinal ONU:</label>
+                                <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM ou SEM SINAL">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="mac">MAC:</label>
+                                <input type="text" class="form-control" id="mac" placeholder="Ex: A1:B2:C3:D4:E5:F6">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="roteador">ONT/Roteador:</label>
+                                <select class="form-control" id="roteador">
+                                    <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+                                    <option value="TP LINK C-5">TP LINK C-5</option>
+                                    <option value="TP LINK G-5">TP LINK G-5</option>
+                                    <option value="GREATEK">GREATEK</option>
+                                    <option value="INTELBRAS">INTELBRAS</option>
+                                    <option value="HUAWEI AX2">HUAWEI AX2</option>
+                                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                                    <option value="ZTE H199-A">ZTE H199-A</option>
+                                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>               
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="assinatura">Assinatura será realizada na:</label>
+                                <select class="form-control" id="assinatura">
+                                    <option value="PRESENCIALMENTE">Na loja</option>
+                                    <option value="NA INSTALAÇÃO">Na instalação</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div><br>
+                <div class="buttons">
+                    <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                    <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+                </div>
+              </div>
+ 
+              <div class="output">
+                <div class="output-group" data-toggle="tooltip" title="Leia o texto gerado, e insira as particularidades de seu atendimento (se necessário).">
+                    <h4 class="font-weight-bold">Texto Protocolo:</h4>
+                    <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+                    <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+                </div>
+            
+                <div class="output-group" data-toggle="tooltip" title="Leia atentamente o texto gerado, verifique se não há nenhuma informação incorreta antes de registrar no MK.">
+                    <h4 class="font-weight-bold">Texto O.S:</h4>
+                    <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+                    <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+                </div>
+            </div>
+    </div> 
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+document.title = "TERMO RESP.";
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const solicitante = document.getElementById('solicitante').value.toUpperCase();
+    const cargo = document.getElementById('cargo').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const roteador = document.getElementById('roteador').value;
+    const mac = document.getElementById('mac').value.toUpperCase();
+    const assinatura = document.getElementById('assinatura').value;
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (sinalONU === "" && !document.getElementById('onuSemSinal').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        sinalONU = "SEM SINAL";
+    }
+    
+    // Crie os textos com os valores
+    const textoProtocolo = `${solicitante.split(' ')[0]} (${cargo}) ${canal} ${contato} E SOLICITOU ACESSO AO ROTEADOR EM COMODATO.
+
+***********************
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU ${sinalONU}.
+
+***********************
+
+QUESTIONADO, ${solicitante.split(' ')[0]} DISSE QUE DESEJA O ACESSO AO ROTEADOR QUE É EMPRESTADO EM REGIME DE COMODATO (MODELO: ${roteador} / MAC Nº: ${mac} ).
+
+DISSE QUE QUER TER O ACESSO AS CONFIGURAÇÕES PARA FAZER ALTERAÇÕES EM NOME DE REDE, SENHA, ATUALIZAÇÃO DO FIRMWARE, ETC, POR CONTA PRÓPRIA SEM PRECISAR DO SUPORTE DA EMPRESA.
+
+EXPLIQUEI E DEIXEI ${solicitante.split(' ')[0]} CIENTE DE QUE QUALQUER ALTERAÇÃO DE CONFIGURAÇÃO, ATUALIZAÇÃO DE FIRMWARE, ETC. QUE VIER A DANIFICAR O EQUIPAMENTO, ESTE SERÁ INUTILIZADO PELO PROVEDOR E CLIENTE TERÁ QUE ARCAR COM SEU VALOR ATUAL, PASSANDO ASSIM A SER DONO DO ROTEADOR E CASO ACONTEÇA, A EMPRESA PODERÁ INSTALAR OUTRO ROTEADOR EM REGIME DE COMODATO
+
+***********************
+
+FOI GERADO TERMO DE RESPONSABILIDADE, ${solicitante.split(' ')[0]} DISSE ESTAR CIENTE DE SUAS RESPONSABILIDADES COM REFERIDO EQUIPAMENTO.
+
+TERMO DE RESPONSABILIDADE SERÁ ASSINADO ${assinatura}
+`;
+
+const textoOS = `${assinatura} ${solicitante.split(' ')[0]} SOLICITOU DESBLOQUEIO E LIBERAÇÃO PARA ACESSO AO ROTEADOR DA EMPRESA, QUE É EMPRESTADO EM REGIME DE COMODATO (MODELO: ${roteador} / MAC Nº: ${mac}). MOTIVO: DISSE QUE QUER TER O ACESSO AS CONFIGURAÇÕES PARA FAZER ALTERAÇÕES EM NOME DE REDE, SENHA, ATUALIZAÇÃO DO FIRMWARE, ETC, POR CONTA PRÓPRIA SEM PRECISAR DO SUPORTE DA EMPRESA. EXPLIQUEI E DEIXEI ${solicitante.split(' ')[0]} CIENTE DE QUE ALTERANDO A CONFIGURAÇÃO PADRÃO DO EQUIPAMENTO QUE É REALIZADO PELO PROVEDOR, PERDEMOS O ACESSO REMOTO IMPEDINDO SUPORTE TÉCNICO REMOTO QUANDO SOLICITADO, OU SEJA, TODA INTERVENÇÃO AO EQUIPAMENTO POR PARTE DO PROVEDOR, PASSARÁ A SER POR VISITA TÉCNICA PRESENCIAL COM COBRANÇA DO SERVIÇO PRESTADO OU, CLIENTE OU QUEM ELE DESIGNAR TRAZER O EQUIPAMENTO À EMPRESA ISENTANDO ASSIM DE CUSTOS DE VISITAS. EXPLIQUEI E DEIXEI ${solicitante.split(' ')[0]} CIENTE DE QUE QUALQUER ALTERAÇÃO DE CONFIGURAÇÃO, ATUALIZAÇÃO DE FIRMWARE, ETC. QUE VIER A DANIFICAR O EQUIPAMENTO, ESTE SERÁ INUTILIZADO PELO PROVEDOR E CLIENTE TERÁ QUE ARCAR COM SEU VALOR ATUAL, PASSANDO ASSIM A SER DONO DO ROTEADOR E CASO ACONTEÇA, A EMPRESA PODERÁ INSTALAR OUTRO ROTEADOR EM REGIME DE COMODATO. ${solicitante.split(' ')[0]} DISSE ESTAR CIENTE DE SUAS RESPONSABILIDADES COM REFERIDO EQUIPAMENTO, E SOLICITOU LIBERAÇÃO E DESBLOQUEIO.`;
+
+
+document.getElementById('textoProtocolo').value = textoProtocolo;
+document.getElementById('textoOS').value = textoOS;
+
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+
+    </script>
+<!-- Adicione isso antes do fechamento da tag </body> -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+  
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+  
+
+</body>
+</html>

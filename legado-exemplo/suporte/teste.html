@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página de Logout</title>
+</head>
+<body>
+  <h1>Página de Teste de Logout</h1>
+  <button id="logout-btn">Logout</button>
+
+  <script type="module" src="../js/auth.js"></script>
+  <script type="module">
+    import { logout } from "../js/auth.js";
+
+    document.getElementById("logout-btn").addEventListener("click", logout);
+  </script>
+</body>
+</html>

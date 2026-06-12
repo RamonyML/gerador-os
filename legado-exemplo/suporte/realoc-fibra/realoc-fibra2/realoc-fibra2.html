@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remanejamento de fibra</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1c683a;">
+  <a class="navbar-brand" style="color: rgb(255, 255, 255);">
+    <img src="/logo/mzlogo-mbranco.png" width="65" height="30" class="d-inline-block align-top" alt="Logo">
+    Gerador de O.S
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Início <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Modelos de O.S</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown" style="color: rgb(255, 255, 255);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tutoriais
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      </li>
+    </ul>
+  </div>
+</nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-man.html" class="text-success">Manutenção</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Remanejamento de fibra</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoAgenda {
+    height: 50px; /* Defina a altura desejada */
+}
+.ui-autocomplete {
+      max-height: 200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .ui-menu-item {
+      padding: 5px 10px;
+      color: #1a361f;
+    }
+    .ui-menu-item:hover {
+      background-color: #ffffff;
+    }
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">REMANEJAMENTO DE FIBRA</h1>
+          </div>
+          
+          
+        </div>
+        <div class="form">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active font-weight-bold text-success" href="#">Padrão</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suporte/realoc-fibra/realoc-fibra-pj.html">Pessoa Jurídica</a>
+                </li>
+              </ul>
+
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary" data-placement="bottom" data-toggle="tooltip" title="Assinante solicitando e autorizando um terceiro a acompanhar o técnico">
+                    <a href="/suporte/realoc-fibra/realoc-fibra1/realoc-fibra1.html" class="text-white">
+                        <input type="radio" name="options" id="option1" autocomplete="off" checked> SOLICITADO POR ASSINANTE
+                    </a>
+                </label>
+                <label class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Terceiro solicitando e assinante autorizando. Porém, assinante ausente.">
+                    <a href="/suporte/realoc-fibra/realoc-fibra2/realoc-fibra2.html" class="text-white">
+                        <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR TERCEIRO 1
+                    </a>
+                </label>
+                <label class="btn btn-secondary" data-toggle="tooltip" title="Terceiro solicitando, assinante autorizando e confirmando que estará presente.">
+                    <a href="/suporte/realoc-fibra/realoc-fibra3/realoc-fibra3.html" class="text-white">
+                        <input type="radio" name="options" id="option3" autocomplete="off"> SOLICITADO POR TERCEIRO 2
+                    </a>
+                </label>
+            </div>
+            <hr>
+            <div class="alert alert-success" role="alert">
+                Neste caso, um terceiro solicita suporte, é realizado o contato com o titular e o mesmo autoriza o terceiro a acompanhar o técnico, assinar O.S e realizar pagamento.
+              </div>
+              <hr>
+              <!-- Identificação do Cliente -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="solicitante">Solicitante:</label>
+                        <input type="text" class="form-control" id="solicitante" placeholder="Nome completo do terceiro que entrou em contato" spellcheck="true" lang="pt-BR">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="parente">Grau de relacionamento:</label>
+                        <input type="text" class="form-control" id="parente" placeholder="Ex: Mãe, Filho, Irmão, Esposa, ..." spellcheck="true" lang="pt-BR">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="canal">Canal:</label>
+                        <select class="form-control" id="canal">
+                            <option value="LIGAÇÃO">Telefone</option>
+                            <option value="WHATSAPP">WhatsApp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="contatoSol">Contato do Solicitante:</label>
+                        <input type="text" class="form-control" id="contatoSol" placeholder="Somente os números" spellcheck="false">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="bairro">Bairro:</label>
+                        <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente" spellcheck="true" lang="pt-BR">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="cliente">Assinante:</label>
+                        <input type="text" class="form-control" id="cliente" placeholder="Nome completo do titular da conexão" spellcheck="true" lang="pt-BR">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="contato">Contato do Titular:</label>
+                        <input type="text" class="form-control" id="contato" placeholder="Somente os números" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- Detalhes da Solicitação -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>DETALHES DA SOLICITAÇÃO</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="basic-url">Descreva o motivo da mudança de ponto:</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon3">Questionado, cliente disse que:</span>
+                    </div>
+                    <input type="text" class="form-control" id="motivo" aria-describedby="basic-addon3" data-toggle="tooltip" placeholder="''realizou uma reforma na residência e deseja alterar a passagem do drop''" title="Conforme o exemplo, você deve inserir apenas o conteúdo que está entre as ''aspas''" spellcheck="true" lang="pt-BR">
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="protocolo"> </label>
+                        <input type="text" class="form-control" id="protocolo" placeholder="Protocolo: 123.456" spellcheck="false">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="sinalONU"> </label>
+                        <input type="text" class="form-control" id="sinalONU" placeholder="Sinal -15.02 dBm" spellcheck="false">
+                    </div>
+                </div>
+            </div><hr>
+            <!-- Agendamento -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>AGENDAMENTO</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="dataVisita">Data da Visita Técnica:</label>
+                        <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa" spellcheck="false">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="horaVisita">Hora:</label>
+                        <select class="form-control" id="horaVisita">
+                            <option value="08:30">08:30</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:30">11:30</option>
+                            <option value="13:30">13:30</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:30">17:30</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="formaPag">Pagamento:</label>
+                        <select class="form-control" id="formaPag">
+                            <option value="PIX">PIX</option>
+                            <option value="DINHEIRO">DINHEIRO</option>
+                            <option value="CARTAO">CARTAO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="valor">Valor:</label>
+                        <select class="form-control" id="valor">
+                            <option value="">Selecione...</option>
+                            <option value="EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA.">R$50,00</option>
+                            <option value="EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 100,00 REFERENTE A MÃO DE OBRA TÉCNICA.">R$100,00</option>
+                            <option value="EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) O CUSTO DO SERVIÇO É DE R$50,00. EXPLIQUEI TAMBÉM QUE CASO DROP (CABO/FIBRA) NÃO TENHA SOBRA E FOR NECESSÁRIO SER SUBSTITUÍDO POR OUTRO, O CUSTO PASSA A SER DE R$100,00 (INCLUI PEÇAS E SERVIÇOS).">R$50 ou R$100</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="operador">Nome do operador:</label>
+                        <select class="form-control" id="operador" required>
+                            <option value="">Selecione...</option>
+                            <option value="ANA">ANA CAROLINA</option>
+                            <option value="DEIVIT">DEIVIT</option>
+                            <option value="EDUARDO">EDUARDO</option>
+                            <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                            <option value="GABRIEL V.">GABRIEL VICTOR</option>
+                            <option value="HIAGO">HIAGO</option>
+                            <option value="KAROLAYNE">KAROLAYNE</option>
+                            <option value="LUIS">LUIS</option>
+                            <option value="PEDRO">PEDRO</option>
+                            <option value="PRISCILA">PRISCILA</option>
+                            <option value="RAMONY">RAMONY</option>
+                            <option value="RENATA">RENATA</option>
+                            <option value="VICTOR H.">VICTOR HUGO</option>
+                            <option value="VITOR M.">VITOR MANOEL</option>
+                            <option value="VAGNER">VAGNER</option>
+                            </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="buttons">
+                <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+            </div>
+        </div>
+        <div class="output">
+            <div class="output-group" data-toggle="tooltip" title="Leia o texto gerado, e insira as particularidades de seu atendimento (se necessário).">
+                <h4 class="font-weight-bold">Texto Protocolo:</h4>
+                <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50" spellcheck="true" lang="pt-BR"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+            </div>
+        
+            <div class="output-group" data-toggle="tooltip" title="Leia atentamente o texto gerado, verifique se não há nenhuma informação incorreta antes de registrar no MK.">
+                <h4 class="font-weight-bold">Texto O.S:</h4>
+                <textarea class="form-control" id="textoOS" readonly rows="12" cols="50" spellcheck="true" lang="pt-BR"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+            </div>
+        </div>
+        <div class="output">
+            <div class="output-group">
+                <h4 class="font-weight-bold">Texto Agenda:</h4>
+                <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50" spellcheck="true" lang="pt-BR"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+            </div>
+        </div>
+    </div>
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                <script>
+document.title = "Remanejamento de fibra";
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Força o spellcheck em todos os campos que devem ter correção ortográfica
+    var camposComSpellcheck = document.querySelectorAll('input[spellcheck="true"], textarea[spellcheck="true"]');
+    camposComSpellcheck.forEach(function(campo) {
+        campo.setAttribute('spellcheck', 'true');
+        campo.setAttribute('lang', 'pt-BR');
+        campo.spellcheck = true;
+    });
+    
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const solicitante = document.getElementById('solicitante').value.toUpperCase();
+    const parente = document.getElementById('parente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const contatoSol = document.getElementById('contatoSol').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const motivo = document.getElementById('motivo').value.toUpperCase();
+    const valor = document.getElementById('valor').value;
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const formaPag = document.getElementById('formaPag').value;
+    const operador = document.getElementById('operador').value;
+
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+    
+    // Crie os textos com os valores
+    const textoProtocolo = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E SOLICITOU SUPORTE.
+
+=========================================
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU} SEM OSCILAÇÃO.
+
+=========================================
+
+QUESTIONADO ${solicitante.split(' ')[0]} DISSE QUE ${motivo}.
+
+${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.
+
+=========================================
+    
+${solicitante.split(' ')[0]} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}.
+
+POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`;
+
+
+const textoOS = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) PARA SOLICITAR SUPORTE. QUESTIONADO, DISSE "${motivo}". ${valor} ${solicitante.split(' ')[0]} SOLICITOU PAGAR EM ${formaPag}. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.
+
+=========================================
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: VERIFICAR DROP INTERNO E EXTERNO, SE SOBRA TÉCNICA FOR SUFICIENTE, USAR PARA REPARO E RESTABELECER CONEXÃO. CASO NÃO SEJA PASSAR OUTRO DROP. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZAÇÃO COM CLIENTE. TEMPO ESTIMADO 60 MIN.`;
+
+
+const textoAgenda = `MAN REMANEJAMENTO DE FIBRA ${cliente} PROT:${protocolo} ${formaPag} (${operador}) - ${bairro}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+                    
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+   })
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#dataVisita", {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            onChange: function(selectedDates, dateStr, instance) {
+                const date = new Date(dateStr.split('/').reverse().join('-'));
+                const day = date.getDay();
+                const horaVisita = document.getElementById('horaVisita');
+    
+                if (day === 5) { // Sábado
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                } else if (day === 6) { // Domingo
+                    horaVisita.innerHTML = '';
+                    horaVisita.disabled = true;
+                } else {
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:30">17:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                }
+            }
+        });
+    });
+    </script>
+    <script>
+        $(function() {
+          var bairros = [
+          "ACLIMAÇÃO",
+"ALTO UMUARAMA",
+"ALVORADA",
+"BOM JESUS",
+"BRASIL",
+"CARAJÁS",
+"CAZECA",
+"CENTRO",
+"CHÁCARAS PANORAMA",
+"CHÁCARAS TUBALINA",
+"CIDADE JARDIM",
+"CUSTÓDIO PEREIRA",
+"DANIEL FONSECA",
+"DISTRITO INDUSTRIAL",
+"DONA ZULMIRA",
+"FUNDINHO",
+"GÁVEA",
+"GRANADA",
+"GRAND VILLE",
+"GRANJA MARILEUSA",
+"GUARANI",
+"JARAGUÁ",
+"JARDIM BRASÍLIA",
+"JARDIM CANAÃ",
+"JARDIM CÉLIA",
+"JARDIM DAS PALMEIRAS",
+"JARDIM EUROPA",
+"JARDIM HOLANDA",
+"JARDIM INCONFIDÊNCIA",
+"JARDIM IPANEMA",
+"JARDIM KARAÍBA",
+"JARDIM PATRÍCIA",
+"JARDIM SUL",
+"LAGOINHA",
+"LARANJEIRAS",
+"LÍDICE",
+"LUIZOTE DE FREITAS",
+"MANSÕES AEROPORTO",
+"MANSOUR",
+"MARAVILHA",
+"MARTA HELENA",
+"MARTINS",
+"MINAS GERAIS",
+"MONTE HEBRON",
+"MORADA DA COLINA",
+"MORADA DO SOL",
+"MORADA DOS PÁSSAROS",
+"MORUMBI",
+"NOSSA SENHORA APARECIDA",
+"NOSSA SENHORA DAS GRAÇAS",
+"NOVA UBERLÂNDIA",
+"NOVO MUNDO",
+"OSVALDO REZENDE",
+"PACAEMBU",
+"PAMPULHA",
+"PANORAMA",
+"PATRIMÔNIO",
+"PLANALTO",
+"PORTAL DO VALE",
+"PRESIDENTE ROOSEVELT",
+"RESIDENCIAL GRAMADO",
+"RESIDENCIAL INTEGRAÇÃO",
+"RESIDENCIAL PEQUIS",
+"SANTA LUZIA",
+"SANTA MÔNICA",
+"SANTA ROSA",
+"SÃO JORGE",
+"SÃO JOSÉ",
+"SARAIVA",
+"SEGISMUNDO PEREIRA",
+"SHOPPING PARK",
+"TABAJARAS",
+"TAIAMAN",
+"TIBERY",
+"TOCANTINS",
+"TUBALINA",
+"UMUARAMA",
+"VIGILATO PEREIRA"
+            // Adicione mais bairros aqui
+          ];
+    
+          $("#bairro").autocomplete({
+            source: bairros,
+            minLength: 2 // Sugestões aparecerão após digitar 2 caracteres
+          });
+        });
+    </script>
+           
+
+
+</body>
+</html>

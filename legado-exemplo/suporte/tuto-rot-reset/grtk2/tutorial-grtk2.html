@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Greatek V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar { width: 8px; }
+        .sidebar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #4CAF50; border-radius: 20px; }
+        .container-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .highlight {
+            position: relative;
+        }
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4CAF50;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col lg:flex-row min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar w-full lg:w-64 bg-white border-r border-gray-200 overflow-y-auto h-screen sticky top-0">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-xl font-bold text-gray-800">TUTORIAIS DE ROTEADOR</h1>
+            </div>
+            <nav class="space-y-2">
+                <a href="/suporte/tuto-rot-reset/tuto-home/tutorial.html" class="block">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        INÍCIO
+                    </button>
+                </a>
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">TUTORIAIS</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/ax2/ax2.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Huawei AX2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/grtk1/tutorial-grtk1.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Greatek V1</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/grtk2/tutorial-grtk2.html" class="flex items-center px-3 py-2 text-green-600 font-medium bg-green-50 rounded-lg transition duration-300">
+                                <span class="ml-3">Greatek V2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">D-Link</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Intelbras</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/zte/tutorial-zte.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">ZTE H199-A</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">ONT ZTE</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Configuração de Roteador Resetado</h1>
+                <div class="w-16 h-1 bg-green-500 mt-2 mb-4"></div>
+                <h2 class="text-xl font-semibold text-green-700">Greatek V2</h2>
+            </div>
+            <!-- Passo 1 -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2">PASSO 1</h2>
+                <p class="text-gray-700 mb-4">Caso o roteador tenha perdido o acesso remoto, oriente o cliente a utilizar de <b>PREFERÊNCIA</b> um PC/notebook com cabo de rede ou wi-fi para realizar a configuração de forma mais clara.</p>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>IP de acesso: <b>192.168.1.1</b></li>
+                    <li>Usuário: <b>super</b> / Senha: <b>super123</b></li>
+                    <li>Na próxima tela coloque PPPOE e também o usuário e senha PPPOE do cliente.</li>
+                    <li>Próxima tela configure o WIFI 2G e 5G e a senha dos dois.</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/grtk2/01.png" alt="Configuração Greatek V2 - 1" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>Marque a caixa de seleção <i>usar a mesma senha das redes WI-FI</i> e clique em <b>Aplicar configurações</b>.</li>
+                </ul>
+            </div>
+            <!-- Passo 2 -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2">PASSO 2</h2>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>No menu <b>LAN</b>, na parte <b>GATEWAY</b> deixe exatamente como o exemplo abaixo:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/grtk2/02.png" alt="Gateway Greatek V2" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>Clique em <b>INICIO</b> (será necessário fazer login novamente no roteador), e clique em <b>AVANÇADO</b>, no menu principal, no canto superior direito.</li>
+                    <li>No submenu <b>IPv6 WAN</b> coloque <i>"PPP"</i> em <b>WAN LINK TYPE</b> e marque <b>SLAAC</b> abaixo e depois clique em <b>SAVE</b>. Deve ficar conforme exemplo abaixo:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/grtk2/03.png" alt="IPv6 WAN Greatek V2" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+            </div>
+            <!-- Passo 3 -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2">PASSO 3</h2>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>No submenu <b>UPnP</b> clique em <b>ENABLE UPnP</b> e depois clica em <b>SAVE</b>.</li>
+                    <li>No submenu <b>Pass-through</b> marque a caixa de seleção <i>Enable Web Access from WAN</i> e depois coloque <b>8255</b> em <b>Access Port</b> e clique em <b>SAVE & APPLY</b>. Deve ficar igual ao exemplo abaixo:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/grtk2/04.png" alt="Pass-through Greatek V2" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>Depois dos 30 segundos, clique na barra de navegação e digite 192.168.1.1/padrao.htm e clique em <b>SET TO DEFAULT</b> ou <b>DEFINIR COMO PADRÃO</b>.</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/grtk2/05.png" alt="Set to Default Greatek V2" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 mt-4">
+                    <h5 class="text-green-800 font-semibold">A configuração foi realizada com sucesso.<br>Confirme com o cliente se consegue navegar na internet normalmente.</h5>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

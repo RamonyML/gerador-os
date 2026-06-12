@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suporte MZNET</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="auth.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-image: url('/fundos/fundo003.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-gradient {
+      background: linear-gradient(to right, #000000, #0f7939);
+    }
+    
+    .icon-container {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    
+    ::selection {
+      background-color: rgba(56, 175, 71, 0.2);
+      color: #28a746;
+    }
+    
+    .title-underline::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background-color: #38af47;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 bg-opacity-90">
+  <!-- Navbar -->
+  <nav class="nav-gradient shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+            <span class="text-white font-bold text-lg">Gerador de O.S</span>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="/index.html" class="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+              <a href="/suporte/modelos/index.html" class="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">Modelos de O.S</a>
+              <div class="relative group">
+                <button class="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                  Tutoriais
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <a href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Roteador resetado</a>
+                  <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">RokuTV</a>
+                  <div class="border-t border-gray-200 my-1"></div>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Outros</a>
+                </div>
+              </div>
+              <a href="/suporte/separadores/separadores.html" target="_blank" class="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">Separadores MAC</a>
+              <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">Encerramentos de O.S</a>
+              <a href="https://geradordeos-mz2.netlify.app/" class="text-green-200 hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">Versão Anterior</a>
+            </div>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <div class="ml-4 flex items-center md:ml-6">
+            <span id="userEmail" class="text-white text-sm mr-4">Usuário não autenticado</span>
+            <button id="logoutButton" class="px-4 py-1 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200">Sair</button>
+          </div>
+        </div>
+        <div class="-mr-2 flex md:hidden">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-green-800">
+      <a href="/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+      <a href="/suporte/modelos/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Modelos de O.S</a>
+      <a href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank" class="text-white block px-3 py-2 rounded-md text-base font-medium">Roteador resetado</a>
+      <a href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank" class="text-white block px-3 py-2 rounded-md text-base font-medium">RokuTV</a>
+      <a href="/suporte/separadores/separadores.html" target="_blank" class="text-white block px-3 py-2 rounded-md text-base font-medium">Separadores MAC</a>
+      <a href="/suporte/encerramentos/altplano-troca/altplano-troca.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Encerramentos de O.S</a>
+      <a href="https://geradordeos-mz2.netlify.app/" class="text-green-200 block px-3 py-2 rounded-md text-base font-medium">Versão Anterior</a>
+      <div class="pt-4 pb-3 border-t border-green-700">
+        <div class="flex items-center px-5">
+          <div class="text-sm">
+            <span id="mobileUserEmail" class="text-white">Usuário não autenticado</span>
+          </div>
+        </div>
+        <div class="mt-3 px-2 space-y-1">
+          <button id="mobileLogoutButton" class="block w-full px-3 py-2 text-left text-sm font-medium text-white rounded-md hover:bg-green-700">Sair</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">SUPORTE</h1>
+      <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Selecione o tipo de serviço que deseja realizar</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Card 1 -->
+      <a href="/suporte/dash-altplan.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-green-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38af47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">ALTERAÇÃO DE PLANO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para alteração de planos</p>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="/suporte/dash-mudend.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-blue-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path><path d="M21 3H9a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H3"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">MUDANÇA DE ENDEREÇO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para mudança de endereço</p>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="/suporte/dash-man.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-yellow-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">MANUTENÇÃO</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para serviços de manutenção</p>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="/suporte/dash-stb.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-purple-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="15" x="2" y="7" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">CONVERSORES DE MÍDIA</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para instalação de conversores</p>
+        </div>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="/suporte/dash-extend.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-red-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5 3.87"></path><path d="M8 21h8"></path><path d="M12 10v4"></path><path d="M12 18h.01"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">WI-FI EXTEND</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para extensão de sinal Wi-Fi</p>
+        </div>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="/suporte/altera-senha/altera-senha.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-indigo-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="16" r="1"></circle><rect x="3" y="10" width="18" height="12" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 10 0v3"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">SENHA/SSID WI-FI</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para alteração de credenciais</p>
+        </div>
+      </a>
+
+      <!-- Card 7 -->
+      <a href="/suporte/dash-feedback.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-pink-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">FEEDBACK</h3>
+          <p class="text-gray-500 text-sm">Envie feedback sobre os serviços</p>
+        </div>
+      </a>
+
+      <!-- Card 8 -->
+      <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-cyan-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="12" cy="13" r="3"></circle><path d="m18 22-3-3-3 3"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">LIBERAÇÃO DE PORTAS</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para liberação de portas</p>
+        </div>
+      </a>
+
+      <!-- Card 9 -->
+      <a href="/suporte/termo-resp/termo-resp-padrao.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-orange-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21h-8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2Z"></path><path d="M16 1v4"></path><path d="M8 3v2"></path><path d="M8 7v2"></path><path d="M8 11v2"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">TERMO DE RESPONSABILIDADE</h3>
+          <p class="text-gray-500 text-sm">Gere termos de responsabilidade</p>
+        </div>
+      </a>
+
+      <!-- Card 10 -->
+      <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-teal-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">VISITA INSTRUTIVA</h3>
+          <p class="text-gray-500 text-sm">Gere ordens para visitas instrutivas</p>
+        </div>
+      </a>
+
+      <!-- Card 11 -->
+      <a href="/suporte/pesquisa-cep/pesquisa-end.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+        <div class="p-6">
+          <div class="icon-container bg-amber-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">PESQUISA DE ENDEREÇOS</h3>
+          <p class="text-gray-500 text-sm">Consulte endereços e CEPs</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <!-- Report Button -->
+  <a href="/report.html" class="fixed bottom-8 right-8 bg-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors duration-200" title="Reportar problemas ou sugestões" target="_blank">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+  </a>
+
+  <!-- Footer -->
+  <footer class="bg-transparent py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-right">
+      <p class="text-gray-600 text-sm">Versão 3.1.1</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+    
+    const auth = getAuth(app);
+
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html";
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Atualiza email nos elementos
+        document.getElementById("userEmail").textContent = `${user.email}`;
+        document.getElementById("mobileUserEmail").textContent = `${user.email}`;
+      }
+    });
+
+    // Logout desktop
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+
+    // Logout mobile
+    document.getElementById('mobileLogoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatar Bairros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        textarea {
+            height: 150px;
+        }
+        #output {
+            white-space: pre-line;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+  <div class="d-flex justify-content-end">
+    <button id="logoutButton" class="btn btn-danger btn-sm position-flex ">Sair</button>
+  </div>
+
+    <h1>Formatar Lista de Bairros</h1>
+    <textarea id="input" placeholder="Cole aqui a lista de bairros..."></textarea>
+    <input type="button" value="Formatar" onclick="formatBairros()">
+    <h2>Bairros Formatados</h2>
+    <div id="output"></div>
+
+    <script>
+        function formatBairros() {
+            const input = document.getElementById('input').value;
+            const bairros = input.split('\n').map(bairro => bairro.trim()).filter(bairro => bairro !== '');
+            const formattedBairros = bairros.map(bairro => `"${bairro}",`).join('\n');
+            document.getElementById('output').innerText = formattedBairros;
+        }
+    </script>
+<!-- dashboard.html ou outra página protegida -->
+<script type="module">
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+  import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+  
+  const auth = getAuth(app);
+
+  // Verifica se o usuário está autenticado
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      console.log("Usuário não autenticado, redirecionando...");
+      window.location.href = "/login.html"; // Redireciona para a página de login
+    } else {
+      console.log("Usuário autenticado!", user);
+      // Exibe o conteúdo após a verificação
+      document.getElementById("main-content").style.display = "block";
+    }
+  });
+
+  // Adiciona o evento de logout
+  document.getElementById('logoutButton').addEventListener('click', () => {
+    signOut(auth).then(() => {
+      console.log("Usuário deslogado com sucesso!");
+      window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+    }).catch((error) => {
+      console.error("Erro ao deslogar: ", error);
+    });
+  });
+</script>
+
+<script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

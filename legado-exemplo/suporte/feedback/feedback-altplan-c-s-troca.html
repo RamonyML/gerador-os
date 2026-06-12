@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #087539); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #abd6a5; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-feedback.html" class="text-success">Feedback</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Alteração de Plano</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #1a9238;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #1a9238;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #1a9238;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #116b28;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 250px !important;
+    border: 1px solid #1a9238;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #1a9238;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #991b1b; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #d10e0e;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+::selection {
+    background-color: #1fa064;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+
+.danger {
+    border: 1px solid rgb(224, 224, 224);
+}
+
+.primary {
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.success {
+    border: 1px solid rgb(10, 141, 10);
+}
+
+#saidaTexto {
+    height: 200px; /* Ajuste conforme necessário */
+}
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">Feedback</h1>
+                <h2 class="mb-4">Alteração de Plano com/sem troca de equipamento</h2>
+          </div>
+            <!-- Título clicável -->
+            <button class="btn btn-outline-success" type="button" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">
+              Orientações adicionais
+            </button>
+            <!-- Texto que aparece ao expandir -->
+            <div class="collapse" id="infoCollapse">
+              <div class="card card-body mt-2">
+                <b>Não é necessário descrever em detalhes o ocorrido. A informação pode ser registrada de forma mais objetiva em uma única frase. Exemplo:</b>
+                <ul>
+                  <li>Cliente optou por não instalar os aplicativos MZTV/CDNTV.</li>
+                  <li>Câmeras e alarmes em pleno funcionamento.</li>
+                  <li>Equipamentos conectados em “T”; cliente foi orientado sobre os riscos.</li>
+                  <li>Cliente utiliza lista IPTV e foi informado sobre a natureza do serviço.</li>
+                </ul>
+              </div>
+            </div>
+        </div><hr>
+        <form class="needs-validation" id="feedbackForm" novalidate>
+            <div class="row g-3">
+                <div class="col-md-3">
+                  <label class="form-label">Nome do Cliente</label>
+                  <input type="text" id="cliente" class="form-control" placeholder="Primeiro nome">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Canal</label>
+                    <select id="canal" class="form-select">
+                        <option value="">Selecione</option>
+                      <option value="LIGAÇÃO">Ligação</option>
+                      <option value="WHATSAPP">WhatsApp</option>
+                    </select>
+                  </div>  
+                <div class="col-md-3">
+                  <label class="form-label">Contato (Telefone)</label>
+                  <input type="text" id="contato" class="form-control" placeholder="34 99999-9999" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Data e Hora</label>
+                  <input type="text" id="dataHora" class="form-control" placeholder="01/01/2025 - 12:00">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Plano</label>
+                  <select id="plano" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="150 MEGA">150 MEGA</option>
+                    <option value="300 MEGA">300 MEGA</option>
+                    <option value="600 MEGA">600 MEGA</option>
+                    <option value="1.000 MEGA">1.000 MEGA</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Houve troca de roteador?</label>
+                  <select id="trocaRoteador" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="sim">Sim</option>
+                    <option value="nao">Não</option>
+                  </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <input type="checkbox" id="dispensouTestes" class="form-check-input me-2">
+                    <label class="form-check-label" for="dispensouTestes">Cliente dispensou testes</label>
+                  </div>
+                <div class="col-md-3" id="modeloRoteadorDiv" style="display:none;">
+                  <label class="form-label">Roteador atual</label>
+                  <select id="modeloRoteador" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option value="MULTILASER">MULTILASER</option>
+                    <option value="TP-LINK 840">TP-LINK 840</option>
+                    <option value="TP LINK C-20">TP LINK C-20</option>        
+                    <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+                    <option value="TP LINK C-5">TP LINK C-5</option>
+                    <option value="TP LINK G-5">TP LINK G-5</option>
+                    <option value="GREATEK">GREATEK</option>
+                    <option value="INTELBRAS">INTELBRAS</option>
+                    <option value="HUAWEI AX2">HUAWEI AX2</option>
+                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                    <option value="ZTE H199-A">ZTE H199-A</option>
+                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                    <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Equipamento compatível?</label>
+                  <select id="possuiEquipamento" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option value="POSSUI">Sim</option>
+                    <option value="NÃO POSSUI">Não</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Aparelho testado:</label>
+                    <select id="aparelho" class="form-select">
+                      <option value="">Selecione...</option>
+                      <option value="CELULAR">Celular</option>
+                      <option value="DESKTOP">Desktop</option>
+                      <option value="NOTEBOOK">Notebook</option>
+                      <option value="TABLET">Tablet</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                  <label class="form-label">Marca/Modelo</label>
+                  <input type="text" id="marcaModelo" class="form-control" placeholder="Xiaomi, iPhone...">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Velocidade</label>
+                  <input type="text" id="velocidade" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Wi-Fi/Cabo</label>
+                  <select id="wifiCabo" class="form-select">
+                  <option value="">Selecione</option>
+                  <option value="WI-FI">Wi-Fi</option>
+                  <option value="CABO">Cabo de rede</option>
+                </select>
+
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Velocidade Kit Cabo</label>
+                  <input type="text" id="caboTec" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Velocidade Kit Wi-Fi</label>
+                  <input type="text" id="wifiTec" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Energia</label>
+                  <select id="energia" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="TOMADA INDIVIDUAL">TOMADA INDIVIDUAL</option>
+                    <option value="RÉGUA DE ENERGIA">RÉGUA DE ENERGIA</option>
+                    <option value="EXTENSÃO ELÉTRICA">EXTENSÃO ELÉTRICA</option>
+                    <option value="T DE ENERGIA">T DE ENERGIA</option>
+                    <option value="OUTRO">OUTRO</option>
+                  </select>
+                </div>
+                <div class="col-md-8" id="energiaOutroDiv" style="display:none;">
+                  <label class="form-label">Descreva onde o equipamento está conectado à energia</label>
+                  <input type="text" id="energiaOutro" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex align-items-center">
+                    <input type="checkbox" id="osComCustos" class="form-check-input me-2">
+                    <label class="form-check-label" for="osComCustos">O.S. com custos</label>
+                  </div>
+                <div class="col-md-2" id="custoDiv" style="display:none;">
+                  <label class="form-label">Valor da O.S.</label>
+                  <input type="text" id="valorOS" class="form-control" placeholder="Ex: 50,00">
+                </div>
+                <div class="col-12">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Observações:</label>
+                    <input type="text" id="obs" class="form-control" placeholder="Cliente optou por não instalar os aplicativos MZTV / CDNTV" title="A informação deve ser objetiva, resumida em uma única frase.">
+                  </div><hr>
+  
+            </form>
+        </div>
+              <button onclick="gerarTexto()" class="btn btn-success w-100">Gerar Texto</button>
+              <textarea id="resultado" class="form-control" readonly></textarea>
+              <button class="btn btn-success btn-block mb-2" onclick="copiarTexto()">Copiar Texto</button>
+              <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar Tudo</button>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.querySelector("form");
+      const inputs = form.querySelectorAll("input, select, textarea");
+      const submitButton = form.querySelector("button[type='submit']");
+    
+      // Função para validar e aplicar classes
+      function validarCampos() {
+        let tudoPreenchido = true;
+    
+        inputs.forEach(function (input) {
+          // Ignora inputs do tipo checkbox e radio
+          if ((input.type !== "checkbox" && input.type !== "radio") && input.hasAttribute("required")) {
+            if (input.value.trim() === "") {
+              input.classList.remove("primary", "success");
+              input.classList.add("danger");
+              tudoPreenchido = false;
+            } else {
+              input.classList.remove("danger", "success");
+              input.classList.add("primary");
+            }
+          }
+        });
+    
+        return tudoPreenchido;
+      }
+    
+      // Aplica validação ao digitar/modificar campos
+      inputs.forEach(function (input) {
+        input.addEventListener("input", function () {
+          validarCampos();
+        });
+      });
+    
+      // Valida ao enviar o formulário
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (validarCampos()) {
+          // Marca como sucesso
+          inputs.forEach(function (input) {
+            input.classList.remove("danger", "primary");
+            input.classList.add("success");
+          });
+          gerarTexto(); // ✅ sua função atual
+        } else {
+          validarCampos(); // Marca os campos problemáticos
+        }
+      });
+    });
+    
+    // Função de limpar campos
+    function limparCampos() {
+      const form = document.querySelector("form");
+      const inputs = form.querySelectorAll("input, select, textarea");
+    
+      inputs.forEach(function (input) {
+        if (input.type !== "checkbox" && input.type !== "radio") {
+          input.value = "";
+        } else {
+          input.checked = false;
+        }
+        input.classList.remove("danger", "primary", "success");
+      });
+    }
+    </script>
+    
+<script>
+  // Flatpickr
+  flatpickr("#dataHora", {
+    enableTime: true,
+    time_24hr: true,
+    locale: 'pt',
+    dateFormat: "d/m/Y \\À\\S H:i",
+  });
+
+  // Máscara telefone
+  IMask(document.getElementById("contato"), {
+    mask: "00 00000-0000"
+  });
+
+  // Filtro só números
+  ['velocidade', 'caboTec', 'wifiTec'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function () {
+      this.value = this.value.replace(/[^0-9.,]/g, '');
+    });
+  });
+
+  // Mostrar campos extras
+  document.getElementById("trocaRoteador").addEventListener("change", function () {
+    document.getElementById("modeloRoteadorDiv").style.display = this.value === "nao" ? "block" : "none";
+  });
+
+  document.getElementById("energia").addEventListener("change", function () {
+    document.getElementById("energiaOutroDiv").style.display = this.value === "OUTRO" ? "block" : "none";
+  });
+
+  document.getElementById("osComCustos").addEventListener("change", function () {
+    document.getElementById("custoDiv").style.display = this.checked ? "block" : "none";
+  });
+
+  // Controle dos campos de teste baseado no checkbox de dispensar testes
+  document.getElementById("dispensouTestes").addEventListener("change", function () {
+    const camposTeste = [
+      "possuiEquipamento",
+      "aparelho", 
+      "marcaModelo",
+      "velocidade",
+      "wifiCabo"
+    ];
+    
+    camposTeste.forEach(campoId => {
+      const campo = document.getElementById(campoId);
+      if (campo) {
+        campo.disabled = this.checked;
+        if (this.checked) {
+          campo.value = "";
+          campo.classList.add("text-muted");
+        } else {
+          campo.classList.remove("text-muted");
+        }
+      }
+    });
+  });
+
+  function gerarTexto() {
+    const cliente = document.getElementById("cliente").value.toUpperCase();
+    const obs = document.getElementById("obs").value.toUpperCase();
+    const canal = document.getElementById("canal").value;
+    const contato = document.getElementById("contato").value;
+    const dataHora = document.getElementById("dataHora").value;
+    const plano = document.getElementById("plano").value;
+    const troca = document.getElementById("trocaRoteador").value;
+    const modeloRoteador = document.getElementById("modeloRoteador").value;
+    const possui = document.getElementById("possuiEquipamento").value;
+    const aparelho = document.getElementById("aparelho").value;
+    const marcaModelo = document.getElementById("marcaModelo").value;
+    const velocidade = document.getElementById("velocidade").value;
+    const wifiCabo = document.getElementById("wifiCabo").value;
+    const caboTec = document.getElementById("caboTec").value;
+    const wifiTec = document.getElementById("wifiTec").value;
+    const energia = document.getElementById("energia").value === "OUTRO"
+      ? document.getElementById("energiaOutro").value.toUpperCase()
+      : document.getElementById("energia").value;
+    const osComCustos = document.getElementById("osComCustos").checked;
+    const valorOS = document.getElementById("valorOS").value;
+    const dispensouTestes = document.getElementById("dispensouTestes").checked;
+
+    const linha1 = `FIZ FEEDBACK COM ${cliente} POR ${canal.toUpperCase()} (${contato}) DIA ${dataHora} HRS.`;
+    const linha2 = troca === "sim"
+      ? `${cliente} CONFIRMOU A TROCA DO ROTEADOR E CONFIRMOU A ALTERAÇÃO DO PLANO PARA: ${plano}.`
+      : `${cliente} CONFIRMOU A ALTERAÇÃO DO PLANO PARA: ${plano}. ROTEADOR INSTALADO: ${modeloRoteador.toUpperCase()}.`;
+    const linha3 = `${cliente} CONFIRMOU QUE FOI REALIZADO TESTES DE AFERIÇÃO DA VELOCIDADE, ORIENTAÇÃO DE COBERTURA WI-FI E REDE 2.4G E 5.8G.`;
+    
+    // Verifica se o cliente dispensou os testes
+    const linha4 = dispensouTestes 
+      ? `${cliente} DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS.`
+      : `${cliente} ${possui} EQUIPAMENTO QUE AFERE A BANDA (${aparelho.toUpperCase()} ${marcaModelo.toUpperCase()} AFERIU ${velocidade}MB VIA ${wifiCabo.toUpperCase()}).`;
+    
+    const linha4b = `NOTEBOOK DO TÉCNICO VIA CABO DE REDE AFERIU ${caboTec}MEGA E ${wifiTec}MEGA VIA WI-FI CONECTADO NA REDE 5G.`;
+    
+    const linha5 = `EQUIPAMENTOS INSTALADOS EM ${energia}.`;
+    const linha6 = osComCustos ? `O.S COM O CUSTO DE R$${valorOS}` : "O.S. SEM CUSTOS.";
+    const linha7 = "CLIENTE SEM DUVIDAS.\n";
+    const linha8 = `OBS: ${obs}`;
+
+    const resultado = [linha1, linha2, linha3, linha4, linha4b, linha5, linha6, linha7, linha8].join('\n');
+    document.getElementById("resultado").value = resultado;
+  }
+
+  // FUNÇÕES DOS BOTÕES
+
+  function copiarTexto() {
+  const texto = document.getElementById("resultado");
+  
+  if (texto.value.trim() !== "") {
+    navigator.clipboard.writeText(texto.value)
+      .then(() => {
+        alert("Texto copiado para a área de transferência!");
+      })
+      .catch(err => {
+        console.error("Erro ao copiar texto: ", err);
+        alert("Não foi possível copiar o texto.");
+      });
+  } else {
+    alert("Não há texto para copiar.");
+  }
+}
+
+function limparCampos() {
+// Limpar campos de entrada
+const inputs = document.querySelectorAll("input, textarea, select");
+inputs.forEach(el => {
+  if (el.type === "checkbox" || el.type === "radio") {
+    el.checked = false;
+  } else {
+    el.value = "";
+  }
+});
+}
+
+
+</script>
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+        document.getElementById('solicitacao').addEventListener('change', function() {
+    var solicitacao = this.value;
+    var ssidInputs = document.querySelectorAll('#atualSSID, #novoSSID');
+    var senhaInputs = document.querySelectorAll('#atualSenha, #novaSenha');
+
+    if (solicitacao === 'SENHA') {
+        ssidInputs.forEach(function(input) {
+            input.disabled = true;
+        });
+        senhaInputs.forEach(function(input) {
+            input.disabled = false;
+        });
+    } else if (solicitacao === 'SSID') {
+        ssidInputs.forEach(function(input) {
+            input.disabled = false;
+        });
+        senhaInputs.forEach(function(input) {
+            input.disabled = true;
+        });
+    } else if (solicitacao === 'SSID E SENHA') {
+        ssidInputs.forEach(function(input) {
+            input.disabled = false;
+        });
+        senhaInputs.forEach(function(input) {
+            input.disabled = false;
+        });
+    } else {
+        ssidInputs.forEach(function(input) {
+            input.disabled = true;
+        });
+        senhaInputs.forEach(function(input) {
+            input.disabled = true;
+        });
+    }
+});
+
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

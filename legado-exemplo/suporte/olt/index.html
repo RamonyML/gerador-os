@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de OLTs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .olt-card {
+            transition: all 0.3s ease;
+        }
+        .olt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .port-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .port-active {
+            background-color: #10B981;
+        }
+        .port-inactive {
+            background-color: #EF4444;
+        }
+        .port-warning {
+            background-color: #F59E0B;
+        }
+        .breadcrumb {
+            background-color: #F3F4F6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .search-highlight {
+            background-color: #FEF08A;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Gerenciamento de OLTs</h1>
+        
+        <!-- Search Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-grow relative">
+                    <input type="text" id="searchInput" placeholder="Buscar por DGO, CTO ou cliente..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button onclick="performSearch()" class="absolute right-2 top-2 text-gray-500 hover:text-blue-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button onclick="performSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
+                    Buscar
+                </button>
+            </div>
+            <div id="searchResults" class="mt-4 hidden">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+        
+        <!-- Current Path Breadcrumb -->
+        <div id="breadcrumb" class="breadcrumb mb-6 flex items-center text-sm">
+            <span class="font-medium">Navegação:</span>
+            <span id="currentPath" class="ml-2 text-blue-600">Home</span>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div id="contentArea">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="hidden">
+                <div class="loading-spinner"></div>
+                <p class="text-center text-gray-600">Carregando dados...</p>
+            </div>
+            
+            <!-- OLTs Grid (Initial View) -->
+            <div id="oltsView" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- OLT cards will be dynamically generated -->
+            </div>
+            
+            <!-- Plates View (Hidden by default) -->
+            <div id="platesView" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="platesTitle" class="text-2xl font-semibold text-gray-700"></h2>
+                    <button onclick="backToOlts()" class="text-blue-600 hover:text-blue-800 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar para OLTs
+                    </button>
+                </div>
+                <div id="platesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <!-- Plates will be dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- PONs View (Hidden by default) -->
+            <div id="ponsView" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="ponsTitle" class="text-2xl font-semibold text-gray-700"></h2>
+                    <button onclick="backToPlates()" class="text-blue-600 hover:text-blue-800 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar para Placas
+                    </button>
+                </div>
+                <div id="ponsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <!-- PONs will be dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- Clients View (Hidden by default) -->
+            <div id="clientsView" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="clientsTitle" class="text-2xl font-semibold text-gray-700"></h2>
+                    <button onclick="backToPons()" class="text-blue-600 hover:text-blue-800 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar para Portas
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-4">Informações da PON</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">DGO</label>
+                            <p id="dgoInfo" class="mt-1 text-gray-800">DGO 23</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Status</label>
+                            <p id="ponStatus" class="mt-1 text-gray-800">
+                                <span class="port-status port-active"></span> Ativa
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-medium text-gray-700 mb-4">Clientes Conectados</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CTO</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plano</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Clients will be dynamically generated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="position-fixed bottom-0 end-0 m-3">
+            <a href="/base.xlsx" download class="btn btn-success">
+              Exportar Excel
+            </a>
+          </div>
+    </div>
+    <script>
+        // Global variable to store OLT data
+        let oltData = {};
+    
+        // Navigation state
+        let currentState = {
+            view: 'olts',
+            olt: null,
+            plate: null,
+            pon: null
+        };
+    
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllOltsData();
+        });
+    
+        // Function to load all OLTs data from dgoNames.json
+        async function loadAllOltsData() {
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/dgoNames.json');
+                if (!response.ok) throw new Error('Falha ao carregar dgoNames.json');
+                const dgoNames = await response.json();
+    
+                // Generate OLT data using names from dgoNames.json
+                const oltNames = ["OLT1", "OLT2", "OLT3", "OLT4"];
+                const oltLocations = ["Centro", "Zona Norte", "Zona Sul", "Zona Leste"];
+    
+                for (let o = 0; o < 4; o++) {
+                    const oltId = `OLT${o+1}`;
+                    oltData[oltId] = {
+                        name: oltNames[o],
+                        location: oltLocations[o],
+                        plates: {}
+                    };
+    
+                    // Create 16 plates for each OLT
+                    for (let p = 1; p <= 18; p++) {
+                        const plateId = `PLACA${p}`;
+                        oltData[oltId].plates[plateId] = {
+                            name: `Placa ${p}`,
+                            pons: {}
+                        };
+    
+                        // Create 16 PONs for each plate
+                        for (let pon = 1; pon <= 16; pon++) {
+                            const ponId = `PON${pon}`;
+                            const dgoName = dgoNames[oltId]?.[plateId]?.[ponId] || `DGO ${oltId}-${plateId}-${ponId}`;
+                            const status = dgoName === "inativo" ? "inactive" : "active"; // Assume active unless "inativo"
+    
+                            oltData[oltId].plates[plateId].pons[ponId] = {
+                                name: `Porta ${pon}`,
+                                status: status,
+                                dgo: dgoName,
+                                clients: [] // Initialize empty clients array
+                            };
+                        }
+                    }
+                }
+    
+                // Render the OLTs view
+                renderOlts();
+            } catch (error) {
+                console.error('Error loading OLT data:', error);
+                alert('Erro ao carregar dados das OLTs. Por favor, tente novamente.');
+            } finally {
+                showLoading(false);
+            }
+        }
+    
+        // Show/hide loading indicator
+        function showLoading(show) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (show) {
+                loadingIndicator.classList.remove('hidden');
+                document.getElementById('oltsView').classList.add('hidden');
+                document.getElementById('platesView').classList.add('hidden');
+                document.getElementById('ponsView').classList.add('hidden');
+                document.getElementById('clientsView').classList.add('hidden');
+            } else {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+    
+        // Render OLTs view
+        function renderOlts() {
+            currentState.view = 'olts';
+            currentState.olt = null;
+            currentState.plate = null;
+            currentState.pon = null;
+            
+            updateBreadcrumb();
+            
+            const oltsView = document.getElementById('oltsView');
+            oltsView.innerHTML = '';
+            
+            for (const oltId in oltData) {
+                const olt = oltData[oltId];
+                
+                const oltCard = document.createElement('div');
+                oltCard.className = 'olt-card bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg';
+                oltCard.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-server text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">${olt.name}</h3>
+                            <p class="text-gray-500">${olt.location}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <div>
+                            <i class="fas fa-microchip mr-1"></i> 16 placas
+                        </div>
+                        <div>
+                            <i class="fas fa-plug mr-1"></i> 256 portas
+                        </div>
+                    </div>
+                `;
+                
+                oltCard.addEventListener('click', () => showPlates(oltId));
+                oltsView.appendChild(oltCard);
+            }
+            
+            document.getElementById('oltsView').classList.remove('hidden');
+            document.getElementById('platesView').classList.add('hidden');
+            document.getElementById('ponsView').classList.add('hidden');
+            document.getElementById('clientsView').classList.add('hidden');
+        }
+    
+        // Show plates for a specific OLT
+        function showPlates(oltId) {
+            currentState.view = 'plates';
+            currentState.olt = oltId;
+            currentState.plate = null;
+            currentState.pon = null;
+            
+            updateBreadcrumb();
+            
+            const olt = oltData[oltId];
+            document.getElementById('platesTitle').textContent = olt.name;
+            
+            const platesGrid = document.getElementById('platesGrid');
+            platesGrid.innerHTML = '';
+            
+            for (const plateId in olt.plates) {
+                const plate = olt.plates[plateId];
+                const plateNum = plateId.replace('PLACA', '');
+                
+                // Calculate active PONs for this plate
+                let activePons = 0;
+                for (const ponId in plate.pons) {
+                    if (plate.pons[ponId].status === 'active') {
+                        activePons++;
+                    }
+                }
+                
+                const plateCard = document.createElement('div');
+                plateCard.className = 'bg-white rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 text-center';
+                plateCard.innerHTML = `
+                    <div class="bg-blue-100 p-3 rounded-full inline-block mb-3">
+                        <i class="fas fa-microchip text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">${plate.name}</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        <span class="text-green-600">${activePons}</span> de 16 portas ativas
+                    </p>
+                `;
+                
+                plateCard.addEventListener('click', () => showPons(oltId, plateId));
+                platesGrid.appendChild(plateCard);
+            }
+            
+            document.getElementById('oltsView').classList.add('hidden');
+            document.getElementById('platesView').classList.remove('hidden');
+            document.getElementById('ponsView').classList.add('hidden');
+            document.getElementById('clientsView').classList.add('hidden');
+        }
+    
+        // Show PONs for a specific plate
+        function showPons(oltId, plateId) {
+            currentState.view = 'pons';
+            currentState.olt = oltId;
+            currentState.plate = plateId;
+            currentState.pon = null;
+            
+            updateBreadcrumb();
+            
+            const olt = oltData[oltId];
+            const plate = olt.plates[plateId];
+            const plateNum = plateId.replace('PLACA', '');
+            
+            document.getElementById('ponsTitle').textContent = `${olt.name} - ${plate.name}`;
+            
+            const ponsGrid = document.getElementById('ponsGrid');
+            ponsGrid.innerHTML = '';
+            
+            for (const ponId in plate.pons) {
+                const pon = plate.pons[ponId];
+                const ponNum = ponId.replace('PON', '');
+                
+                let statusClass, statusText;
+                if (pon.status === 'active') {
+                    statusClass = 'port-active';
+                    statusText = 'Ativa';
+                } else if (pon.status === 'inactive') {
+                    statusClass = 'port-inactive';
+                    statusText = 'Inativa';
+                } else {
+                    statusClass = 'port-warning';
+                    statusText = 'Problema';
+                }
+                
+                const ponCard = document.createElement('div');
+                ponCard.className = 'bg-white rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 text-center fade-in';
+                ponCard.innerHTML = `
+                    <div class="flex justify-center mb-2">
+                        <span class="port-status ${statusClass}"></span>
+                    </div>
+                    <h3 class="font-medium text-gray-800">${pon.name}</h3>
+                    <p class="text-sm text-gray-500 mt-1">${pon.dgo}</p>
+                    <p class="text-xs mt-1">${pon.clients.length} clientes</p>
+                `;
+                
+                ponCard.addEventListener('click', () => showClients(oltId, plateId, ponId));
+                ponsGrid.appendChild(ponCard);
+            }
+            
+            document.getElementById('oltsView').classList.add('hidden');
+            document.getElementById('platesView').classList.add('hidden');
+            document.getElementById('ponsView').classList.remove('hidden');
+            document.getElementById('clientsView').classList.add('hidden');
+        }
+    
+        // Show clients for a specific PON
+        function showClients(oltId, plateId, ponId) {
+            currentState.view = 'clients';
+            currentState.olt = oltId;
+            currentState.plate = plateId;
+            currentState.pon = ponId;
+            
+            updateBreadcrumb();
+            
+            const olt = oltData[oltId];
+            const plate = olt.plates[plateId];
+            const pon = plate.pons[ponId];
+            const plateNum = plateId.replace('PLACA', '');
+            const ponNum = ponId.replace('PON', '');
+            
+            document.getElementById('clientsTitle').textContent = `${olt.name} - ${plate.name} - ${pon.name}`;
+            document.getElementById('dgoInfo').textContent = pon.dgo;
+            
+            // Update status indicator
+            const statusElement = document.getElementById('ponStatus');
+            statusElement.innerHTML = '';
+            
+            let statusClass, statusText;
+            if (pon.status === 'active') {
+                statusClass = 'port-active';
+                statusText = 'Ativa';
+            } else if (pon.status === 'inactive') {
+                statusClass = 'port-inactive';
+                statusText = 'Inativa';
+            } else {
+                statusClass = 'port-warning';
+                statusText = 'Problema';
+            }
+            
+            const statusSpan = document.createElement('span');
+            statusSpan.className = `port-status ${statusClass} mr-2`;
+            statusElement.appendChild(statusSpan);
+            statusElement.appendChild(document.createTextNode(statusText));
+            
+            // Populate clients table
+            const clientsTable = document.getElementById('clientsTable');
+            clientsTable.innerHTML = '';
+            
+            if (pon.clients.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                        Nenhum cliente conectado nesta PON
+                    </td>
+                `;
+                clientsTable.appendChild(row);
+            } else {
+                pon.clients.forEach(client => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${client.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${client.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${client.cto}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${client.plan}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${client.status === 'active' ? 'Ativo' : 'Inativo'}
+                            </span>
+                        </td>
+                    `;
+                    clientsTable.appendChild(row);
+                });
+            }
+            
+            document.getElementById('oltsView').classList.add('hidden');
+            document.getElementById('platesView').classList.add('hidden');
+            document.getElementById('ponsView').classList.add('hidden');
+            document.getElementById('clientsView').classList.remove('hidden');
+        }
+    
+        // Navigation functions
+        function backToOlts() {
+            renderOlts();
+        }
+    
+        function backToPlates() {
+            showPlates(currentState.olt);
+        }
+    
+        function backToPons() {
+            showPons(currentState.olt, currentState.plate);
+        }
+    
+        // Update breadcrumb navigation
+        function updateBreadcrumb() {
+            const pathElement = document.getElementById('currentPath');
+            pathElement.innerHTML = '';
+            
+            // Home link
+            const homeLink = document.createElement('a');
+            homeLink.href = '#';
+            homeLink.className = 'text-blue-600 hover:text-blue-800 hover:underline';
+            homeLink.textContent = 'Home';
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                renderOlts();
+            });
+            pathElement.appendChild(homeLink);
+            
+            // OLT link if applicable
+            if (currentState.olt) {
+                pathElement.appendChild(document.createTextNode(' > '));
+                
+                const oltLink = document.createElement('a');
+                oltLink.href = '#';
+                oltLink.className = 'text-blue-600 hover:text-blue-800 hover:underline';
+                oltLink.textContent = oltData[currentState.olt].name;
+                oltLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPlates(currentState.olt);
+                });
+                pathElement.appendChild(oltLink);
+            }
+            
+            // Plate link if applicable
+            if (currentState.plate) {
+                pathElement.appendChild(document.createTextNode(' > '));
+                
+                const plateLink = document.createElement('a');
+                plateLink.href = '#';
+                plateLink.className = 'text-blue-600 hover:text-blue-800 hover:underline';
+                plateLink.textContent = oltData[currentState.olt].plates[currentState.plate].name;
+                plateLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showPons(currentState.olt, currentState.plate);
+                });
+                pathElement.appendChild(plateLink);
+            }
+            
+            // PON link if applicable
+            if (currentState.pon) {
+                pathElement.appendChild(document.createTextNode(' > '));
+                
+                const ponLink = document.createElement('a');
+                ponLink.href = '#';
+                ponLink.className = 'text-blue-600 hover:text-blue-800 hover:underline';
+                ponLink.textContent = oltData[currentState.olt].plates[currentState.plate].pons[currentState.pon].name;
+                ponLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showClients(currentState.olt, currentState.plate, currentState.pon);
+                });
+                pathElement.appendChild(ponLink);
+            }
+        }
+    
+        // Search functionality
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+            
+            resultsContainer.innerHTML = '';
+            resultsContainer.classList.remove('hidden');
+            
+            let foundResults = false;
+            
+            // Search through all OLTs, plates and PONs
+            for (const oltId in oltData) {
+                const olt = oltData[oltId];
+                
+                for (const plateId in olt.plates) {
+                    const plate = olt.plates[plateId];
+                    
+                    for (const ponId in plate.pons) {
+                        const pon = plate.pons[ponId];
+                        
+                        // Check if search term matches DGO
+                        if (pon.dgo.toLowerCase().includes(searchTerm)) {
+                            foundResults = true;
+                            addSearchResult(oltId, plateId, ponId, olt.name, plate.name, pon.name, pon.dgo, 'DGO');
+                        }
+                        
+                        // Check if search term matches any client CTO (currently empty, no clients)
+                        for (const client of pon.clients) {
+                            if (client.cto.toLowerCase().includes(searchTerm)) {
+                                foundResults = true;
+                                addSearchResult(oltId, plateId, ponId, olt.name, plate.name, pon.name, client.cto, 'CTO');
+                            }
+                            
+                            // Check if search term matches client name or ID (currently empty, no clients)
+                            if (client.name.toLowerCase().includes(searchTerm) || client.id.toLowerCase().includes(searchTerm)) {
+                                foundResults = true;
+                                addSearchResult(oltId, plateId, ponId, olt.name, plate.name, pon.name, `${client.name} (${client.id})`, 'Cliente');
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (!foundResults) {
+                resultsContainer.innerHTML = `
+                    <div class="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-400">
+                        <p class="text-gray-700">Nenhum resultado encontrado para "${searchTerm}"</p>
+                    </div>
+                `;
+            }
+        }
+    
+        function addSearchResult(oltId, plateId, ponId, oltName, plateName, ponName, matchText, matchType) {
+            const resultsContainer = document.getElementById('searchResults');
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'bg-white p-4 rounded-lg shadow mb-2 border-l-4 border-blue-400 hover:bg-gray-50 cursor-pointer fade-in';
+            resultDiv.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-medium text-gray-800">${matchType}: ${matchText}</h3>
+                        <p class="text-sm text-gray-600 mt-1">
+                            ${oltName} > ${plateName} > ${ponName}
+                        </p>
+                    </div>
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">${matchType}</span>
+                </div>
+            `;
+            
+            resultDiv.addEventListener('click', () => {
+                showClients(oltId, plateId, ponId);
+                setTimeout(() => {
+                    highlightSearchTerm(document.getElementById('searchInput').value.trim());
+                }, 100);
+            });
+            
+            resultsContainer.appendChild(resultDiv);
+        }
+    
+        function highlightSearchTerm(term) {
+            if (!term) return;
+            
+            const elements = document.querySelectorAll('.search-highlight');
+            elements.forEach(el => {
+                el.classList.remove('search-highlight');
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.textContent), el);
+                parent.normalize();
+            });
+            
+            const dgoInfo = document.getElementById('dgoInfo');
+            highlightText(dgoInfo, term);
+            
+            const clientsTable = document.getElementById('clientsTable');
+            highlightText(clientsTable, term);
+        }
+    
+        function highlightText(element, term) {
+            const text = element.textContent;
+            const regex = new RegExp(term, 'gi');
+            
+            if (element.childNodes.length === 1 && element.childNodes[0].nodeType === Node.TEXT_NODE) {
+                const newText = text.replace(regex, match => 
+                    `<span class="search-highlight">${match}</span>`
+                );
+                
+                if (newText !== text) {
+                    element.innerHTML = newText;
+                }
+            } else {
+                for (const child of element.childNodes) {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        const newText = child.textContent.replace(regex, match => 
+                            `<span class="search-highlight">${match}</span>`
+                        );
+                        
+                        if (newText !== child.textContent) {
+                            const span = document.createElement('span');
+                            span.innerHTML = newText;
+                            element.replaceChild(span, child);
+                        }
+                    } else if (child.nodeType === Node.ELEMENT_NODE) {
+                        highlightText(child, term);
+                    }
+                }
+            }
+        }
+    
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,4359 @@
+{
+  "summary": {
+    "generatedAt": "2026-04-18T04:21:02.979Z",
+    "root": "legado-exemplo/suporte",
+    "totalHtml": 208,
+    "likelyOsGenerators": 186,
+    "otherHtml": 22,
+    "byDemandGuess": {
+      "senha-rede": 1,
+      "alteracao-plano": 58,
+      "midia-tv": 10,
+      "geral": 3,
+      "manutencao": 77,
+      "feedback": 8,
+      "mudanca-endereco": 15,
+      "pesquisa-endereco": 1,
+      "termo-docs": 3,
+      "wifi-extend": 10
+    }
+  },
+  "items": [
+    {
+      "path": "altera-senha/altera-senha.html",
+      "basename": "altera-senha.html",
+      "slugSuggestion": "legacy-altera-senha-altera-senha",
+      "demandCategoryGuess": "senha-rede",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25535
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/index-altplan-remoto.html",
+      "basename": "index-altplan-remoto.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-remoto-index-altplan-remoto",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36440
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/pj/index-altplan-remoto-pj.html",
+      "basename": "index-altplan-remoto-pj.html",
+      "slugSuggestion": "legacy-altplan-remoto-pj-index-altplan-remoto-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31305
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/pres-terceiro1/altplan-remoto-pres-terc.html",
+      "basename": "altplan-remoto-pres-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-pres-terceiro1-altplan-remoto-pres-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 30849
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/presencial/index-altplan-remoto-presencial.html",
+      "basename": "index-altplan-remoto-presencial.html",
+      "slugSuggestion": "legacy-altplan-remoto-presencial-index-altplan-remoto-presencial",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28394
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/terceiro1/index-altplan-terc.html",
+      "basename": "index-altplan-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-terceiro1-index-altplan-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31250
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html",
+      "basename": "index-altplan-sem-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-sem-troca-visita-isenta-index-altplan-sem-troca-visita-",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33398
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-1/st-vi-1.html",
+      "basename": "st-vi-1.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-1-st-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34627
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-2/st-vi-2.html",
+      "basename": "st-vi-2.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-2-st-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35750
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-3/st-vi-3.html",
+      "basename": "st-vi-3.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-3-st-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35798
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-paga/index-altplan-sem-troca-visita-paga.html",
+      "basename": "index-altplan-sem-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-sem-troca-visita-paga-index-altplan-sem-troca-visita-pa",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31912
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-1/ct-vi-1.html",
+      "basename": "ct-vi-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-1-ct-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35369
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-2/ct-vi-2.html",
+      "basename": "ct-vi-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-2-ct-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36638
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-3/ct-vi-3.html",
+      "basename": "ct-vi-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-3-ct-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36706
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/index-altplan-troca-visita-isenta.html",
+      "basename": "index-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-troca-visita-isenta-index-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32746
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-1/ct-vp-1.html",
+      "basename": "ct-vp-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-1-ct-vp-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34694
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-2/ct-vp-2.html",
+      "basename": "ct-vp-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-2-ct-vp-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35659
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-3/ct-vp-3.html",
+      "basename": "ct-vp-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-3-ct-vp-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35694
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/index-altplan-troca-visita-paga.html",
+      "basename": "index-altplan-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-troca-visita-paga-index-altplan-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33701
+    },
+    {
+      "path": "altplan/altplan-remoto/encerramento.html",
+      "basename": "encerramento.html",
+      "slugSuggestion": "legacy-altplan-altplan-remoto-encerramento",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 2851
+    },
+    {
+      "path": "altplan/altplan-remoto/index-altplan-remoto.html",
+      "basename": "index-altplan-remoto.html",
+      "slugSuggestion": "legacy-altplan-altplan-remoto-index-altplan-remoto",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36325
+    },
+    {
+      "path": "altplan/altplan-remoto/pj/index-altplan-remoto-pj.html",
+      "basename": "index-altplan-remoto-pj.html",
+      "slugSuggestion": "legacy-altplan-remoto-pj-index-altplan-remoto-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33226
+    },
+    {
+      "path": "altplan/altplan-remoto/pres-terceiro1/altplan-remoto-pres-terc.html",
+      "basename": "altplan-remoto-pres-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-pres-terceiro1-altplan-remoto-pres-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33991
+    },
+    {
+      "path": "altplan/altplan-remoto/presencial/index-altplan-remoto-presencial.html",
+      "basename": "index-altplan-remoto-presencial.html",
+      "slugSuggestion": "legacy-altplan-remoto-presencial-index-altplan-remoto-presencial",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32503
+    },
+    {
+      "path": "altplan/altplan-remoto/terceiro1/index-altplan-terc.html",
+      "basename": "index-altplan-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-terceiro1-index-altplan-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34103
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html",
+      "basename": "index-altplan-sem-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-sem-troca-visita-isenta-index-altplan-sem-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38679
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-1/st-vi-1.html",
+      "basename": "st-vi-1.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-1-st-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35644
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-2/st-vi-2.html",
+      "basename": "st-vi-2.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-2-st-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36843
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-3/st-vi-3.html",
+      "basename": "st-vi-3.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-3-st-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 37049
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-paga/index-altplan-sem-troca-visita-paga.html",
+      "basename": "index-altplan-sem-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-altplan-sem-troca-visita-paga-index-altplan-sem-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32954
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/backup.html",
+      "basename": "backup.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-backup",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 37739
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-1/ct-vi-1.html",
+      "basename": "ct-vi-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-1-ct-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36823
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-2/ct-vi-2.html",
+      "basename": "ct-vi-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-2-ct-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38140
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-3/ct-vi-3.html",
+      "basename": "ct-vi-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-3-ct-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38220
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/index-altplan-troca-visita-isenta.html",
+      "basename": "index-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-index-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42679
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/pj-altplan-troca-visita-isenta.html",
+      "basename": "pj-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-pj-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 43654
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-1/ct-vp-1.html",
+      "basename": "ct-vp-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-1-ct-vp-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 40147
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-2/ct-vp-2.html",
+      "basename": "ct-vp-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-2-ct-vp-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42009
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-3/ct-vp-3.html",
+      "basename": "ct-vp-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-3-ct-vp-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42143
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/index-altplan-troca-visita-paga.html",
+      "basename": "index-altplan-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-paga-index-altplan-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 40125
+    },
+    {
+      "path": "compra-roku-tv/index-roku-padrao.html",
+      "basename": "index-roku-padrao.html",
+      "slugSuggestion": "legacy-compra-roku-tv-index-roku-padrao",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25632
+    },
+    {
+      "path": "compra-roku-tv/index-roku-presencial.html",
+      "basename": "index-roku-presencial.html",
+      "slugSuggestion": "legacy-compra-roku-tv-index-roku-presencial",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24537
+    },
+    {
+      "path": "compra-stb/index-compra-stb-mensalidade.html",
+      "basename": "index-compra-stb-mensalidade.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-mensalidade",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26931
+    },
+    {
+      "path": "compra-stb/index-compra-stb-padrao.html",
+      "basename": "index-compra-stb-padrao.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-padrao",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26265
+    },
+    {
+      "path": "compra-stb/index-compra-stb-presencial.html",
+      "basename": "index-compra-stb-presencial.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-presencial",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25176
+    },
+    {
+      "path": "compra-stb/stb-devol-loja.html",
+      "basename": "stb-devol-loja.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-loja",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19280
+    },
+    {
+      "path": "compra-stb/stb-devol-refid.html",
+      "basename": "stb-devol-refid.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-refid",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27302
+    },
+    {
+      "path": "compra-stb/stb-devol-visita.html",
+      "basename": "stb-devol-visita.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-visita",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23700
+    },
+    {
+      "path": "direc-portas/direc-portas-prot.html",
+      "basename": "direc-portas-prot.html",
+      "slugSuggestion": "legacy-direc-portas-direc-portas-prot",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21658
+    },
+    {
+      "path": "direc-portas/direc-portas.html",
+      "basename": "direc-portas.html",
+      "slugSuggestion": "legacy-direc-portas-direc-portas",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15863
+    },
+    {
+      "path": "editor-de-bairros.html",
+      "basename": "editor-de-bairros.html",
+      "slugSuggestion": "legacy-editor-de-bairros",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 2686
+    },
+    {
+      "path": "encerramentos/altplano-troca/altplano-stroca.html",
+      "basename": "altplano-stroca.html",
+      "slugSuggestion": "legacy-encerramentos-altplano-troca-altplano-stroca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20889
+    },
+    {
+      "path": "encerramentos/altplano-troca/altplano-troca.html",
+      "basename": "altplano-troca.html",
+      "slugSuggestion": "legacy-encerramentos-altplano-troca-altplano-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23025
+    },
+    {
+      "path": "encerramentos/luzvermelha/luzvermelha-ext.html",
+      "basename": "luzvermelha-ext.html",
+      "slugSuggestion": "legacy-encerramentos-luzvermelha-luzvermelha-ext",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 5535
+    },
+    {
+      "path": "encerramentos/luzvermelha/luzvermelha-int.html",
+      "basename": "luzvermelha-int.html",
+      "slugSuggestion": "legacy-encerramentos-luzvermelha-luzvermelha-int",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 5444
+    },
+    {
+      "path": "equip-queimado/fonte-queimada-loja.html",
+      "basename": "fonte-queimada-loja.html",
+      "slugSuggestion": "legacy-equip-queimado-fonte-queimada-loja",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15464
+    },
+    {
+      "path": "equip-queimado/fonte-queimada.html",
+      "basename": "fonte-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-fonte-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25320
+    },
+    {
+      "path": "equip-queimado/ont-queimada/ont-queimada.html",
+      "basename": "ont-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-ont-queimada-ont-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33096
+    },
+    {
+      "path": "equip-queimado/onu-queimada/onu-queimada.html",
+      "basename": "onu-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-onu-queimada-onu-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33067
+    },
+    {
+      "path": "equip-queimado/roteador-queimado.html",
+      "basename": "roteador-queimado.html",
+      "slugSuggestion": "legacy-equip-queimado-roteador-queimado",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 11915
+    },
+    {
+      "path": "equip-queimado/roteador-queimado/roteador-queimado.html",
+      "basename": "roteador-queimado.html",
+      "slugSuggestion": "legacy-equip-queimado-roteador-queimado-roteador-queimado",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33285
+    },
+    {
+      "path": "feedback/feedback-altplan-c-s-troca.html",
+      "basename": "feedback-altplan-c-s-troca.html",
+      "slugSuggestion": "legacy-feedback-feedback-altplan-c-s-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27298
+    },
+    {
+      "path": "feedback/feedback-man-externa.html",
+      "basename": "feedback-man-externa.html",
+      "slugSuggestion": "legacy-feedback-feedback-man-externa",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19142
+    },
+    {
+      "path": "feedback/feedback-man-ocasionado.html",
+      "basename": "feedback-man-ocasionado.html",
+      "slugSuggestion": "legacy-feedback-feedback-man-ocasionado",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20769
+    },
+    {
+      "path": "feedback/feedback-mudanca-ponto-interno.html",
+      "basename": "feedback-mudanca-ponto-interno.html",
+      "slugSuggestion": "legacy-feedback-feedback-mudanca-ponto-interno",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 16408
+    },
+    {
+      "path": "feedback/feedback-semsucesso.html",
+      "basename": "feedback-semsucesso.html",
+      "slugSuggestion": "legacy-feedback-feedback-semsucesso",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18328
+    },
+    {
+      "path": "feedback/feedback-stb-roku.html",
+      "basename": "feedback-stb-roku.html",
+      "slugSuggestion": "legacy-feedback-feedback-stb-roku",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18222
+    },
+    {
+      "path": "feedback/feedback-troca-equip.html",
+      "basename": "feedback-troca-equip.html",
+      "slugSuggestion": "legacy-feedback-feedback-troca-equip",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21452
+    },
+    {
+      "path": "feedback/feedback-wifi-extend.html",
+      "basename": "feedback-wifi-extend.html",
+      "slugSuggestion": "legacy-feedback-feedback-wifi-extend",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 44577
+    },
+    {
+      "path": "feedback/feedback000.html",
+      "basename": "feedback000.html",
+      "slugSuggestion": "legacy-feedback-feedback000",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 17549
+    },
+    {
+      "path": "instrutiva/visita-instrutiva.html",
+      "basename": "visita-instrutiva.html",
+      "slugSuggestion": "legacy-instrutiva-visita-instrutiva",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27811
+    },
+    {
+      "path": "ittv-upgrades/presencial/reversao-ittv-pres.html",
+      "basename": "reversao-ittv-pres.html",
+      "slugSuggestion": "legacy-ittv-upgrades-presencial-reversao-ittv-pres",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19281
+    },
+    {
+      "path": "ittv-upgrades/reversao-ittv.html",
+      "basename": "reversao-ittv.html",
+      "slugSuggestion": "legacy-ittv-upgrades-reversao-ittv",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 17796
+    },
+    {
+      "path": "lentidao/disp-remoto/index-lentidao-disp-pj.html",
+      "basename": "index-lentidao-disp-pj.html",
+      "slugSuggestion": "legacy-lentidao-disp-remoto-index-lentidao-disp-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20196
+    },
+    {
+      "path": "lentidao/disp-remoto/index-lentidao-disp.html",
+      "basename": "index-lentidao-disp.html",
+      "slugSuggestion": "legacy-lentidao-disp-remoto-index-lentidao-disp",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19240
+    },
+    {
+      "path": "lentidao/index-lentidao-pj.html",
+      "basename": "index-lentidao-pj.html",
+      "slugSuggestion": "legacy-lentidao-index-lentidao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23862
+    },
+    {
+      "path": "lentidao/index-lentidao.html",
+      "basename": "index-lentidao.html",
+      "slugSuggestion": "legacy-lentidao-index-lentidao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23004
+    },
+    {
+      "path": "lentidao/isento/index-lentidao-pj.html",
+      "basename": "index-lentidao-pj.html",
+      "slugSuggestion": "legacy-lentidao-isento-index-lentidao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23945
+    },
+    {
+      "path": "lentidao/isento/index-lentidao.html",
+      "basename": "index-lentidao.html",
+      "slugSuggestion": "legacy-lentidao-isento-index-lentidao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23057
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext-padrao.html",
+      "basename": "fibra-ext-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35718
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext-pj.html",
+      "basename": "fibra-ext-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35739
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext1.html",
+      "basename": "fibra-ext1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36427
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext2.html",
+      "basename": "fibra-ext2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36100
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext3.html",
+      "basename": "fibra-ext3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35671
+    },
+    {
+      "path": "luz-vermelha-7dias/index-luzverm-padrao.html",
+      "basename": "index-luzverm-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-index-luzverm-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32118
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao1/luz-padrao1.html",
+      "basename": "luz-padrao1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao1-luz-padrao1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33059
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao2/luz-padrao2.html",
+      "basename": "luz-padrao2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao2-luz-padrao2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33124
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao3/luz-padrao3.html",
+      "basename": "luz-padrao3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao3-luz-padrao3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34983
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-vermelha-backup.html",
+      "basename": "luz-vermelha-backup.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-vermelha-backup",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34954
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/index-luzverm-padrao-pj.html",
+      "basename": "index-luzverm-padrao-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luzv-pj-padrao-index-luzverm-padrao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34912
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/luz-ocas-conec/ocas-conect-pj.html",
+      "basename": "ocas-conect-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-conec-ocas-conect-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34876
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/luz-ocas-fibra/ocas-fibra-pj.html",
+      "basename": "ocas-fibra-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-fibra-ocas-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33584
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect-padrao.html",
+      "basename": "ocas-conect-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32647
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect1.html",
+      "basename": "ocas-conect1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33911
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect2.html",
+      "basename": "ocas-conect2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33943
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect3.html",
+      "basename": "ocas-conect3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33443
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra-padrao.html",
+      "basename": "ocas-fibra-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31762
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra1.html",
+      "basename": "ocas-fibra1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33749
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra2.html",
+      "basename": "ocas-fibra2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33488
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra3.html",
+      "basename": "ocas-fibra3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32820
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocasionado-fibra.html",
+      "basename": "ocasionado-fibra.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocasionado-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12139
+    },
+    {
+      "path": "luz-vermelha-7dias/teste-luzvermelha.html",
+      "basename": "teste-luzvermelha.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-teste-luzvermelha",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32450
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext-padrao.html",
+      "basename": "fibra-ext-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35599
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext-pj.html",
+      "basename": "fibra-ext-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35672
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext1.html",
+      "basename": "fibra-ext1.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36360
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext2.html",
+      "basename": "fibra-ext2.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36033
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext3.html",
+      "basename": "fibra-ext3.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35604
+    },
+    {
+      "path": "luz-vermelha/index-luzverm-padrao.html",
+      "basename": "index-luzverm-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-index-luzverm-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33441
+    },
+    {
+      "path": "luz-vermelha/luz-padrao1/luz-padrao1.html",
+      "basename": "luz-padrao1.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao1-luz-padrao1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34066
+    },
+    {
+      "path": "luz-vermelha/luz-padrao2/luz-padrao2.html",
+      "basename": "luz-padrao2.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao2-luz-padrao2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33992
+    },
+    {
+      "path": "luz-vermelha/luz-padrao3/luz-padrao3.html",
+      "basename": "luz-padrao3.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao3-luz-padrao3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34916
+    },
+    {
+      "path": "luz-vermelha/luz-vermelha-backup.html",
+      "basename": "luz-vermelha-backup.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-vermelha-backup",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34768
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/index-luzverm-padrao-pj.html",
+      "basename": "index-luzverm-padrao-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-luzv-pj-padrao-index-luzverm-padrao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34803
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/luz-ocas-conec/ocas-conect-pj.html",
+      "basename": "ocas-conect-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-conec-ocas-conect-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34809
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/luz-ocas-fibra/ocas-fibra-pj.html",
+      "basename": "ocas-fibra-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-fibra-ocas-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33517
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect-padrao.html",
+      "basename": "ocas-conect-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32509
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect1.html",
+      "basename": "ocas-conect1.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33842
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect2.html",
+      "basename": "ocas-conect2.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33874
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect3.html",
+      "basename": "ocas-conect3.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33374
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra-padrao.html",
+      "basename": "ocas-fibra-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32483
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra1.html",
+      "basename": "ocas-fibra1.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34528
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra2.html",
+      "basename": "ocas-fibra2.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34398
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra3.html",
+      "basename": "ocas-fibra3.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33516
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocasionado-fibra.html",
+      "basename": "ocasionado-fibra.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocasionado-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12141
+    },
+    {
+      "path": "luz-vermelha/teste-luzvermelha.html",
+      "basename": "teste-luzvermelha.html",
+      "slugSuggestion": "legacy-luz-vermelha-teste-luzvermelha",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32450
+    },
+    {
+      "path": "modelos/index.html",
+      "basename": "index.html",
+      "slugSuggestion": "legacy-modelos-index",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 16410
+    },
+    {
+      "path": "modelos/modelos-altplan/modelos-altplan.html",
+      "basename": "modelos-altplan.html",
+      "slugSuggestion": "legacy-modelos-modelos-altplan-modelos-altplan",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 1992
+    },
+    {
+      "path": "modelos/modelos-variadas/modelos-variadas.html",
+      "basename": "modelos-variadas.html",
+      "slugSuggestion": "legacy-modelos-modelos-variadas-modelos-variadas",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 28269
+    },
+    {
+      "path": "modelos/modelos-variadas/modelos-variadas1.html",
+      "basename": "modelos-variadas1.html",
+      "slugSuggestion": "legacy-modelos-modelos-variadas-modelos-variadas1",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 13618
+    },
+    {
+      "path": "monitoramento/index_ativo.html",
+      "basename": "index_ativo.html",
+      "slugSuggestion": "legacy-monitoramento-index-ativo",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23277
+    },
+    {
+      "path": "mud-end/index-mud-end-pj.html",
+      "basename": "index-mud-end-pj.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end-pj",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 50546
+    },
+    {
+      "path": "mud-end/index-mud-end-pres.html",
+      "basename": "index-mud-end-pres.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end-pres",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 49942
+    },
+    {
+      "path": "mud-end/index-mud-end.html",
+      "basename": "index-mud-end.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 61167
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/index-mud-altplan-pago.html",
+      "basename": "index-mud-altplan-pago.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-pago-index-mud-altplan-pago",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 60693
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago1/mud-altplan-pago1.html",
+      "basename": "mud-altplan-pago1.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago1-mud-altplan-pago1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 60293
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago2/mud-altplan-pago2.html",
+      "basename": "mud-altplan-pago2.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago2-mud-altplan-pago2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 61919
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago3/mud-altplan-pago3.html",
+      "basename": "mud-altplan-pago3.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago3-mud-altplan-pago3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 62518
+    },
+    {
+      "path": "mud-end/mud-end-altplan-proposta/mud-altplan-prop.html",
+      "basename": "mud-altplan-prop.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-proposta-mud-altplan-prop",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 58573
+    },
+    {
+      "path": "mud-end/mud-end-altplan/index-mud-altplan.html",
+      "basename": "index-mud-altplan.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-index-mud-altplan",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 54013
+    },
+    {
+      "path": "mud-end/mud-end-comfibramz/index-mud-end-cfibra.html",
+      "basename": "index-mud-end-cfibra.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-comfibramz-index-mud-end-cfibra",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 47790
+    },
+    {
+      "path": "mud-end/mud-end-equip/index-mud-end-equip.html",
+      "basename": "index-mud-end-equip.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-equip-index-mud-end-equip",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12446
+    },
+    {
+      "path": "mud-end/mud-end-mensal/mud-end-mensal.html",
+      "basename": "mud-end-mensal.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-mensal-mud-end-mensal",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 45240
+    },
+    {
+      "path": "mud-end/mud-end-terceiro1/index-mud-end-terceiro1.html",
+      "basename": "index-mud-end-terceiro1.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro1-index-mud-end-terceiro1",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 44455
+    },
+    {
+      "path": "mud-end/mud-end-terceiro2/index-mud-end-terceiro2.html",
+      "basename": "index-mud-end-terceiro2.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro2-index-mud-end-terceiro2",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 53200
+    },
+    {
+      "path": "mud-end/mud-end-terceiro3/index-mud-end-terceiro3.html",
+      "basename": "index-mud-end-terceiro3.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro3-index-mud-end-terceiro3",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 53146
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/index-mud-end-inviab.html",
+      "basename": "index-mud-end-inviab.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-index-mud-end-inviab",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28641
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/inviab-pj.html",
+      "basename": "inviab-pj.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-inviab-pj",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28678
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/inviab1.html",
+      "basename": "inviab1.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-inviab1",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29509
+    },
+    {
+      "path": "mud-end/teste-condicionais.html",
+      "basename": "teste-condicionais.html",
+      "slugSuggestion": "legacy-mud-end-teste-condicionais",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 50075
+    },
+    {
+      "path": "mud-end/teste-menu-terceiros.html",
+      "basename": "teste-menu-terceiros.html",
+      "slugSuggestion": "legacy-mud-end-teste-menu-terceiros",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28789
+    },
+    {
+      "path": "mud-end/teste-mudend.html",
+      "basename": "teste-mudend.html",
+      "slugSuggestion": "legacy-mud-end-teste-mudend",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35482
+    },
+    {
+      "path": "mud-ponto-int/mud-ponto-int-pj.html",
+      "basename": "mud-ponto-int-pj.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mud-ponto-int-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29458
+    },
+    {
+      "path": "mud-ponto-int/mud-ponto-int.html",
+      "basename": "mud-ponto-int.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mud-ponto-int",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29328
+    },
+    {
+      "path": "mud-ponto-int/mudponto1/mudponto1.html",
+      "basename": "mudponto1.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto1-mudponto1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28279
+    },
+    {
+      "path": "mud-ponto-int/mudponto2/mudponto2.html",
+      "basename": "mudponto2.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto2-mudponto2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29138
+    },
+    {
+      "path": "mud-ponto-int/mudponto3/mudponto3.html",
+      "basename": "mudponto3.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto3-mudponto3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29096
+    },
+    {
+      "path": "pesquisa-cep/pesquisa-cep.html",
+      "basename": "pesquisa-cep.html",
+      "slugSuggestion": "legacy-pesquisa-cep-pesquisa-cep",
+      "demandCategoryGuess": "pesquisa-endereco",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 4566
+    },
+    {
+      "path": "pesquisa-cep/pesquisa-end.html",
+      "basename": "pesquisa-end.html",
+      "slugSuggestion": "legacy-pesquisa-cep-pesquisa-end",
+      "demandCategoryGuess": "pesquisa-endereco",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 23386
+    },
+    {
+      "path": "pesquisa-cep/teste.html",
+      "basename": "teste.html",
+      "slugSuggestion": "legacy-pesquisa-cep-teste",
+      "demandCategoryGuess": "pesquisa-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22515
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra-pj.html",
+      "basename": "realoc-fibra-pj.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27967
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra.html",
+      "basename": "realoc-fibra.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28517
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra1/realoc-fibra1.html",
+      "basename": "realoc-fibra1.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra1-realoc-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26728
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra2/realoc-fibra2.html",
+      "basename": "realoc-fibra2.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra2-realoc-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27614
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra3/realoc-fibra3.html",
+      "basename": "realoc-fibra3.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra3-realoc-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27569
+    },
+    {
+      "path": "roteador-reset/index-roteador-reset.html",
+      "basename": "index-roteador-reset.html",
+      "slugSuggestion": "legacy-roteador-reset-index-roteador-reset",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21676
+    },
+    {
+      "path": "roteador-reset/rot-reset-loja/rot-reset-loja.html",
+      "basename": "rot-reset-loja.html",
+      "slugSuggestion": "legacy-roteador-reset-rot-reset-loja-rot-reset-loja",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15195
+    },
+    {
+      "path": "separadores/separadores.html",
+      "basename": "separadores.html",
+      "slugSuggestion": "legacy-separadores-separadores",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12045
+    },
+    {
+      "path": "sinal-alto/index-sinal-padrao.html",
+      "basename": "index-sinal-padrao.html",
+      "slugSuggestion": "legacy-sinal-alto-index-sinal-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 30191
+    },
+    {
+      "path": "sinal-alto/index-sinal-pj.html",
+      "basename": "index-sinal-pj.html",
+      "slugSuggestion": "legacy-sinal-alto-index-sinal-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31141
+    },
+    {
+      "path": "sinal-alto/sinal1.html",
+      "basename": "sinal1.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32062
+    },
+    {
+      "path": "sinal-alto/sinal2.html",
+      "basename": "sinal2.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29516
+    },
+    {
+      "path": "sinal-alto/sinal3.html",
+      "basename": "sinal3.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29498
+    },
+    {
+      "path": "suporte-os.html",
+      "basename": "suporte-os.html",
+      "slugSuggestion": "legacy-suporte-os",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 2308
+    },
+    {
+      "path": "termo-resp/1termo-resp-pj.html",
+      "basename": "1termo-resp-pj.html",
+      "slugSuggestion": "legacy-termo-resp-1termo-resp-pj",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19839
+    },
+    {
+      "path": "termo-resp/2termo-resp-padrao.html",
+      "basename": "2termo-resp-padrao.html",
+      "slugSuggestion": "legacy-termo-resp-2termo-resp-padrao",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 2549
+    },
+    {
+      "path": "termo-resp/backup.html",
+      "basename": "backup.html",
+      "slugSuggestion": "legacy-termo-resp-backup",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18495
+    },
+    {
+      "path": "termo-resp/termo-resp-padrao.html",
+      "basename": "termo-resp-padrao.html",
+      "slugSuggestion": "legacy-termo-resp-termo-resp-padrao",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31086
+    },
+    {
+      "path": "teste-autocompletar-bairros.html",
+      "basename": "teste-autocompletar-bairros.html",
+      "slugSuggestion": "legacy-teste-autocompletar-bairros",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 1538
+    },
+    {
+      "path": "teste.html",
+      "basename": "teste.html",
+      "slugSuggestion": "legacy-teste",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 505
+    },
+    {
+      "path": "tuto-rot-reset/ax2/ax2.html",
+      "basename": "ax2.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-ax2-ax2",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 8226
+    },
+    {
+      "path": "tuto-rot-reset/grtk1/tutorial-grtk1.html",
+      "basename": "tutorial-grtk1.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-grtk1-tutorial-grtk1",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 9693
+    },
+    {
+      "path": "tuto-rot-reset/grtk2/tutorial-grtk2.html",
+      "basename": "tutorial-grtk2.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-grtk2-tutorial-grtk2",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 9632
+    },
+    {
+      "path": "tuto-rot-reset/tuto-home/tutorial.html",
+      "basename": "tutorial.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-tuto-home-tutorial",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 3766
+    },
+    {
+      "path": "tuto-rot-reset/tuto-roku.html",
+      "basename": "tuto-roku.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-tuto-roku",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 10717
+    },
+    {
+      "path": "tuto-rot-reset/tutorial.html",
+      "basename": "tutorial.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-tutorial",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 3313
+    },
+    {
+      "path": "tuto-rot-reset/zte/tutorial-zte.html",
+      "basename": "tutorial-zte.html",
+      "slugSuggestion": "legacy-tuto-rot-reset-zte-tutorial-zte",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 10548
+    },
+    {
+      "path": "validacao/validacao.html",
+      "basename": "validacao.html",
+      "slugSuggestion": "legacy-validacao-validacao",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": false
+      },
+      "sizeBytes": 9954
+    },
+    {
+      "path": "wi-fi extend/index-altplan-wifi-extend-troca.html",
+      "basename": "index-altplan-wifi-extend-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-index-altplan-wifi-extend-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33968
+    },
+    {
+      "path": "wi-fi extend/index-altplan-wifi-extend.html",
+      "basename": "index-altplan-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-index-altplan-wifi-extend",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33167
+    },
+    {
+      "path": "wi-fi extend/migrar/index-altplan-wifi-extend.html",
+      "basename": "index-altplan-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-migrar-index-altplan-wifi-extend",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14734
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-extend-pj/index-altplan-wifi-extend-pj.html",
+      "basename": "index-altplan-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-migrar-wi-fi-extend-pj-index-altplan-wifi-extend-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14722
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-extend-pj/wifi-ext-ofertado-pj/index-altplan-wifi-extend-ofer-pj.html",
+      "basename": "index-altplan-wifi-extend-ofer-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-pj-wifi-ext-ofertado-pj-index-altplan-wifi-extend-ofer-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14308
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-ponto/com-troca/index-wifi-ext-ponto-troca.html",
+      "basename": "index-wifi-ext-ponto-troca.html",
+      "slugSuggestion": "legacy-wi-fi-ponto-com-troca-index-wifi-ext-ponto-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12072
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-ponto/index-wifi-ext-ponto.html",
+      "basename": "index-wifi-ext-ponto.html",
+      "slugSuggestion": "legacy-migrar-wi-fi-ponto-index-wifi-ext-ponto",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 10723
+    },
+    {
+      "path": "wi-fi extend/migrar/wifi-ext-ofertado/index-altplan-wifi-extend-ofer.html",
+      "basename": "index-altplan-wifi-extend-ofer.html",
+      "slugSuggestion": "legacy-migrar-wifi-ext-ofertado-index-altplan-wifi-extend-ofer",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14406
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-pj-troca.html",
+      "basename": "tplink-wifi-extend-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-pj-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35429
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-pj.html",
+      "basename": "tplink-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-pj",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34179
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-troca.html",
+      "basename": "tplink-wifi-extend-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34518
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend.html",
+      "basename": "tplink-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33780
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/index-altplan-wifi-extend-pj-troca.html",
+      "basename": "index-altplan-wifi-extend-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-extend-pj-index-altplan-wifi-extend-pj-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35624
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/index-altplan-wifi-extend-pj.html",
+      "basename": "index-altplan-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-extend-pj-index-altplan-wifi-extend-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35486
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/wifi-ext-ofertado-pj/index-altplan-wifi-extend-ofer-pj.html",
+      "basename": "index-altplan-wifi-extend-ofer-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-pj-wifi-ext-ofertado-pj-index-altplan-wifi-extend-ofer-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34731
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-pj-troca.html",
+      "basename": "index-wifi-ext-ponto-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-pj-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24498
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-pj.html",
+      "basename": "index-wifi-ext-ponto-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-pj",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22589
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-troca.html",
+      "basename": "index-wifi-ext-ponto-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24361
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto.html",
+      "basename": "index-wifi-ext-ponto.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22488
+    },
+    {
+      "path": "wi-fi extend/wifi-ext-ofertado/index-altplan-wifi-extend-of-troca.html",
+      "basename": "index-altplan-wifi-extend-of-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wifi-ext-ofertado-index-altplan-wifi-extend-of-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34281
+    },
+    {
+      "path": "wi-fi extend/wifi-ext-ofertado/index-altplan-wifi-extend-of.html",
+      "basename": "index-altplan-wifi-extend-of.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wifi-ext-ofertado-index-altplan-wifi-extend-of",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33595
+    }
+  ],
+  "generatorsOnly": [
+    {
+      "path": "altera-senha/altera-senha.html",
+      "basename": "altera-senha.html",
+      "slugSuggestion": "legacy-altera-senha-altera-senha",
+      "demandCategoryGuess": "senha-rede",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25535
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/index-altplan-remoto.html",
+      "basename": "index-altplan-remoto.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-remoto-index-altplan-remoto",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36440
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/pj/index-altplan-remoto-pj.html",
+      "basename": "index-altplan-remoto-pj.html",
+      "slugSuggestion": "legacy-altplan-remoto-pj-index-altplan-remoto-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31305
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/pres-terceiro1/altplan-remoto-pres-terc.html",
+      "basename": "altplan-remoto-pres-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-pres-terceiro1-altplan-remoto-pres-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 30849
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/presencial/index-altplan-remoto-presencial.html",
+      "basename": "index-altplan-remoto-presencial.html",
+      "slugSuggestion": "legacy-altplan-remoto-presencial-index-altplan-remoto-presencial",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28394
+    },
+    {
+      "path": "altplan-ofertado/altplan-remoto/terceiro1/index-altplan-terc.html",
+      "basename": "index-altplan-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-terceiro1-index-altplan-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31250
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html",
+      "basename": "index-altplan-sem-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-sem-troca-visita-isenta-index-altplan-sem-troca-visita-",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33398
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-1/st-vi-1.html",
+      "basename": "st-vi-1.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-1-st-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34627
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-2/st-vi-2.html",
+      "basename": "st-vi-2.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-2-st-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35750
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-isenta/st-vi-3/st-vi-3.html",
+      "basename": "st-vi-3.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-3-st-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35798
+    },
+    {
+      "path": "altplan-ofertado/altplan-sem-troca-visita-paga/index-altplan-sem-troca-visita-paga.html",
+      "basename": "index-altplan-sem-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-sem-troca-visita-paga-index-altplan-sem-troca-visita-pa",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31912
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-1/ct-vi-1.html",
+      "basename": "ct-vi-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-1-ct-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35369
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-2/ct-vi-2.html",
+      "basename": "ct-vi-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-2-ct-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36638
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/ct-vi-3/ct-vi-3.html",
+      "basename": "ct-vi-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-3-ct-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36706
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-isenta/index-altplan-troca-visita-isenta.html",
+      "basename": "index-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-troca-visita-isenta-index-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32746
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-1/ct-vp-1.html",
+      "basename": "ct-vp-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-1-ct-vp-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34694
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-2/ct-vp-2.html",
+      "basename": "ct-vp-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-2-ct-vp-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35659
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/ct-vp-3/ct-vp-3.html",
+      "basename": "ct-vp-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-3-ct-vp-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35694
+    },
+    {
+      "path": "altplan-ofertado/altplan-troca-visita-paga/index-altplan-troca-visita-paga.html",
+      "basename": "index-altplan-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-ofertado-altplan-troca-visita-paga-index-altplan-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33701
+    },
+    {
+      "path": "altplan/altplan-remoto/index-altplan-remoto.html",
+      "basename": "index-altplan-remoto.html",
+      "slugSuggestion": "legacy-altplan-altplan-remoto-index-altplan-remoto",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36325
+    },
+    {
+      "path": "altplan/altplan-remoto/pj/index-altplan-remoto-pj.html",
+      "basename": "index-altplan-remoto-pj.html",
+      "slugSuggestion": "legacy-altplan-remoto-pj-index-altplan-remoto-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33226
+    },
+    {
+      "path": "altplan/altplan-remoto/pres-terceiro1/altplan-remoto-pres-terc.html",
+      "basename": "altplan-remoto-pres-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-pres-terceiro1-altplan-remoto-pres-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33991
+    },
+    {
+      "path": "altplan/altplan-remoto/presencial/index-altplan-remoto-presencial.html",
+      "basename": "index-altplan-remoto-presencial.html",
+      "slugSuggestion": "legacy-altplan-remoto-presencial-index-altplan-remoto-presencial",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32503
+    },
+    {
+      "path": "altplan/altplan-remoto/terceiro1/index-altplan-terc.html",
+      "basename": "index-altplan-terc.html",
+      "slugSuggestion": "legacy-altplan-remoto-terceiro1-index-altplan-terc",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34103
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html",
+      "basename": "index-altplan-sem-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-sem-troca-visita-isenta-index-altplan-sem-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38679
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-1/st-vi-1.html",
+      "basename": "st-vi-1.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-1-st-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35644
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-2/st-vi-2.html",
+      "basename": "st-vi-2.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-2-st-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36843
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-isenta/st-vi-3/st-vi-3.html",
+      "basename": "st-vi-3.html",
+      "slugSuggestion": "legacy-altplan-sem-troca-visita-isenta-st-vi-3-st-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 37049
+    },
+    {
+      "path": "altplan/altplan-sem-troca-visita-paga/index-altplan-sem-troca-visita-paga.html",
+      "basename": "index-altplan-sem-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-altplan-sem-troca-visita-paga-index-altplan-sem-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32954
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/backup.html",
+      "basename": "backup.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-backup",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 37739
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-1/ct-vi-1.html",
+      "basename": "ct-vi-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-1-ct-vi-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36823
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-2/ct-vi-2.html",
+      "basename": "ct-vi-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-2-ct-vi-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38140
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/ct-vi-3/ct-vi-3.html",
+      "basename": "ct-vi-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-isenta-ct-vi-3-ct-vi-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 38220
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/index-altplan-troca-visita-isenta.html",
+      "basename": "index-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-index-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42679
+    },
+    {
+      "path": "altplan/altplan-troca-visita-isenta/pj-altplan-troca-visita-isenta.html",
+      "basename": "pj-altplan-troca-visita-isenta.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-isenta-pj-altplan-troca-visita-isenta",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 43654
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-1/ct-vp-1.html",
+      "basename": "ct-vp-1.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-1-ct-vp-1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 40147
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-2/ct-vp-2.html",
+      "basename": "ct-vp-2.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-2-ct-vp-2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42009
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/ct-vp-3/ct-vp-3.html",
+      "basename": "ct-vp-3.html",
+      "slugSuggestion": "legacy-altplan-troca-visita-paga-ct-vp-3-ct-vp-3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 42143
+    },
+    {
+      "path": "altplan/altplan-troca-visita-paga/index-altplan-troca-visita-paga.html",
+      "basename": "index-altplan-troca-visita-paga.html",
+      "slugSuggestion": "legacy-altplan-altplan-troca-visita-paga-index-altplan-troca-visita-paga",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 40125
+    },
+    {
+      "path": "compra-roku-tv/index-roku-padrao.html",
+      "basename": "index-roku-padrao.html",
+      "slugSuggestion": "legacy-compra-roku-tv-index-roku-padrao",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25632
+    },
+    {
+      "path": "compra-roku-tv/index-roku-presencial.html",
+      "basename": "index-roku-presencial.html",
+      "slugSuggestion": "legacy-compra-roku-tv-index-roku-presencial",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24537
+    },
+    {
+      "path": "compra-stb/index-compra-stb-mensalidade.html",
+      "basename": "index-compra-stb-mensalidade.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-mensalidade",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26931
+    },
+    {
+      "path": "compra-stb/index-compra-stb-padrao.html",
+      "basename": "index-compra-stb-padrao.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-padrao",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26265
+    },
+    {
+      "path": "compra-stb/index-compra-stb-presencial.html",
+      "basename": "index-compra-stb-presencial.html",
+      "slugSuggestion": "legacy-compra-stb-index-compra-stb-presencial",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25176
+    },
+    {
+      "path": "compra-stb/stb-devol-loja.html",
+      "basename": "stb-devol-loja.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-loja",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19280
+    },
+    {
+      "path": "compra-stb/stb-devol-refid.html",
+      "basename": "stb-devol-refid.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-refid",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27302
+    },
+    {
+      "path": "compra-stb/stb-devol-visita.html",
+      "basename": "stb-devol-visita.html",
+      "slugSuggestion": "legacy-compra-stb-stb-devol-visita",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23700
+    },
+    {
+      "path": "direc-portas/direc-portas-prot.html",
+      "basename": "direc-portas-prot.html",
+      "slugSuggestion": "legacy-direc-portas-direc-portas-prot",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21658
+    },
+    {
+      "path": "direc-portas/direc-portas.html",
+      "basename": "direc-portas.html",
+      "slugSuggestion": "legacy-direc-portas-direc-portas",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15863
+    },
+    {
+      "path": "encerramentos/altplano-troca/altplano-stroca.html",
+      "basename": "altplano-stroca.html",
+      "slugSuggestion": "legacy-encerramentos-altplano-troca-altplano-stroca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20889
+    },
+    {
+      "path": "encerramentos/altplano-troca/altplano-troca.html",
+      "basename": "altplano-troca.html",
+      "slugSuggestion": "legacy-encerramentos-altplano-troca-altplano-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23025
+    },
+    {
+      "path": "equip-queimado/fonte-queimada-loja.html",
+      "basename": "fonte-queimada-loja.html",
+      "slugSuggestion": "legacy-equip-queimado-fonte-queimada-loja",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15464
+    },
+    {
+      "path": "equip-queimado/fonte-queimada.html",
+      "basename": "fonte-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-fonte-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 25320
+    },
+    {
+      "path": "equip-queimado/ont-queimada/ont-queimada.html",
+      "basename": "ont-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-ont-queimada-ont-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33096
+    },
+    {
+      "path": "equip-queimado/onu-queimada/onu-queimada.html",
+      "basename": "onu-queimada.html",
+      "slugSuggestion": "legacy-equip-queimado-onu-queimada-onu-queimada",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33067
+    },
+    {
+      "path": "equip-queimado/roteador-queimado.html",
+      "basename": "roteador-queimado.html",
+      "slugSuggestion": "legacy-equip-queimado-roteador-queimado",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 11915
+    },
+    {
+      "path": "equip-queimado/roteador-queimado/roteador-queimado.html",
+      "basename": "roteador-queimado.html",
+      "slugSuggestion": "legacy-equip-queimado-roteador-queimado-roteador-queimado",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33285
+    },
+    {
+      "path": "feedback/feedback-altplan-c-s-troca.html",
+      "basename": "feedback-altplan-c-s-troca.html",
+      "slugSuggestion": "legacy-feedback-feedback-altplan-c-s-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27298
+    },
+    {
+      "path": "feedback/feedback-man-externa.html",
+      "basename": "feedback-man-externa.html",
+      "slugSuggestion": "legacy-feedback-feedback-man-externa",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19142
+    },
+    {
+      "path": "feedback/feedback-man-ocasionado.html",
+      "basename": "feedback-man-ocasionado.html",
+      "slugSuggestion": "legacy-feedback-feedback-man-ocasionado",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20769
+    },
+    {
+      "path": "feedback/feedback-mudanca-ponto-interno.html",
+      "basename": "feedback-mudanca-ponto-interno.html",
+      "slugSuggestion": "legacy-feedback-feedback-mudanca-ponto-interno",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 16408
+    },
+    {
+      "path": "feedback/feedback-semsucesso.html",
+      "basename": "feedback-semsucesso.html",
+      "slugSuggestion": "legacy-feedback-feedback-semsucesso",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18328
+    },
+    {
+      "path": "feedback/feedback-stb-roku.html",
+      "basename": "feedback-stb-roku.html",
+      "slugSuggestion": "legacy-feedback-feedback-stb-roku",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18222
+    },
+    {
+      "path": "feedback/feedback-troca-equip.html",
+      "basename": "feedback-troca-equip.html",
+      "slugSuggestion": "legacy-feedback-feedback-troca-equip",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21452
+    },
+    {
+      "path": "feedback/feedback-wifi-extend.html",
+      "basename": "feedback-wifi-extend.html",
+      "slugSuggestion": "legacy-feedback-feedback-wifi-extend",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 44577
+    },
+    {
+      "path": "feedback/feedback000.html",
+      "basename": "feedback000.html",
+      "slugSuggestion": "legacy-feedback-feedback000",
+      "demandCategoryGuess": "feedback",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 17549
+    },
+    {
+      "path": "instrutiva/visita-instrutiva.html",
+      "basename": "visita-instrutiva.html",
+      "slugSuggestion": "legacy-instrutiva-visita-instrutiva",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27811
+    },
+    {
+      "path": "ittv-upgrades/presencial/reversao-ittv-pres.html",
+      "basename": "reversao-ittv-pres.html",
+      "slugSuggestion": "legacy-ittv-upgrades-presencial-reversao-ittv-pres",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19281
+    },
+    {
+      "path": "ittv-upgrades/reversao-ittv.html",
+      "basename": "reversao-ittv.html",
+      "slugSuggestion": "legacy-ittv-upgrades-reversao-ittv",
+      "demandCategoryGuess": "midia-tv",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 17796
+    },
+    {
+      "path": "lentidao/disp-remoto/index-lentidao-disp-pj.html",
+      "basename": "index-lentidao-disp-pj.html",
+      "slugSuggestion": "legacy-lentidao-disp-remoto-index-lentidao-disp-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 20196
+    },
+    {
+      "path": "lentidao/disp-remoto/index-lentidao-disp.html",
+      "basename": "index-lentidao-disp.html",
+      "slugSuggestion": "legacy-lentidao-disp-remoto-index-lentidao-disp",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19240
+    },
+    {
+      "path": "lentidao/index-lentidao-pj.html",
+      "basename": "index-lentidao-pj.html",
+      "slugSuggestion": "legacy-lentidao-index-lentidao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23862
+    },
+    {
+      "path": "lentidao/index-lentidao.html",
+      "basename": "index-lentidao.html",
+      "slugSuggestion": "legacy-lentidao-index-lentidao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23004
+    },
+    {
+      "path": "lentidao/isento/index-lentidao-pj.html",
+      "basename": "index-lentidao-pj.html",
+      "slugSuggestion": "legacy-lentidao-isento-index-lentidao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23945
+    },
+    {
+      "path": "lentidao/isento/index-lentidao.html",
+      "basename": "index-lentidao.html",
+      "slugSuggestion": "legacy-lentidao-isento-index-lentidao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23057
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext-padrao.html",
+      "basename": "fibra-ext-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35718
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext-pj.html",
+      "basename": "fibra-ext-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35739
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext1.html",
+      "basename": "fibra-ext1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36427
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext2.html",
+      "basename": "fibra-ext2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36100
+    },
+    {
+      "path": "luz-vermelha-7dias/fibra-externa/fibra-ext3.html",
+      "basename": "fibra-ext3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-fibra-externa-fibra-ext3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35671
+    },
+    {
+      "path": "luz-vermelha-7dias/index-luzverm-padrao.html",
+      "basename": "index-luzverm-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-index-luzverm-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32118
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao1/luz-padrao1.html",
+      "basename": "luz-padrao1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao1-luz-padrao1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33059
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao2/luz-padrao2.html",
+      "basename": "luz-padrao2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao2-luz-padrao2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33124
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-padrao3/luz-padrao3.html",
+      "basename": "luz-padrao3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-padrao3-luz-padrao3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34983
+    },
+    {
+      "path": "luz-vermelha-7dias/luz-vermelha-backup.html",
+      "basename": "luz-vermelha-backup.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luz-vermelha-backup",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34954
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/index-luzverm-padrao-pj.html",
+      "basename": "index-luzverm-padrao-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-luzv-pj-padrao-index-luzverm-padrao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34912
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/luz-ocas-conec/ocas-conect-pj.html",
+      "basename": "ocas-conect-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-conec-ocas-conect-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34876
+    },
+    {
+      "path": "luz-vermelha-7dias/luzv-pj-padrao/luz-ocas-fibra/ocas-fibra-pj.html",
+      "basename": "ocas-fibra-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-fibra-ocas-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33584
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect-padrao.html",
+      "basename": "ocas-conect-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32647
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect1.html",
+      "basename": "ocas-conect1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33911
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect2.html",
+      "basename": "ocas-conect2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33943
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-conector/ocas-conect3.html",
+      "basename": "ocas-conect3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-conector-ocas-conect3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33443
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra-padrao.html",
+      "basename": "ocas-fibra-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31762
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra1.html",
+      "basename": "ocas-fibra1.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33749
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra2.html",
+      "basename": "ocas-fibra2.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33488
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocas-fibra3.html",
+      "basename": "ocas-fibra3.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocas-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32820
+    },
+    {
+      "path": "luz-vermelha-7dias/ocasionado-fibra/ocasionado-fibra.html",
+      "basename": "ocasionado-fibra.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-ocasionado-fibra-ocasionado-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12139
+    },
+    {
+      "path": "luz-vermelha-7dias/teste-luzvermelha.html",
+      "basename": "teste-luzvermelha.html",
+      "slugSuggestion": "legacy-luz-vermelha-7dias-teste-luzvermelha",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32450
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext-padrao.html",
+      "basename": "fibra-ext-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35599
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext-pj.html",
+      "basename": "fibra-ext-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35672
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext1.html",
+      "basename": "fibra-ext1.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36360
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext2.html",
+      "basename": "fibra-ext2.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 36033
+    },
+    {
+      "path": "luz-vermelha/fibra-externa/fibra-ext3.html",
+      "basename": "fibra-ext3.html",
+      "slugSuggestion": "legacy-luz-vermelha-fibra-externa-fibra-ext3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35604
+    },
+    {
+      "path": "luz-vermelha/index-luzverm-padrao.html",
+      "basename": "index-luzverm-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-index-luzverm-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33441
+    },
+    {
+      "path": "luz-vermelha/luz-padrao1/luz-padrao1.html",
+      "basename": "luz-padrao1.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao1-luz-padrao1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34066
+    },
+    {
+      "path": "luz-vermelha/luz-padrao2/luz-padrao2.html",
+      "basename": "luz-padrao2.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao2-luz-padrao2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33992
+    },
+    {
+      "path": "luz-vermelha/luz-padrao3/luz-padrao3.html",
+      "basename": "luz-padrao3.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-padrao3-luz-padrao3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34916
+    },
+    {
+      "path": "luz-vermelha/luz-vermelha-backup.html",
+      "basename": "luz-vermelha-backup.html",
+      "slugSuggestion": "legacy-luz-vermelha-luz-vermelha-backup",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34768
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/index-luzverm-padrao-pj.html",
+      "basename": "index-luzverm-padrao-pj.html",
+      "slugSuggestion": "legacy-luz-vermelha-luzv-pj-padrao-index-luzverm-padrao-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34803
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/luz-ocas-conec/ocas-conect-pj.html",
+      "basename": "ocas-conect-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-conec-ocas-conect-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34809
+    },
+    {
+      "path": "luz-vermelha/luzv-pj-padrao/luz-ocas-fibra/ocas-fibra-pj.html",
+      "basename": "ocas-fibra-pj.html",
+      "slugSuggestion": "legacy-luzv-pj-padrao-luz-ocas-fibra-ocas-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33517
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect-padrao.html",
+      "basename": "ocas-conect-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32509
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect1.html",
+      "basename": "ocas-conect1.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33842
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect2.html",
+      "basename": "ocas-conect2.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33874
+    },
+    {
+      "path": "luz-vermelha/ocasionado-conector/ocas-conect3.html",
+      "basename": "ocas-conect3.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-conector-ocas-conect3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33374
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra-padrao.html",
+      "basename": "ocas-fibra-padrao.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32483
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra1.html",
+      "basename": "ocas-fibra1.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34528
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra2.html",
+      "basename": "ocas-fibra2.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34398
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocas-fibra3.html",
+      "basename": "ocas-fibra3.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocas-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33516
+    },
+    {
+      "path": "luz-vermelha/ocasionado-fibra/ocasionado-fibra.html",
+      "basename": "ocasionado-fibra.html",
+      "slugSuggestion": "legacy-luz-vermelha-ocasionado-fibra-ocasionado-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12141
+    },
+    {
+      "path": "luz-vermelha/teste-luzvermelha.html",
+      "basename": "teste-luzvermelha.html",
+      "slugSuggestion": "legacy-luz-vermelha-teste-luzvermelha",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32450
+    },
+    {
+      "path": "monitoramento/index_ativo.html",
+      "basename": "index_ativo.html",
+      "slugSuggestion": "legacy-monitoramento-index-ativo",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 23277
+    },
+    {
+      "path": "mud-end/index-mud-end-pj.html",
+      "basename": "index-mud-end-pj.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end-pj",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 50546
+    },
+    {
+      "path": "mud-end/index-mud-end-pres.html",
+      "basename": "index-mud-end-pres.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end-pres",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 49942
+    },
+    {
+      "path": "mud-end/index-mud-end.html",
+      "basename": "index-mud-end.html",
+      "slugSuggestion": "legacy-mud-end-index-mud-end",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 61167
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/index-mud-altplan-pago.html",
+      "basename": "index-mud-altplan-pago.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-pago-index-mud-altplan-pago",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 60693
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago1/mud-altplan-pago1.html",
+      "basename": "mud-altplan-pago1.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago1-mud-altplan-pago1",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 60293
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago2/mud-altplan-pago2.html",
+      "basename": "mud-altplan-pago2.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago2-mud-altplan-pago2",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 61919
+    },
+    {
+      "path": "mud-end/mud-end-altplan-pago/mud-altplan-pago3/mud-altplan-pago3.html",
+      "basename": "mud-altplan-pago3.html",
+      "slugSuggestion": "legacy-mud-end-altplan-pago-mud-altplan-pago3-mud-altplan-pago3",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 62518
+    },
+    {
+      "path": "mud-end/mud-end-altplan-proposta/mud-altplan-prop.html",
+      "basename": "mud-altplan-prop.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-proposta-mud-altplan-prop",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 58573
+    },
+    {
+      "path": "mud-end/mud-end-altplan/index-mud-altplan.html",
+      "basename": "index-mud-altplan.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-altplan-index-mud-altplan",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 54013
+    },
+    {
+      "path": "mud-end/mud-end-comfibramz/index-mud-end-cfibra.html",
+      "basename": "index-mud-end-cfibra.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-comfibramz-index-mud-end-cfibra",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 47790
+    },
+    {
+      "path": "mud-end/mud-end-equip/index-mud-end-equip.html",
+      "basename": "index-mud-end-equip.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-equip-index-mud-end-equip",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12446
+    },
+    {
+      "path": "mud-end/mud-end-mensal/mud-end-mensal.html",
+      "basename": "mud-end-mensal.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-mensal-mud-end-mensal",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 45240
+    },
+    {
+      "path": "mud-end/mud-end-terceiro1/index-mud-end-terceiro1.html",
+      "basename": "index-mud-end-terceiro1.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro1-index-mud-end-terceiro1",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 44455
+    },
+    {
+      "path": "mud-end/mud-end-terceiro2/index-mud-end-terceiro2.html",
+      "basename": "index-mud-end-terceiro2.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro2-index-mud-end-terceiro2",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 53200
+    },
+    {
+      "path": "mud-end/mud-end-terceiro3/index-mud-end-terceiro3.html",
+      "basename": "index-mud-end-terceiro3.html",
+      "slugSuggestion": "legacy-mud-end-mud-end-terceiro3-index-mud-end-terceiro3",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 53146
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/index-mud-end-inviab.html",
+      "basename": "index-mud-end-inviab.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-index-mud-end-inviab",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28641
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/inviab-pj.html",
+      "basename": "inviab-pj.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-inviab-pj",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28678
+    },
+    {
+      "path": "mud-end/mud-inviabilidade/inviab1.html",
+      "basename": "inviab1.html",
+      "slugSuggestion": "legacy-mud-end-mud-inviabilidade-inviab1",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29509
+    },
+    {
+      "path": "mud-end/teste-condicionais.html",
+      "basename": "teste-condicionais.html",
+      "slugSuggestion": "legacy-mud-end-teste-condicionais",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 50075
+    },
+    {
+      "path": "mud-end/teste-menu-terceiros.html",
+      "basename": "teste-menu-terceiros.html",
+      "slugSuggestion": "legacy-mud-end-teste-menu-terceiros",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28789
+    },
+    {
+      "path": "mud-end/teste-mudend.html",
+      "basename": "teste-mudend.html",
+      "slugSuggestion": "legacy-mud-end-teste-mudend",
+      "demandCategoryGuess": "mudanca-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35482
+    },
+    {
+      "path": "mud-ponto-int/mud-ponto-int-pj.html",
+      "basename": "mud-ponto-int-pj.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mud-ponto-int-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29458
+    },
+    {
+      "path": "mud-ponto-int/mud-ponto-int.html",
+      "basename": "mud-ponto-int.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mud-ponto-int",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29328
+    },
+    {
+      "path": "mud-ponto-int/mudponto1/mudponto1.html",
+      "basename": "mudponto1.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto1-mudponto1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28279
+    },
+    {
+      "path": "mud-ponto-int/mudponto2/mudponto2.html",
+      "basename": "mudponto2.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto2-mudponto2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29138
+    },
+    {
+      "path": "mud-ponto-int/mudponto3/mudponto3.html",
+      "basename": "mudponto3.html",
+      "slugSuggestion": "legacy-mud-ponto-int-mudponto3-mudponto3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29096
+    },
+    {
+      "path": "pesquisa-cep/teste.html",
+      "basename": "teste.html",
+      "slugSuggestion": "legacy-pesquisa-cep-teste",
+      "demandCategoryGuess": "pesquisa-endereco",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22515
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra-pj.html",
+      "basename": "realoc-fibra-pj.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27967
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra.html",
+      "basename": "realoc-fibra.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 28517
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra1/realoc-fibra1.html",
+      "basename": "realoc-fibra1.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra1-realoc-fibra1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 26728
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra2/realoc-fibra2.html",
+      "basename": "realoc-fibra2.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra2-realoc-fibra2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27614
+    },
+    {
+      "path": "realoc-fibra/realoc-fibra3/realoc-fibra3.html",
+      "basename": "realoc-fibra3.html",
+      "slugSuggestion": "legacy-realoc-fibra-realoc-fibra3-realoc-fibra3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 27569
+    },
+    {
+      "path": "roteador-reset/index-roteador-reset.html",
+      "basename": "index-roteador-reset.html",
+      "slugSuggestion": "legacy-roteador-reset-index-roteador-reset",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 21676
+    },
+    {
+      "path": "roteador-reset/rot-reset-loja/rot-reset-loja.html",
+      "basename": "rot-reset-loja.html",
+      "slugSuggestion": "legacy-roteador-reset-rot-reset-loja-rot-reset-loja",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 15195
+    },
+    {
+      "path": "separadores/separadores.html",
+      "basename": "separadores.html",
+      "slugSuggestion": "legacy-separadores-separadores",
+      "demandCategoryGuess": "geral",
+      "flags": {
+        "gerarTextos": false,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12045
+    },
+    {
+      "path": "sinal-alto/index-sinal-padrao.html",
+      "basename": "index-sinal-padrao.html",
+      "slugSuggestion": "legacy-sinal-alto-index-sinal-padrao",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 30191
+    },
+    {
+      "path": "sinal-alto/index-sinal-pj.html",
+      "basename": "index-sinal-pj.html",
+      "slugSuggestion": "legacy-sinal-alto-index-sinal-pj",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31141
+    },
+    {
+      "path": "sinal-alto/sinal1.html",
+      "basename": "sinal1.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal1",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 32062
+    },
+    {
+      "path": "sinal-alto/sinal2.html",
+      "basename": "sinal2.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal2",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29516
+    },
+    {
+      "path": "sinal-alto/sinal3.html",
+      "basename": "sinal3.html",
+      "slugSuggestion": "legacy-sinal-alto-sinal3",
+      "demandCategoryGuess": "manutencao",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 29498
+    },
+    {
+      "path": "termo-resp/1termo-resp-pj.html",
+      "basename": "1termo-resp-pj.html",
+      "slugSuggestion": "legacy-termo-resp-1termo-resp-pj",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 19839
+    },
+    {
+      "path": "termo-resp/backup.html",
+      "basename": "backup.html",
+      "slugSuggestion": "legacy-termo-resp-backup",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 18495
+    },
+    {
+      "path": "termo-resp/termo-resp-padrao.html",
+      "basename": "termo-resp-padrao.html",
+      "slugSuggestion": "legacy-termo-resp-termo-resp-padrao",
+      "demandCategoryGuess": "termo-docs",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 31086
+    },
+    {
+      "path": "wi-fi extend/index-altplan-wifi-extend-troca.html",
+      "basename": "index-altplan-wifi-extend-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-index-altplan-wifi-extend-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33968
+    },
+    {
+      "path": "wi-fi extend/index-altplan-wifi-extend.html",
+      "basename": "index-altplan-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-index-altplan-wifi-extend",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33167
+    },
+    {
+      "path": "wi-fi extend/migrar/index-altplan-wifi-extend.html",
+      "basename": "index-altplan-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-migrar-index-altplan-wifi-extend",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14734
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-extend-pj/index-altplan-wifi-extend-pj.html",
+      "basename": "index-altplan-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-migrar-wi-fi-extend-pj-index-altplan-wifi-extend-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14722
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-extend-pj/wifi-ext-ofertado-pj/index-altplan-wifi-extend-ofer-pj.html",
+      "basename": "index-altplan-wifi-extend-ofer-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-pj-wifi-ext-ofertado-pj-index-altplan-wifi-extend-ofer-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14308
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-ponto/com-troca/index-wifi-ext-ponto-troca.html",
+      "basename": "index-wifi-ext-ponto-troca.html",
+      "slugSuggestion": "legacy-wi-fi-ponto-com-troca-index-wifi-ext-ponto-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 12072
+    },
+    {
+      "path": "wi-fi extend/migrar/wi-fi-ponto/index-wifi-ext-ponto.html",
+      "basename": "index-wifi-ext-ponto.html",
+      "slugSuggestion": "legacy-migrar-wi-fi-ponto-index-wifi-ext-ponto",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 10723
+    },
+    {
+      "path": "wi-fi extend/migrar/wifi-ext-ofertado/index-altplan-wifi-extend-ofer.html",
+      "basename": "index-altplan-wifi-extend-ofer.html",
+      "slugSuggestion": "legacy-migrar-wifi-ext-ofertado-index-altplan-wifi-extend-ofer",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 14406
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-pj-troca.html",
+      "basename": "tplink-wifi-extend-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-pj-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35429
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-pj.html",
+      "basename": "tplink-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-pj",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34179
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend-troca.html",
+      "basename": "tplink-wifi-extend-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34518
+    },
+    {
+      "path": "wi-fi extend/tplink/tplink-wifi-extend.html",
+      "basename": "tplink-wifi-extend.html",
+      "slugSuggestion": "legacy-wi-fi-extend-tplink-tplink-wifi-extend",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33780
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/index-altplan-wifi-extend-pj-troca.html",
+      "basename": "index-altplan-wifi-extend-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-extend-pj-index-altplan-wifi-extend-pj-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35624
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/index-altplan-wifi-extend-pj.html",
+      "basename": "index-altplan-wifi-extend-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-extend-pj-index-altplan-wifi-extend-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 35486
+    },
+    {
+      "path": "wi-fi extend/wi-fi-extend-pj/wifi-ext-ofertado-pj/index-altplan-wifi-extend-ofer-pj.html",
+      "basename": "index-altplan-wifi-extend-ofer-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-pj-wifi-ext-ofertado-pj-index-altplan-wifi-extend-ofer-pj",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34731
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-pj-troca.html",
+      "basename": "index-wifi-ext-ponto-pj-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-pj-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24498
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-pj.html",
+      "basename": "index-wifi-ext-ponto-pj.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-pj",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22589
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-troca.html",
+      "basename": "index-wifi-ext-ponto-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto-troca",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 24361
+    },
+    {
+      "path": "wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto.html",
+      "basename": "index-wifi-ext-ponto.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wi-fi-ponto-index-wifi-ext-ponto",
+      "demandCategoryGuess": "wifi-extend",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 22488
+    },
+    {
+      "path": "wi-fi extend/wifi-ext-ofertado/index-altplan-wifi-extend-of-troca.html",
+      "basename": "index-altplan-wifi-extend-of-troca.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wifi-ext-ofertado-index-altplan-wifi-extend-of-troca",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 34281
+    },
+    {
+      "path": "wi-fi extend/wifi-ext-ofertado/index-altplan-wifi-extend-of.html",
+      "basename": "index-altplan-wifi-extend-of.html",
+      "slugSuggestion": "legacy-wi-fi-extend-wifi-ext-ofertado-index-altplan-wifi-extend-of",
+      "demandCategoryGuess": "alteracao-plano",
+      "flags": {
+        "gerarTextos": true,
+        "likelyOsGenerator": true
+      },
+      "sizeBytes": 33595
+    }
+  ]
+}

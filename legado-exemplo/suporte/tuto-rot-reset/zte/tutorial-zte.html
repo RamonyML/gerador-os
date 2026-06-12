@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial ZTE H199-A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: #4CAF50 #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar { width: 8px; }
+        .sidebar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #4CAF50; border-radius: 20px; }
+        .container-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .highlight {
+            position: relative;
+        }
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4CAF50;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col lg:flex-row min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar w-full lg:w-64 bg-white border-r border-gray-200 overflow-y-auto h-screen sticky top-0">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-xl font-bold text-gray-800">TUTORIAIS DE ROTEADOR</h1>
+            </div>
+            <nav class="space-y-2">
+                <a href="/suporte/tuto-rot-reset/tuto-home/tutorial.html" class="block">
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        INÍCIO
+                    </button>
+                </a>
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold text-gray-700 mb-3">TUTORIAIS</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/ax2/ax2.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Huawei AX2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/grtk1/tutorial-grtk1.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Greatek V1</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/grtk2/tutorial-grtk2.html" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Greatek V2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">D-Link</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">Intelbras</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/suporte/tuto-rot-reset/zte/tutorial-zte.html" class="flex items-center px-3 py-2 text-green-600 font-medium bg-green-50 rounded-lg transition duration-300">
+                                <span class="ml-3">ZTE H199-A</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:text-green-600 rounded-lg transition duration-300 highlight">
+                                <span class="ml-3">ONT ZTE</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Configuração de Roteador Resetado</h1>
+                <div class="w-16 h-1 bg-green-500 mt-2 mb-4"></div>
+                <h2 class="text-xl font-semibold text-green-700">ZTE H199-A</h2>
+            </div>
+            <!-- Passo 1 -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2">PASSO 1</h2>
+                <p class="text-gray-700 mb-4">Caso o roteador tenha perdido o acesso remoto, oriente o cliente a utilizar de <b>PREFERÊNCIA</b> um PC/notebook com cabo de rede ou wi-fi para realizar a configuração de forma mais clara.</p>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>IP de acesso: <b>192.168.1.1</b></li>
+                    <li>Usuário: <b>multipro</b> / Senha: <b>multipro</b></li>
+                    <li>Clique em <b>PRÓXIMO</b>, coloque usuário e senha do <b>pppoe</b> do cliente.</li>
+                    <li>Marque <b>IPv4/v6</b> e clique em <b>PRÓXIMO</b>.</li>
+                    <li>Configure Wifi 2.4G do cliente, SSID e senha (à escolha do cliente), clique em <b>PRÓXIMO</b>.</li>
+                    <li>Configure Wifi 5G do cliente, SSID e senha (à escolha do cliente) e clique em <b>PRÓXIMO</b>.</li>
+                    <li>Clique em <b>TERMINAR</b></li>
+                    <li>Clique em <b>INTERNET</b>, no menu da esquerda clique em <b>SEGURANÇA</b>; na primeira aba (<b>NÍVEL DE FIREWALL</b>) coloque <b>MÉDIO</b> e clique em <b>APLICAR</b>.</li>
+                    <li>Clique em <b>CONTROLE DE SERVIÇO LOCAL</b> (duas abas pra direita da aba FIREWALL); em <b>CONTROLE DE SERVIÇO - IPv4</b> marque <b>LIGADO</b>, no campo "NOME" coloque a palavra (Remoto).</li>
+                    <li>Nos campos <b>OBJETIVO, ENTRADA e INTERVALO DE IP,</b> não faça nada, deixar como veio.</li>
+                    <li>No campo <b>TIPO DE SERVIÇO</b> marque a primeira opção <b>HTTP</b>.</li>
+                    <li>Clique em <b>APLICAR</b>. Deve ficar da seguinte forma:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/zte/01.png" alt="Configuração de serviço remoto ZTE" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>Depois, na parte de baixo, clique em <b>CONTROLE DE PORTA DE SERVIÇO REMOTO - IPv4</b>.</li>
+                    <li>Coloque <b>8255</b> em <b>HTTP</b></li>
+                    <li>Coloque <b>2355</b> em <b>TELNET</b></li>
+                    <li>Coloque <b>4433</b> em <b>HTTPS</b></li>
+                    <li>Clique em <b>APLICAR</b>. Deve ficar da seguinte forma:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/zte/02.png" alt="Portas de serviço remoto ZTE" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+            </div>
+            <!-- Passo 2 -->
+            <div class="bg-white rounded-xl container-shadow p-6 mb-8">
+                <h2 class="text-lg font-bold text-gray-800 mb-2">PASSO 2</h2>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>No menu principal, clique em <b>REDE LOCAL</b>.</li>
+                    <li>No menu lateral esquerdo clique em <b>UpnP</b> e marque a opção LIGADO e clique APLICAR.</li>
+                    <li>No menu principal, clique em <b>GERENCIAMENTO E DIAGNÓSTICO</b>.</li>
+                    <li>No menu lateral esquerdo clique em <b>GERENCIAMENTO DE CONTA</b>, depois clique em <b>GERENCIAMENTO DE CONTA DO USUÁRIO</b>, "nome de usuário" pode deixar “user”, porém a <b>nova senha</b> coloque <b>183729</b>, confirme a nova senha e aperte em APLICAR. <b>OBSERVAÇÃO: apenas será alterado a senha do <i>USER</i>. NÃO altere a senha do <i>ADMIN</i>.</b></li>
+                    <li>Volte ao menu lateral esquerdo e clique em <b>GERENCIAMENTO DE SISTEMA</b>, na janela que abrir, procure nas abas em cima por <b>"Configuração de Gerência padrão"</b>. Essa parte é para configurar o PRESET (parte mais importante de todas). Seguir passos da imagem abaixo:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/zte/03.png" alt="Preset ZTE" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 mb-4">
+                    <li>Após o roteador reiniciar, acesse ele novamente, clique no menu principal em <b>REDE LOCAL</b>, no menu lateral esquerdo clique em <b>WLAN</b>. Na página que abriu, na parte de baixo e clique em <b>CONFIGURAÇÃO WLAN SSID</b>. Siga os passos abaixo:</li>
+                </ul>
+                <div class="flex flex-col gap-4 items-center mb-4">
+                    <img src="/suporte/tuto-rot-reset/zte/04.png" alt="Configuração WLAN ZTE" class="rounded-lg shadow-md max-w-full w-[350px]">
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 mt-4">
+                    <h5 class="text-green-800 font-semibold">A configuração foi realizada com sucesso.<br>Confirme com o cliente se consegue navegar na internet normalmente.</h5>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUD END</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+            font-size: small;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            background-image: url('/fundo2.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #e6e6e693;
+            border: 0.1px solid #cccccc;
+        }
+        
+        h1 {
+            text-align: left;
+            color: #111111;
+            font-size: 26px;
+        }
+        
+        h3 {
+            text-align: left;
+            color: #db0000;
+            font-size: 15px;
+        }
+        
+        h5 {
+            text-align: left;
+            color: #464646;
+            font-size: 14px;
+        }
+        
+        .form {
+            margin-top: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .buttons {
+            text-align: center;
+        }
+        
+        button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            background-color: #38af47;
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+        }
+        
+        .buttons button:hover {
+            background-color: #2b8637;
+        }
+        
+        .output {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .output-group {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: none;
+            width: 85%;
+            height: 200px;
+            border: 1px solid #38af47;
+            border-radius: 18px;
+            padding: 10px;
+        }
+        
+        .form-header h1::after {
+            content: '';
+            display: block;
+            width: 5rem;
+            height: 0.3rem;
+            background-color: #38af47;
+            margin: 0 auto;
+            position: absolute;
+            border-radius: 10px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #23532a;
+            margin-bottom: 10px;
+            font-size: 14px;
+            margin: 0 auto;
+        }
+        
+        a:hover {
+            color: #38af47;
+            text-decoration: none;
+        }
+        
+        /* Modal */
+        
+        .modal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-dialog {
+            margin: 10% auto;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .modal-title {
+            font-weight: bold;
+        }
+        
+        .modal-body {
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1b3626;">
+        <a class="navbar-brand" style="color: rgb(255, 255, 255);">
+            <img src="/mznet-logo.png" width="65" height="30" class="d-inline-block align-top" alt="Logo">
+            Gerador de O.S
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="color: rgb(255, 255, 255);" href="#" id="navbarDropdown"
+                        role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" style="color: rgb(255, 255, 255);" href="#" tabindex="-1"
+                        aria-disabled="true">Disabled</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-header">
+            <h1>Gerador de O.S</h1>
+            <h5>Informações do Equipamento</h5>
+        </div>
+
+        <form class="form">
+            <div class="form-group">
+                <label for="cliente">Cliente</label>
+                <input type="text" class="form-control" id="cliente" placeholder="Nome do cliente">
+            </div>
+
+            <div class="form-group">
+                <label for="serial">Serial</label>
+                <input type="text" class="form-control" id="serial" placeholder="Serial do equipamento">
+            </div>
+
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <input type="text" class="form-control" id="modelo" placeholder="Modelo do equipamento">
+            </div>
+
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="text" class="form-control flatpickr" id="data" placeholder="Data da solicitação">
+            </div>
+
+            <div class="form-group">
+                <label for="problema">Problema</label>
+                <textarea class="form-control" id="problema" rows="3" placeholder="Descreva o problema"></textarea>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn btn-primary">Gerar O.S</button>
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">Abrir
+                    Ajuda</button>
+            </div>
+        </form>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ajuda</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Aqui você pode inserir instruções ou informações adicionais de ajuda para o usuário.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="output">
+            <div class="output-group">
+                <h5>Número da O.S</h5>
+                <p id="numeroOS">-</p>
+            </div>
+            <div class="output-group">
+                <h5>Status</h5>
+                <p id="statusOS">-</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr('#data', {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #087539); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #abd6a5; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-feedback.html" class="text-success">Feedback</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Instalação de STB e Roku TV</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #1a9238;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #1a9238;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #1a9238;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #116b28;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 230px !important;
+    border: 1px solid #1a9238;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #1a9238;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #991b1b; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #d10e0e;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+::selection {
+    background-color: #1fa064;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+
+.danger {
+    border: 1px solid rgb(224, 224, 224);
+}
+
+.primary {
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.success {
+    border: 1px solid rgb(10, 141, 10);
+}
+
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">Feedback</h1>
+                <h2 class="mb-4">Instalação de STB / Roku TV</h2>
+          </div>
+            <!-- Título clicável -->
+            <button class="btn btn-outline-success" type="button" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">
+              Orientações adicionais
+            </button>
+            <!-- Texto que aparece ao expandir -->
+            <div class="collapse" id="infoCollapse">
+              <div class="card card-body mt-2">
+                <b>IMPORTANTE:</b><br>
+                <ul>Se a conexão estiver sendo utilizada via <b>Wi-Fi</b>, orientar o cliente sobre a superioridade da conexão via <b>cabo de rede</b>, destacando sua maior estabilidade, desempenho e menor propensão a interferências <i>(no caso de STB)</i>.
+                </ul>
+              </div>
+            </div>
+        </div>
+        <form class="needs-validation" id="feedbackForm" novalidate>
+            <div class="row g-3">
+                <div class="col-md-3">
+                  <label class="form-label">Nome do Cliente</label>
+                  <input type="text" id="cliente" class="form-control" placeholder="Apenas primeiro nome" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Canal</label>
+                    <select id="canal" class="form-select">
+                        <option value="">Selecione</option>
+                      <option value="LIGAÇÃO">Ligação</option>
+                      <option value="WHATSAPP">WhatsApp</option>
+                    </select>
+                  </div>  
+                <div class="col-md-3">
+                  <label class="form-label">Contato</label>
+                  <input type="text" id="contato" class="form-control" placeholder="34 99999-9999" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Data e Hora</label>
+                  <input type="text" id="dataHora" class="form-control" placeholder="01/01/2025 - 12:00" required>
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Equipamento</label>
+                  <select id="stbRoku" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option value="STB"class="text-success fw-bold">STB</option>
+                    <option value="ROKU TV" class="fw-bold" style="color: #773e9c;">Roku TV</option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Conectado via</label>
+                  <select id="wifiCabo" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option value="WI-FI">Wi-Fi</option>
+                      <option value="CABO">Cabo de rede</option>
+                  </select>
+                </div>
+  
+                <div class="col-md-3">
+                  <label class="form-label">Energia</label>
+                  <select id="energia" class="form-select">
+                        <option value="">Selecione</option>
+                        <option value="EM TOMADA INDIVIDUAL" class="fw-bold" style="color: #237c36;">Tomada individual</option>
+                        <option value="EM RÉGUA DE ENERGIA" class="fw-bold" style="color: #237c36;">Régua de energia</option>
+                        <option value="EM EXTENSÃO ELÉTRICA" class="fw-bold" style="color: #cf0202;">Extensão elétrica</option>
+                        <option value="EM T DE ENERGIA" class="fw-bold" style="color: #cf0202;">T de energia</option>
+                        <option value="À PORTA USB DA TV" class="fw-bold" style="color: #773e9c;">Porta USB da TV [ROKU]</option>
+
+                    </select>
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Valor da O.S.</label>
+                  <input type="text" id="valorOS" class="form-control" placeholder="Ex: 100,00" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Pagamento</label>
+                  <select id="formaPagamento" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="DINHEIRO">Dinheiro</option>
+                    <option value="PIX">Pix</option>
+                    <option value="CARTÃO">Cartão</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">App MZTV/CDNTV</label>
+                  <select id="app" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="APLICATIVO MZTV (CDNTV) INSTALADO E CLIENTE ORIENTADO SOBRE O USO." class="fw-bold" style="color: #008136;">Apps instalados</option>
+                    <option value="CLIENTE OPTOU POR NÃO INSTALAR O APLICATIVO MZTV (CDNTV) NO MOMENTO." class="fw-bold" style="color: #cf0202;">Apps NÃO instalados</option>
+                  </select>
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label">Observações:</label>
+                    <input type="text" id="obs" class="form-control" placeholder="Cliente informou que precisa de novos boletos." title="A informação deve ser objetiva, resumida em uma única frase.">
+                </div><hr>
+  
+            </form>
+        </div>
+              <button onclick="gerarTexto()" class="btn btn-success w-100">Gerar Texto</button>
+              <textarea id="resultado" class="form-control" readonly></textarea>
+              <button class="btn btn-success btn-block mb-2" onclick="copiarTexto()">Copiar Texto</button>
+              <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar Tudo</button>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Configuração do Flatpickr para data e hora
+      flatpickr("#dataHora", {
+          enableTime: true,
+          dateFormat: "d/m/Y H:i",
+          time_24hr: true,
+          locale: "pt",
+          defaultDate: "today",
+          minuteIncrement: 1
+      });
+  
+      // Máscara para o campo de telefone
+      var phoneMask = IMask(
+          document.getElementById('contato'),
+          {
+              mask: '{00} 00000-0000'
+          }
+      );
+  
+      // Máscara para o valor da OS
+      var valorOSMask = IMask(
+          document.getElementById('valorOS'),
+          {
+              mask: Number,
+              scale: 2,
+              thousandsSeparator: '.',
+              padFractionalZeros: true,
+              normalizeZeros: true,
+              radix: ',',
+              mapToRadix: ['.']
+          }
+      );
+  });
+  
+  function gerarTexto() {
+      // Obter valores dos campos
+      const cliente = document.getElementById('cliente').value.trim();
+      const canal = document.getElementById('canal').value;
+      const contato = document.getElementById('contato').value;
+      const dataHora = document.getElementById('dataHora').value;
+      const stbRoku = document.getElementById('stbRoku').value;
+      const wifiCabo = document.getElementById('wifiCabo').value;
+      const energia = document.getElementById('energia').value;
+      const valorOS = document.getElementById('valorOS').value;
+      const formaPagamento = document.getElementById('formaPagamento').value;
+      const app = document.getElementById('app').value;
+      const obs = document.getElementById('obs').value.trim();
+  
+      // Validar campos obrigatórios
+      if (!cliente || !contato || !dataHora || !stbRoku || !wifiCabo || !valorOS) {
+          alert('Por favor, preencha todos os campos obrigatórios!');
+          return;
+      }
+  
+      // Formatar data/hora
+      let dataHoraFormatada = dataHora;
+      if (dataHora.includes(' ')) {
+          dataHoraFormatada = dataHora.replace(' ', ' ÀS ') + 'HRS';
+      }
+  
+      // Gerar o texto
+      let texto = `FIZ FEEDBACK COM ${cliente.toUpperCase()} POR ${canal.toUpperCase()} (${contato}) DIA ${dataHoraFormatada}.\n`;
+      texto += `${cliente.toUpperCase()} CONFIRMOU INSTALAÇÃO E CONFIGURAÇÃO DO APARELHO ${stbRoku.toUpperCase()}.\n`;
+      texto += `APARELHO CONECTADO VIA ${wifiCabo.toUpperCase()}.\n`;
+      texto += `${stbRoku.toUpperCase()} LIGADO ${energia.toUpperCase()}.\n`;
+      
+      if (app) {
+          texto += `${app.toUpperCase()}\n\n`;
+      } else {
+          texto += '\n';
+      }
+      
+      texto += `O.S COM CUSTO DE R$ ${valorOS} QUE FOI PAGO EM ${formaPagamento.toUpperCase()}.\n\n`;
+      texto += `CLIENTE SEM DUVIDAS`;
+      
+      // Adicionar observações se existirem
+      if (obs) {
+          texto += `\n\nOBS: ${obs.toUpperCase()}`;
+      }
+  
+      // Exibir o resultado
+      document.getElementById('resultado').value = texto;
+  }
+  
+  function copiarTexto() {
+      const resultado = document.getElementById('resultado');
+      resultado.select();
+      document.execCommand('copy');
+      alert('Texto copiado para a área de transferência!');
+  }
+  
+  function limparCampos() {
+      document.getElementById('feedbackForm').reset();
+      document.getElementById('resultado').value = '';
+  }
+  </script>    
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

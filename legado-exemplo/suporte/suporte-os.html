@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador O.S - SUPORTE</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador O.S <br> Suporte</h1>        
+        <div class="menu">
+            <div class="menu-item">
+                <a href="/index.html"><b>Use o novo Gerador de O.S</b></a>
+            </div>
+
+    </div>
+
+    <!-- Adiciona a imagem da logo -->
+    <a href="/index.html">
+        <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="130" height="60" style="margin-left: 20px;">
+    </a>
+
+    <script>
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const submenu = item.querySelector('.submenu');
+                if (submenu) {
+                    submenu.classList.toggle('ativo');
+                }
+                
+                // Oculte outros submenus
+                menuItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        const otherSubmenu = otherItem.querySelector('.submenu');
+                        if (otherSubmenu) {
+                            otherSubmenu.classList.remove('ativo');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+      <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';  // Garante que você tenha importado corretamente o app
+        
+        const auth = getAuth(app);
+      
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            console.log("Usuário não autenticado, redirecionando...");
+            window.location.href = "/login.html";
+          } else {
+            // Se estiver autenticado, mostra o conteúdo
+            document.getElementById("main-content").style.display = "block";
+            console.log("Usuário autenticado!", user);
+          }
+        });
+
+  </script>
+
+    <footer>
+        Gerador de O.S | Versão: 2.1.25
+    </footer>
+</body>
+</html>

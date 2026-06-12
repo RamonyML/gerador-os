@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+h1 {
+    text-align: left;
+    color: #1d1d1d;
+    font-size: 32px;
+}
+h2 {
+    text-align: center;
+    color: #1d1d1d;
+    font-size: 20px;
+}
+h3 {
+    text-align: left;
+    color: #da0000;
+    font-size: 22px;
+}
+h4 {
+    text-align: left;
+    color: #ffffff;
+    font-size: 22px;
+}
+h5 {
+    text-align: left;
+    color: #da0000;
+    font-size: 16px;
+}
+
+p {
+    text-align: justify;
+    color: #141414;
+    font-size: 12;
+
+}
+
+aside {
+    width: 200px;
+    background-color: #00270c;
+    color: #fff;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+}
+button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #003f13;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #006d21;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+a {
+    text-decoration: none;
+    color: #ffffff; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+}
+
+a:hover {
+    color: #9fff82;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+    font-weight: bold;
+}
+
+nav {
+    margin-bottom: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul ul {
+    margin-left: 20px;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    margin-left: 220px; /* Ajuste para dar espaço ao menu lateral */
+}
+
+.container {
+    text-align: center;
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+}
+
+.container p {
+    text-align: justify;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #005a1b;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+/*daqui pra baixo são as configurações dos menus e submenus*/
+.site-container {
+    text-align: center;
+    width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 18px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+header {
+    background-color: #38af47;
+    padding: 10px 0;
+    border-radius: 18px;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu ul li {
+    display: inline-block;
+    position: relative;
+}
+
+.menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu ul ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #38af47;
+    z-index: 1000;
+    border-radius: 18px;
+}
+
+.menu ul li:hover > ul {
+    display: inherit;
+}
+.menu .has-submenu:hover > ul {
+    text-align: left;
+    display: inherit;  /* Remova qualquer regra de estilo relacionada ao :hover aqui */
+}
+
+.menu .has-submenu {
+    cursor: pointer;
+}
+.menu .submenu.active {
+    display: inherit;
+    border-radius: 18px;
+}
+
+.menu ul ul li {
+    width: 200px;
+    float: none;
+    display: list-item;
+    position: relative;
+}
+
+.menu ul ul ul li {
+    position: relative;
+    top: -60px;
+    left: 200px;
+}
+
+.menu ul ul li:hover a {
+    color: #0b4400;
+    margin: 0 auto;
+    
+}
+body {
+    background-image: url('/fundo3.png');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}

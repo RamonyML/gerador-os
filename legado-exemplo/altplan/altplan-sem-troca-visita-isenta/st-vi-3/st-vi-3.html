@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUZ VERMELHA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-altplan.html" class="text-success">Alteração de Plano</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/altplan/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html" class="text-success">Visita isenta sem troca</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Assinante autorizando terceiros</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoAgenda {
+    height: 50px; /* Defina a altura desejada */
+}
+
+.danger {
+    border: 1px solid red;
+}
+
+.primary {
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.success {
+    border: 1px solid rgb(10, 141, 10);
+}
+
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">ALTERAÇÃO DE PLANO</h1>
+                <h3 class="mb-4 font-weight-bold">VISITA ISENTA E SEM A TROCA DO EQUIPAMENTO</h3>
+                <div class="alert alert-success" role="alert">
+                    <b>Solicitado por terceiro, assinante autorizando e confirmando que estará presente.</b>
+                </div>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Assinante solicitando e confirmando presença.">
+                        <a href="/suporte/altplan/altplan-sem-troca-visita-isenta/index-altplan-sem-troca-visita-isenta.html" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITAÇÃO PADRÃO
+                        </a>
+                    </label>
+                    <label class="btn btn-secondary data-toggle="tooltip" data-placement="top" title="Assinante solicitando e autorizando um terceiro a acompanhar o técnico">
+                        <a href="/suporte/altplan/altplan-sem-troca-visita-isenta/st-vi-1/st-vi-1.html" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR ASSINANTE
+                        </a>
+                    </label>
+                    <label class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Terceiro solicitando, assinante autorizando e confirmando que estará presente.">
+                        <a href="#" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR TERCEIRO 1
+                        </a>
+                    </label>
+                    <label class="btn btn-secondary" data-toggle="tooltip" title="Terceiro solicitando e assinante autorizando. Porém, assinante ausente">
+                        <a href="/suporte/altplan/altplan-sem-troca-visita-isenta/st-vi-2/st-vi-2.html" class="text-white">
+                            <input type="radio" name="options" id="option3" autocomplete="off"> SOLICITADO POR TERCEIRO 2
+                        </a>
+                    </label>
+                </div>
+                <hr>
+          </div>  
+        </div>
+        <form class="needs-validation" novalidate>
+        <div class="form">
+            <div class="row">
+                        <div class="col-md-12">
+                            <h5>IDENTIFICAÇÃO DO SOLICITANTE</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="solicitante">Nome Completo:</label>
+                                <input type="text" class="form-control" id="solicitante" placeholder="Informe o nome completo do solicitante" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="parente">Grau de relacionamento:</label>
+                                <input type="text" class="form-control" id="parente" placeholder="Ex: mãe, irmão, filho" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="canal">Canal:</label>
+                                <select class="form-control" id="canal" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="LIGAÇÃO">Telefone</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contatoSol">Contato:</label>
+                                <input type="text" class="form-control" id="contatoSol" placeholder="Somente os números" required>
+                            </div>
+                        </div>
+                    </div><hr>
+                    <div class="row">
+                            <div class="col-md-12">
+                                <h5>IDENTIFICAÇÃO DO TITULAR</h5>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cliente">Nome Completo:</label>
+                                <input type="text" class="form-control" id="cliente" placeholder="Informe o nome completo do titular da conexão" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="contato">Contato:</label>
+                                <input type="text" class="form-control" id="contato" placeholder="Somente os números" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sinalONU">Sinal ONU:</label>
+                                <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM ou SEM SINAL" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="bairro">Bairro:</label>
+                                <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente" required>
+                            </div>
+                        </div>
+                </div>
+                    <hr>
+                    <!-- Detalhes da Solicitação -->
+                    <div class="row">
+                            <div class="col-md-12">
+                                <h5>DETALHES DO PLANO</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="motivo">Descreva o motivo da alteração do plano de internet:</label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">Questionado, cliente disse que:</span>
+                                </div>
+                                <input type="text" class="form-control" id="motivo" aria-describedby="basic-addon3" data-toggle="tooltip" placeholder="''deseja cortar gastos'' /ou/ ''precisa de mais velocidade para suas atividades pessoais''" title="Conforme o exemplo, você deve inserir apenas o conteúdo que está entre as ''aspas''" required>
+                            </div>
+                            </div>        
+    
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="planoAtual">Plano Atual:</label>
+                                    <select class="form-control" id="planoAtual" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="100 MEGA/59,90">100MB/59,90</option>
+                                        <option value="100 MEGA/79,90">100MB/79,90</option>
+                                        <option value="150 MEGA/59,90">150MB/59,90</option>
+                                        <option value="250 MEGA/69,90">250MB/69,90</option>
+                                        <option value="300 MEGA/69,90">300MB/69,90</option>
+                                        <option value="400 MEGA/79,90">400MB/79,90</option>
+                                        <option value="500 MEGA/79,90">500MB/79,90</option>
+                                        <option value="500 MEGA/99,90">500MB/99,90</option>
+                                        <option value="600 MEGA/79,90">600MB/79,90</option>
+                                        <option value="1000 MEGA/99,90">1000MB/99,90</option>
+                                        <option value="1000 MEGA/149,80">1000MB/149,80</option>
+                                        <option value="500 MEGA + WI-FI EXTEND/119,90" class="font-weight-bold text-success" title="Plano com IP CGNAT">500MB/119,90 - WI-FI EXTEND</option>
+                                        <option value="1000 MEGA + WI-FI EXTEND/139,90" class="font-weight-bold text-success" title="Plano com IP CGNAT">1000MB/139,90 - WI-FI EXTEND</option>
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="planoEscolhido">Plano Escolhido:</label>
+                                    <select class="form-control" id="planoEscolhido" required>
+                                        <option value="">Selecione...</option>
+                                    
+                                        <option value="150 MEGA/59,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">150 MEGA/59,90 + MZTV (CDNTV+)</option>
+                                        <option value="300 MEGA/69,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">300 MEGA/69,90 + MZTV (CDNTV+)</option>
+                                        <option value="600 MEGA/79,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">600 MEGA/79,90 + MZTV (CDNTV+)</option>
+                                        <option value="1 GIGA (1.000 MEGA) R$99,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" title="Plano com IP CGNAT">1000 MEGA/99,90 + MZTV (CDNTV+) + VOD</option>
+                                                                            
+                                        <option value="150 MEGA/80,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">150 MEGA/80,00 + MZTV (CDNTV+) + IP DIN</option>
+                                        <option value="300 MEGA/90,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">300 MEGA/90,00 + MZTV (CDNTV+) + IP DIN</option>
+                                        <option value="600 MEGA/100,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">600 MEGA/100,00 + MZTV (CDNTV+) + IP DIN</option>
+                                        <option value="1 GIGA (1.000 MEGA) R$120,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" class="font-weight-bold" title="Plano com IP fora CGNAT">1000 MEGA/120,00 + MZTV (CDNTV+) + VOD + IP DIN</option>
+                                        
+                                        
+                                        <option value="600 MEGA/109,90 + ITTV PLUS (1 LICENÇA). BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV" class="font-weight-bold text-primary" title="Plano com IP CGNAT">600 MEGA/109,90 + MZTV + VOD + ITTV PLUS (1 LICENÇA)</option>
+                                        
+                                        <option value="1 GIGA (1.000 MEGA) R$129,90 + ITTV PLUS (1 LICENÇA). BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV + VOD" class="font-weight-bold text-danger" title="Plano com IP CGNAT">1000 MEGA/129,90 + MZTV + VOD + ITTV PLUS (1 LICENÇA)</option>
+                                        
+                                        <option value="600 MEGA; + WI-FI EXTEND (ROTEADOR ADICIONAL) MENSALIDADE: R$114,90; EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS; BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold text-success" title="Plano com IP CGNAT + roteador adicional">600 MEGA/114,90 + BENEFÍCIOS + WI-FI EXTEND</option>
+                                        
+                                        <option value="1 GIGA (1.000 MEGA); + WI-FI EXTEND (ROTEADOR ADICIONAL)  MENSALIDADE: R$134,90; EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS; BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" class="font-weight-bold text-success" title="Plano com IP CGNAT + roteador adicional">1000 MEGA/134,90 + BENEFÍCIOS + WI-FI EXTEND</option>                                </select>
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="roteador">Roteador:</label>
+                                    <select class="form-control" id="roteador" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="MULTILASER">MULTILASER</option>
+                                        <option value="TP-LINK 840">TP-LINK 840</option>
+                                        <option value="TP LINK C-20">TP LINK C-20</option>        
+                                        <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+                                        <option value="TP LINK C-5">TP LINK C-5</option>
+                                        <option value="TP LINK G-5">TP LINK G-5</option>
+                                        <option value="GREATEK">GREATEK</option>
+                                        <option value="INTELBRAS">INTELBRAS</option>
+                                        <option value="HUAWEI AX2">HUAWEI AX2</option>
+                                        <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                                        <option value="ZTE H199-A">ZTE H199-A</option>
+                                        <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                                        <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                                        <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                                        <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                                        <option value="ZTE H199-A + ZTE H199-A" class="font-weight-bold text-success" title="Wi-Fi Extend">ZTE H199-A + ZTE H199-A</option>
+                                        <option value="ZTE H199-A + ZTE H196" class="font-weight-bold text-success" title="Wi-Fi Extend">ZTE H199-A + ZTE H196</option>
+                                        <option value="ONT ZTE F 670-L + ZTE H199-A" class="font-weight-bold text-success" title="Wi-Fi Extend">ONT ZTE F 670-L + ZTE H199-A</option>
+                                        <option value="ONT ZTE F 670-L + ZTE H196" class="font-weight-bold text-success" title="Wi-Fi Extend">ONT ZTE F 670-L + ZTE H196</option>
+                                        <option value="PARTICULAR DO CLIENTE" class="font-weight-bold text-primary">ROTEADOR PARTICULAR</option>
+                                    </select>
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dataContrato">Plano contratado em:</label>
+                                <input type="text" class="form-control" id="dataContrato" placeholder="mês/ano" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <!-- Agendamento -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>AGENDAMENTO</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dataVisita">Data da Visita Técnica:</label>
+                                <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="horaVisita">Hora:</label>
+                                <select class="form-control" id="horaVisita" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="08:30">08:30</option>
+                                    <option value="09:30">09:30</option>
+                                    <option value="10:30">10:30</option>
+                                    <option value="11:30">11:30</option>
+                                    <option value="14:30">14:30</option>
+                                    <option value="15:30">15:30</option>
+                                    <option value="16:30">16:30</option>
+                                    <option value="17:30">17:30</option>
+                                    <hr>
+                                    <option value="18:30"class="font-weight-bold text-success">18:30 (Tolentino)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="protocolo">Nº Protocolo:</label>
+                                <input type="text" class="form-control" id="protocolo" placeholder="123.456" required>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    </div><br>
+                    <div class="buttons">
+                        <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                        <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+                    </div>
+                </form>
+                <div class="output">
+                    <div class="output-group" data-toggle="tooltip" title="Leia o texto gerado, e insira as particularidades de seu atendimento (se necessário).">
+                        <h4 class="font-weight-bold">Texto Protocolo:</h4>
+                        <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+                        <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+                    </div>
+                
+                    <div class="output-group" data-toggle="tooltip" title="Leia atentamente o texto gerado, verifique se não há nenhuma informação incorreta antes de registrar no MK.">
+                        <h4 class="font-weight-bold">Texto O.S:</h4>
+                        <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+                        <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+                    </div>
+                </div>
+                <div class="output">
+                    <div class="output-group">
+                        <h4 class="font-weight-bold">Texto Agenda:</h4>
+                        <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+                        <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+document.title = "ALTPLAN - S/TROCA ISENTO";
+
+// VALIDAÇÃO DOS CAMPOS EM BRANCO
+document.addEventListener("DOMContentLoaded", function() {
+    // Inicializa o Flatpickr para o campo de data
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt",
+        disableMobile: "true"
+    });
+
+    // Inicializa o Flatpickr para o campo de data do contrato
+    flatpickr("#dataContrato", {
+        dateFormat: "m/Y",
+        locale: "pt",
+        disableMobile: "true"
+    });
+
+    var form = document.querySelector('form');
+    var inputs = form.querySelectorAll('input, select');
+    var submitButton = form.querySelector('button[type="submit"]');
+
+    // Função para validar e aplicar classes
+    function validateFields() {
+        var allFilled = true;
+        inputs.forEach(function(input) {
+            if (input.value.trim() === "") {
+                input.classList.remove('primary', 'success');
+                input.classList.add('danger');
+                allFilled = false;
+            } else {
+                input.classList.remove('danger', 'success');
+                input.classList.add('primary');
+            }
+        });
+        return allFilled;
+    }
+
+    // Valida e aplica classes ao modificar os campos
+    inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            validateFields();
+        });
+    });
+
+    // Altera classes ao enviar o formulário
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateFields()) {
+            inputs.forEach(function(input) {
+                input.classList.remove('danger', 'primary');
+                input.classList.add('success');
+            });
+            // Aqui você pode adicionar a lógica para gerar os textos
+            gerarTextos();
+        } else {
+            // Continua validando campos individuais
+            validateFields();
+        }
+    });
+});
+
+function gerarTextos() {
+    // Verificar se todos os campos obrigatórios foram preenchidos
+    const form = document.querySelector('.needs-validation');
+    if (!form.checkValidity()) {
+        alert('Por favor, preencha todos os campos obrigatórios antes de gerar os textos.');
+        form.classList.add('was-validated');
+        return;
+    }
+
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const solicitante = document.getElementById('solicitante').value.toUpperCase();
+    const parente = document.getElementById('parente').value.toUpperCase();
+    const contatoSol = document.getElementById('contatoSol').value.replace(/\D/g, '');
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const planoAtual = document.getElementById('planoAtual').value;
+    const motivo = document.getElementById('motivo').value.toUpperCase();
+    const planoEscolhido = document.getElementById('planoEscolhido').value;
+    const roteador = document.getElementById('roteador').value;
+    const dataContrato = document.getElementById('dataContrato').value;
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    
+    // Usar o nome do operador global
+    const operador = window.nomeOperadorAtual || 'NÃO IDENTIFICADO';
+
+    // Crie os textos com os valores
+    const textoProtocolo = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) SOLICITANDO ALTERAÇÃO DE PLANO.
+
+**************
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}
+
+**************
+QUESTIONADO, CLIENTE DISSE QUE "${motivo}".
+
+PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}
+
+PLANO SOLICITADO: ${planoEscolhido}
+
+ACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE. 
+
+
+**************
+
+INFORMEI QUE O ROTEADOR ATUAL EMPRESTADO (${roteador}) É COMPATÍVEL COM A NOVA VELOCIDADE SOLICITADA. PORÉM, ${solicitante.split(' ')[0]} DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DOS APLICATIVOS. O TÉCNICO REALIZARÁ OS TESTES DE ABRANGÊNCIA, QUALIDADE E VELOCIDADE, SANAR TODAS AS DÚVIDAS QUE ${solicitante.split(' ')[0]} POSSA TER, NO QUAL ESSA VISITA É ISENTA DE CUSTOS.
+
+**************
+
+POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. ${cliente.split(' ')[0]} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S.VISITA ISENTA DE CUSTOS AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.
+
+CLIENTE SEM DUVIDAS.`;
+
+    const textoOS = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO VIA ${canal} (${contatoSol}) E SOLICITOU ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${planoAtual}. PLANO ESCOLHIDO: ${planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${solicitante.split(' ')[0]} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, PORÉM, DESEJA VISITA TÉCNICA PARA INSTRUÇÕES, AFERIÇÃO DO NOVO PLANO E INSTALAÇÃO DO APLICATIVO. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S. VISITA ISENTA DE CUSTOS AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.
+
+***********************************
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: PLANO JÁ ALTERADO PARA NOVO PLANO ESCOLHIDO. FAZER TESTE DA BANDA CONTRATADA. PADRONIZAR NOME DAS REDES ("NOME DO CLIENTE_MZNET"), CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN; TESTAR ABRANGÊNCIA DA REDE WI-FI E EXPLICAR SOBRE COBERTURA, CONECTAR TODOS DISPOSITIVOS QUE APRESENTAR E REALIZAR TESTES, VERIFICAR E EXPLICAR SOBRE EQUIPAMENTOS QUE FUNCIONARAM MELHOR LIGADOS DIRETAMENTE AO ROTEADOR POR CABOS. COLHER ASSINATURAS (O.S E CONTRATO), ENTREGAR DOCUMENTAÇÃO (VIAS DO CLIENTE), RECOLHER CARNÊ ANTIGO.`;
+
+    const textoAgenda = `ALT PLANO ${cliente} PROT:${protocolo} ISENTO (${operador}) - ${bairro}`;
+
+    // Exiba os textos nos elementos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+    </script>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+    
+    const auth = getAuth(app);
+
+    // Variável global para o nome do operador
+    window.nomeOperadorAtual = '';
+
+    // Função para carregar o JSON de operadores
+    async function carregarOperadores() {
+        try {
+            const response = await fetch('/js/operadores.json');
+            const data = await response.json();
+            return data.operadores;
+        } catch (error) {
+            console.error('Erro ao carregar operadores:', error);
+            return {};
+        }
+    }
+
+    // Função para obter o nome do operador pelo e-mail
+    async function obterNomeOperador(email) {
+        const operadores = await carregarOperadores();
+        return operadores[email] || email.split('@')[0].toUpperCase();
+    }
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html";
+      } else {
+        console.log("Usuário autenticado!", user);
+        const nomeOperador = await obterNomeOperador(user.email);
+        // Define o nome do operador globalmente
+        window.nomeOperadorAtual = nomeOperador;
+        document.getElementById('userEmail').innerText = `Logado como: ${user.email}`;
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+</script>
+
+<script type="module" src="../js/firebase-init.js"></script>
+  </body>
+</html>

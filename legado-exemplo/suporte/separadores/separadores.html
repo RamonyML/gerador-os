@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SEPARADORES MAC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Fonte Poppins do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 font-poppins transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8 relative">
+        <!-- Botão Topo -->
+        <button id="scrollToTop" 
+                onclick="scrollToTop()" 
+                class="fixed bottom-5 right-5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg transition-all duration-300 z-50">
+            TOPO
+        </button>
+        <!-- Botão Modo Escuro -->
+        <button onclick="toggleDarkMode()" class="fixed bottom-5 left-5 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg shadow-lg transition-all duration-300 z-50">🌙/☀️</button>
+
+        <div class="max-w-2xl mx-auto text-center">
+            <h1 class="text-3xl font-semibold text-green-600 dark:text-green-400 mb-8">SEPARADORES END MAC</h1>
+            
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <label class="block text-gray-700 dark:text-gray-200">Formato de saída:
+                    <select id="formato" class="ml-2 p-2 rounded border border-gray-300 dark:bg-gray-800 dark:text-white">
+                        <option value=":">AA:BB:CC:DD:EE:FF</option>
+                        <option value="-">AA-BB-CC-DD-EE-FF</option>
+                        <option value=".">AABB.CCDD.EEFF</option>
+                    </select>
+                </label>
+                <button onclick="gerarMACsAleatorios()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors duration-300">Gerar MACs Aleatórios</button>
+                <input type="file" id="fileInput" accept=".txt" class="hidden" onchange="importarArquivo(event)">
+                <button onclick="document.getElementById('fileInput').click()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition-colors duration-300">Importar .txt</button>
+            </div>
+
+            <p class="text-gray-700 dark:text-gray-300 mb-4">Insira os endereços MAC abaixo (um por linha):</p>
+            
+            <textarea id="macInput" 
+                      class="w-full p-4 border border-gray-300 dark:bg-gray-800 dark:text-white rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent resize-y mb-6 min-h-[120px]"
+                      placeholder="Digite o endereço MAC"></textarea>
+
+            <div class="flex flex-wrap gap-2 justify-center mb-4">
+                <button onclick="formatarMAC()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Formatar
+                </button>
+                <button onclick="copiarParaClipboard()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Copiar
+                </button>
+                <button onclick="limparCampos()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Limpar
+                </button>
+                <button onclick="exportarParaTxt()" 
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Exportar .txt
+                </button>
+                <button onclick="removerDuplicados()" 
+                        class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">
+                    Remover Duplicados
+                </button>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <span id="contadorMACs" class="text-sm text-gray-600 dark:text-gray-300">0 MACs válidos</span>
+                <input id="filtroMAC" type="text" placeholder="Filtrar MACs..." class="p-2 rounded border border-gray-300 dark:bg-gray-800 dark:text-white" oninput="filtrarMACs()">
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                Para formatar os endereços MAC, insira um endereço MAC por linha e clique em "Formatar".
+            </p>
+
+            <h2 class="text-2xl font-semibold text-green-600 dark:text-green-400 mb-4">Endereços MAC Formatados:</h2>
+            
+            <div id="resultado" 
+                 class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-left mb-4 min-h-[100px] break-all">
+            </div>
+            
+            <p id="mensagemValidacao" class="text-green-600 dark:text-green-400 font-semibold"></p>
+            <div id="feedbackCopia" class="fixed bottom-24 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-500 z-50">Copiado!</div>
+        </div>
+
+        <!-- Botão Fim -->
+        <button id="scrollToBottom" 
+                onclick="scrollToBottom()" 
+                class="fixed top-5 right-5 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg transition-all duration-300 z-50">
+            FIM
+        </button>
+    </div>
+
+    <script>
+        let macsFormatados = [];
+        let macsOUI = {};
+        // Simulação de OUI (fabricante)
+        function getOUI(mac) {
+            const prefixo = mac.replace(/[^A-Fa-f0-9]/g, '').substring(0,6).toUpperCase();
+            const fabricantes = { '001A2B': 'Cisco', 'AABBCC': 'Intel', '112233': 'Apple', 'DDEEFF': 'Dell' };
+            return fabricantes[prefixo] || 'Desconhecido';
+        }
+        function formatarMAC() {
+            const entrada = document.getElementById("macInput").value.split("\n");
+            const formato = document.getElementById("formato").value;
+            macsFormatados = [];
+            let ignorados = [];
+            for (let linha of entrada) {
+                let mac = linha.trim().replace(/[^A-Fa-f0-9]/g, "");
+                if (mac.length === 12) {
+                    let formatado;
+                    if (formato === ':') formatado = mac.match(/.{2}/g).join(":");
+                    else if (formato === '-') formatado = mac.match(/.{2}/g).join("-");
+                    else if (formato === '.') formatado = mac.match(/.{4}/g).join(".");
+                    macsFormatados.push({mac: formatado, original: linha, decimal: parseInt(mac,16), oui: getOUI(mac)});
+                } else if (mac.length === 17 && linha.indexOf("-") !== -1 && formato === '-') {
+                    macsFormatados.push({mac: linha.replace(/-/g, '-'), original: linha, decimal: parseInt(mac.replace(/-/g, ''),16), oui: getOUI(mac)});
+                } else if (mac.length === 17 && linha.indexOf(":") !== -1 && formato === ':') {
+                    macsFormatados.push({mac: linha.replace(/:/g, ':'), original: linha, decimal: parseInt(mac.replace(/:/g, ''),16), oui: getOUI(mac)});
+                } else {
+                    if (linha) ignorados.push(linha);
+                }
+            }
+            atualizarResultado();
+            document.getElementById("mensagemValidacao").textContent = macsFormatados.length > 0 ? "Endereços MAC formatados com sucesso!" : "Nenhum endereço MAC válido encontrado.";
+            if (ignorados.length > 0) document.getElementById("mensagemValidacao").textContent += ` | Ignorados: ${ignorados.join(', ')}`;
+        }
+        function atualizarResultado() {
+            const filtro = document.getElementById('filtroMAC').value.toLowerCase();
+            let html = '';
+            let count = 0;
+            for (let obj of macsFormatados) {
+                if (obj.mac.toLowerCase().includes(filtro)) {
+                    html += `<div class='flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-200 dark:border-gray-700 py-1'>
+                        <span><b>${obj.mac}</b> <span class='text-xs text-gray-500'>(decimal: ${obj.decimal})</span></span>
+                        <span class='text-xs text-blue-600 dark:text-blue-400'>OUI: ${obj.oui}</span>
+                    </div>`;
+                    count++;
+                }
+            }
+            document.getElementById("resultado").innerHTML = html;
+            document.getElementById("contadorMACs").textContent = `${count} MAC${count!==1?'s':''} válidos`;
+        }
+        function limparCampos() {
+            document.getElementById("macInput").value = "";
+            macsFormatados = [];
+            atualizarResultado();
+            document.getElementById("mensagemValidacao").textContent = "";
+        }
+        function copiarParaClipboard() {
+            let texto = macsFormatados.map(obj => obj.mac).join("\n");
+            const textarea = document.createElement("textarea");
+            textarea.value = texto;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            const feedback = document.getElementById('feedbackCopia');
+            feedback.style.opacity = 1;
+            setTimeout(()=>{feedback.style.opacity=0;}, 1500);
+        }
+        function exportarParaTxt() {
+            let texto = macsFormatados.map(obj => obj.mac).join("\n");
+            const blob = new Blob([texto], {type: 'text/plain'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'macs_formatados.txt';
+            link.click();
+        }
+        function importarArquivo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('macInput').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+        function removerDuplicados() {
+            const vistos = new Set();
+            macsFormatados = macsFormatados.filter(obj => {
+                if (vistos.has(obj.mac)) return false;
+                vistos.add(obj.mac);
+                return true;
+            });
+            atualizarResultado();
+        }
+        function gerarMACsAleatorios() {
+            let quantidade = prompt('Quantos MACs aleatórios deseja gerar?', '5');
+            quantidade = parseInt(quantidade);
+            if (isNaN(quantidade) || quantidade < 1) return;
+            let macs = [];
+            for (let i=0; i<quantidade; i++) {
+                let mac = Array.from({length:12},()=>Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
+                macs.push(mac.match(/.{2}/g).join(':'));
+            }
+            document.getElementById('macInput').value = macs.join('\n');
+        }
+        function filtrarMACs() {
+            atualizarResultado();
+        }
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>

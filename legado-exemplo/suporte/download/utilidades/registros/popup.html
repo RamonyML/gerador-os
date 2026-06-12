@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Rápidas</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo/logo.png" alt="Logo" class="logo-img">
+            <h1>💬 Meus Registros</h1>
+            <p>Atendimento WhatsApp</p>
+        </header>
+
+        <!-- Barra de Pesquisa -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 Pesquisar mensagens..." class="search-input">
+        </div>
+
+        <!-- Layout em duas colunas -->
+        <div class="main-content">
+            <!-- Coluna esquerda - Formulário -->
+            <div class="left-column">
+                <div class="add-form">
+                    <h3>➕ Adicionar Nova Mensagem</h3>
+                    <input type="text" id="titleInput" placeholder="Título da mensagem" class="form-input">
+                    <textarea id="messageInput" placeholder="Digite sua mensagem aqui..." class="form-textarea"></textarea>
+                    <button id="addButton" class="btn btn-primary">Salvar Mensagem</button>
+                    <button id="exportTxtButton" class="btn btn-secondary" style="margin-top:10px;width:100%">Exportar para TXT</button>
+                    <button id="importTxtButton" class="btn btn-secondary" style="margin-top:10px;width:100%">Importar TXT</button>
+                    <input type="file" id="importTxtInput" accept=".txt" style="display:none" />
+                </div>
+            </div>
+
+            <!-- Coluna direita - Lista de Mensagens -->
+            <div class="right-column">
+                <div class="messages-container">
+                    <h3>📝 Mensagens Salvas</h3>
+                    <div id="messagesList" class="messages-list">
+                        <!-- As mensagens serão inseridas aqui dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Edição -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>✏️ Editar Mensagem</h3>
+                <input type="text" id="editTitleInput" placeholder="Título da mensagem" class="form-input">
+                <textarea id="editMessageInput" placeholder="Digite sua mensagem aqui..." class="form-textarea"></textarea>
+                <button id="saveEditButton" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html> 

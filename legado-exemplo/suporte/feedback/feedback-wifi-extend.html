@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #087539); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #abd6a5; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+    </nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-feedback.html" class="text-success">Feedback</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Wi-Fi Extend</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #1a9238;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #1a9238;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #1a9238;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #116b28;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 250px !important;
+    border: 1px solid #1a9238;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #1a9238;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #991b1b; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #d10e0e;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+::selection {
+    background-color: #1fa064;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+
+.danger {
+    border: 1px solid rgb(224, 224, 224);
+}
+
+.primary {
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.success {
+    border: 1px solid rgb(10, 141, 10);
+}
+
+#saidaTexto {
+    height: 200px; /* Ajuste conforme necessário */
+}
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">Feedback</h1>
+                <h2 class="mb-4">Wi-Fi Extend</h2>
+          </div>
+            <!-- Título clicável -->
+            <button class="btn btn-outline-success" type="button" data-bs-toggle="collapse" data-bs-target="#infoCollapse" aria-expanded="false" aria-controls="infoCollapse">
+              Orientações adicionais
+            </button>
+            <!-- Texto que aparece ao expandir -->
+            <div class="collapse" id="infoCollapse">
+              <div class="card card-body mt-2">
+                <b>IMPORTANTE:</b><br>
+                <ul>Caso haja alguma particularidade, ela será adicionada ao final, em <b>"Observações"</b>.<br>Não é necessário incluir muitos detalhes, pois essas informações devem constar no encerramento da ordem de serviço e na ligação gravada.
+                </ul>
+              </div>
+            </div>
+        </div><hr>
+        <form class="needs-validation" id="feedbackForm" novalidate>
+          <div class="row g-3">
+              <div class="col-md-4">
+                  <label class="form-label">Nome do Cliente</label>
+                  <input type="text" id="cliente" class="form-control" placeholder="Primeiro nome" required>
+              </div>
+              <div class="col-md-2">
+                  <label class="form-label">Canal</label>
+                  <select id="canal" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option value="LIGAÇÃO">Ligação</option>
+                      <option value="WHATSAPP">WhatsApp</option>
+                  </select>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label">Contato</label>
+                  <input type="text" id="contato" class="form-control" placeholder="34 91234-5678" required>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label">Data e Hora</label>
+                  <input type="text" id="dataHora" class="form-control" placeholder="01/01/2025 - 12:00" required>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label">Plano</label>
+                  <select id="plano" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option value="150 MEGA + WI-FI EXTEND">150 MEGA</option>
+                      <option value="300 MEGA + WI-FI EXTEND">300 MEGA</option>
+                      <option value="600 MEGA + WI-FI EXTEND">600 MEGA</option>
+                      <option value="1.000 MEGA + WI-FI EXTEND">1.000 MEGA</option>
+                  </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Roteadores Adicionais</label>
+                <select id="qtdRoteadores" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Wi-Fi/Cabo</label>
+                <select id="wifiCabo" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option value="WI-FI">Wi-Fi</option>
+                    <option value="CABO">Cabo de rede</option>
+                </select>
+              </div>
+              <div class="col-md-3 d-flex align-items-center">
+                  <input type="checkbox" id="dispensouTestes" class="form-check-input me-2">
+                  <label class="form-check-label" for="dispensouTestes">Cliente dispensou testes</label>
+                </div><hr>
+            <!-- TESTES ROTEADOR PRINCIPAL -->
+            <div class="row">
+              <div class="col-md-12">
+                  <h5 class="text-success fw-bold">DETALHES DO ROTEADOR PRINCIPAL</h5>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Comodo instalado</label>
+              <input type="text" id="local1" class="form-control" placeholder="Sala, Quarto..." required>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Roteador</label>
+                  <select id="roteador1" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                    <option value="ZTE H199-A">ZTE H199-A</option>
+                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                    <option value="TP-LINK EX511">TP-LINK EX511</option>
+                    <option value="TP-LINK EX520">TP-LINK EX520</option>
+                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                    <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                    <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">MAC</label>
+                <input type="text" id="mac1" class="form-control mac-mask" placeholder="AA:BB:CC:DD:EE:FF" required>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Kit Cabo</label>
+                <input type="text" id="tecCabo1" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Kit Wi-Fi</label>
+                <input type="text" id="tecWifi1" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Aparelho cliente:</label>
+                <select id="tipoEquip1" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <option value="CELULAR">Celular</option>
+                  <option value="DESKTOP">Desktop</option>
+                  <option value="NOTEBOOK">Notebook</option>
+                  <option value="TABLET">Tablet</option>
+                </select>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Marca/Modelo</label>
+                  <input type="text" id="marca1" class="form-control" placeholder="Xiaomi, iPhone..." required>
+              </div>
+              <div class="col-md-2">
+                  <label class="form-label">Velocidade</label>
+                  <input type="text" id="veloCliente1" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Wi-Fi/Cabo</label>
+                <select id="conectCliente1" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option value="WI-FI">Wi-Fi</option>
+                    <option value="CABO">Cabo de rede</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                  <label class="form-label">Roteador ligado em</label>
+                  <select id="energia1" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option value="TOMADA INDIVIDUAL">TOMADA INDIVIDUAL</option>
+                      <option value="RÉGUA DE ENERGIA">RÉGUA DE ENERGIA</option>
+                      <option value="EXTENSÃO ELÉTRICA">EXTENSÃO ELÉTRICA</option>
+                      <option value="T DE ENERGIA">T DE ENERGIA</option>
+                  </select>
+              </div>
+            <!-- TESTES ROTEADOR SECUNDÁRIO -->
+            <div class="row">
+              <div class="col-md-12"><hr>
+                  <h5 class="text-primary fw-bold">DETALHES DO ROTEADOR SECUNDÁRIO</h5>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Comodo instalado</label>
+              <input type="text" id="local2" class="form-control" placeholder="Sala, Quarto..." required>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Roteador</label>
+                  <select id="roteador2" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                    <option value="ZTE H199-A">ZTE H199-A</option>
+                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                    <option value="TP-LINK EX511">TP-LINK EX511</option>
+                    <option value="TP-LINK EX520">TP-LINK EX520</option>
+                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                    <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                    <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">MAC</label>
+                <input type="text" id="mac2" class="form-control mac-mask" placeholder="AA:BB:CC:DD:EE:FF" required>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Kit Cabo</label>
+                <input type="text" id="tecCabo2" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Kit Wi-Fi</label>
+                <input type="text" id="tecWifi2" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Aparelho cliente:</label>
+                <select id="tipoEquip2" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <option value="CELULAR">Celular</option>
+                  <option value="DESKTOP">Desktop</option>
+                  <option value="NOTEBOOK">Notebook</option>
+                  <option value="TABLET">Tablet</option>
+                </select>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Marca/Modelo</label>
+                  <input type="text" id="marca2" class="form-control" placeholder="Xiaomi, iPhone..." required>
+              </div>
+              <div class="col-md-2">
+                  <label class="form-label">Velocidade</label>
+                  <input type="text" id="veloCliente2" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" required>
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Wi-Fi/Cabo</label>
+                <select id="conectCliente2" class="form-select" required>
+                    <option value="">Selecione</option>
+                    <option value="WI-FI">Wi-Fi</option>
+                    <option value="CABO">Cabo de rede</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label class="form-label">Roteador ligado em</label>
+                <select id="energia2" class="form-select" required>
+                      <option value="">Selecione</option>
+                      <option value="TOMADA INDIVIDUAL">TOMADA INDIVIDUAL</option>
+                      <option value="RÉGUA DE ENERGIA">RÉGUA DE ENERGIA</option>
+                      <option value="EXTENSÃO ELÉTRICA">EXTENSÃO ELÉTRICA</option>
+                      <option value="T DE ENERGIA">T DE ENERGIA</option>
+                  </select>
+              </div><br>
+            <!-- TESTES TERCEIRO ROTEADOR -->
+            <div class="row">
+              <div class="col-md-12"><hr>
+                  <h5 class="text-danger fw-bold">DETALHES DO TERCEIRO ROTEADOR</h5>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Comodo instalado</label>
+              <input type="text" id="local3" class="form-control" placeholder="Sala, Quarto...">
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Roteador</label>
+                  <select id="roteador3" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                    <option value="ZTE H199-A">ZTE H199-A</option>
+                    <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                    <option value="TP-LINK EX511">TP-LINK EX511</option>
+                    <option value="TP-LINK EX520">TP-LINK EX520</option>
+                    <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                    <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                    <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                    <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">MAC</label>
+                <input type="text" id="mac3" class="form-control mac-mask" placeholder="AA:BB:CC:DD:EE:FF">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Kit Cabo</label>
+                <input type="text" id="tecCabo3" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" >
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Kit Wi-Fi</label>
+                <input type="text" id="tecWifi3" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps" >
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Aparelho cliente:</label>
+                <select id="tipoEquip3" class="form-select">
+                  <option value="">Selecione...</option>
+                  <option value="CELULAR">Celular</option>
+                  <option value="DESKTOP">Desktop</option>
+                  <option value="NOTEBOOK">Notebook</option>
+                  <option value="TABLET">Tablet</option>
+                </select>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Marca/Modelo</label>
+                  <input type="text" id="marca3" class="form-control" placeholder="Xiaomi, iPhone...">
+              </div>
+              <div class="col-md-2">
+                  <label class="form-label">Velocidade</label>
+                  <input type="text" id="veloCliente3" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Wi-Fi/Cabo</label>
+                <select id="conectCliente3" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="WI-FI">Wi-Fi</option>
+                    <option value="CABO">Cabo de rede</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label class="form-label">Roteador ligado em</label>
+                <select id="energia3" class="form-select">
+                      <option value="">Selecione</option>
+                      <option value="TOMADA INDIVIDUAL">TOMADA INDIVIDUAL</option>
+                      <option value="RÉGUA DE ENERGIA">RÉGUA DE ENERGIA</option>
+                      <option value="EXTENSÃO ELÉTRICA">EXTENSÃO ELÉTRICA</option>
+                      <option value="T DE ENERGIA">T DE ENERGIA</option>
+                  </select>
+              </div><br>
+            <!-- TESTES QUARTO ROTEADOR -->
+            <div class="row">
+              <div class="col-md-12"><hr>
+                  <h5 class="text-warning fw-bold">DETALHES DO QUARTO ROTEADOR</h5>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Comodo instalado</label>
+              <input type="text" id="local4" class="form-control" placeholder="Sala, Quarto...">
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Roteador</label>
+                  <select id="roteador4" class="form-select">
+                      <option value="">Selecione...</option>
+                      <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                      <option value="ZTE H199-A">ZTE H199-A</option>
+                      <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                      <option value="TP-LINK EX511">TP-LINK EX511</option>
+                      <option value="TP-LINK EX520">TP-LINK EX520</option>
+                      <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                      <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                      <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                      <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+                  </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">MAC</label>
+                <input type="text" id="mac4" class="form-control mac-mask" placeholder="AA:BB:CC:DD:EE:FF">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Kit Cabo</label>
+                <input type="text" id="tecCabo4" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Kit Wi-Fi</label>
+                <input type="text" id="tecWifi4" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Aparelho cliente:</label>
+                <select id="tipoEquip4" class="form-select">
+                  <option value="">Selecione...</option>
+                  <option value="CELULAR">Celular</option>
+                  <option value="DESKTOP">Desktop</option>
+                  <option value="NOTEBOOK">Notebook</option>
+                  <option value="TABLET">Tablet</option>
+                </select>
+            </div>
+              <div class="col-md-2">
+                  <label class="form-label">Marca/Modelo</label>
+                  <input type="text" id="marca4" class="form-control" placeholder="Xiaomi, iPhone...">
+              </div>
+              <div class="col-md-2">
+                  <label class="form-label">Velocidade</label>
+                  <input type="text" id="veloCliente4" class="form-control" placeholder="652Mbps" title="inserir apenas o valor numérico. Ex: '350'Mbps">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Wi-Fi/Cabo</label>
+                <select id="conectCliente4" class="form-select">
+                    <option value="">Selecione</option>
+                    <option value="WI-FI">Wi-Fi</option>
+                    <option value="CABO">Cabo de rede</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label class="form-label">Roteador ligado em</label>
+                <select id="energia4" class="form-select">
+                      <option value="">Selecione</option>
+                      <option value="TOMADA INDIVIDUAL">TOMADA INDIVIDUAL</option>
+                      <option value="RÉGUA DE ENERGIA">RÉGUA DE ENERGIA</option>
+                      <option value="EXTENSÃO ELÉTRICA">EXTENSÃO ELÉTRICA</option>
+                      <option value="T DE ENERGIA">T DE ENERGIA</option>
+                  </select>
+              </div>
+
+
+              <div class="col-md-12">
+                  <label class="form-label">Observações:</label>
+                  <input type="text" id="obs" class="form-control" placeholder="Cliente optou por não instalar os aplicativos MZTV / CDNTV" title="A informação deve ser objetiva, resumida em uma única frase.">
+              </div><hr>
+          </div>
+        </form>
+
+          <button onclick="gerarTexto()" class="btn btn-success w-100">Gerar Texto</button>
+          <textarea id="resultado" class="form-control" readonly></textarea>
+          <button class="btn btn-success btn-block mb-2" onclick="copiarTexto()">Copiar Texto</button>
+          <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar Tudo</button>
+      <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+      <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.2/imask.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializa flatpickr para o campo de data/hora
+            flatpickr("#dataHora", {
+              enableTime: true,
+              dateFormat: "d/m/Y H:i", // Removido o "ÀS" aqui
+              time_24hr: true,
+              locale: "pt"
+            });        
+            // Máscara para o campo de contato
+            IMask(document.getElementById('contato'), {
+                mask: '00 00000-0000'
+            });
+        
+            // Máscara para os campos MAC
+            document.querySelectorAll('.mac-mask').forEach(element => {
+                IMask(element, {
+                    mask: 'XX:XX:XX:XX:XX:XX',
+                    definitions: {
+                        'X': /[0-9A-Fa-f]/
+                    }
+                });
+            });
+        
+            // Oculta os roteadores adicionais inicialmente
+            hideAdditionalRouters();
+        
+            // Adiciona o evento de change para o select de quantidade de roteadores
+            document.getElementById('qtdRoteadores').addEventListener('change', function() {
+                hideAdditionalRouters();
+            });
+
+            // Controle dos campos de teste baseado no checkbox de dispensar testes
+            document.getElementById("dispensouTestes").addEventListener("change", function () {
+                const camposTeste = [
+                    "tipoEquip1", "marca1", "veloCliente1", "conectCliente1",
+                    "tipoEquip2", "marca2", "veloCliente2", "conectCliente2", 
+                    "tipoEquip3", "marca3", "veloCliente3", "conectCliente3",
+                    "tipoEquip4", "marca4", "veloCliente4", "conectCliente4"
+                ];
+                
+                camposTeste.forEach(campoId => {
+                    const campo = document.getElementById(campoId);
+                    if (campo) {
+                        campo.disabled = this.checked;
+                        if (this.checked) {
+                            campo.value = "";
+                            campo.classList.add("text-muted");
+                        } else {
+                            campo.classList.remove("text-muted");
+                        }
+                    }
+                });
+            });
+        });
+        
+        function hideAdditionalRouters() {
+            // Sempre mostra o roteador principal (já está visível por padrão)
+            
+            // Obtém a quantidade de roteadores adicionais selecionada
+            const qtd = parseInt(document.getElementById('qtdRoteadores').value);
+            
+            // Oculta todos os roteadores adicionais primeiro
+            document.querySelectorAll('[id^="local2"], [id^="roteador2"], [id^="mac2"], [id^="tecCabo2"], [id^="tecWifi2"], [id^="tipoEquip2"], [id^="marca2"], [id^="veloCliente2"], [id^="conectCliente2"], [id^="energia2"], [id^="local3"], [id^="roteador3"], [id^="mac3"], [id^="tecCabo3"], [id^="tecWifi3"], [id^="tipoEquip3"], [id^="marca3"], [id^="veloCliente3"], [id^="conectCliente3"], [id^="energia3"], [id^="local4"], [id^="roteador4"], [id^="mac4"], [id^="tecCabo4"], [id^="tecWifi4"], [id^="tipoEquip4"], [id^="marca4"], [id^="veloCliente4"], [id^="conectCliente4"], [id^="energia4"]').forEach(el => {
+                el.closest('.col-md-2, .col-md-3, .col-md-12').style.display = 'none';
+            });
+            
+            // Mostra os títulos dos roteadores adicionais conforme necessário
+            document.querySelectorAll('h5').forEach((el, index) => {
+                if (index > 0) { // Ignora o primeiro h5 (roteador principal)
+                    el.closest('.row').style.display = 'none';
+                }
+            });
+            
+            // Mostra os roteadores adicionais conforme a quantidade selecionada
+            if (qtd >= 1) {
+                document.querySelectorAll('[id^="local2"], [id^="roteador2"], [id^="mac2"], [id^="tecCabo2"], [id^="tecWifi2"], [id^="tipoEquip2"], [id^="marca2"], [id^="veloCliente2"], [id^="conectCliente2"], [id^="energia2"]').forEach(el => {
+                    el.closest('.col-md-2, .col-md-3').style.display = 'block';
+                });
+                document.querySelectorAll('h5')[1].closest('.row').style.display = 'block';
+            }
+            
+            if (qtd >= 2) {
+                document.querySelectorAll('[id^="local3"], [id^="roteador3"], [id^="mac3"], [id^="tecCabo3"], [id^="tecWifi3"], [id^="tipoEquip3"], [id^="marca3"], [id^="veloCliente3"], [id^="conectCliente3"], [id^="energia3"]').forEach(el => {
+                    el.closest('.col-md-2, .col-md-3').style.display = 'block';
+                });
+                document.querySelectorAll('h5')[2].closest('.row').style.display = 'block';
+            }
+            
+            if (qtd >= 3) {
+                document.querySelectorAll('[id^="local4"], [id^="roteador4"], [id^="mac4"], [id^="tecCabo4"], [id^="tecWifi4"], [id^="tipoEquip4"], [id^="marca4"], [id^="veloCliente4"], [id^="conectCliente4"], [id^="energia4"]').forEach(el => {
+                    el.closest('.col-md-2, .col-md-3').style.display = 'block';
+                });
+                document.querySelectorAll('h5')[3].closest('.row').style.display = 'block';
+            }
+        }
+        
+        function gerarTexto() {
+            // Valida o formulário
+            const form = document.getElementById('feedbackForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+        
+            // Obtém os valores dos campos
+            const cliente = document.getElementById('cliente').value.toUpperCase();
+            const canal = document.getElementById('canal').value.toUpperCase();
+            const contato = document.getElementById('contato').value;
+            const dataHora = document.getElementById('dataHora').value;
+            const plano = document.getElementById('plano').value.toUpperCase();
+            const quantidade = document.getElementById('qtdRoteadores').value;
+            const conexao = document.getElementById('wifiCabo').value.toUpperCase();
+            const obs = document.getElementById('obs').value.toUpperCase();
+            const dispensouTestes = document.getElementById('dispensouTestes').checked;
+        
+            // Roteador Principal
+            const local1 = document.getElementById('local1').value.toUpperCase();
+            const roteador1 = document.getElementById('roteador1').value;
+            const mac1 = document.getElementById('mac1').value.toUpperCase();
+            const tecCabo1 = document.getElementById('tecCabo1').value.toUpperCase();
+            const tecWifi1 = document.getElementById('tecWifi1').value.toUpperCase();
+            const tipoEquip1 = document.getElementById('tipoEquip1').value.toUpperCase();
+            const marca1 = document.getElementById('marca1').value.toUpperCase();
+            const veloCliente1 = document.getElementById('veloCliente1').value.toUpperCase();
+            const conectCliente1 = document.getElementById('conectCliente1').value.toUpperCase();
+            const energia1 = document.getElementById('energia1').value.toUpperCase();
+        
+            // Roteador Secundário
+            const local2 = document.getElementById('local2').value.toUpperCase();
+            const roteador2 = document.getElementById('roteador2').value;
+            const mac2 = document.getElementById('mac2').value.toUpperCase();
+            const tecCabo2 = document.getElementById('tecCabo2').value.toUpperCase();
+            const tecWifi2 = document.getElementById('tecWifi2').value.toUpperCase();
+            const tipoEquip2 = document.getElementById('tipoEquip2').value.toUpperCase();
+            const marca2 = document.getElementById('marca2').value.toUpperCase();
+            const veloCliente2 = document.getElementById('veloCliente2').value.toUpperCase();
+            const conectCliente2 = document.getElementById('conectCliente2').value.toUpperCase();
+            const energia2 = document.getElementById('energia2').value.toUpperCase();
+        
+            // Terceiro Roteador
+            const local3 = document.getElementById('local3').value.toUpperCase();
+            const roteador3 = document.getElementById('roteador3').value.toUpperCase();
+            const mac3 = document.getElementById('mac3').value.toUpperCase();
+            const tecCabo3 = document.getElementById('tecCabo3').value.toUpperCase();
+            const tecWifi3 = document.getElementById('tecWifi3').value.toUpperCase();
+            const tipoEquip3 = document.getElementById('tipoEquip3').value.toUpperCase();
+            const marca3 = document.getElementById('marca3').value.toUpperCase();
+            const veloCliente3 = document.getElementById('veloCliente3').value.toUpperCase();
+            const conectCliente3 = document.getElementById('conectCliente3').value.toUpperCase();
+            const energia3 = document.getElementById('energia3').value.toUpperCase();
+        
+            // Quarto Roteador
+            const local4 = document.getElementById('local4').value.toUpperCase();
+            const roteador4 = document.getElementById('roteador4').value.toUpperCase();
+            const mac4 = document.getElementById('mac4').value.toUpperCase();
+            const tecCabo4 = document.getElementById('tecCabo4').value.toUpperCase();
+            const tecWifi4 = document.getElementById('tecWifi4').value.toUpperCase();
+            const tipoEquip4 = document.getElementById('tipoEquip4').value.toUpperCase();
+            const marca4 = document.getElementById('marca4').value.toUpperCase();
+            const veloCliente4 = document.getElementById('veloCliente4').value.toUpperCase();
+            const conectCliente4 = document.getElementById('conectCliente4').value.toUpperCase();
+            const energia4 = document.getElementById('energia4').value.toUpperCase();
+        
+            // Monta o texto base
+            let texto = `FIZ FEEDBACK COM ${cliente} POR ${canal.toUpperCase()} (${contato}) DIA ${dataHora.replace(' ', ' ÀS ')} HRS.\n`;
+            texto += `CONFIRMOU A ALTERAÇÃO DO PLANO PARA: ${plano} COM A INSTALAÇÃO DE ${quantidade} ROTEADOR(ES) ADICIONAL(AIS). CONEXÃO FEITA VIA ${conexao}.\n\n`;
+            texto += `${cliente} CONFIRMOU QUE FOI REALIZADO TESTES DE AFERIÇÃO DA VELOCIDADE, ORIENTAÇÃO DE COBERTURA WI-FI E REDE 2.4G E 5G.\n\n`;
+        
+            // Adiciona os testes do roteador principal
+            texto += `TESTE FEITO NO ROTEADOR PRINCIPAL INSTALADO EM: ${local1}, (${roteador1} / MAC: ${mac1}).\n`;
+            texto += `- NOTEBOOK DO TECNICO VIA CABO AFERIU ${tecCabo1} MEGA E VIA WI-FI NA REDE 5G AFERIU ${tecWifi1} MEGA\n`;
+            
+            if (dispensouTestes) {
+                texto += `- ${cliente} DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS\n`;
+            } else {
+                texto += `- ${tipoEquip1} DO CLIENTE ${marca1} AFERIU ${veloCliente1} CONECTADO VIA ${conectCliente1}\n`;
+            }
+            
+            texto += `EQUIPAMENTO LIGADO EM ${energia1}\n\n`;
+        
+            // Adiciona os testes dos roteadores adicionais conforme a quantidade selecionada
+            const qtd = parseInt(quantidade);
+            
+            if (qtd >= 1) {
+                texto += `TESTE FEITO NO SEGUNDO ROTEADOR INSTALADO EM: ${local2}, (${roteador2} / MAC: ${mac2}).\n`;
+                texto += `- NOTEBOOK DO TECNICO VIA CABO AFERIU ${tecCabo2} MEGA E VIA WI-FI NA REDE 5G AFERIU ${tecWifi2} MEGA\n`;
+                
+                if (dispensouTestes) {
+                    texto += `- ${cliente} DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS\n`;
+                } else {
+                    texto += `- ${tipoEquip2} DO CLIENTE ${marca2} AFERIU ${veloCliente2} CONECTADO VIA ${conectCliente2}\n`;
+                }
+                
+                texto += `EQUIPAMENTO LIGADO EM ${energia2}\n\n`;
+            }
+            
+            if (qtd >= 2) {
+                texto += `TESTE FEITO NO TERCEIRO ROTEADOR INSTALADO EM: ${local3}, (${roteador3} / MAC: ${mac3}).\n`;
+                texto += `- NOTEBOOK DO TECNICO VIA CABO AFERIU ${tecCabo3} MEGA E VIA WI-FI NA REDE 5G AFERIU ${tecWifi3} MEGA\n`;
+                
+                if (dispensouTestes) {
+                    texto += `- ${cliente} DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS\n`;
+                } else {
+                    texto += `- ${tipoEquip3} DO CLIENTE ${marca3} AFERIU ${veloCliente3} CONECTADO VIA ${conectCliente3}\n`;
+                }
+                
+                texto += `EQUIPAMENTO LIGADO EM ${energia3}\n\n`;
+            }
+            
+            if (qtd >= 3) {
+                texto += `TESTE FEITO NO QUARTO ROTEADOR INSTALADO EM: ${local4}, (${roteador4} / MAC: ${mac4}).\n`;
+                texto += `- NOTEBOOK DO TECNICO VIA CABO AFERIU ${tecCabo4} MEGA E VIA WI-FI NA REDE 5G AFERIU ${tecWifi4} MEGA\n`;
+                
+                if (dispensouTestes) {
+                    texto += `- ${cliente} DISPENSOU OS TESTES EM SEUS DISPOSITIVOS PESSOAIS\n`;
+                } else {
+                    texto += `- ${tipoEquip4} DO CLIENTE ${marca4} AFERIU ${veloCliente4} CONECTADO VIA ${conectCliente4}\n`;
+                }
+                
+                texto += `EQUIPAMENTO LIGADO EM ${energia4}\n\n`;
+            }
+        
+            texto += `O.S SEM CUSTOS\n\n`;
+            texto += `CLIENTE SEM DUVIDAS\n\n`;
+            texto += `OBS: ${obs}`;
+        
+            // Exibe o texto gerado
+            document.getElementById('resultado').value = texto;
+        }
+        
+        function copiarTexto() {
+            const texto = document.getElementById('resultado');
+            texto.select();
+            document.execCommand('copy');
+            alert('Texto copiado para a área de transferência!');
+        }
+        
+        function limparCampos() {
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('resultado').value = '';
+            document.getElementById('feedbackForm').classList.remove('was-validated');
+            hideAdditionalRouters();
+        }
+        </script>
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

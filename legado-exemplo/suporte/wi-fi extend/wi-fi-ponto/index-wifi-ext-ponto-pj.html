@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ponto Adicional</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+      </nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-extend.html" class="text-success">Wi-Fi Extend</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Ponto Adicional</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoOS {
+    height: 300px; /* Defina a altura desejada */
+}
+#textoAgenda {
+    height: 40px; /* Defina a altura desejada */
+}
+
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">PONTO ADICIONAL</h1>
+          </div><br>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <b>ATENÇÃO:</b> O gerador deste tipo de ordem de serviço não fornece o texto de protocolo. Por ser um tipo de atendimento muito relativo, o operador deve descrever no protocolo os detalhes do que foi tratado.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="alert alert-warning" role="alert">
+            <b>Sem renovação da fidelidade. Apenas a compra do equipamento.</b>
+          </div>
+          
+        </div>
+        <div class="form">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link" href="/suporte/wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto.html">Pessoa Física</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active font-weight-bold text-success" href="#">Pessoa Jurídica</a>
+                </li>
+            </ul><br>
+            <div class="btn-group" role="group" aria-label="Exemplo básico">
+                <a href="#" class="btn btn-success" role="button">SEM TROCA DO ROTEADOR PRIMÁRIO</a>
+                <a href="/suporte/wi-fi extend/wi-fi-ponto/index-wifi-ext-ponto-pj-troca.html" class="btn btn-outline-success" role="button">COM TROCA DO ROTEADOR PRIMÁRIO</a>
+              </div><hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="solicitante">Solicitante:</label>
+                        <input type="text" class="form-control" id="solicitante" placeholder="Nome completo">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="cargo">Cargo:</label>
+                        <input type="text" class="form-control" id="cargo" placeholder="Sócio, gerente, técnico...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="canal">Canal:</label>
+                        <select class="form-control" id="canal">
+                            <option value="LIGAÇÃO">Telefone</option>
+                            <option value="WHATSAPP">WhatsApp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="contato">Contato:</label>
+                        <input type="text" class="form-control" id="contato" placeholder="Apenas números">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="cliente">Razão social:</label>
+                        <input type="text" class="form-control" id="cliente" placeholder="Nome da empresa conforme cadastro no MK.">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="bairro">Bairro:</label>
+                        <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="dataVisita">Visita Técnica:</label>
+                        <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="horaVisita">Hora:</label>
+                        <select class="form-control" id="horaVisita">
+                            <option value="08:30">08:30</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:30">11:30</option>
+                            <option value="13:30">13:30</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:30">17:30</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="formaPag">Pagamento:</label>
+                        <select class="form-control" id="formaPag">
+                            <option value="CARTÃO DE CRÉDITO SEM JUROS">Crédito</option>
+                            <option value="CARTÃO DE DÉBITO">Débito</option>
+                            <option value="DINHEIRO">Dinheiro</option>
+                            <option value="PIX">PIX</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="parcela">Parcelas:</label>
+                        <select class="form-control" id="parcela">
+                            <option value="1x">1x</option>
+                            <option value="2x">2x</option>
+                            <option value="3x">3x</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="protocolo">Nº Protocolo:</label>
+                        <input type="text" class="form-control" id="protocolo" placeholder="123.456">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="operador">Nome do operador:</label>
+                        <select class="form-control" id="operador" required="true" requiredMessage="Informe o nome">
+                            <option value="">Selecione...</option>
+                            <option value="ANDREZA">ANDREZA</option>
+                            <option value="BRUNA">BRUNA</option>
+                            <option value="DEIVIT">DEIVIT</option>
+                            <option value="EDUARDO">EDUARDO</option>
+                            <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                            <option value="HALYSON">HALYSON</option>
+                            <option value="HIAGO">HIAGO</option>
+                            <option value="IZABELA">IZABELA</option>
+                            <option value="KAROLAYNE">KAROLAYNE</option>
+                            <option value="LAUREN">LAUREN</option>
+                            <option value="LUIS">LUIS</option>
+                            <option value="PEDRO">PEDRO</option>
+                            <option value="RAMONY">RAMONY</option>
+                            <option value="RENATA">RENATA</option>
+                            <option value="RONALD">RONALD</option>
+                            <option value="VICTOR H.">VICTOR HUGO</option>
+                            <option value="VITOR M.">VITOR MANOEL</option>
+                            <option value="VAGNER">VAGNER</option>
+        </select>
+                    </div>
+                </div>
+            </div><br>
+        <div class="buttons">
+                    <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                    <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+                </div>
+            </div>
+ 
+    <div class="output">    
+        <div class="output-group">
+            <h4 class="font-weight-bold">Texto O.S:</h4>
+            <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+            <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+        </div>
+    </div>
+    <div class="output">    
+        <div class="output-group">
+            <h4 class="font-weight-bold">Texto Agenda:</h4>
+            <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+            <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+        </div>
+    </div>
+</div> 
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    document.title = "PONTO ADICIONAL";
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const solicitante = document.getElementById('solicitante').value.toUpperCase();
+    const cargo = document.getElementById('cargo').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const bairro = document.getElementById("bairro").value.toUpperCase();
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const operador = document.getElementById('operador').value;
+    const parcela = document.getElementById('parcela').value;
+    const formaPag = document.getElementById('formaPag').value;
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+    
+    // Crie os textos com os valores
+
+const textoOS = `POR ${canal} (${contato}) ${solicitante.split(' ')[0]} (${cargo}) SOLICITOU A COMPRA DE 01 ROTEADOR ADICIONAL PARA EXPANDIR A ABRANGÊNCIA DA REDE WI-FI DENTRO DA MESMA EMPRESA EM QUE FOI INSTALADO O PONTO PRINCIPAL (ROTEADOR PRIMÁRIO). VALOR ACORDADO DO ROTEADOR R$360,00 QUE SERÁ PAGO EM ${parcela} NO ${formaPag}. E INSTALAÇÃO/CONFIGURAÇÃO GRÁTIS. VISITA AGENDADA PARA INSTALAÇÃO DO EQUIPAMENTO EM ${dataVisita} ÀS ${horaVisita} HORAS.
+
+***********************************
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: INSTALAR ROTEADOR (MODELO COMPATIVEL AO PLANO) EM LOCAL DE CONCORDANCIA DO CLIENTE E NA MELHOR ÁREA DE COBERTURA WI-FI. CONFIGURAR REDE, CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO ESTIVER NO PADRÃO. RECEBER O VALOR DO EQUIPAMENTO E SERVIÇO NA FORMA COMBINADA. TEMPO ESTIMADO 60 MIN.`;
+
+
+const textoAgenda = `PONTO ADICIONAL ${cliente} PROT:${protocolo} ${formaPag.split(' ')[0]} (${operador}) - ${bairro}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#dataVisita", {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            onChange: function(selectedDates, dateStr, instance) {
+                const date = new Date(dateStr.split('/').reverse().join('-'));
+                const day = date.getDay();
+                const horaVisita = document.getElementById('horaVisita');
+    
+                if (day === 5) { // Sábado
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                } else if (day === 6) { // Domingo
+                    horaVisita.innerHTML = '';
+                    horaVisita.disabled = true;
+                } else {
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:30">17:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                }
+            }
+        });
+    });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+        
+        const auth = getAuth(app);
+      
+        // Verifica se o usuário está autenticado
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            console.log("Usuário não autenticado, redirecionando...");
+            window.location.href = "/login.html"; // Redireciona para a página de login
+          } else {
+            console.log("Usuário autenticado!", user);
+            // Exibe o conteúdo após a verificação
+            document.getElementById("main-content").style.display = "block";
+          }
+        });
+      
+        // Adiciona o evento de logout
+        document.getElementById('logoutButton').addEventListener('click', () => {
+          signOut(auth).then(() => {
+            console.log("Usuário deslogado com sucesso!");
+            window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+          }).catch((error) => {
+            console.error("Erro ao deslogar: ", error);
+          });
+        });
+      
+        onAuthStateChanged(auth, (user) => {
+              const emailSpan = document.getElementById("userEmail");
+              if (user) {
+                emailSpan.innerText = `Logado como: ${user.email}`;
+              } else {
+                emailSpan.innerText = `Usuário não autenticado`;
+              }
+            });
+      
+      </script>
+      <script type="module" src="../js/firebase-init.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autocomplete de Bairro</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <style>
+    .ui-autocomplete {
+      max-height: 200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .ui-menu-item {
+      padding: 5px 10px;
+    }
+    .ui-menu-item:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="form-group">
+      <label for="bairro">Bairro:</label>
+      <input id="bairro" class="form-control" name="bairro">
+    </div>
+  </div>
+
+  <script>
+    $(function() {
+      var bairros = [
+        "Centro",
+        "Jardim Paulista",
+        "Moema",
+        "Vila Mariana",
+        "Pinheiros",
+        "Brooklin",
+        "Itaim Bibi",
+        "Morumbi",
+        "Tatuapé",
+        "Lapa",
+        "Barra Funda",
+        "Liberdade",
+        "Bela Vista",
+        "Santa Cecília"
+        // Adicione mais bairros aqui
+      ];
+
+      $("#bairro").autocomplete({
+        source: bairros,
+        minLength: 2 // Sugestões aparecerão após digitar 2 caracteres
+      });
+    });
+  </script>
+</body>
+</html>

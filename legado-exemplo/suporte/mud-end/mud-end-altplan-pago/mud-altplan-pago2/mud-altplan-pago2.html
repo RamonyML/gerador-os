@@ -1,0 +1,1214 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MUD END</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    </head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        
+        *{
+            font-family: 'Poppins', sans-serif;
+            font-size: small;
+        
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 800px;
+            height:auto;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 1%;
+            background-color: #ffffff8e;
+            border: 0.8px solid rgba(0, 0, 0, 0);
+        }
+        
+        
+        h1 {
+            text-align: left;
+            color: #111111;
+        }
+        h3 {
+            text-align: left;
+            color: #db0000;
+            font-size: 15px;
+        }
+        
+        h5 {
+            text-align: left;
+            color: #196e2e;
+            font-size: 16px;
+            margin: 0 auto;
+        }
+        
+        a h5 {
+            text-align: left;
+            color: #2c2c2c;
+            font-size: 14px;
+            margin: 0 auto;
+        }
+        a h5:hover{
+            color: #20c436;
+            text-decoration: none;
+        }
+        
+        
+        
+        .form {
+            margin-top: 10px;
+        }
+        
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        
+        .buttons {
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #38af47;
+            color: #fff;
+            border: none;
+            border-radius: 1px;
+            cursor: pointer;
+        }
+        
+        .buttons button:hover {
+            background-color: #2b8637;
+        }
+        
+        .output {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .output-group {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: none;
+            width: 85%;
+            height: 200px;
+            border: 1px solid #38af47;
+            border-radius: 18px;
+            padding: 10px;
+        }
+        
+        .form-header h1::after{
+            content: '';
+            display: block;
+            width: 5rem;
+            height: 0.3rem;
+            background-color: #38af47;
+            margin: 0 auto;
+            position: absolute;
+            border-radius: 10px;
+        }
+        
+        a {
+    text-decoration: none;
+    color: #1a1a1a; /* Adicione a cor desejada para seus links */
+    }
+
+    a:hover {
+    color: #0fbd2c;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+  }
+  
+        
+        /*configura a imagem do fundo*/
+        body {
+            background-image: url('/fundos/fundo003.jpg');
+            background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+            background-repeat: no-repeat; /* Evita a repetição da imagem */
+            background-position: center;
+        }
+        
+        /*daqui pra baixo configura a logo*/
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .form-header {
+            position:relative;
+        }
+        
+        span {
+            text-align: left;
+            color: #db0000;
+            font-size: 12px;
+        }
+        #textoAgenda {
+        height: 50px; /* Defina a altura desejada */
+        }
+        
+        .btn-group a {
+        text-decoration: none;
+        }
+
+        .btn-group a:hover {
+        text-decoration: none;
+        }
+
+        
+        </style>
+        <body>
+            <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+                <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+                Gerador de O.S
+              </a>
+              <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link text-white" href="/index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Tutoriais
+                    </a>
+                    <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+                      <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+                      <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Outros</a>
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+                  </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                  <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+                  <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+                </div>
+              </div>
+              </nav>
+                      <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+                    <li class="breadcrumb-item"><a href="/suporte/dash-mudend.html" class="text-success">Mudança de Endereço</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Mud End + Alt Plano</li>
+                  </ol>
+                </nav>
+                  <div class="container">
+                    <form class="needs-validation" novalidate>
+
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">MUDANÇA DE ENDEREÇO + ALTERAÇÃO DE PLANO</h1>
+          </div>
+        </div>
+        <div class="form"><br>
+                  <div class="alert alert-success" role="alert">
+                    <b>Solicitado por terceiro, assinante autorizando e confirmando que estará presente.</b>
+                  </div>
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Assinante solicitando e confirmando presença">
+                        <a href="/suporte/mud-end/mud-end-altplan-pago/index-mud-altplan-pago.html" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> PADRÃO
+                        </a>
+                    </label>
+
+                    <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Assinante solicitando e autorizando um terceiro a acompanhar o técnico">
+                        <a href="/suporte/mud-end/mud-end-altplan-pago/mud-altplan-pago3/mud-altplan-pago3.html" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR ASSINANTE
+                        </a>
+                    </label>
+                    <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Terceiro solicitando e assinante autorizando. Porém, assinante ausente.">
+                        <a href="/suporte/mud-end/mud-end-altplan-pago/mud-altplan-pago1/mud-altplan-pago1.html" class="text-white">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR TERCEIRO 1
+                        </a>
+                    </label>
+                    <label class="btn btn-success" data-toggle="tooltip" title="Terceiro solicitando, assinante autorizando e confirmando que estará presente.">
+                        <a href="/suporte/mud-end/mud-end-altplan-pago/mud-altplan-pago2/mud-altplan-pago2.html" class="text-white">
+                            <input type="radio" name="options" id="option3" autocomplete="off"> SOLICITADO POR TERCEIRO 2
+                        </a>
+                    </label>
+                </div><hr>
+
+        <!-- Identificação do Cliente -->
+        <div class="row">
+            <div class="col-md-12">
+                <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="solicitante">Solicitante:</label>
+                    <input type="text" class="form-control" id="solicitante" placeholder="Nome completo do solicitante" required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="parente">Parentesco:</label>
+                    <input type="text" class="form-control" id="parente" placeholder="Ex.: Mãe, Irmão Filho..." required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="contatoSol">Contato Solicitante:</label>
+                    <input type="text" class="form-control" id="contatoSol" placeholder="Somente números" required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="canal">Canal:</label>
+                    <select class="form-control" id="canal" required>
+                        <option value="">Selecione...</option>
+                        <option value="LIGAÇÃO">Telefone</option>
+                        <option value="WHATSAPP">WhatsApp</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="cliente">Titular:</label>
+                    <input type="text" class="form-control" id="cliente" placeholder="Nome completo do titular da conexão" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="contato">Contato:</label>
+                    <input type="text" class="form-control" id="contato" placeholder="Somente números" required>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="sinalONU">Sinal ONU:</label>
+                    <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM ou SEM SINAL" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="onuOnt">ONU/ONT:</label>
+                    <select class="form-control" id="onuOnt" required>
+                        <option value="">Selecione...</option>
+                        <option value="ONU = DATA // CONECTOR = VERDE.">ONU DATA</option>
+                        <option value="ONU = ZTE // CONECTOR = VERDE.">ONU ZTE</option>
+                        <option value="ONU = TENDA // CONECTOR = VERDE.">ONU TENDA</option>
+                        <option value="ONU = SHORELINE // CONECTOR = AZUL.">ONU SHORELINE</option>
+                        <option value="ONU = FIBERHOME // CONECTOR = AZUL.">ONU FIBERHOME</option>
+                        <option value="ONT = ONT TP LINK 220 // CONECTOR = VERDE.">ONT TP LINK 220</option>
+                        <option value="ONT = ONT TP LINK 230 // CONECTOR = VERDE.">ONT TP LINK 230</option>
+                        <option value="ONT = ONT TP LINK 530 // CONECTOR = VERDE.">ONT TP LINK 530</option>
+                        <option value="ONT = ONT ZTE // CONECTOR = AZUL.">ONT ZTE (azul)</option>
+                        <option value="ONT = ONT ZTE // CONECTOR = VERDE.">ONT ZTE (verde)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="onuOnt">Possui Wi-Fi extend?</label>
+                <div class="form-group">                    
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="extend" id="possui" value="<b>(POSSUI WI-FI EXTEND)</b> " required checked>
+                        <label class="form-check-label" for="possui">Possui</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="extend" id="naoPossui" value="" required>
+                        <label class="form-check-label" for="naoPossui">Não possui</label>
+                    </div>
+                </div>
+            </div>
+        </div><hr>
+        <!-- Detalhes da Solicitação -->
+        <div class="row">
+            <div class="col-md-12">
+                <h5>NOVO ENDEREÇO DO CLIENTE</h5>
+                <button type="button" class="btn btn-success" href="/suporte/testecep/modal_content.html" data-toggle="modal" data-target="#ExemploModalCentralizado">
+                    Pesquisar logradouro
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="cep">CEP:</label>
+                    <input type="text" class="form-control" id="cep" placeholder="Insira o CEP da rua" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="adress">Logradouro:</label>
+                    <input type="text" class="form-control" id="adress" placeholder="Ex: Avenida dos Eucaliptos, 624" required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="num">Nº:</label>
+                    <input type="text" class="form-control" id="num" placeholder="Número" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="bairro">Bairro:</label>
+                    <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="complemento">Complemento (cond. bl, ap):</label>
+                    <input type="text" class="form-control" id="complemento" placeholder="Casa frente, fundos, sobrado, cond. etc" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="prumada">Sobrado / Prumada:</label>
+                    <select class="form-control" id="prumada" required>
+                        <option value="**PRÉDIO COM PRUMADA**">Com prumada</option>
+                        <option value="**PRÉDIO SEM PRUMADA - ENVIAR TÉCNICO DUPLADO**">Sem prumada (escolha 2 horários)</option>
+                        <option value="**SOBRADO**">Sobrado</option>
+                        <option value="">Casa ou Comércio</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-check-inline">
+                        <input type="radio" name="mudou" value="MUDOU DE RESIDÊNCIA E" onclick="toggleCTOInput()"> Cliente já se mudou
+                    </label>
+                    <label class="form-check-inline">
+                        <input type="radio" name="mudou" value="AINDA NÃO SE MUDOU, PORÉM" onclick="toggleCTOInput()" checked> Cliente ainda vai se mudar
+                    </label>
+                    <input type="text" class="form-control" id="quandoMud" placeholder="Cliente informou que vai mudar na próxima semana." required>
+                </div>
+            </div>
+                            <!-- condicionais da conexão com/sem IP -->
+    <div class="row d-none col-md-12" id="conexaoAtiva">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="form-label">Conexão está ativa (com IP)?</label>
+                <div class="d-flex">
+                    <div class="form-check me-3">
+                        <input type="radio" class="form-check-input" name="conexao" value="sim" onclick="toggleEquipamentos(false)" id="conexaoSim">
+                        <label class="form-check-label" for="conexaoSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="conexao" value="nao" onclick="toggleEquipamentos(true)" id="conexaoNao">
+                        <label class="form-check-label" for="conexaoNao">Não</label>
+                    </div>
+                </div>
+            </div>
+        </div>                
+    <div class="row d-none" id="equipamentosNao">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-label">Cliente levou os equipamentos?</label>
+                <div class="d-flex">
+                    <div class="form-check me-3">
+                        <input type="radio" class="form-check-input" name="levouEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO NÃO POSSUI IP. QUESTIONEI O CLIENTE E O MESMO DISSE QUE JÁ LEVOU OS EQUIPAMENTOS AO NOVO ENDEREÇO." id="levouEquipSim">
+                        <label class="form-check-label" for="levouEquipSim">Sim. Equipamentos já estão no novo endereço.</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="levouEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO NÃO POSSUI IP. INFORMEI AO CLIENTE QUE OS EQUIPAMENTOS DE INTERNET DEVEM SER LEVADOS PARA O NOVO ENDEREÇO, ONU, ROTEADOR OU ONT + (FONTES DE ENERGIA). CLIENTE CONFIRMOU QUE LEVARÁ POSTERIORMENTE." id="levouEquipNao">
+                        <label class="form-check-label" for="levouEquipNao">Não. Cliente ciente e vai buscar posteriormente.</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row d-none" id="equipamentosSim">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-label">Cliente esqueceu os equipamentos no antigo endereço?</label>
+                <div class="d-flex">
+                    <div class="form-check me-3">
+                        <input type="radio" class="form-check-input" name="esqueceuEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONANDO, CLIENTE DISSE QUE ESQUECEU OS EQUIPAMENTOS NO ANTIGO ENDEREÇO. INFORMEI AO CLIENTE QUE OS EQUIPAMENTOS DE INTERNET DEVEM SER LEVADOS PARA O NOVO ENDEREÇO, ONU, ROTEADOR OU ONT + (FONTES DE ENERGIA). CLIENTE CONFIRMOU QUE LEVARÁ ATÉ O DIA DA MUDANÇA." id="esqueceuEquipSim">
+                        <label class="form-check-label" for="esqueceuEquipSim">Sim. Porém foi orientado levar ao novo endereço</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="esqueceuEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONEI O CLIENTE E O MESMO DISSE QUE VAI BUSCAR OS EQUIPAMENTOS ATÉ O DIA DA MUDANÇA." id="esqueceuEquipNao">
+                        <label class="form-check-label" for="esqueceuEquipNao">Não. Cliente ciente e vai buscar posteriormente. </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- encerra as condicionais da conexão ativa -->      
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="comprovante">Comprovante:</label>
+                    <select class="form-control" id="comprovante" required onchange="toggleTipoComp()">
+                        <option value="">Selecione...</option>
+                        <option value="CEMIG">CEMIG</option>
+                        <option value="DMAE">DMAE</option>
+                        <option value="CONTRATO DE LOCAÇÃO">Contrato de Locação</option>
+                        <option value="CONTRATO DE HABITAÇÃO">Contrato de Habitação</option>
+                        <option value="">Outros</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="tipoComp">Informe o tipo:</label>
+                    <input type="text" class="form-control" id="tipoComp" placeholder="Informe o tipo do comprovante" required disabled>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="nomeComprov">Nome no comprovante:</label>
+                    <input type="text" class="form-control" id="nomeComprov" placeholder="Nome completo" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-check-inline">
+                        <input type="radio" name="grauParent" value="ASSINANTE" onclick="toggleGrauComp()"> Assinante
+                    </label>
+                    <label class="form-check-inline">
+                        <input type="radio" name="grauParent" value="TERCEIRO" onclick="toggleGrauComp()" checked> Terceiro
+                    </label>
+                    <input type="text" class="form-control" id="grauComp" placeholder="MÃE, IRMÃO, LOCATÁRIO, ETC..." required disabled>
+                </div>
+            </div>
+
+        </div><hr>
+                <!-- Alteração do plano -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>DETALHES DA ALTERAÇÃO DE PLANO</h5>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="planoAtual">Plano Atual:</label>
+                            <select class="form-control" id="planoAtual" required>
+                                <option value="">Selecione...</option>
+                                <option value="100 MEGA/59,90">100MB/59,90</option>
+                                <option value="100 MEGA/79,90">100MB/79,90</option>
+                                <option value="150 MEGA/59,90">150MB/59,90</option>
+                                <option value="250 MEGA/69,90">250MB/69,90</option>
+                                <option value="300 MEGA/69,90">300MB/69,90</option>
+                                <option value="400 MEGA/79,90">400MB/79,90</option>
+                                <option value="500 MEGA/79,90">500MB/79,90</option>
+                                <option value="500 MEGA/99,90">500MB/99,90</option>
+                                <option value="600 MEGA/79,90">600MB/79,90</option>
+                                <option value="1000 MEGA/99,90">1000MB/99,90</option>
+                                <option value="1000 MEGA/149,80">1000MB/149,80</option>
+                                <option value="500 MEGA + WI-FI EXTEND/119,90" class="font-weight-bold text-success" title="Plano com IP CGNAT">500MB/119,90 - WI-FI EXTEND</option>
+                                <option value="1000 MEGA + WI-FI EXTEND/139,90" class="font-weight-bold text-success" title="Plano com IP CGNAT">1000MB/139,90 - WI-FI EXTEND</option>
+                    </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="planoEscolhido">Plano Escolhido:</label>
+                            <select class="form-control" id="planoEscolhido" required>
+                                <option value="">Novo plano</option>
+                                    
+                                <option value="150 MEGA/59,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">150 MEGA/59,90 + MZTV (CDNTV+)</option>
+                                <option value="300 MEGA/69,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">300 MEGA/69,90 + MZTV (CDNTV+)</option>
+                                <option value="600 MEGA/79,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" title="Plano com IP CGNAT">600 MEGA/79,90 + MZTV (CDNTV+)</option>
+                                <option value="1 GIGA (1.000 MEGA) R$99,90. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" title="Plano com IP CGNAT">1000 MEGA/99,90 + MZTV (CDNTV+) + VOD</option>
+                                                                    
+                                <option value="150 MEGA/80,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">150 MEGA/80,00 + MZTV (CDNTV+) + IP DIN</option>
+                                <option value="300 MEGA/90,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">300 MEGA/90,00 + MZTV (CDNTV+) + IP DIN</option>
+                                <option value="600 MEGA/100,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold" title="Plano com IP fora CGNAT">600 MEGA/100,00 + MZTV (CDNTV+) + IP DIN</option>
+                                <option value="1 GIGA (1.000 MEGA) R$120,00 + IP PUBLICO DINAMICO. BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" class="font-weight-bold" title="Plano com IP fora CGNAT">1000 MEGA/120,00 + MZTV (CDNTV+) + VOD + IP DIN</option>
+                                
+                                
+                                <option value="600 MEGA/109,90 + ITTV PLUS (1 LICENÇA). BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV" class="font-weight-bold text-primary" title="Plano com IP CGNAT">600 MEGA/109,90 + MZTV + VOD + ITTV PLUS (1 LICENÇA)</option>
+                                
+                                <option value="1 GIGA (1.000 MEGA) R$129,90 + ITTV PLUS (1 LICENÇA). BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV + VOD" class="font-weight-bold text-danger" title="Plano com IP CGNAT">1000 MEGA/129,90 + MZTV + VOD + ITTV PLUS (1 LICENÇA)</option>
+                                
+                                <option value="600 MEGA; + WI-FI EXTEND (ROTEADOR ADICIONAL) MENSALIDADE: R$114,90; EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS; BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+)" class="font-weight-bold text-success" title="Plano com IP CGNAT + roteador adicional">600 MEGA/114,90 + BENEFÍCIOS + WI-FI EXTEND</option>
+                                
+                                <option value="1 GIGA (1.000 MEGA); + WI-FI EXTEND (ROTEADOR ADICIONAL)  MENSALIDADE: R$134,90; EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS; BENEFÍCIOS: ACESSO GRATUITO AO APP MZTV (CDNTV+) + VOD" class="font-weight-bold text-success" title="Plano com IP CGNAT + roteador adicional">1000 MEGA/134,90 + BENEFÍCIOS + WI-FI EXTEND</option>                                </select>
+             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="roteador">Roteador:</label>
+                            <select class="form-control" id="roteador" required>
+                                <option value="">Selecione...</option>
+                                <option value="MULTILASER">MULTILASER</option>
+                                <option value="TP-LINK 840">TP-LINK 840</option>
+                                <option value="TP LINK C-20">TP LINK C-20</option>       
+                                <option value="D-LINK DIR 842">D-LINK DIR 842</option>
+                                <option value="TP LINK C-5">TP LINK C-5</option>
+                                <option value="TP LINK G-5">TP LINK G-5</option>
+                                <option value="TP-LINK EX511">TP-LINK EX511</option>
+                                <option value="GREATEK">GREATEK</option>
+                                <option value="INTELBRAS">INTELBRAS</option>
+                                <option value="HUAWEI AX2">HUAWEI AX2</option>
+                                <option value="ZTE H196-MESH">ZTE H196-MESH</option>
+                                <option value="ZTE H199-A">ZTE H199-A</option><hr>
+                                <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+                                <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+                                <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+                                <option value="ONT TP-LINK X530">ONT TP-LINK X530</option>
+                                <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+                                <option value="ZTE H199-A + ZTE H199-A" class="font-weight-bold text-success" title="Wi-Fi Extend">ZTE H199-A + ZTE H199-A</option>
+                                <option value="ZTE H199-A + ZTE H196" class="font-weight-bold text-success" title="Wi-Fi Extend">ZTE H199-A + ZTE H196</option>
+                                <option value="ONT ZTE F 670-L + ZTE H199-A" class="font-weight-bold text-success" title="Wi-Fi Extend">ONT ZTE F 670-L + ZTE H199-A</option>
+                                <option value="ONT ZTE F 670-L + ZTE H196" class="font-weight-bold text-success" title="Wi-Fi Extend">ONT ZTE F 670-L + ZTE H196</option>
+                                <option value="PARTICULAR DO CLIENTE" class="font-weight-bold text-primary">ROTEADOR PARTICULAR</option>
+                </select>
+                        </div>
+                    </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="troca">Trocar Roteador?</label>
+                        <select class="form-control" id="troca" required>
+                            <option value="">Selecione...</option>
+                            <option value="REALIZAR A SUBSTIUIÇÃO DO ROTEADOR POR OUTRO MODELO COMPATÍVEL COM O NOVO PLANO ESCOLHIDO, TAL EQUIPAMENTO IRÁ SUBSTITUIR O ROTEADOR INSTALADO ANTERIORMENTE E PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. INSTALAR">Sim</option>
+                            <option value="REINSTALAR">Não</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="dataContrato">Plano contratado em:</label>
+                        <input type="text" class="form-control" id="dataContrato" placeholder="mês/ano" required>
+                    </div>
+                </div>
+            </div><hr>
+        <!-- Agendamento -->
+        <div class="row">
+            <div class="col-md-12">
+                <h5>AGENDAMENTO</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="dataVisita">Visita Técnica:</label>
+                    <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa" required>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="horaVisita">Hora:</label>
+                    <select class="form-control" id="horaVisita" required>
+                        <option value="">Selecione...</option>
+                        <option value="ÀS 08:00" class="font-weight-bold text-success">08:00</option>
+                        <option value="ÀS 08:30" class="font-weight-bold">08:30</option>
+                        <option value="ÀS 10:00" class="font-weight-bold text-success">10:00</option>
+                        <option value="ÀS 10:30" class="font-weight-bold">10:30</option><hr>
+                        <option value="ÀS 13:00" class="font-weight-bold text-success">13:00</option>
+                        <option value="ÀS 13:30" class="font-weight-bold">13:30</option>
+                        <option value="ÀS 15:00" class="font-weight-bold text-success">15:00</option>
+                        <option value="ÀS 15:30" class="font-weight-bold">15:30</option>
+                        <option value="ÀS 17:00" class="font-weight-bold text-danger">17:00 (somente com autorização)</option>
+                        <option value="APÓS ÀS 11:00" class="font-weight-bold text-primary">Após às 11:00 (aos sábados)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="formaPag">Pagamento:</label>
+                    <select class="form-control" id="formaPag" required>
+                        <option value="">Selecione...</option>
+                        <option value="CARTÃO">Cartão</option>
+                        <option value="DINHEIRO">Dinheiro</option>
+                        <option value="PIX">Pix</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="protocolo">Nº Protocolo:</label>
+                    <input type="text" class="form-control" id="protocolo" placeholder="123.456" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="operador">Nome do operador:</label>
+                    <select class="form-control" id="operador" required="true" requiredMessage="Informe o nome" required>
+                        <option value="">Selecione...</option>
+                        <option value="ANDREZA">ANDREZA</option>
+                        <option value="BRUNA">BRUNA</option>
+                        <option value="DEIVIT">DEIVIT</option>
+                        <option value="EDUARDO">EDUARDO</option>
+                        <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                        <option value="JHONATAN">JHONATAN</option>
+                        <option value="JOSÉ Jr">JOSÉ Jr</option>
+                        <option value="HALYSON">HALYSON</option>
+                        <option value="HIAGO">HIAGO</option>
+                        <option value="HIORRANNA">HIORRANNA</option>
+                        <option value="IZABELA">IZABELA</option>
+                        <option value="KAROLAYNE">KAROLAYNE</option>
+                        <option value="LAUREN">LAUREN</option>
+                        <option value="LUIS">LUIS</option>
+                        <option value="PEDRO">PEDRO</option>
+                        <option value="RAMONY">RAMONY</option>
+                        <option value="RENATA">RENATA</option>
+                        <option value="RONALD">RONALD</option>
+                        <option value="VICTOR H.">VICTOR HUGO</option>
+                        <option value="VITOR M.">VITOR MANOEL</option>
+                        <option value="VAGNER">VAGNER</option>
+                </select>
+                </div>
+            </div>
+        </form>
+        </div><br>
+    <div class="buttons">
+        <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+        <button class="btn btn-secondary btn-block" onclick="confirmarLimpeza()">Limpar</button>
+    </div>
+  </div>
+
+<div class="output">
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto Protocolo:</h4>
+        <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+    </div>
+
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto O.S:</h4>
+        <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+    </div>
+</div>
+<div class="output">
+
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto Agenda:</h4>
+        <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Função que mostra ou esconde o campo de conexão ativa baseado na mudança de residência
+    function toggleConexaoAtiva() {
+        const mudou = document.querySelector('input[name="mudou"]:checked').value;
+        const conexaoAtivaDiv = document.getElementById("conexaoAtiva");
+    
+        if (mudou === "MUDOU DE RESIDÊNCIA E") {
+            conexaoAtivaDiv.classList.remove("d-none");
+        } else {
+            conexaoAtivaDiv.classList.add("d-none");
+        }
+    }
+    
+    // Adiciona evento aos radio buttons para chamar a função quando houver mudança
+    document.querySelectorAll('input[name="mudou"]').forEach(radio => {
+        radio.addEventListener("change", toggleConexaoAtiva);
+    });
+    
+    // Executa a função ao carregar a página para aplicar a lógica inicial
+    document.addEventListener("DOMContentLoaded", toggleConexaoAtiva);
+    
+    // Função para alternar entre as opções de equipamentos
+    function toggleEquipamentos(naoAtiva) {
+        const equipamentosNao = document.getElementById("equipamentosNao");
+        const equipamentosSim = document.getElementById("equipamentosSim");
+    
+        if (naoAtiva) {
+            equipamentosNao.classList.remove("d-none");
+            equipamentosSim.classList.add("d-none");
+            resetRadioGroup("esqueceuEquip"); // Limpa opções do terceiro grupo
+        } else {
+            equipamentosSim.classList.remove("d-none");
+            equipamentosNao.classList.add("d-none");
+            resetRadioGroup("levouEquip"); // Limpa opções do segundo grupo
+        }
+    }
+    
+    // Função para resetar o grupo de radio buttons
+    function resetRadioGroup(groupName) {
+        const radios = document.getElementsByName(groupName);
+        radios.forEach(radio => radio.checked = false);
+    }
+    
+    // Função que gera ou atualiza o texto de acordo com a seleção do equipamento
+    function gerarTextoEquipamento() {
+        const textoGerado = document.getElementById("campoTextoGerado");
+    
+        // Limpa qualquer texto gerado anterior
+        textoGerado.value = textoGerado.value
+            .replace(/Texto do esqueceuEquip.*\n?/g, '')  // Remove o texto anterior do "esqueceuEquip"
+            .replace(/Texto do levouEquip.*\n?/g, '');   // Remove o texto anterior do "levouEquip"
+    
+        // Verifica qual input foi selecionado e gera o texto correspondente
+        const esqueceuEquip = document.querySelector('input[name="esqueceuEquip"]:checked');
+        const levouEquip = document.querySelector('input[name="levouEquip"]:checked');
+    
+        if (esqueceuEquip) {
+            textoGerado.value += "Texto do esqueceuEquip\n";
+        } else if (levouEquip) {
+            textoGerado.value += "Texto do levouEquip\n";
+        }
+    }
+    
+    // Adiciona evento aos radio buttons dos equipamentos para atualizar o texto
+    document.querySelectorAll('input[name="esqueceuEquip"], input[name="levouEquip"]').forEach(radio => {
+        radio.addEventListener("change", gerarTextoEquipamento);
+    });
+    
+    // Executa a função ao carregar a página para garantir que o texto esteja correto
+    document.addEventListener("DOMContentLoaded", gerarTextoEquipamento);
+    
+    </script>
+    
+<script>
+document.title = "MUD END";
+
+function toggleTipoComp() {
+        var comprovante = document.getElementById("comprovante").value;
+        var tipoComp = document.getElementById("tipoComp");
+        
+        if (comprovante === "") {
+            tipoComp.removeAttribute("disabled");
+        } else {
+            tipoComp.setAttribute("disabled", "true");
+            tipoComp.value = "";
+        }
+    }
+    
+    function toggleGrauComp() {
+        var radios = document.getElementsByName("grauParent");
+        var grauComp = document.getElementById("grauComp");
+        
+        if (radios[1].checked) { // Se "Terceiro" estiver selecionado
+            grauComp.removeAttribute("disabled");
+        } else {
+            grauComp.setAttribute("disabled", "true");
+            grauComp.value = "ASSINANTE";
+        }
+    }
+
+
+// VALIDAÇÃO DOS CAMPOS EM BRANCO
+document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (form.checkValidity() === false) {
+                form.classList.add('was-validated');
+            } else {
+                form.classList.remove('was-validated');
+                // Se o formulário for válido, aqui você pode prosseguir com o envio do formulário.
+                // form.submit();
+            }
+        }, false);
+    });
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+
+// Script de validação
+document.addEventListener('DOMContentLoaded', function () {
+    // Seleciona o formulário
+    const form = document.querySelector('.needs-validation');
+
+    // Adiciona o evento de validação ao formulário
+    form.addEventListener('submit', function (event) {
+        // Verifica se o formulário é válido
+        if (!form.checkValidity()) {
+            // Previne o envio do formulário
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        // Adiciona classes para mostrar os campos inválidos
+        form.classList.add('was-validated');
+    }, false);
+});
+
+
+
+// Aqui inicia a validação dos endereço a partir do CEP
+
+const cep = document.querySelector('#cep');
+const adress = document.querySelector('#adress');
+const bairro = document.querySelector('#bairro');
+const message = document.querySelector('#message');
+
+cep.addEventListener('input', () => {
+    // Remove caracteres não numéricos (exceto números)
+    cep.value = cep.value.replace(/\D/g, '');
+
+    // Verifica se o CEP possui 8 dígitos após a remoção dos caracteres não numéricos
+    if (cep.value.length === 8) {
+        // Se o CEP tiver 8 dígitos, faz a requisição para buscar o endereço
+        buscarEndereco(cep.value);
+    } else {
+        // Caso contrário, limpa os campos de endereço
+        adress.value = '';
+        bairro.value = '';
+    }
+});
+
+cep.addEventListener('focusout', async () => {
+    try {
+        const onlyNumbers = /^[0-9]+$/;
+        const cepValid = /^[0-9]{8}$/;
+
+        if (!onlyNumbers.test(cep.value) || !cepValid.test(cep.value)) {
+            throw { cep_error: 'Informe um CEP válido' };
+        }
+
+        const response = await fetch(`https://viacep.com.br/ws/${cep.value}/json/`);
+        if (!response.ok) {
+            throw await response.json();
+        }
+        const responseCep = await response.json();
+
+        adress.value = responseCep.logradouro;
+        bairro.value = responseCep.bairro;
+
+    } catch (error) {
+        if (error?.cep_error) {
+            message.textContent = error.cep_error;
+            setTimeout(() => {
+                message.textContent = '';
+            }, 5000);
+        }
+        console.log(error);
+    }
+})
+
+// aqui termina a validação do endereço
+function gerarTextos() {
+            // Verificar se todos os campos obrigatórios foram preenchidos
+            const form = document.querySelector('.needs-validation');
+    if (!form.checkValidity()) {
+        alert('Por favor, preencha todos os campos obrigatórios antes de gerar os textos.');
+        form.classList.add('was-validated'); // Exibe os erros no formulário
+        return; // Interrompe a execução
+    }
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const solicitante = document.getElementById('solicitante').value.toUpperCase();
+    const parente = document.getElementById('parente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const tipoComp = document.getElementById('tipoComp').value.toUpperCase();
+    const comprovante = document.getElementById('comprovante').value.toUpperCase();
+    const nomeComprov = document.getElementById('nomeComprov').value.toUpperCase();
+    const grauComp = document.getElementById('grauComp').value.toUpperCase();
+    const contatoSol = document.getElementById('contatoSol').value.replace(/\D/g, '');
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const adress = document.getElementById('adress').value.toUpperCase();
+    const complemento = document.getElementById('complemento').value.toUpperCase();
+    const cep = document.getElementById('cep').value;
+    const num = document.getElementById('num').value;
+    const prumada = document.getElementById('prumada').value;
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const planoAtual = document.getElementById('planoAtual').value;
+    const planoEscolhido = document.getElementById('planoEscolhido').value;
+    const roteador = document.getElementById('roteador').value;
+    const troca = document.getElementById('troca').value;
+    const dataContrato = document.getElementById('dataContrato').value;
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const onuOnt = document.getElementById('onuOnt').value;
+    const formaPag = document.getElementById('formaPag').value;
+    const operador = document.getElementById('operador').value;
+    const quandoMud = document.getElementById('quandoMud').value.toUpperCase();
+    const mudou = document.querySelector('input[name="mudou"]:checked').value;
+    const extend = document.querySelector('input[name="extend"]:checked').value;
+    const extendAgenda = extend.replace(/<b>|<\/b>/g, '**');
+    const levouEquip = document.querySelector('input[name="levouEquip"]:checked')?.value || "";
+    const esqueceuEquip = document.querySelector('input[name="esqueceuEquip"]:checked')?.value || "";
+
+    
+    // Define trocaAgenda com base na opção selecionada
+    const trocaAgenda = troca === "REALIZAR A SUBSTIUIÇÃO DO ROTEADOR POR OUTRO MODELO COMPATÍVEL COM O NOVO PLANO ESCOLHIDO, TAL EQUIPAMENTO IRÁ SUBSTITUIR O ROTEADOR INSTALADO ANTERIORMENTE E PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. INSTALAR" 
+    ? "*TROCA DE EQUIPAMENTO*" 
+    : "";
+
+
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+    
+    // Crie os textos com os valores
+    const textoProtocolo = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.
+
+**********************
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU ${sinalONU}.
+
+**********************
+
+QUESTIONADO, ${solicitante.split(' ')[0]} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.
+
+ENDEREÇO NOVO: ${adress}, ${num}
+COMPLEMENTO: ${complemento}
+CEP: ${cep}
+BAIRRO: ${bairro}
+${quandoMud}
+
+COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+NOME NO COMPROVANTE:  ${nomeComprov} (${grauComp})
+
+**********************
+
+INFORMEI A ${solicitante.split(' ')[0]} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO E QUE PARA REALIZAÇÃO DA NOVA INSTALAÇÃO COBRAMOS O VALOR DE SERVIÇO R$100,00 A SER PAGO PARA O TÉCNICO NO ATO (EM DINHEIRO, CARTÃO OU PIX).
+
+${levouEquip}${esqueceuEquip}
+
+**********************
+
+NA OPORTUNIDADE, OFERTEI ALTERAÇÃO DE PLANO PARA ${solicitante.split(' ')[0]}.
+
+PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}
+
+PLANO OFERTADO: ${planoEscolhido}
+
+ACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE. 
+
+**********************
+
+CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.
+            
+FORMA DE PAGAMENTO EM ${formaPag}. POR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${cliente.split(' ')[0]} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE. MUDANÇA E ALTERAÇÃO DE PLANO AGENDADA (A PEDIDO DO CLIENTE) PARA DIA ${dataVisita} ${horaVisita} HRS`;
+
+
+const textoOS = `${solicitante.split(' ')[0]} (${parente} DE ${cliente.split(' ')[0]}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". VALOR DO SERVIÇO: R$100,00. SOLICITOU TAMBÉM A RENOVAÇÃO DO SEU CONTRATO E UPGRADE DE PLANO, PLANO ATUAL: ${planoAtual}. PLANO ESCOLHIDO: ${planoEscolhido}. CIENTE QUE A ALTERAÇÃO DE PLANO RENOVA O CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cliente.split(' ')[0]} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO EM ${formaPag}. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ${horaVisita} HRS.
+${trocaAgenda}
+
+***********************************
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: ${extend} ${troca} OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE OU NO MELHOR LOCAL DA CASA PARA COBERTURA WI-FI. REALIZAR TESTES E AFERIR VELOCIDADE DO PLANO, TESTAR E APRESENTAR ABRANGÊNCIA DO WI-FI COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT DE TESTES DA EMPRESA E COM OS DISPOSITIVOS DO CLIENTE E APRESENTAR VARIAÇÕES SE HOUVER. CONFERIR NAVEGAÇÃO IPv6, PORTA E SENHA DE ACESSO AO EQUIPAMENTO E ACESSO EXTERNO PELA WAN. TESTAR TODOS DISPOSITIVOS PRESENTES WI-FI E CABEADA SE HOUVER EQUIPAMENTO JUNTO DO ROTEADOR QUE NECESSITE SER CABEADO. EXPLICAR QUE CASO ALGUM EQUIPAMENTO PRECISE CONECTAR-SE POR CABO DE REDE E NÃO ESTIVER AO LADO DO ROTEADOR CLIENTE DEVERÁ CONTRATAR SERVIÇO DE PROFISSIONAL DO RAMO PARA TAL, MESMO SE APLICA SE NECESSÁRIO DESMONTAR MÓVEIS (RACK, ARMÁRIO, OUTROS) PARA PASSAR CABOS. RECEBER R$100,00 NO ATO DA VISITA EM ${formaPag}.<b>${onuOnt}</b>`;
+
+
+const textoAgenda = `MUD END + ALT PLANO ${cliente} PROT:${protocolo} ${formaPag} (${operador}) - ${bairro} ${prumada} // ${extendAgenda} ${trocaAgenda}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos1() {
+    const camposEntrada = document.querySelectorAll('input, select');
+    camposEntrada.forEach(campo => campo.value = '');
+
+    const textos = document.querySelectorAll('.output textarea');
+    textos.forEach(texto => texto.value = '');
+}
+
+// Abrir o modal
+function confirmarLimpeza() {
+    const modal = new bootstrap.Modal(document.getElementById('confirmarLimpezaModal'));
+    modal.show();
+}
+
+// Ação ao confirmar
+document.getElementById('btnConfirmarLimpeza').addEventListener('click', () => {
+    limparCampos1();
+    bootstrap.Modal.getInstance(document.getElementById('confirmarLimpezaModal')).hide();
+});
+
+
+// Condicional se cliente já se mudou ou não
+
+function toggleCTOInput() {
+            var radios = document.getElementsByName('mudou');
+            var quandoMud = document.getElementById('quandoMud');
+            
+            if (radios[0].checked) {
+                quandoMud.disabled = true;
+            } else {
+                quandoMud.disabled = false;
+            }
+        }
+
+        // Inicialize o estado da página
+        window.onload = function() {
+            toggleCTOInput();
+        }
+
+</script>
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  
+    onAuthStateChanged(auth, (user) => {
+          const emailSpan = document.getElementById("userEmail");
+          if (user) {
+            emailSpan.innerText = `Logado como: ${user.email}`;
+          } else {
+            emailSpan.innerText = `Usuário não autenticado`;
+          }
+        });
+  
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+
+</body>
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmarLimpezaModal" tabindex="-1" aria-labelledby="confirmarLimpezaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold" id="confirmarLimpezaLabel">CONFIRMAR LIMPEZA?</h5>
+        </div>
+        <div class="modal-body text-center font-weight-bold">
+            VOCÊ TEM CERTEZA DE QUE DESEJA LIMPAR TODOS OS DADOS? 🤔
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-block" id="btnConfirmarLimpeza" onclick="limparCampos1()">LIMPAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="ExemploModalCentralizado" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+<!--aqui começa o conteudo do modal-->
+            
+            <head>
+                <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            </head>
+            
+            <body>
+            
+                    <div class="form-group mt-4">
+                        <h4>Pesquisa de endereço por logradouro</h4>
+                        <input type="text" class="form-control" id="logradouro" placeholder="Exemplo: 'eucaliptos'">
+                    </div>
+                    <button type="button" class="btn btn-success  mr-2" onclick="buscarEndereco()">Pesquisar</button>
+                    <button type="button" class="btn btn-danger" onclick="limparCampos()">Limpar</button>
+                    <br>
+                    <div id="resultado" class="mt-4"></div>
+                    <div class="alert alert-warning" role="alert">
+                        Copie o CEP correspondente ao logradouro informado pelo cliente.
+                    </div>
+
+            
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                <script>
+                    function buscarEndereco() {
+                        var logradouro = document.getElementById("logradouro").value;
+                        var url = "https://viacep.com.br/ws/MG/Uberlandia/" + logradouro + "/json/";
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                mostrarResultado(data);
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar endereço:', error);
+                            });
+                    }
+            
+                    function mostrarResultado(enderecos) {
+                        var resultadoDiv = document.getElementById("resultado");
+                        resultadoDiv.innerHTML = "";
+                        if (enderecos.length === 0) {
+                            resultadoDiv.innerHTML = "<p>Nenhum endereço encontrado para o logradouro informado.</p>";
+                            return;
+                        }
+                        var tableHtml = "<table class='table'><thead><tr><th>CEP</th><th>Bairro</th><th>Logradouro</th></tr></thead><tbody>";
+                        enderecos.forEach(function(endereco) {
+                            tableHtml += "<tr><td>" + endereco.cep + "</td><td>" + endereco.bairro + "</td><td>" + endereco.logradouro + "</td></tr>";
+                        });
+                        tableHtml += "</tbody></table>";
+                        resultadoDiv.innerHTML = tableHtml;
+                    }
+            
+                    function limparCampos() {
+                        document.getElementById("logradouro").value = "";
+                        document.getElementById("resultado").innerHTML = "";
+                    }
+                </script>
+            </body>
+            
+            </html>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+</html>

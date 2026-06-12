@@ -1,0 +1,19 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo circular azul -->
+  <circle cx="64" cy="64" r="62" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+  
+  <!-- Balão de mensagem branco -->
+  <rect x="25" y="25" width="78" height="40" rx="8" fill="white" stroke="#3b82f6" stroke-width="2"/>
+  
+  <!-- Cauda do balão -->
+  <path d="M 45 65 L 37 73 L 53 73 Z" fill="white" stroke="#3b82f6" stroke-width="2"/>
+  
+  <!-- Linhas de texto -->
+  <line x1="35" y1="40" x2="93" y2="40" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+  <line x1="35" y1="50" x2="70" y2="50" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Ícone de "+" no canto superior direito -->
+  <rect x="100" y="8" width="16" height="16" fill="white" rx="2"/>
+  <rect x="106" y="10" width="4" height="12" fill="#2563eb"/>
+  <rect x="102" y="14" width="12" height="4" fill="#2563eb"/>
+</svg> 

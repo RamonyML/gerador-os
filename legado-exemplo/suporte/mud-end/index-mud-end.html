@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MUD END</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    </head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        
+        *{
+            font-family: 'Poppins', sans-serif;
+            font-size: small;
+        
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            width: 800px;
+            height:auto;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 1%;
+            background-color: #ffffff8e;
+            border: 0.8px solid rgba(0, 0, 0, 0);
+        }
+        
+        
+        h1 {
+            text-align: left;
+            color: #111111;
+        }
+        h3 {
+            text-align: left;
+            color: #db0000;
+            font-size: 15px;
+        }
+        
+        h5 {
+            text-align: left;
+            color: #196e2e;
+            font-size: 16px;
+            margin: 0 auto;
+        }
+        
+        a h5 {
+            text-align: left;
+            color: #2c2c2c;
+            font-size: 14px;
+            margin: 0 auto;
+        }
+        a h5:hover{
+            color: #20c436;
+            text-decoration: none;
+        }
+        
+        
+        
+        .form {
+            margin-top: 10px;
+        }
+        
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        
+        .buttons {
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #38af47;
+            color: #fff;
+            border: none;
+            border-radius: 1px;
+            cursor: pointer;
+        }
+        
+        .buttons button:hover {
+            background-color: #2b8637;
+
+        }
+        
+        .output {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .output-group {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: none;
+            width: 85%;
+            height: 200px;
+            border: 1px solid #38af47;
+            border-radius: 18px;
+            padding: 10px;
+        }
+        
+        .form-header h1::after{
+            content: '';
+            display: block;
+            width: 5rem;
+            height: 0.3rem;
+            background-color: #38af47;
+            margin: 0 auto;
+            position: absolute;
+            border-radius: 10px;
+        }
+        
+        a {
+    text-decoration: none;
+    color: #1a1a1a; /* Adicione a cor desejada para seus links */
+    }
+
+    a:hover {
+    color: #0fbd2c;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+  }
+          
+        /*configura a imagem do fundo*/
+        body {
+            background-image: url('/fundos/fundo003.jpg');
+            background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+            background-repeat: no-repeat; /* Evita a repetição da imagem */
+            background-position: center;
+        }
+        
+        /*daqui pra baixo configura a logo*/
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .form-header {
+            position:relative;
+        }
+        
+        span {
+            text-align: left;
+            color: #db0000;
+            font-size: 12px;
+        }
+        #textoAgenda {
+        height: 50px; /* Defina a altura desejada */
+        }
+        
+        .btn-group a {
+        text-decoration: none;
+        }
+
+        .btn-group a:hover {
+        text-decoration: none;
+        }
+
+        /* Estilo para o ícone de copiar comprovante */
+        #iconCopiarComprovante {
+            transition: all 0.2s ease;
+        }
+
+        #iconCopiarComprovante:hover {
+            color: #495057 !important;
+            transform: scale(1.1);
+        }
+        
+        </style>
+        <body>
+            <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+                <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+                Gerador de O.S
+              </a>
+              <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <a class="nav-link text-white" href="/index.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Tutoriais
+                    </a>
+                    <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+                      <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+                      <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Outros</a>
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+                  </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                  <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+                  <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+                </div>
+              </div>
+              </nav>
+                      <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+                    <li class="breadcrumb-item"><a href="/suporte/dash-mudend.html" class="text-success">Mudança de Endereço</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Padrão</li>
+                  </ol>
+                </nav>
+                  <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">MUDANÇA DE ENDEREÇO</h1>
+          </div>
+        </div>
+        <form class="needs-validation" novalidate>
+        <div class="form">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active font-weight-bold text-success" href="/suporte/mud-end/index-mud-end.html">Padrão</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-success" href="/suporte/mud-end/mud-end-mensal/mud-end-mensal.html">Mensalidade</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link text-success" href="/suporte/mud-end/index-mud-end-pj.html">Pessoa Jurídica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-success" href="/suporte/mud-end/index-mud-end-pres.html">Presencial</a>
+                      </li>  
+                  </ul>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Assinante solicitando e confirmando presença.">
+                <a href="/suporte/mud-end/index-mud-end.html" class="text-white">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITAÇÃO PADRÃO
+                </a>
+            </label>
+            <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Assinante solicitando e autorizando um terceiro a acompanhar o técnico">
+                <a href="/suporte/mud-end/mud-end-terceiro3/index-mud-end-terceiro3.html" class="text-white">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR ASSINANTE
+                </a>
+            </label>
+            <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Terceiro solicitando, assinante autorizando e confirmando que estará presente.">
+                <a href="/suporte/mud-end/mud-end-terceiro1/index-mud-end-terceiro1.html" class="text-white">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR TERCEIRO 1
+                </a>
+            </label>
+            <label class="btn btn-secondary" data-toggle="tooltip" title="Terceiro solicitando e assinante autorizando. Porém, assinante ausente">
+                <a href="/suporte/mud-end/mud-end-terceiro2/index-mud-end-terceiro2.html" class="text-white">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> SOLICITADO POR TERCEIRO 2
+                </a>
+            </label>
+        </div><hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="cliente">Nome Completo:</label>
+                    <input type="text" class="form-control" id="cliente" placeholder="Nome completo" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="canal">Canal:</label>
+                    <select class="form-control" id="canal" required>
+                        <option value="">Selecione...</option>
+                        <option value="LIGAÇÃO">Telefone</option>
+                        <option value="WHATSAPP">WhatsApp</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="contato">Contato:</label>
+                    <input type="text" class="form-control" id="contato" placeholder="Somente os números" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="sinalONU">Sinal ONU:</label>
+                    <input type="text" class="form-control" id="sinalONU" placeholder="-19.20 DBM ou SEM SINAL" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="onuOnt">ONU/ONT:</label>
+                    <select class="form-control" id="onuOnt" required>
+                        <option value="">Selecione...</option>
+                        <option value="ONU = DATA // CONECTOR = VERDE.">ONU DATA</option>
+                        <option value="ONU = ZTE // CONECTOR = VERDE.">ONU ZTE</option>
+                        <option value="ONU = TENDA // CONECTOR = VERDE.">ONU TENDA</option>
+                        <option value="ONU = SHORELINE // CONECTOR = AZUL.">ONU SHORELINE</option>
+                        <option value="ONU = FIBERHOME // CONECTOR = AZUL.">ONU FIBERHOME</option>
+                        <option value="ONT = ONT TP LINK 220 // CONECTOR = VERDE.">ONT TP LINK 220</option>
+                        <option value="ONT = ONT TP LINK 230 // CONECTOR = VERDE.">ONT TP LINK 230</option>
+                        <option value="ONT = ONT TP LINK 530 // CONECTOR = VERDE.">ONT TP LINK 530</option>
+                        <option value="ONT = ONT ZTE // CONECTOR = AZUL.">ONT ZTE (azul)</option>
+                        <option value="ONT = ONT ZTE // CONECTOR = VERDE.">ONT ZTE (verde)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="onuOnt">Possui Wi-Fi extend?:</label>
+                <div class="form-group">                    
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="extend" id="possui" value="<b>(POSSUI WI-FI EXTEND)</b> " required checked>
+                        <label class="form-check-label" for="possui">Possui</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="extend" id="naoPossui" value="" required>
+                        <label class="form-check-label" for="naoPossui">Não possui</label>
+                    </div>
+                </div>
+            </div>
+            
+        </div><hr>
+        <!-- Detalhes da Solicitação -->
+        <div class="row">
+            <div class="col-md-12">
+                <h5>NOVO ENDEREÇO DO CLIENTE</h5>
+                <button type="button" class="btn btn-success" href="/suporte/testecep/modal_content.html" data-toggle="modal" data-target="#ExemploModalCentralizado">
+                    Pesquisar logradouro
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="cep">CEP:</label>
+                    <input type="text" class="form-control" id="cep" placeholder="Insira o CEP da rua" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="adress">Logradouro:</label>
+                    <input type="text" class="form-control" id="adress" placeholder="Ex: Avenida dos Eucaliptos, 624" required disabled>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="num">Nº:</label>
+                    <input type="text" class="form-control" id="num" placeholder="Número" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="bairro">Bairro:</label>
+                    <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente" required disabled>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="complemento">Complemento (cond. bl, ap):</label>
+                    <input type="text" class="form-control" id="complemento" placeholder="Casa frente, fundos, sobrado, cond. etc" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="prumada">Sobrado / Prumada:</label>
+                    <select class="form-control" id="prumada" required>
+                        <option value="">Selecione...</option>
+                        <option value="**PRÉDIO COM PRUMADA**">Com prumada</option>
+                        <option value="**PRÉDIO SEM PRUMADA - ENVIAR TÉCNICO DUPLADO**">Sem prumada (escolha 2 horários)</option>
+                        <option value="**SOBRADO**">Sobrado</option>
+                        <option value=" ">Casa ou Comércio</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-check-inline">
+                        <input type="radio" name="mudou" value="MUDOU DE RESIDÊNCIA E" onclick="toggleCTOInput()"> Cliente já se mudou
+                    </label>
+                    <label class="form-check-inline">
+                        <input type="radio" name="mudou" value="AINDA NÃO SE MUDOU, PORÉM" onclick="toggleCTOInput()" checked> Cliente ainda vai se mudar
+                    </label>
+                    <input type="text" class="form-control" id="quandoMud" placeholder="Cliente informou que vai mudar na próxima semana." required>
+                </div>
+            </div>
+        </div>
+    <!-- condicionais da conexão com/sem IP -->
+    <div class="row d-none col-md-12" id="conexaoAtiva">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label">Conexão está ativa (com IP)?</label>
+                    <div class="d-flex">
+                        <div class="form-check me-3">
+                            <input type="radio" class="form-check-input" name="conexao" value="sim" onclick="toggleEquipamentos(false)" id="conexaoSim">
+                            <label class="form-check-label" for="conexaoSim">Sim</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="conexao" value="nao" onclick="toggleEquipamentos(true)" id="conexaoNao">
+                            <label class="form-check-label" for="conexaoNao">Não</label>
+                        </div>
+                    </div>
+                </div>
+            </div>                
+        <div class="row d-none" id="equipamentosNao">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Cliente levou os equipamentos?</label>
+                    <div class="d-flex">
+                        <div class="form-check me-3">
+                            <input type="radio" class="form-check-input" name="levouEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO NÃO POSSUI IP. QUESTIONEI O CLIENTE E O MESMO DISSE QUE JÁ LEVOU OS EQUIPAMENTOS AO NOVO ENDEREÇO." id="levouEquipSim">
+                            <label class="form-check-label" for="levouEquipSim">Sim. Equipamentos já estão no novo endereço.</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="levouEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO NÃO POSSUI IP. INFORMEI AO CLIENTE QUE OS EQUIPAMENTOS DE INTERNET DEVEM SER LEVADOS PARA O NOVO ENDEREÇO, ONU, ROTEADOR OU ONT + (FONTES DE ENERGIA). CLIENTE CONFIRMOU QUE LEVARÁ POSTERIORMENTE." id="levouEquipNao">
+                            <label class="form-check-label" for="levouEquipNao">Não. Cliente ciente e vai buscar posteriormente.</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row d-none" id="equipamentosSim">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Cliente esqueceu os equipamentos no antigo endereço?</label>
+                    <div class="d-flex">
+                        <div class="form-check me-3">
+                            <input type="radio" class="form-check-input" name="esqueceuEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONANDO, CLIENTE DISSE QUE ESQUECEU OS EQUIPAMENTOS NO ANTIGO ENDEREÇO. INFORMEI AO CLIENTE QUE OS EQUIPAMENTOS DE INTERNET DEVEM SER LEVADOS PARA O NOVO ENDEREÇO, ONU, ROTEADOR OU ONT + (FONTES DE ENERGIA). CLIENTE CONFIRMOU QUE LEVARÁ ATÉ O DIA DA MUDANÇA." id="esqueceuEquipSim">
+                            <label class="form-check-label" for="esqueceuEquipSim">Sim. Porém foi orientado levar ao novo endereço</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="esqueceuEquip" value="VERIFIQUEI EM SISTEMA QUE A CONEXÃO AINDA ESTAVA ATIVA (COM IP). QUESTIONEI O CLIENTE E O MESMO DISSE QUE VAI BUSCAR OS EQUIPAMENTOS ATÉ O DIA DA MUDANÇA." id="esqueceuEquipNao">
+                            <label class="form-check-label" for="esqueceuEquipNao">Não. Cliente ciente e vai buscar posteriormente. </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- encerra as condicionais da conexão ativa -->      
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="comprovante">
+                        Comprovante:
+                        <svg id="iconCopiarComprovante" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy" style="cursor: pointer; margin-left: 5px; color: #6c757d;" onclick="copiarComprovante()" title="Copiar trecho do comprovante">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                    </label>
+                    <select class="form-control" id="comprovante" required onchange="toggleTipoComp()">
+                        <option value="">Selecione...</option>
+                        <option value="CEMIG">CEMIG</option>
+                        <option value="DMAE">DMAE</option>
+                        <option value="CONTRATO DE LOCAÇÃO">Contrato de Locação</option>
+                        <option value="CONTRATO DE HABITAÇÃO">Contrato de Habitação</option>
+                        <option value="">Outros</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="tipoComp">Informe o tipo:</label>
+                    <input type="text" class="form-control" id="tipoComp" placeholder="Informe o tipo do comprovante" required disabled>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="nomeComprov">Nome no comprovante:</label>
+                    <input type="text" class="form-control" id="nomeComprov" placeholder="Nome completo" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-check-inline">
+                        <input type="radio" name="grauParent" value="ASSINANTE" onclick="toggleGrauComp()"> Assinante
+                    </label>
+                    <label class="form-check-inline">
+                        <input type="radio" name="grauParent" value="TERCEIRO" onclick="toggleGrauComp()" checked> Terceiro
+                    </label>
+                    <input type="text" class="form-control" id="grauComp" placeholder="MÃE, IRMÃO, LOCATÁRIO, ETC..." required disabled>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+                <!-- Agendamento -->
+        <div class="row">
+            <div class="col-md-12">
+                <h5>AGENDAMENTO</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="dataVisita">Visita Técnica:</label>
+                    <input type="text" class="form-control" required id="dataVisita" placeholder="dd/mm/aaaa">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="horaVisita">Hora:</label>
+                    <select class="form-control" id="horaVisita" required>
+                        <option value="">Selecione...</option>
+                        <option value="ÀS 08:00" class="font-weight-bold text-success">08:00</option>
+                        <option value="ÀS 08:30" class="font-weight-bold">08:30</option>
+                        <option value="ÀS 10:00" class="font-weight-bold text-success">10:00</option>
+                        <option value="ÀS 10:30" class="font-weight-bold">10:30</option><hr>
+                        <option value="ÀS 13:00" class="font-weight-bold text-success">13:00</option>
+                        <option value="ÀS 13:30" class="font-weight-bold">13:30</option>
+                        <option value="ÀS 15:00" class="font-weight-bold text-success">15:00</option>
+                        <option value="ÀS 15:30" class="font-weight-bold">15:30</option>
+                        <option value="ÀS 17:00" class="font-weight-bold text-danger">17:00 (somente com autorização)</option>
+                        <option value="APÓS ÀS 11:00" class="font-weight-bold text-primary">Após às 11:00 (aos sábados)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="formaPag">Pagamento:</label>
+                    <select class="form-control" id="formaPag" required>
+                        <option value="">Selecione...</option>
+                        <option value="PIX">PIX</option>
+                        <option value="DINHEIRO">DINHEIRO</option>
+                        <option value="CARTAO">CARTAO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="protocolo">Nº Protocolo:</label>
+                    <input type="text" class="form-control" id="protocolo" placeholder="123.456" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="operador">Nome do operador:</label>
+                    <select class="form-control" id="operador" required="true" requiredMessage="Informe o nome" required>
+                        <option value="">Selecione...</option>
+                        <option value="ANDREZA">ANDREZA</option>
+                        <option value="BRUNA">BRUNA</option>
+                        <option value="DEIVIT">DEIVIT</option>
+                        <option value="EDUARDO">EDUARDO</option>
+                        <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                        <option value="JHONATAN">JHONATAN</option>
+                        <option value="JOSÉ Jr">JOSÉ Jr</option>
+                        <option value="HALYSON">HALYSON</option>
+                        <option value="HIAGO">HIAGO</option>
+                        <option value="HIORRANNA">HIORRANNA</option>
+                        <option value="IZABELA">IZABELA</option>
+                        <option value="KAROLAYNE">KAROLAYNE</option>
+                        <option value="LAUREN">LAUREN</option>
+                        <option value="LUIS">LUIS</option>
+                        <option value="PEDRO">PEDRO</option>
+                        <option value="RAMONY">RAMONY</option>
+                        <option value="RENATA">RENATA</option>
+                        <option value="RONALD">RONALD</option>
+                        <option value="VICTOR H.">VICTOR HUGO</option>
+                        <option value="VITOR M.">VITOR MANOEL</option>
+                        <option value="VAGNER">VAGNER</option>
+                </select>
+                </div>
+            </div>
+        </div>
+    </form>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5><b>INSTALAÇÃO DENTRO DOS 90 DIAS</b></h5>
+            </div>
+        </div>
+    
+        <div class="alert alert-warning" role="alert">
+            Caso a conexão do cliente tenha sido instalada dentro do prazo de 90 dias, <a href="#" class="alert-link" onclick="copyToClipboard1()">copie aqui</a> esta mensagem e encaminhe para Deivit ou Hiago. Caso tenha alguma observação importante, insira no campo abaixo.
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Observação:</span>
+            </div>
+            <input type="text" class="form-control" id="obs" aria-describedby="basic-addon3" data-toggle="tooltip" placeholder="''Cliente informou que no antigo endereço a casa era alugada e locador solicitou as chaves.''" title="Conforme o exemplo, você deve inserir apenas o conteúdo que está entre as ''aspas''">
+        </div>
+
+        <hr>
+          
+    <div class="buttons">
+        <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+        <button class="btn btn-secondary btn-block" onclick="limparCampos1()">Limpar</button>
+    </div>
+  </div>
+
+<div class="output">
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto Protocolo:</h4>
+        <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+    </div>
+
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto O.S:</h4>
+        <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+    </div>
+</div>
+<div class="output">
+
+    <div class="output-group">
+        <h4 class="font-weight-bold">Texto Agenda:</h4>
+        <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+        <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+// Função que mostra ou esconde o campo de conexão ativa baseado na mudança de residência
+function toggleConexaoAtiva() {
+    const mudou = document.querySelector('input[name="mudou"]:checked').value;
+    const conexaoAtivaDiv = document.getElementById("conexaoAtiva");
+
+    if (mudou === "MUDOU DE RESIDÊNCIA E") {
+        conexaoAtivaDiv.classList.remove("d-none");
+    } else {
+        conexaoAtivaDiv.classList.add("d-none");
+    }
+}
+
+// Adiciona evento aos radio buttons para chamar a função quando houver mudança
+document.querySelectorAll('input[name="mudou"]').forEach(radio => {
+    radio.addEventListener("change", toggleConexaoAtiva);
+});
+
+// Executa a função ao carregar a página para aplicar a lógica inicial
+document.addEventListener("DOMContentLoaded", toggleConexaoAtiva);
+
+// Função para alternar entre as opções de equipamentos
+function toggleEquipamentos(naoAtiva) {
+    const equipamentosNao = document.getElementById("equipamentosNao");
+    const equipamentosSim = document.getElementById("equipamentosSim");
+
+    if (naoAtiva) {
+        equipamentosNao.classList.remove("d-none");
+        equipamentosSim.classList.add("d-none");
+        resetRadioGroup("esqueceuEquip"); // Limpa opções do terceiro grupo
+    } else {
+        equipamentosSim.classList.remove("d-none");
+        equipamentosNao.classList.add("d-none");
+        resetRadioGroup("levouEquip"); // Limpa opções do segundo grupo
+    }
+}
+
+// Função para resetar o grupo de radio buttons
+function resetRadioGroup(groupName) {
+    const radios = document.getElementsByName(groupName);
+    radios.forEach(radio => radio.checked = false);
+}
+
+// Função que gera ou atualiza o texto de acordo com a seleção do equipamento
+function gerarTextoEquipamento() {
+    const textoGerado = document.getElementById("campoTextoGerado");
+
+    // Limpa qualquer texto gerado anterior
+    textoGerado.value = textoGerado.value
+        .replace(/Texto do esqueceuEquip.*\n?/g, '')  // Remove o texto anterior do "esqueceuEquip"
+        .replace(/Texto do levouEquip.*\n?/g, '');   // Remove o texto anterior do "levouEquip"
+
+    // Verifica qual input foi selecionado e gera o texto correspondente
+    const esqueceuEquip = document.querySelector('input[name="esqueceuEquip"]:checked');
+    const levouEquip = document.querySelector('input[name="levouEquip"]:checked');
+
+    if (esqueceuEquip) {
+        textoGerado.value += "Texto do esqueceuEquip\n";
+    } else if (levouEquip) {
+        textoGerado.value += "Texto do levouEquip\n";
+    }
+}
+
+// Adiciona evento aos radio buttons dos equipamentos para atualizar o texto
+document.querySelectorAll('input[name="esqueceuEquip"], input[name="levouEquip"]').forEach(radio => {
+    radio.addEventListener("change", gerarTextoEquipamento);
+});
+
+// Executa a função ao carregar a página para garantir que o texto esteja correto
+document.addEventListener("DOMContentLoaded", gerarTextoEquipamento);
+
+</script>
+<script>
+document.title = "MUD END";
+
+// VALIDAÇÃO DOS CAMPOS EM BRANCO
+document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (form.checkValidity() === false) {
+                form.classList.add('was-validated');
+            } else {
+                form.classList.remove('was-validated');
+                // Se o formulário for válido, aqui você pode prosseguir com o envio do formulário.
+                // form.submit();
+            }
+        }, false);
+    });
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+function toggleTipoComp() {
+        var comprovante = document.getElementById("comprovante").value;
+        var tipoComp = document.getElementById("tipoComp");
+        
+        if (comprovante === "") {
+            tipoComp.removeAttribute("disabled");
+        } else {
+            tipoComp.setAttribute("disabled", "true");
+            tipoComp.value = "";
+        }
+    }
+    
+    function toggleGrauComp() {
+        var radios = document.getElementsByName("grauParent");
+        var grauComp = document.getElementById("grauComp");
+        
+        if (radios[1].checked) { // Se "Terceiro" estiver selecionado
+            grauComp.removeAttribute("disabled");
+        } else {
+            grauComp.setAttribute("disabled", "true");
+            grauComp.value = "ASSINANTE";
+        }
+    }
+
+// Script de validação
+document.addEventListener('DOMContentLoaded', function () {
+    // Seleciona o formulário
+    const form = document.querySelector('.needs-validation');
+
+    // Adiciona o evento de validação ao formulário
+    form.addEventListener('submit', function (event) {
+        // Verifica se o formulário é válido
+        if (!form.checkValidity()) {
+            // Previne o envio do formulário
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        // Adiciona classes para mostrar os campos inválidos
+        form.classList.add('was-validated');
+    }, false);
+});
+
+
+
+// Aqui inicia a validação dos endereço a partir do CEP
+
+const cep = document.querySelector('#cep');
+const adress = document.querySelector('#adress');
+const bairro = document.querySelector('#bairro');
+const message = document.querySelector('#message');
+
+// Função auxiliar para fetch com timeout de 3 segundos
+async function fetchWithTimeout(url, timeout = 3000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    
+    try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('Tempo de resposta excedido (3 segundos)');
+        }
+        throw error;
+    }
+}
+
+// Sistema de fallback para busca de CEP
+async function buscarCepComFallback(cepValue) {
+    // Remove caracteres não numéricos
+    const cepLimpo = cepValue.replace(/\D/g, '');
+    
+    if (cepLimpo.length !== 8) {
+        throw { cep_error: 'CEP deve conter 8 dígitos' };
+    }
+
+    // Tenta primeiro com ViaCEP
+    try {
+        const response = await fetchWithTimeout(`https://viacep.com.br/ws/${cepLimpo}/json/`, 3000);
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Verifica se a ViaCEP retornou erro (ela retorna 200 mesmo com erro)
+            if (!data.erro) {
+                return {
+                    logradouro: data.logradouro || '',
+                    bairro: data.bairro || '',
+                    cidade: data.localidade || '',
+                    uf: data.uf || ''
+                };
+            }
+        }
+        
+        // Se chegou aqui, ViaCEP falhou, tenta BrasilAPI
+        throw new Error('ViaCEP retornou erro, tentando BrasilAPI...');
+        
+    } catch (error) {
+        console.log('ViaCEP falhou, tentando BrasilAPI...', error);
+        
+        // Fallback para BrasilAPI
+        try {
+            const response = await fetchWithTimeout(`https://brasilapi.com.br/api/cep/v1/${cepLimpo}`, 3000);
+            
+            if (!response.ok) {
+                throw new Error('BrasilAPI também falhou');
+            }
+            
+            const data = await response.json();
+            
+            return {
+                logradouro: data.street || '',
+                bairro: data.neighborhood || '',
+                cidade: data.city || '',
+                uf: data.state || ''
+            };
+            
+        } catch (brasilApiError) {
+            console.error('BrasilAPI também falhou:', brasilApiError);
+            const errorMessage = brasilApiError.message.includes('Tempo de resposta excedido') 
+                ? 'Tempo de resposta excedido. Tente novamente.' 
+                : 'Não foi possível buscar o CEP. Tente novamente mais tarde.';
+            throw { cep_error: errorMessage };
+        }
+    }
+}
+
+// Função para buscar endereço (mantida para compatibilidade)
+async function buscarEndereco(cepValue) {
+    try {
+        const resultado = await buscarCepComFallback(cepValue);
+        adress.value = resultado.logradouro;
+        bairro.value = resultado.bairro;
+    } catch (error) {
+        if (error?.cep_error) {
+            if (message) {
+                message.textContent = error.cep_error;
+                setTimeout(() => {
+                    message.textContent = '';
+                }, 5000);
+            } else {
+                alert(error.cep_error);
+            }
+        }
+        console.error('Erro ao buscar endereço:', error);
+    }
+}
+
+cep.addEventListener('input', () => {
+    // Remove caracteres não numéricos (exceto números)
+    cep.value = cep.value.replace(/\D/g, '');
+
+    // Verifica se o CEP possui 8 dígitos após a remoção dos caracteres não numéricos
+    if (cep.value.length === 8) {
+        // Se o CEP tiver 8 dígitos, faz a requisição para buscar o endereço
+        buscarEndereco(cep.value);
+    } else {
+        // Caso contrário, limpa os campos de endereço
+        adress.value = '';
+        bairro.value = '';
+    }
+});
+
+cep.addEventListener('focusout', async () => {
+    try {
+        const onlyNumbers = /^[0-9]+$/;
+        const cepValid = /^[0-9]{8}$/;
+
+        if (!onlyNumbers.test(cep.value) || !cepValid.test(cep.value)) {
+            throw { cep_error: 'Informe um CEP válido' };
+        }
+
+        const resultado = await buscarCepComFallback(cep.value);
+        adress.value = resultado.logradouro;
+        bairro.value = resultado.bairro;
+
+    } catch (error) {
+        if (error?.cep_error) {
+            if (message) {
+                message.textContent = error.cep_error;
+                setTimeout(() => {
+                    message.textContent = '';
+                }, 5000);
+            } else {
+                alert(error.cep_error);
+            }
+        }
+        console.error('Erro ao buscar CEP:', error);
+    }
+})
+
+// aqui termina a validação do endereço
+
+function gerarTextos() {
+        // Verificar se todos os campos obrigatórios foram preenchidos
+        const form = document.querySelector('.needs-validation');
+    if (!form.checkValidity()) {
+        alert('Por favor, preencha todos os campos obrigatórios antes de gerar os textos.');
+        form.classList.add('was-validated'); // Exibe os erros no formulário
+        return; // Interrompe a execução
+    }
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const complemento = document.getElementById('complemento').value.toUpperCase();
+    const adress = document.getElementById('adress').value.toUpperCase();
+    const cep = document.getElementById('cep').value;
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const tipoComp = document.getElementById('tipoComp').value.toUpperCase();
+    const comprovante = document.getElementById('comprovante').value.toUpperCase();
+    const nomeComprov = document.getElementById('nomeComprov').value.toUpperCase();
+    const grauComp = document.getElementById('grauComp').value.toUpperCase();
+    const num = document.getElementById('num').value.replace(/\D/g, '');
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const formaPag = document.getElementById('formaPag').value;
+    const onuOnt = document.getElementById('onuOnt').value;
+    const operador = document.getElementById('operador').value;
+    const prumada = document.getElementById('prumada').value;
+    const quandoMud = document.getElementById('quandoMud').value.toUpperCase();
+    const mudou = document.querySelector('input[name="mudou"]:checked').value;
+    const extend = document.querySelector('input[name="extend"]:checked').value;
+    const extendAgenda = extend.replace(/<b>|<\/b>/g, '**');
+    const levouEquip = document.querySelector('input[name="levouEquip"]:checked')?.value || "";
+    const esqueceuEquip = document.querySelector('input[name="esqueceuEquip"]:checked')?.value || "";
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+
+    // Crie os textos com os valores
+    let textoProtocolo = `${cliente.split(' ')[0]} ENTROU EM CONTATO POR ${canal} (${contato}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.
+
+===================================
+
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+
+===================================
+
+QUESTIONADO, ${cliente.split(' ')[0]} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.
+
+ENDEREÇO NOVO: ${adress}, ${num}
+COMPLEMENTO: ${complemento}
+CEP: ${cep}
+BAIRRO: ${bairro}
+${quandoMud}
+
+===================================
+
+INFORMEI A ${cliente.split(' ')[0]} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO.
+CIENTE E ORIENTADO(A) QUE A MUDANÇA POSSUI O CUSTO DE SERVIÇO NO VALOR DE R$100,00 A SER PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.
+
+${levouEquip}${esqueceuEquip}
+
+${cliente.split(' ')[0]} CONFIRMOU A SOLICITAÇÃO E OPTOU REALIZAR O PAGAMENTO DA TAXA DE R$100,00 NO ${formaPag}.
+
+MUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.
+
+===================================
+
+>>> Este deve ser o ultimo comentário <<<
+
+COMPROVANTE DE ENDEREÇO (${comprovante}${tipoComp}) EM ANEXO
+NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`;
+
+const textoOS = `${cliente.split(' ')[0]} ENTROU EM CONTATO VIA ${canal} (${contato}) E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". INFORMEI O VALOR DO SERVIÇO R$100,00 (INCLUI PEÇAS E SERVIÇOS), CLIENTE SOLICITOU PAGAR NO ATO COM ${formaPag}. ${cliente.split(' ')[0]} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA PARA ${dataVisita} ${horaVisita} HRS.
+
+=====================================
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: ${extend}REINSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE OU NO MELHOR LOCAL DA CASA PARA COBERTURA WI-FI. REALIZAR TESTES E AFERIR VELOCIDADE DO PLANO, TESTAR E APRESENTAR ABRANGÊNCIA DO WI-FI COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT DE TESTES DA EMPRESA E COM OS DISPOSITIVOS DO CLIENTE E APRESENTAR VARIAÇÕES SE HOUVER. CONFERIR NAVEGAÇÃO IPv6, PORTA E SENHA DE ACESSO AO EQUIPAMENTO E ACESSO EXTERNO PELA WAN. TESTAR TODOS DISPOSITIVOS PRESENTES WI-FI E CABEADA SE HOUVER EQUIPAMENTO JUNTO DO ROTEADOR QUE NECESSITE SER CABEADO. EXPLICAR QUE CASO ALGUM EQUIPAMENTO PRECISE CONECTAR-SE POR CABO DE REDE E NÃO ESTIVER AO LADO DO ROTEADOR CLIENTE DEVERÁ CONTRATAR SERVIÇO DE PROFISSIONAL DO RAMO PARA TAL, MESMO SE APLICA SE NECESSÁRIO DESMONTAR MÓVEIS (RACK, ARMÁRIO, OUTROS) PARA PASSAR CABOS. RECEBER R$100,00 NO ATO DA VISITA EM ${formaPag}.
+<b>${onuOnt}</b>`;
+
+    const textoAgenda = `MUD END ${cliente} PROT:${protocolo} ${formaPag} (${operador}) - ${bairro} ${prumada} ${extendAgenda}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+function copiarComprovante() {
+    // Obtenha os valores dos campos do comprovante
+    const comprovante = document.getElementById('comprovante').value.toUpperCase();
+    const tipoComp = document.getElementById('tipoComp').value.toUpperCase();
+    const nomeComprov = document.getElementById('nomeComprov').value.toUpperCase();
+    const grauComp = document.getElementById('grauComp').value.toUpperCase();
+    
+    // Verifica se os campos obrigatórios do comprovante estão preenchidos
+    // Se comprovante estiver vazio (Outros selecionado), verifica se tipoComp está preenchido
+    if ((!comprovante && !tipoComp) || !nomeComprov || !grauComp) {
+        alert('Preencha os campos do comprovante: tipo, nome e grau de parentesco.');
+        return;
+    }
+    
+    // Determina qual valor usar para o tipo do comprovante
+    const tipoComprovante = comprovante || tipoComp;
+    
+    // Cria o texto do comprovante
+    const textoComprovante = `COMPROVANTE DE ENDEREÇO (${tipoComprovante}) EM ANEXO
+NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`;
+    
+    // Crie um elemento de texto temporário para copiar o conteúdo
+    const tempInput = document.createElement("textarea");
+    tempInput.value = textoComprovante;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    
+    // Mostra um feedback visual discreto
+    const icon = document.getElementById('iconCopiarComprovante');
+    const originalColor = icon.style.color;
+    icon.style.color = '#28a745';
+    icon.style.transform = 'scale(1.2)';
+    
+    setTimeout(() => {
+        icon.style.color = originalColor;
+        icon.style.transform = 'scale(1)';
+    }, 1500);
+}
+
+function limparCampos1() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+
+// Texto cliente dentro do prazo de 90 dias
+function copyToClipboard1() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const dataVisita = document.getElementById('dataVisita').value;
+    const adress = document.getElementById('adress').value.toUpperCase();
+    const cep = document.getElementById('cep').value;
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const num = document.getElementById('num').value.replace(/\D/g, '');
+    const protocolo = document.getElementById('protocolo').value;
+    const obs = document.getElementById('obs').value.toUpperCase();
+    const complemento = document.getElementById('complemento').value.toUpperCase();
+
+    // Crie o texto com os valores
+    const text = `*ANÁLISE*
+
+*${cliente}*
+
+> Mudança de endereço 
+> Dentro do prazo de 90 dias.
+> Agendado para dia ${dataVisita}.
+> Novo endereço: ${adress}, ${num} (${complemento})
+> CEP: ${cep} / Bairro: ${bairro}
+> Protocolo: ${protocolo}
+
+ENDEREÇO AINDA NÃO ALTERADO EM SISTEMA
+
+OBS.: ${obs}`;
+
+    // Crie um elemento de texto temporário para copiar o conteúdo
+    const tempInput = document.createElement("textarea");
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    alert("Mensagem copiada. Envie o texto copiado para Deivit ou Hiago.");
+}
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
+// Condicional se cliente já se mudou ou não
+
+function toggleCTOInput() {
+            var radios = document.getElementsByName('mudou');
+            var quandoMud = document.getElementById('quandoMud');
+            
+            if (radios[0].checked) {
+                quandoMud.disabled = true;
+            } else {
+                quandoMud.disabled = false;
+            }
+        }
+
+        // Inicialize o estado da página
+        window.onload = function() {
+            toggleCTOInput();
+        }
+
+</script>
+
+
+
+</body>
+  <!-- Modal -->
+  <div class="modal fade" id="ExemploModalCentralizado" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+<!--aqui começa o conteudo do modal-->
+            
+            <head>
+                <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            </head>
+            
+            <body>
+            
+                    <div class="form-group mt-4">
+                        <h4>Pesquisa de endereço por logradouro</h4>
+                        <input type="text" class="form-control" id="logradouro" placeholder="Exemplo: 'eucaliptos'">
+                    </div>
+                    <button type="button" class="btn btn-success  mr-2" onclick="buscarEndereco()">Pesquisar</button>
+                    <button type="button" class="btn btn-danger" onclick="limparCampos()">Limpar</button>
+                    <br>
+                    <div id="resultado" class="mt-4"></div>
+                    <div class="alert alert-warning" role="alert">
+                        Copie o CEP correspondente ao logradouro informado pelo cliente.
+                    </div>
+
+            
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                <script>
+                    // Função auxiliar para fetch com timeout (local do modal)
+                    async function fetchWithTimeoutModal(url, timeout = 3000) {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), timeout);
+                        
+                        try {
+                            const response = await fetch(url, { signal: controller.signal });
+                            clearTimeout(timeoutId);
+                            return response;
+                        } catch (error) {
+                            clearTimeout(timeoutId);
+                            if (error.name === 'AbortError') {
+                                throw new Error('Tempo de resposta excedido (3 segundos)');
+                            }
+                            throw error;
+                        }
+                    }
+                    
+                    async function buscarEndereco() {
+                        var logradouro = document.getElementById("logradouro").value;
+                        var resultadoDiv = document.getElementById("resultado");
+                        
+                        if (!logradouro || logradouro.trim() === '') {
+                            resultadoDiv.innerHTML = "<div class='alert alert-warning'>Por favor, informe um logradouro para pesquisar.</div>";
+                            return;
+                        }
+                        
+                        // Mostra indicador de carregamento
+                        resultadoDiv.innerHTML = "<div class='alert alert-info'>Buscando endereços...</div>";
+                        
+                        // Tenta primeiro com ViaCEP
+                        try {
+                            var url = "https://viacep.com.br/ws/MG/Uberlandia/" + encodeURIComponent(logradouro) + "/json/";
+                            const response = await fetchWithTimeoutModal(url, 3000);
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                
+                                // Verifica se retornou array vazio ou erro
+                                if (Array.isArray(data) && data.length > 0) {
+                                    mostrarResultado(data);
+                                    return;
+                                } else if (data.erro) {
+                                    throw new Error('ViaCEP retornou erro');
+                                }
+                            }
+                            
+                            throw new Error('ViaCEP não retornou dados válidos');
+                            
+                        } catch (error) {
+                            console.log('ViaCEP falhou na busca por logradouro:', error);
+                            
+                            // Verifica se foi timeout
+                            const isTimeout = error.message && error.message.includes('Tempo de resposta excedido');
+                            
+                            // Para busca por logradouro, a BrasilAPI não tem endpoint direto
+                            // Então informamos o usuário e sugerimos buscar por CEP
+                            resultadoDiv.innerHTML = `
+                                <div class='alert alert-danger'>
+                                    <strong>Erro ao buscar por logradouro.</strong><br>
+                                    ${isTimeout ? 'Tempo de resposta excedido (3 segundos).' : 'A API de busca está temporariamente indisponível.'}<br>
+                                    <small>Sugestão: Tente buscar diretamente pelo CEP no campo principal.</small>
+                                </div>
+                            `;
+                        }
+                    }
+            
+                    function mostrarResultado(enderecos) {
+                        var resultadoDiv = document.getElementById("resultado");
+                        resultadoDiv.innerHTML = "";
+                        if (enderecos.length === 0) {
+                            resultadoDiv.innerHTML = "<p>Nenhum endereço encontrado para o logradouro informado.</p>";
+                            return;
+                        }
+                        var tableHtml = "<table class='table'><thead><tr><th>CEP</th><th>Bairro</th><th>Logradouro</th></tr></thead><tbody>";
+                        enderecos.forEach(function(endereco) {
+                            tableHtml += "<tr><td>" + endereco.cep + "</td><td>" + endereco.bairro + "</td><td>" + endereco.logradouro + "</td></tr>";
+                        });
+                        tableHtml += "</tbody></table>";
+                        resultadoDiv.innerHTML = tableHtml;
+                    }
+            
+                    function limparCampos() {
+                        document.getElementById("logradouro").value = "";
+                        document.getElementById("resultado").innerHTML = "";
+                    }
+
+                    $(function () {
+                        $('[data-toggle="tooltip"]').tooltip()
+                    })
+                </script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+        
+        const auth = getAuth(app);
+      
+        // Verifica se o usuário está autenticado
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            console.log("Usuário não autenticado, redirecionando...");
+            window.location.href = "/login.html"; // Redireciona para a página de login
+          } else {
+            console.log("Usuário autenticado!", user);
+            // Exibe o conteúdo após a verificação
+            document.getElementById("main-content").style.display = "block";
+          }
+        });
+      
+        // Adiciona o evento de logout
+        document.getElementById('logoutButton').addEventListener('click', () => {
+          signOut(auth).then(() => {
+            console.log("Usuário deslogado com sucesso!");
+            window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+          }).catch((error) => {
+            console.error("Erro ao deslogar: ", error);
+          });
+        });
+      
+        onAuthStateChanged(auth, (user) => {
+              const emailSpan = document.getElementById("userEmail");
+              if (user) {
+                emailSpan.innerText = `Logado como: ${user.email}`;
+              } else {
+                emailSpan.innerText = `Usuário não autenticado`;
+              }
+            });
+      
+      </script>
+      <script type="module" src="../js/firebase-init.js"></script>
+            </body>
+            </html>
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

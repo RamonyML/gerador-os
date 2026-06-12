@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+<style>
+.firstBlur {
+  margin:20px 20px 0;
+  padding:20px;
+  position:relative;
+}
+/* coloque blur em todos os elementos menos no elemento com a class .modal */
+.firstBlur.modalBlur > *:not(.modal) {
+  -webkit-filter: blur(8px);
+  filter: blur(8px);
+}
+/* remove a cor escurecida do fundo, se quiser que fique escurecido ajuste a opacidade para 0.5*/
+.modal-backdrop.show {
+  opacity: 0;
+}
+</style>
+</head>
+
+<body>
+
+    <div class="firstBlur">
+        <h2>What is Lorem Ipsum?</h2>
+        <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard
+        </p>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+            Abrir modal
+        </button>
+
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+            aria-hidden="true" data-backdrop="true" data-keyboard="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Modal Body</div>
+                    <div class="modal-footer">
+                        <div class="container">
+                            <h2 class="mt-4">Pesquisa de Endereços</h2>
+                            <div class="form-group mt-4">
+                                <label for="logradouro">Digite o nome do logradouro:</label>
+                                <input type="text" class="form-control"  id="logradouro" placeholder="Exemplo: 'eucaliptos'">
+                            </div>
+                            <button type="button" class="btn btn-success mr-2"  onclick="buscarEndereco()">Pesquisar</button>
+                            <button type="button" class="btn btn-secondary"  onclick="limparCampos()">Limpar</button>
+                    
+                            <div id="resultado" class="mt-4"></div>
+                        </div>
+                    
+                        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                        <script>
+                            function buscarEndereco() {
+                                var logradouro = document.getElementById("logradouro").value;
+                                var url = "https://viacep.com.br/ws/MG/Uberlandia/" + logradouro + "/json/";
+                                fetch(url)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        mostrarResultado(data);
+                                    })
+                                    .catch(error => {
+                                        console.error('Erro ao buscar endereço:', error);
+                                    });
+                            }
+                    
+                            function mostrarResultado(enderecos) {
+                                var resultadoDiv = document.getElementById("resultado");
+                                resultadoDiv.innerHTML = "";
+                                if (enderecos.length === 0) {
+                                    resultadoDiv.innerHTML = "<p>Nenhum endereço encontrado para o logradouro informado.</p>";
+                                    return;
+                                }
+                                var tableHtml = "<table class='table'><thead><tr><th>CEP</th><th>Bairro</th><th>Logradouro</th></tr></thead><tbody>";
+                                enderecos.forEach(function(endereco) {
+                                    tableHtml += "<tr><td>" + endereco.cep + "</td><td>" + endereco.bairro + "</td><td>" + endereco.logradouro + "</td></tr>";
+                                });
+                                tableHtml += "</tbody></table>";
+                                resultadoDiv.innerHTML = tableHtml;
+                            }
+                    
+                            function limparCampos() {
+                                document.getElementById("logradouro").value = "";
+                                document.getElementById("resultado").innerHTML = "";
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionExample">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Grupo de itens colapsável #1
+              </button>
+            </h5>
+          </div>
+      
+          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non alemanha 0 x 2 coreia do sul cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Grupo de itens colapsável #2
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Grupo de itens colapsável #3
+              </button>
+            </h5>
+          </div>
+          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (function () {
+            //Show Modal
+            $('#exampleModalLong').on('show.bs.modal', function (e) {
+                $('.firstBlur').addClass('modalBlur');
+            })
+            //Remove modal
+            $('#exampleModalLong').on('hide.bs.modal', function (e) {
+                $('.firstBlur').removeClass('modalBlur');
+            })
+        })();
+    </script>
+    
+</body>
+
+</html>
