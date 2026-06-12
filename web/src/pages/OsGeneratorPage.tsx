@@ -42,6 +42,7 @@ import { buildAltplanTrocaVisitaPagaTextos } from '../data/altplan/trocaVisitaPa
 import { buildLuzVermelhaTextos } from '../data/manutencao/luzVermelha'
 import { buildLuzVermelhaPjTextos } from '../data/manutencao/luzVermelhaPj'
 import { buildFibraExternaTextos } from '../data/manutencao/fibraExterna'
+import { buildOcasConectorTextos } from '../data/manutencao/ocasConector'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -366,6 +367,11 @@ export function OsGeneratorPage() {
       Object.assign(
         base,
         buildFibraExternaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-ocas-conector') {
+      Object.assign(
+        base,
+        buildOcasConectorTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
     }
     return base

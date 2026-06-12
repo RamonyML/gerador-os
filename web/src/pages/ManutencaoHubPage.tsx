@@ -3,6 +3,7 @@ import { Chip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined'
 import FactoryOutlinedIcon from '@mui/icons-material/FactoryOutlined'
+import CableOutlinedIcon from '@mui/icons-material/CableOutlined'
 import { HubCatalog, type HubSection } from '../components/HubCatalog'
 
 const ICON_SX = { fontSize: 26 } as const
@@ -71,6 +72,32 @@ export function ManutencaoHubPage() {
             <Chip
               size="small"
               label="Titular, PJ e terceiros"
+              sx={{
+                height: 24,
+                bgcolor: alpha(
+                  theme.palette.primary.main,
+                  theme.palette.mode === 'dark' ? 0.2 : 0.12,
+                ),
+                color: 'primary.main',
+              }}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: 'Dano ocasionado',
+      items: [
+        {
+          label: 'Conector (interno)',
+          to: '/gerar-os?demanda=manutencao&slug=manut-ocas-conector',
+          description:
+            'Visita técnica para dano interno em fibra/conector ocasionado pelo cliente. Inclui titular e as variações de terceiro.',
+          icon: <CableOutlinedIcon sx={ICON_SX} />,
+          badge: (
+            <Chip
+              size="small"
+              label="Titular e terceiros"
               sx={{
                 height: 24,
                 bgcolor: alpha(
