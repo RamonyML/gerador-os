@@ -1,5 +1,5 @@
-import { Chip, Typography } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined'
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
 import SettingsInputAntennaOutlinedIcon from '@mui/icons-material/SettingsInputAntennaOutlined'
@@ -24,17 +24,7 @@ export function MudancaEnderecoHubPage() {
           to: '/gerar-os?demanda=mudanca-endereco&slug=mud-end-padrao',
           description: 'Fluxo padrão para mudança de endereço.',
           icon: <HomeWorkOutlinedIcon sx={ICON_SX} />,
-          badge: (
-            <Chip
-              size="small"
-              label="Recomendado"
-              sx={{
-                height: 24,
-                bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.2 : 0.12),
-                color: 'primary.main',
-              }}
-            />
-          ),
+          badgeLabel: 'Recomendado',
         },
         {
           label: 'Mud End buscando equipamentos',
@@ -90,6 +80,9 @@ export function MudancaEnderecoHubPage() {
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={sections}
+      illustration="condominios"
+      illustrationAlt="Mudança de endereço"
+      toolbarLabel="Tipos de mudança"
     />
   )
 }

@@ -375,10 +375,105 @@ function FactoryIcon() {
   )
 }
 
+function BanknoteXIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M13 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5" />
+      <path d="m17 17 5 5" />
+      <path d="M18 12h.01" />
+      <path d="m22 17-5 5" />
+      <path d="M6 12h.01" />
+      <circle cx="12" cy="12" r="2" />
+    </svg>
+  )
+}
+
+function OctagonXIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m15 9-6 6" />
+      <path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z" />
+      <path d="m9 9 6 6" />
+    </svg>
+  )
+}
+
+function PlugIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 22v-5" />
+      <path d="M15 8V2" />
+      <path d="M17 8a1 1 0 0 1 1 1v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1z" />
+      <path d="M9 8V2" />
+    </svg>
+  )
+}
+
+function RouterIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="20" height="8" x="2" y="14" rx="2" />
+      <path d="M6.01 18H6" />
+      <path d="M10.01 18H10" />
+      <path d="M15 10v4" />
+      <path d="M17.84 7.17a4 4 0 0 0-5.66 0" />
+      <path d="M20.66 4.34a8 8 0 0 0-11.31 0" />
+    </svg>
+  )
+}
+
 function FieldOptionIcon({ name }: { name?: string }) {
   if (name === 'user-round') return <UserRoundIcon />
   if (name === 'users-round') return <UsersRoundIcon />
   if (name === 'factory') return <FactoryIcon />
+  if (name === 'banknote-x') return <BanknoteXIcon />
+  if (name === 'octagon-x') return <OctagonXIcon />
+  if (name === 'plug') return <PlugIcon />
+  if (name === 'router') return <RouterIcon />
   return null
 }
 

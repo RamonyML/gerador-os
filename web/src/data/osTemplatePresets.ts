@@ -12,6 +12,13 @@ import { getManutOcasFibraDefaults } from './manutencao/ocasFibra'
 import { getManutLuzVermelhaIsentoDefaults } from './manutencao/luzVermelhaIsento'
 import { getManutSinalAltoDefaults } from './manutencao/sinalAlto'
 import { getManutRealocFibraDefaults } from './manutencao/realocFibra'
+import { getManutMudPontoIntDefaults } from './manutencao/mudPontoInterno'
+import { getManutVisitaTestesDefaults } from './manutencao/visitaTestes'
+import { getManutFonteQueimadaDefaults } from './manutencao/fonteQueimada'
+import { getManutRoteadorQueimadoDefaults } from './manutencao/roteadorQueimado'
+import { getManutOntQueimadaDefaults } from './manutencao/ontQueimada'
+import { getManutOnuQueimadaDefaults } from './manutencao/onuQueimada'
+import { getManutRoteadorResetDefaults } from './manutencao/roteadorReset'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
 import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
@@ -163,6 +170,48 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Manutenção',
     label: 'Remanejamento de fibra',
     getDefaults: getManutRealocFibraDefaults,
+  },
+  {
+    id: 'manut-mud-ponto-int',
+    category: 'Manutenção',
+    label: 'Mudança de ponto interno',
+    getDefaults: getManutMudPontoIntDefaults,
+  },
+  {
+    id: 'manut-visita-testes',
+    category: 'Manutenção',
+    label: 'Visita de Testes',
+    getDefaults: getManutVisitaTestesDefaults,
+  },
+  {
+    id: 'manut-fonte-queimada',
+    category: 'Manutenção',
+    label: 'Fonte queimada',
+    getDefaults: getManutFonteQueimadaDefaults,
+  },
+  {
+    id: 'manut-roteador-queimado',
+    category: 'Manutenção',
+    label: 'Roteador queimado',
+    getDefaults: getManutRoteadorQueimadoDefaults,
+  },
+  {
+    id: 'manut-ont-queimada',
+    category: 'Manutenção',
+    label: 'ONT queimada',
+    getDefaults: getManutOntQueimadaDefaults,
+  },
+  {
+    id: 'manut-onu-queimada',
+    category: 'Manutenção',
+    label: 'ONU queimada',
+    getDefaults: getManutOnuQueimadaDefaults,
+  },
+  {
+    id: 'manut-roteador-reset',
+    category: 'Manutenção',
+    label: 'Roteador resetado',
+    getDefaults: getManutRoteadorResetDefaults,
   },
 ]
 

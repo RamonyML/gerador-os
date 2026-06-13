@@ -18,6 +18,8 @@ type NavCardProps = {
   onClick?: () => void
   /** Card em destaque (fundo levemente tonalizado). */
   featured?: boolean
+  /** Layout compacto: menos padding/ícone e oculta a descrição. */
+  dense?: boolean
 }
 
 /**
@@ -34,6 +36,7 @@ export function NavCard({
   to,
   onClick,
   featured = false,
+  dense = false,
 }: NavCardProps) {
   const theme = useTheme()
   const { mode } = useColorMode()
@@ -63,7 +66,7 @@ export function NavCard({
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        p: 2.5,
+        p: dense ? 1.75 : 2.5,
         borderRadius: 3,
         border: 1,
         textDecoration: 'none',
@@ -94,12 +97,19 @@ export function NavCard({
         },
       }}
     >
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', flex: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: dense ? 1.5 : 2,
+          alignItems: dense ? 'center' : 'flex-start',
+          flex: 1,
+        }}
+      >
         <Box
           sx={{
-            width: 48,
-            height: 48,
-            borderRadius: 2.5,
+            width: dense ? 40 : 48,
+            height: dense ? 40 : 48,
+            borderRadius: dense ? 2 : 2.5,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -133,12 +143,12 @@ export function NavCard({
               }}
             />
           </Box>
-          {description ? (
+          {description && !dense ? (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
               {description}
             </Typography>
           ) : null}
-          {badge ? <Box sx={{ mt: 1.5 }}>{badge}</Box> : null}
+          {badge ? <Box sx={{ mt: dense ? 0.75 : 1.5 }}>{badge}</Box> : null}
         </Box>
       </Box>
     </Paper>

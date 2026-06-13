@@ -48,6 +48,13 @@ import { buildOcasFibraTextos } from '../data/manutencao/ocasFibra'
 import { buildLuzVermelhaIsentoTextos } from '../data/manutencao/luzVermelhaIsento'
 import { buildSinalAltoTextos } from '../data/manutencao/sinalAlto'
 import { buildRealocFibraTextos } from '../data/manutencao/realocFibra'
+import { buildMudPontoIntTextos } from '../data/manutencao/mudPontoInterno'
+import { buildVisitaTestesTextos } from '../data/manutencao/visitaTestes'
+import { buildFonteQueimadaTextos } from '../data/manutencao/fonteQueimada'
+import { buildRoteadorQueimadoTextos } from '../data/manutencao/roteadorQueimado'
+import { buildOntQueimadaTextos } from '../data/manutencao/ontQueimada'
+import { buildOnuQueimadaTextos } from '../data/manutencao/onuQueimada'
+import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -404,6 +411,41 @@ export function OsGeneratorPage() {
       Object.assign(
         base,
         buildRealocFibraTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-mud-ponto-int') {
+      Object.assign(
+        base,
+        buildMudPontoIntTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-visita-testes') {
+      Object.assign(
+        base,
+        buildVisitaTestesTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-fonte-queimada') {
+      Object.assign(
+        base,
+        buildFonteQueimadaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-roteador-queimado') {
+      Object.assign(
+        base,
+        buildRoteadorQueimadoTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-ont-queimada') {
+      Object.assign(
+        base,
+        buildOntQueimadaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-onu-queimada') {
+      Object.assign(
+        base,
+        buildOnuQueimadaTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-roteador-reset') {
+      Object.assign(
+        base,
+        buildRoteadorResetTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
     }
     return base

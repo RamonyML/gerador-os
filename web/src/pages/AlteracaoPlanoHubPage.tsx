@@ -108,6 +108,9 @@ export function AlteracaoPlanoHubPage() {
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={sections}
+      illustration="contracts"
+      illustrationAlt="Contratos e alteração de plano"
+      toolbarLabel="Tipos de alteração"
     />
   )
 }
