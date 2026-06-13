@@ -1,5 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom'
-import { Chip, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import SettingsRemoteOutlinedIcon from '@mui/icons-material/SettingsRemoteOutlined'
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
@@ -109,16 +108,6 @@ export function AlteracaoPlanoHubPage() {
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={sections}
-      footer={
-        <Chip
-          component={RouterLink}
-          to="/suporte/demanda/alteracao-plano"
-          clickable
-          variant="outlined"
-          label="Ver todos os modelos desta categoria"
-          sx={{ alignSelf: 'flex-start' }}
-        />
-      }
     />
   )
 }

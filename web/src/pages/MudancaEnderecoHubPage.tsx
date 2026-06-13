@@ -1,4 +1,3 @@
-import { Link as RouterLink } from 'react-router-dom'
 import { Chip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined'
@@ -91,16 +90,6 @@ export function MudancaEnderecoHubPage() {
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={sections}
-      footer={
-        <Chip
-          component={RouterLink}
-          to="/suporte/demanda/mudanca-endereco"
-          clickable
-          variant="outlined"
-          label="Ver todos os modelos desta categoria"
-          sx={{ alignSelf: 'flex-start' }}
-        />
-      }
     />
   )
 }

@@ -8,6 +8,10 @@ import { getManutLuzVermelhaDefaults } from './manutencao/luzVermelha'
 import { getManutLuzVermelhaPjDefaults } from './manutencao/luzVermelhaPj'
 import { getManutFibraExternaDefaults } from './manutencao/fibraExterna'
 import { getManutOcasConectorDefaults } from './manutencao/ocasConector'
+import { getManutOcasFibraDefaults } from './manutencao/ocasFibra'
+import { getManutLuzVermelhaIsentoDefaults } from './manutencao/luzVermelhaIsento'
+import { getManutSinalAltoDefaults } from './manutencao/sinalAlto'
+import { getManutRealocFibraDefaults } from './manutencao/realocFibra'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
 import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
@@ -125,6 +129,12 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     getDefaults: getManutLuzVermelhaPjDefaults,
   },
   {
+    id: 'manut-luz-vermelha-isento',
+    category: 'Manutenção',
+    label: 'Luz vermelha — isento (7 dias)',
+    getDefaults: getManutLuzVermelhaIsentoDefaults,
+  },
+  {
     id: 'manut-fibra-externa',
     category: 'Manutenção',
     label: 'Fibra óptica externa — rompimento externo',
@@ -135,6 +145,24 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Manutenção',
     label: 'Dano ocasionado — conector (interno)',
     getDefaults: getManutOcasConectorDefaults,
+  },
+  {
+    id: 'manut-ocas-fibra',
+    category: 'Manutenção',
+    label: 'Dano ocasionado — fibra (externa)',
+    getDefaults: getManutOcasFibraDefaults,
+  },
+  {
+    id: 'manut-sinal-alto',
+    category: 'Manutenção',
+    label: 'Sinal alto',
+    getDefaults: getManutSinalAltoDefaults,
+  },
+  {
+    id: 'manut-realoc-fibra',
+    category: 'Manutenção',
+    label: 'Remanejamento de fibra',
+    getDefaults: getManutRealocFibraDefaults,
   },
 ]
 

@@ -15,6 +15,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { ContentCopy } from '@mui/icons-material'
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
@@ -43,8 +44,19 @@ import { buildLuzVermelhaTextos } from '../data/manutencao/luzVermelha'
 import { buildLuzVermelhaPjTextos } from '../data/manutencao/luzVermelhaPj'
 import { buildFibraExternaTextos } from '../data/manutencao/fibraExterna'
 import { buildOcasConectorTextos } from '../data/manutencao/ocasConector'
+import { buildOcasFibraTextos } from '../data/manutencao/ocasFibra'
+import { buildLuzVermelhaIsentoTextos } from '../data/manutencao/luzVermelhaIsento'
+import { buildSinalAltoTextos } from '../data/manutencao/sinalAlto'
+import { buildRealocFibraTextos } from '../data/manutencao/realocFibra'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
+
+/** Demandas com hub dedicado; as demais voltam para a página da demanda. */
+const DEMAND_HUB_ROUTES: Record<string, string> = {
+  'alteracao-plano': '/suporte/alteracao-plano',
+  'mudanca-endereco': '/suporte/mudanca-endereco',
+  manutencao: '/suporte/manutencao',
+}
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
 const DEMAND_GENERATOR_BLURB: Record<string, string> = {
@@ -373,6 +385,26 @@ export function OsGeneratorPage() {
         base,
         buildOcasConectorTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
+    } else if (selected?.slug === 'manut-ocas-fibra') {
+      Object.assign(
+        base,
+        buildOcasFibraTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-luz-vermelha-isento') {
+      Object.assign(
+        base,
+        buildLuzVermelhaIsentoTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-sinal-alto') {
+      Object.assign(
+        base,
+        buildSinalAltoTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'manut-realoc-fibra') {
+      Object.assign(
+        base,
+        buildRealocFibraTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
     }
     return base
   }, [values, profile, user, selected?.slug])
@@ -410,9 +442,32 @@ export function OsGeneratorPage() {
 
   const multiPreviewTabs = previewSections.length > 1
 
+  const backTo = demandParam
+    ? (DEMAND_HUB_ROUTES[demandParam] ??
+      (demandMeta ? `/suporte/demanda/${demandParam}` : '/suporte'))
+    : '/suporte'
+  const backLabel = demandMeta?.title ?? 'Hub Suporte'
+  const backButton = (
+    <Button
+      component={RouterLink}
+      to={backTo}
+      variant="outlined"
+      color="inherit"
+      startIcon={<ArrowBackRoundedIcon />}
+      sx={{ borderColor: 'divider' }}
+    >
+      {backLabel}
+    </Button>
+  )
+
   if (profileMissing || !profile) {
     return (
-      <AppPageChrome overline="Operação" title="Gerar O.S." maxWidth="xl">
+      <AppPageChrome
+        overline="Operação"
+        title="Gerar O.S."
+        maxWidth="xl"
+        headerRight={backButton}
+      >
         <Alert severity="warning" sx={{ borderRadius: 2 }}>
           Complete seu perfil em <strong>users/&lt;uid&gt;</strong> para usar o gerador.
         </Alert>
@@ -444,6 +499,7 @@ export function OsGeneratorPage() {
       title={headerTitle}
       maxWidth="xl"
       accentColor={accent === 'red' ? '#c70000' : undefined}
+      headerRight={backButton}
       subtitle={
         <Typography variant="body1" color="text.secondary" component="div">
           {headerSubtitle}

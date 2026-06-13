@@ -30,7 +30,6 @@ type Props = {
   backTo: string
   backLabel: string
   sections: HubSection[]
-  footer?: ReactNode
 }
 
 /**
@@ -44,7 +43,6 @@ export function HubCatalog({
   backTo,
   backLabel,
   sections,
-  footer,
 }: Props) {
   return (
     <AppPageChrome
@@ -97,7 +95,6 @@ export function HubCatalog({
             </Box>
           </Box>
         ))}
-        {footer}
       </Stack>
     </AppPageChrome>
   )
