@@ -108,6 +108,7 @@ export function UpgradesHubPage() {
       </Box>
       </Reveal>
 
+      <Reveal delay={80}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tab} onChange={handleTabChange}>
           <Tab label="Resumo" />
@@ -127,6 +128,7 @@ export function UpgradesHubPage() {
           Indisponível para o seu perfil.
         </Typography>
       ) : null}
+      </Reveal>
 
       <Dialog
         open={formOpen}
