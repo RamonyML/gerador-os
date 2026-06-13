@@ -8,6 +8,7 @@ import 'dayjs/locale/pt-br'
 import { initAnalytics } from './lib/firebase'
 import { AuthProvider } from './contexts/AuthContext'
 import { ColorModeProvider } from './contexts/ColorModeContext'
+import { SidebarTextureProvider } from './contexts/SidebarTextureContext'
 import { AppThemeProvider } from './components/AppThemeProvider'
 import './index.css'
 import App from './App.tsx'
@@ -20,13 +21,15 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <ColorModeProvider>
-        <AppThemeProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          </LocalizationProvider>
-        </AppThemeProvider>
+        <SidebarTextureProvider>
+          <AppThemeProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </LocalizationProvider>
+          </AppThemeProvider>
+        </SidebarTextureProvider>
       </ColorModeProvider>
     </BrowserRouter>
   </StrictMode>,

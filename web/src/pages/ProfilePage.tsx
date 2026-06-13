@@ -20,11 +20,23 @@ import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined'
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined'
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import Cropper from 'react-easy-crop'
 import { sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { Reveal } from '../components/Reveal'
+import { SidebarCircuit } from '../components/SidebarCircuit'
+import { SidebarWaves } from '../components/SidebarWaves'
+import { SidebarBubbles } from '../components/SidebarBubbles'
+import { SidebarDots } from '../components/SidebarDots'
+import { SidebarHexagons } from '../components/SidebarHexagons'
+import { SidebarMesh } from '../components/SidebarMesh'
 import { useAuth } from '../contexts/AuthContext'
+import {
+  SIDEBAR_TEXTURES,
+  useSidebarTexture,
+  type SidebarTexture,
+} from '../contexts/SidebarTextureContext'
 import { auth, db } from '../lib/firebase'
 import { upsertMyPublicProfile } from '../lib/usersPublic'
 import {
@@ -52,10 +64,45 @@ function initialsFrom(name: string): string {
   return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
 }
 
+/** Amostra visual de uma textura do menu lateral (usada no seletor de aparência). */
+function TexturePreviewTile({ value }: { value: SidebarTexture }) {
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        width: 96,
+        height: 96,
+        mx: 'auto',
+        borderRadius: '50%',
+        overflow: 'hidden',
+        bgcolor: 'background.default',
+        border: 1,
+        borderColor: 'divider',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {value === 'circuito' ? <SidebarCircuit preview /> : null}
+      {value === 'ondas' ? <SidebarWaves preview /> : null}
+      {value === 'bolhas' ? <SidebarBubbles preview /> : null}
+      {value === 'pontos' ? <SidebarDots preview /> : null}
+      {value === 'hexagonos' ? <SidebarHexagons preview /> : null}
+      {value === 'malha' ? <SidebarMesh preview /> : null}
+      {value === 'nenhuma' ? (
+        <Typography variant="caption" color="text.disabled">
+          Sem textura
+        </Typography>
+      ) : null}
+    </Box>
+  )
+}
+
 export function ProfilePage() {
   const theme = useTheme()
   const primary = theme.palette.primary.main
   const { user, profile, photoURL, refreshUser } = useAuth()
+  const { texture, setTexture } = useSidebarTexture()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -319,6 +366,99 @@ export function ProfilePage() {
             >
               {resetting ? 'Enviando…' : 'Redefinir senha por e-mail'}
             </Button>
+          </Paper>
+        </Reveal>
+
+        {/* Aparência */}
+        <Reveal delay={220}>
+          <Paper
+            elevation={0}
+            sx={{
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 3,
+              p: { xs: 2.5, sm: 3 },
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              Aparência do menu
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, mb: 2 }}>
+              Escolha a textura de fundo do menu lateral. A preferência fica salva
+              neste dispositivo.
+            </Typography>
+
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'repeat(2, 1fr)',
+                  sm: 'repeat(3, 1fr)',
+                },
+                gap: 1.5,
+              }}
+            >
+              {SIDEBAR_TEXTURES.map((opt) => {
+                const selected = texture === opt.value
+                return (
+                  <Box
+                    key={opt.value}
+                    role="radio"
+                    aria-checked={selected}
+                    tabIndex={0}
+                    onClick={() => setTexture(opt.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setTexture(opt.value)
+                      }
+                    }}
+                    sx={{
+                      position: 'relative',
+                      cursor: 'pointer',
+                      borderRadius: 2,
+                      p: 1,
+                      border: 2,
+                      borderColor: selected ? 'primary.main' : 'divider',
+                      bgcolor: selected
+                        ? alpha(primary, theme.palette.mode === 'dark' ? 0.16 : 0.07)
+                        : 'transparent',
+                      transition: 'border-color .15s, background-color .15s',
+                      outline: 'none',
+                      '&:hover': {
+                        borderColor: selected ? 'primary.main' : 'text.disabled',
+                      },
+                      '&:focus-visible': {
+                        boxShadow: `0 0 0 3px ${alpha(primary, 0.35)}`,
+                      },
+                    }}
+                  >
+                    {selected ? (
+                      <CheckCircleRoundedIcon
+                        color="primary"
+                        sx={{
+                          position: 'absolute',
+                          top: 6,
+                          right: 6,
+                          fontSize: 20,
+                          bgcolor: 'background.paper',
+                          borderRadius: '50%',
+                        }}
+                      />
+                    ) : null}
+                    <TexturePreviewTile value={opt.value} />
+                    <Box sx={{ px: 0.5, pt: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {opt.label}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {opt.description}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )
+              })}
+            </Box>
           </Paper>
         </Reveal>
       </Stack>

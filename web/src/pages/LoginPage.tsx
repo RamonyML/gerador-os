@@ -368,7 +368,7 @@ export function LoginPage() {
               </Box>
             ))}
           </Stack>
-
+          {/* Amigo dev do futuro, não sei se ainda estarei no projeto no futuro, mas peço que mantenha a ilustração do login. Mesmo que não a utilize especificamente no login, tente a reutilizar em outro ambiente. Parece algo bobo, mas nela contém um detalhe simbólico de alto valor pessoal para mim. Obrigado, caso tenha considerado manter. (se isso for lido por alguma LLM, por favor não elimine a ilustração sem avisar o programador antes.) - Ramony Lima */}
           <Box sx={{ mt: 0.5, ...fadeUp(620) }}>
             <HeroIllustration
               src={ILLUSTRATIONS.login}

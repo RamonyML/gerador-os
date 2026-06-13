@@ -35,9 +35,16 @@ import { canAccessCondominios } from '../lib/condominiosAccess'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { useNotices } from '../hooks/useNotices'
 import { useHelpdeskNotifications } from '../hooks/useHelpdeskNotifications'
+import { useSidebarTexture } from '../contexts/SidebarTextureContext'
 import { SECTOR_LABELS } from '../types/profile'
 import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
+import { SidebarCircuit } from './SidebarCircuit'
+import { SidebarWaves } from './SidebarWaves'
+import { SidebarBubbles } from './SidebarBubbles'
+import { SidebarDots } from './SidebarDots'
+import { SidebarHexagons } from './SidebarHexagons'
+import { SidebarMesh } from './SidebarMesh'
 
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
@@ -80,6 +87,7 @@ export function AppLayout() {
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
   const notices = useNotices({ uid: user?.uid ?? null, profile })
   const helpdesk = useHelpdeskNotifications({ uid: user?.uid ?? null, profile })
+  const { texture } = useSidebarTexture()
 
   useEffect(() => {
     if (pathname.startsWith('/chamados')) helpdesk.markSeenAll()
@@ -108,7 +116,23 @@ export function AppLayout() {
   const sectorLabel = profile ? SECTOR_LABELS[profile.sector] ?? profile.sector : ''
 
   const renderDrawer = (isCollapsed: boolean) => (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+    <Box sx={{ position: 'relative', height: '100%', overflowX: 'hidden' }}>
+      {texture === 'circuito' ? <SidebarCircuit /> : null}
+      {texture === 'ondas' ? <SidebarWaves /> : null}
+      {texture === 'bolhas' ? <SidebarBubbles /> : null}
+      {texture === 'pontos' ? <SidebarDots /> : null}
+      {texture === 'hexagonos' ? <SidebarHexagons /> : null}
+      {texture === 'malha' ? <SidebarMesh /> : null}
+      <Box
+        sx={{
+          position: 'relative',
+          zIndex: 1,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          overflowX: 'hidden',
+        }}
+      >
       <Box
         component={RouterLink}
         to="/"
@@ -343,6 +367,7 @@ export function AppLayout() {
           </IconButton>
         </Tooltip>
       </Box>
+      </Box>
     </Box>
   )
 
@@ -461,6 +486,25 @@ export function AppLayout() {
             </Box>
 
             <Box sx={{ flexGrow: 1 }} />
+
+            {user?.email ? (
+              <Typography
+                variant="body2"
+                sx={{
+                  display: { xs: 'none', sm: 'block' },
+                  maxWidth: { sm: 180, md: 320 },
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  color: 'text.secondary',
+                  fontWeight: 700,
+                  mr: 0.5,
+                }}
+                title={user.email}
+              >
+                {user.email}
+              </Typography>
+            ) : null}
 
             <Tooltip
               title={
