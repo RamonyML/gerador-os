@@ -9,6 +9,7 @@ import { initAnalytics } from './lib/firebase'
 import { AuthProvider } from './contexts/AuthContext'
 import { ColorModeProvider } from './contexts/ColorModeContext'
 import { SidebarTextureProvider } from './contexts/SidebarTextureContext'
+import { FontProvider } from './contexts/FontContext'
 import { AppThemeProvider } from './components/AppThemeProvider'
 import './index.css'
 import App from './App.tsx'
@@ -22,13 +23,15 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <ColorModeProvider>
         <SidebarTextureProvider>
-          <AppThemeProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
-              <AuthProvider>
-                <App />
-              </AuthProvider>
-            </LocalizationProvider>
-          </AppThemeProvider>
+          <FontProvider>
+            <AppThemeProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                <AuthProvider>
+                  <App />
+                </AuthProvider>
+              </LocalizationProvider>
+            </AppThemeProvider>
+          </FontProvider>
         </SidebarTextureProvider>
       </ColorModeProvider>
     </BrowserRouter>

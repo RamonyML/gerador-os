@@ -27,9 +27,9 @@ type TextureOption = { value: SidebarTexture; label: string; description: string
  * salvas, mas não aparecem na escolha por enquanto.
  */
 export const SIDEBAR_TEXTURES: TextureOption[] = [
+  { value: 'nenhuma', label: 'Nenhuma', description: 'Menu liso, sem textura.' },
   { value: 'circuito', label: 'Circuitos', description: 'Traços e nós estilo placa de circuito.' },
   { value: 'malha', label: 'Mesh', description: 'Treliça isométrica de cubos.' },
-  { value: 'nenhuma', label: 'Nenhuma', description: 'Menu liso, sem textura.' },
 ]
 
 /**
@@ -69,12 +69,12 @@ function readStored(): SidebarTexture {
   } catch {
     /* ignore */
   }
-  return 'circuito'
+  return 'nenhuma'
 }
 
 export function SidebarTextureProvider({ children }: { children: ReactNode }) {
   const [texture, setTextureState] = useState<SidebarTexture>(() =>
-    typeof window !== 'undefined' ? readStored() : 'circuito',
+    typeof window !== 'undefined' ? readStored() : 'nenhuma',
   )
 
   useEffect(() => {

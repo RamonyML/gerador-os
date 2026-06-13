@@ -10,9 +10,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
   Paper,
   Slider,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -37,6 +39,12 @@ import {
   useSidebarTexture,
   type SidebarTexture,
 } from '../contexts/SidebarTextureContext'
+import {
+  APP_FONTS,
+  FONT_STACKS,
+  useAppFont,
+  type AppFont,
+} from '../contexts/FontContext'
 import { auth, db } from '../lib/firebase'
 import { upsertMyPublicProfile } from '../lib/usersPublic'
 import {
@@ -103,6 +111,7 @@ export function ProfilePage() {
   const primary = theme.palette.primary.main
   const { user, profile, photoURL, refreshUser } = useAuth()
   const { texture, setTexture } = useSidebarTexture()
+  const { font, setFont } = useAppFont()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -459,6 +468,45 @@ export function ProfilePage() {
                 )
               })}
             </Box>
+          </Paper>
+        </Reveal>
+
+        <Reveal>
+          <Paper
+            elevation={0}
+            sx={{
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 3,
+              p: { xs: 2.5, sm: 3 },
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              Fonte do sistema
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, mb: 2 }}>
+              Escolha a fonte usada em toda a plataforma. A preferência fica salva
+              neste dispositivo.
+            </Typography>
+
+            <TextField
+              select
+              label="Fonte"
+              value={font}
+              onChange={(e) => setFont(e.target.value as AppFont)}
+              fullWidth
+              sx={{ maxWidth: 360 }}
+            >
+              {APP_FONTS.map((opt) => (
+                <MenuItem
+                  key={opt.value}
+                  value={opt.value}
+                  sx={{ fontFamily: FONT_STACKS[opt.value] }}
+                >
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </TextField>
           </Paper>
         </Reveal>
       </Stack>

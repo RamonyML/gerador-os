@@ -1,6 +1,8 @@
-/* Tipografia base — Ubuntu vem do index.html; MUI CssBaseline completa o restante */
+/* Tipografia base — fontes vêm do index.html; MUI CssBaseline completa o restante.
+   A fonte ativa é controlada por --app-font (ver FontContext); valor inicial abaixo. */
 :root {
-  font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+  --app-font: 'Google Sans Flex', 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--app-font);
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;

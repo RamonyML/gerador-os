@@ -77,7 +77,8 @@ export function createAppTheme(mode: AppColorMode) {
       divider: isDark ? 'rgba(224, 224, 224, 0.12)' : 'rgba(33, 33, 33, 0.12)',
     },
     typography: {
-      fontFamily: '"Ubuntu", "Segoe UI", system-ui, sans-serif',
+      fontFamily:
+        'var(--app-font, "Google Sans Flex", "Ubuntu", "Segoe UI", system-ui, sans-serif)',
       h1: { fontWeight: 500, color: c.text },
       h2: { fontWeight: 500, color: c.text },
       h3: { fontWeight: 500, color: c.text },
@@ -94,7 +95,8 @@ export function createAppTheme(mode: AppColorMode) {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            fontFamily: '"Ubuntu", "Segoe UI", system-ui, sans-serif',
+            fontFamily:
+              'var(--app-font, "Google Sans Flex", "Ubuntu", "Segoe UI", system-ui, sans-serif)',
             backgroundColor: c.bg,
             color: c.text,
           },

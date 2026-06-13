@@ -43,7 +43,9 @@ import { brandLogoSrc } from '../lib/brandAssets'
 import { HeroIllustration } from '../components/HeroIllustration'
 import { ILLUSTRATIONS } from '../data/illustrations'
 
-const LOGIN_FONT = '"Poppins", "Ubuntu", "Segoe UI", system-ui, sans-serif'
+// A tela de login mantém SEMPRE a fonte padrão (Google Sans Flex), ignorando a
+// preferência do usuário — é a primeira impressão da marca e deve ser consistente.
+const LOGIN_FONT = '"Google Sans Flex", "Ubuntu", "Segoe UI", system-ui, sans-serif'
 
 const BENEFITS = [
   {
@@ -156,6 +158,7 @@ export function LoginPage() {
           justifyContent: 'center',
           bgcolor: 'background.default',
           background: pageBg,
+          '--app-font': LOGIN_FONT,
           fontFamily: LOGIN_FONT,
         }}
       >
@@ -216,6 +219,7 @@ export function LoginPage() {
         py: { xs: 5, md: 6 },
         bgcolor: 'background.default',
         background: pageBg,
+        '--app-font': LOGIN_FONT,
         fontFamily: LOGIN_FONT,
         position: 'relative',
         overflow: 'hidden',
