@@ -8,7 +8,6 @@ import WifiOutlinedIcon from '@mui/icons-material/WifiOutlined'
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined'
 import RouterOutlinedIcon from '@mui/icons-material/RouterOutlined'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 
 /** Chave de agrupamento no hub Suporte (`demandCategory` em cada fluxo). */
@@ -73,12 +72,6 @@ export const SUPPORT_DEMANDS: SupportDemandMeta[] = [
     title: 'Termos e documentos',
     description: 'Termos de responsabilidade e textos formais.',
     Icon: DescriptionOutlinedIcon,
-  },
-  {
-    id: 'pesquisa-endereco',
-    title: 'Pesquisa de endereço',
-    description: 'Consultas de CEP e logradouro.',
-    Icon: MapOutlinedIcon,
   },
   {
     id: 'geral',

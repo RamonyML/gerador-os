@@ -8,6 +8,9 @@ import { SupportHomePage } from './pages/SupportHomePage'
 import { AlteracaoPlanoHubPage } from './pages/AlteracaoPlanoHubPage'
 import { MudancaEnderecoHubPage } from './pages/MudancaEnderecoHubPage'
 import { ManutencaoHubPage } from './pages/ManutencaoHubPage'
+import { MidiaTvHubPage } from './pages/MidiaTvHubPage'
+import { SenhaRedeHubPage } from './pages/SenhaRedeHubPage'
+import { TermosDocumentosHubPage } from './pages/TermosDocumentosHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
 import { RequireUserManager } from './components/RequireUserManager'
@@ -24,6 +27,7 @@ import { CondominiosPage } from './pages/CondominiosPage'
 import { RequireCondominios } from './components/RequireCondominios'
 import { AgendaPage } from './pages/AgendaPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { CoberturaPage } from './pages/CoberturaPage'
 
 export default function App() {
   return (
@@ -70,6 +74,30 @@ export default function App() {
           }
         />
         <Route
+          path="/suporte/midia-tv"
+          element={
+            <RequireSupport>
+              <MidiaTvHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/senha-rede"
+          element={
+            <RequireSupport>
+              <SenhaRedeHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/termos-documentos"
+          element={
+            <RequireSupport>
+              <TermosDocumentosHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
           path="/suporte/demanda/:demandId"
           element={
             <RequireSupport>
@@ -78,6 +106,7 @@ export default function App() {
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
+        <Route path="/cobertura" element={<CoberturaPage />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/escala" element={<EscalaPage />} />
         <Route path="/upgrades" element={<UpgradesHubPage />} />

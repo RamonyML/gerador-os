@@ -4,6 +4,7 @@ import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomi
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
 import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
@@ -47,6 +48,12 @@ export function buildNavItems({
           isActive: startsWith('/suporte'),
         }
       : null,
+    {
+      label: 'Mapa de cobertura',
+      to: '/cobertura',
+      icon: MapOutlinedIcon,
+      isActive: startsWith('/cobertura'),
+    },
     {
       label: 'Escala',
       to: '/escala',

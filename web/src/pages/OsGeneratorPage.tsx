@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link as RouterLink, useSearchParams } from 'react-router-dom'
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Box,
   Button,
   CircularProgress,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   Paper,
   Snackbar,
   Stack,
@@ -14,8 +20,11 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 import { ContentCopy } from '@mui/icons-material'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
@@ -55,6 +64,10 @@ import { buildRoteadorQueimadoTextos } from '../data/manutencao/roteadorQueimado
 import { buildOntQueimadaTextos } from '../data/manutencao/ontQueimada'
 import { buildOnuQueimadaTextos } from '../data/manutencao/onuQueimada'
 import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
+import { buildRokuPadraoTextos } from '../data/midiaTv/rokuPadrao'
+import { buildRokuPresencialTextos } from '../data/midiaTv/rokuPresencial'
+import { buildAlteraSenhaTextos } from '../data/senhaRede/alteraSenha'
+import { buildTermoRespPadraoTextos } from '../data/termoDocs/termoRespPadrao'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -63,6 +76,9 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   'alteracao-plano': '/suporte/alteracao-plano',
   'mudanca-endereco': '/suporte/mudanca-endereco',
   manutencao: '/suporte/manutencao',
+  'midia-tv': '/suporte/midia-tv',
+  'senha-rede': '/suporte/senha-rede',
+  'termo-docs': '/suporte/termos-documentos',
 }
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
@@ -447,6 +463,20 @@ export function OsGeneratorPage() {
         base,
         buildRoteadorResetTextos(values, String(base.operadorPrimeiroNome ?? '')),
       )
+    } else if (selected?.slug === 'midia-roku-padrao') {
+      Object.assign(
+        base,
+        buildRokuPadraoTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'midia-roku-presencial') {
+      Object.assign(
+        base,
+        buildRokuPresencialTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'senha-altera-senha') {
+      Object.assign(base, buildAlteraSenhaTextos(values))
+    } else if (selected?.slug === 'termo-resp-padrao') {
+      Object.assign(base, buildTermoRespPadraoTextos(values))
     }
     return base
   }, [values, profile, user, selected?.slug])
@@ -534,6 +564,8 @@ export function OsGeneratorPage() {
   const accent: 'green' | 'red' = selected?.slug?.startsWith('mud-end-inviab')
     ? 'red'
     : 'green'
+  const accentColor =
+    accent === 'red' ? theme.palette.error.main : theme.palette.success.main
 
   return (
     <AppPageChrome
@@ -621,6 +653,56 @@ export function OsGeneratorPage() {
             <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
               Preencha atentamente o formulário abaixo
             </Typography>
+
+            {selected?.operatorGuidance ? (
+              <Accordion
+                disableGutters
+                elevation={0}
+                defaultExpanded
+                sx={{
+                  mb: 2,
+                  border: 1,
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  bgcolor: alpha(
+                    accentColor,
+                    theme.palette.mode === 'dark' ? 0.12 : 0.06,
+                  ),
+                  '&:before': { display: 'none' },
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreRoundedIcon />}
+                  sx={{ '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 1 } }}
+                >
+                  <LightbulbOutlinedIcon sx={{ fontSize: 20, color: accentColor }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {selected.operatorGuidance.title}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ pt: 0 }}>
+                  <List dense disablePadding sx={{ listStyleType: 'disc', pl: 3 }}>
+                    {selected.operatorGuidance.items.map((item, i) => (
+                      <ListItem
+                        key={i}
+                        disableGutters
+                        sx={{ display: 'list-item', py: 0.25 }}
+                      >
+                        <ListItemText
+                          primary={item}
+                          slotProps={{
+                            primary: {
+                              variant: 'body2',
+                              sx: { whiteSpace: 'pre-line' },
+                            },
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            ) : null}
 
             {selected ? (
               <OsTemplateFieldsForm

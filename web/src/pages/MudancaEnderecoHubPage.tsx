@@ -80,8 +80,8 @@ export function MudancaEnderecoHubPage() {
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={sections}
-      illustration="condominios"
-      illustrationAlt="Mudança de endereço"
+      illustration="mudend"
+      illustrationAlt="Mudança de endereço da conexão"
       toolbarLabel="Tipos de mudança"
     />
   )

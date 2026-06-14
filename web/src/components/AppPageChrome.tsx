@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Box, Container, Typography } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { Reveal } from './Reveal'
 import { HeroIllustration } from './HeroIllustration'
@@ -37,14 +37,16 @@ export function AppPageChrome({
   illustrationAlt,
   children,
 }: Props) {
-  const theme = useTheme()
   const { mode } = useColorMode()
-  const primary = accentColor ?? theme.palette.primary.main
 
-  const heroGradient =
-    mode === 'light'
-      ? `linear-gradient(135deg, ${alpha(primary, 0.12)} 0%, ${alpha(primary, 0.03)} 45%, transparent 100%)`
-      : `linear-gradient(135deg, ${alpha(primary, 0.2)} 0%, ${alpha('#000', 0.12)} 48%, transparent 100%)`
+  // Sem fundo verde global: por padrão a página é transparente e mostra a
+  // textura discreta do app. Só pinta um leve degradê quando a página pede um
+  // accent explícito (ex.: vermelho da inviabilidade).
+  const heroGradient = accentColor
+    ? mode === 'light'
+      ? `linear-gradient(135deg, ${alpha(accentColor, 0.12)} 0%, ${alpha(accentColor, 0.03)} 45%, transparent 100%)`
+      : `linear-gradient(135deg, ${alpha(accentColor, 0.2)} 0%, ${alpha('#000', 0.12)} 48%, transparent 100%)`
+    : undefined
 
   const hasIllustration = illustration != null
 
@@ -115,8 +117,6 @@ export function AppPageChrome({
         flex: 1,
         width: '100%',
         background: heroGradient,
-        borderBottom: 1,
-        borderColor: 'divider',
       }}
     >
       {maxWidth === false ? (

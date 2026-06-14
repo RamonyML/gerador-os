@@ -39,6 +39,9 @@ import { useSidebarTexture } from '../contexts/SidebarTextureContext'
 import { SECTOR_LABELS } from '../types/profile'
 import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
+import { GlobalMeshBackground } from './GlobalMeshBackground'
+import { GlobalCircuitBackground } from './GlobalCircuitBackground'
+import { GlobalDotsBackground } from './GlobalDotsBackground'
 import { SidebarCircuit } from './SidebarCircuit'
 import { SidebarWaves } from './SidebarWaves'
 import { SidebarBubbles } from './SidebarBubbles'
@@ -735,8 +738,36 @@ export function AppLayout() {
           </Toolbar>
         </AppBar>
 
-        <Box component="main" sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Outlet />
+        <Box
+          component="main"
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            backgroundColor: 'background.default',
+          }}
+        >
+          {/* Fundo global discreto (fade à esquerda), condicionado à textura
+              escolhida no perfil: mesh, circuito ou pontos (demais/Nenhuma). */}
+          {texture === 'malha' ? (
+            <GlobalMeshBackground />
+          ) : texture === 'circuito' ? (
+            <GlobalCircuitBackground />
+          ) : (
+            <GlobalDotsBackground />
+          )}
+          <Box
+            sx={{
+              position: 'relative',
+              zIndex: 1,
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Outlet />
+          </Box>
         </Box>
       </Box>
     </Box>

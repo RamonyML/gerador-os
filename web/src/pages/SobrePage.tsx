@@ -312,7 +312,7 @@ export function SobrePage() {
   )
 
   return (
-    <Box sx={{ flex: 1, width: '100%', bgcolor: 'background.default' }}>
+    <Box sx={{ flex: 1, width: '100%' }}>
       {/* Hero + parallax */}
       <Box
         sx={{

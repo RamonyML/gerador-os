@@ -24,6 +24,7 @@ function buildAllTemplates(): OsTemplate[] {
         options: f.options ? f.options.map((o) => ({ ...o })) : undefined,
       })),
       demandCategory: d.demandCategory,
+      operatorGuidance: d.operatorGuidance,
     }
   })
 }

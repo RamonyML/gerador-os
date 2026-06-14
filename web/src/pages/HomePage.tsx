@@ -179,7 +179,7 @@ export function HomePage() {
   ]
 
   return (
-    <Box sx={{ flex: 1, width: '100%', bgcolor: 'background.default' }}>
+    <Box sx={{ flex: 1, width: '100%' }}>
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 3, md: 3.5 } }}>
           {/* Hero */}

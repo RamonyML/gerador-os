@@ -54,6 +54,18 @@ export interface OsTemplateField {
   }
 }
 
+/**
+ * Orientação ao operador exibida em um painel recolhível (collapse) acima do
+ * formulário. Usada por fluxos que precisam de instrução de procedimento
+ * (ex.: alteração de senha/SSID). Conteúdo só de leitura — não entra no texto gerado.
+ */
+export interface OsOperatorGuidance {
+  /** Título do painel recolhível. */
+  title: string
+  /** Itens/parágrafos de orientação, na ordem de leitura. */
+  items: string[]
+}
+
 export interface OsTemplate {
   id: string
   sector: Sector
@@ -64,6 +76,8 @@ export interface OsTemplate {
   /** Texto com placeholders `{{campo}}` ou `{{operador.nome}}` */
   outputTemplate: string
   fields: OsTemplateField[]
+  /** Orientação opcional ao operador (collapse acima do formulário). */
+  operatorGuidance?: OsOperatorGuidance
   /**
    * Agrupa o modelo no hub Suporte (ex.: mudanca-endereco).
    * Documentos antigos sem o campo são tratados como `geral` no parser.

@@ -19,13 +19,17 @@ import { getManutRoteadorQueimadoDefaults } from './manutencao/roteadorQueimado'
 import { getManutOntQueimadaDefaults } from './manutencao/ontQueimada'
 import { getManutOnuQueimadaDefaults } from './manutencao/onuQueimada'
 import { getManutRoteadorResetDefaults } from './manutencao/roteadorReset'
+import { getMidiaRokuPadraoDefaults } from './midiaTv/rokuPadrao'
+import { getMidiaRokuPresencialDefaults } from './midiaTv/rokuPresencial'
+import { getAlteraSenhaDefaults } from './senhaRede/alteraSenha'
+import { getTermoRespPadraoDefaults } from './termoDocs/termoRespPadrao'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
 import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
 import { getMudEndAltplanPropostaDefaults } from './mudEnd/altplanProposta'
 import { getMudEndAltplanPagoDefaults } from './mudEnd/altplanPago'
 import { getMudEndInviabilidadeDefaults } from './mudEnd/inviabilidade'
-import type { OsTemplateField } from '../types/osTemplate'
+import type { OsOperatorGuidance, OsTemplateField } from '../types/osTemplate'
 
 /** Retorno comum para definir um fluxo de O.S em código. */
 export type OsTemplatePresetPayload = {
@@ -34,6 +38,8 @@ export type OsTemplatePresetPayload = {
   outputTemplate: string
   demandCategory: string
   fields: OsTemplateField[]
+  /** Orientação opcional ao operador (collapse acima do formulário). */
+  operatorGuidance?: OsOperatorGuidance
 }
 
 export type OsTemplatePreset = {
@@ -212,6 +218,30 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Manutenção',
     label: 'Roteador resetado',
     getDefaults: getManutRoteadorResetDefaults,
+  },
+  {
+    id: 'midia-roku-padrao',
+    category: 'Conversores / TV',
+    label: 'Compra Roku TV — padrão',
+    getDefaults: getMidiaRokuPadraoDefaults,
+  },
+  {
+    id: 'midia-roku-presencial',
+    category: 'Conversores / TV',
+    label: 'Compra Roku TV — presencial',
+    getDefaults: getMidiaRokuPresencialDefaults,
+  },
+  {
+    id: 'senha-altera-senha',
+    category: 'Senha / SSID Wi-Fi',
+    label: 'Alteração de SSID / Senha',
+    getDefaults: getAlteraSenhaDefaults,
+  },
+  {
+    id: 'termo-resp-padrao',
+    category: 'Termos e documentos',
+    label: 'Termo de responsabilidade — padrão',
+    getDefaults: getTermoRespPadraoDefaults,
   },
 ]
 

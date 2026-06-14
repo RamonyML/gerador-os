@@ -12,6 +12,8 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_FUNCTIONS_REGION?: string
   /** `1` = usar `/fbfunctions/*` no Hosting (domínio próprio sem .web.app). */
   readonly VITE_FUNCTIONS_USE_HOSTING_PROXY?: string
+  /** Token público do Mapbox (pk....) para geocodificação precisa do mapa de cobertura. */
+  readonly VITE_MAPBOX_TOKEN?: string
 }
 
 interface ImportMeta {

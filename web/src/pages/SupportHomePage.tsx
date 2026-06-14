@@ -26,7 +26,6 @@ export function SupportHomePage() {
   const { mode } = useColorMode()
   const { profile } = useAuth()
   const state = useOsTemplates(profile)
-  const primary = theme.palette.primary.main
   const [categoriesEntered, setCategoriesEntered] = useState(false)
 
   useEffect(() => {
@@ -48,11 +47,6 @@ export function SupportHomePage() {
     return m
   }, [templates])
 
-  const heroGradient =
-    mode === 'light'
-      ? `linear-gradient(135deg, ${alpha(primary, 0.12)} 0%, ${alpha(primary, 0.03)} 45%, transparent 100%)`
-      : `linear-gradient(135deg, ${alpha(primary, 0.2)} 0%, ${alpha('#000', 0.12)} 48%, transparent 100%)`
-
   const totalModelos =
     state.status === 'ready'
       ? templates.length
@@ -63,9 +57,6 @@ export function SupportHomePage() {
       sx={{
         flex: 1,
         width: '100%',
-        background: heroGradient,
-        borderBottom: 1,
-        borderColor: 'divider',
       }}
     >
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
@@ -187,6 +178,9 @@ export function SupportHomePage() {
                   'alteracao-plano': '/suporte/alteracao-plano',
                   'mudanca-endereco': '/suporte/mudanca-endereco',
                   manutencao: '/suporte/manutencao',
+                  'midia-tv': '/suporte/midia-tv',
+                  'senha-rede': '/suporte/senha-rede',
+                  'termo-docs': '/suporte/termos-documentos',
                 }
                 const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
 
