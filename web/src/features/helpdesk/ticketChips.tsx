@@ -2,8 +2,10 @@ import { Chip } from '@mui/material'
 import type { ChipProps } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import {
+  TICKET_ARCHIVE_TAG_LABELS,
   TICKET_PRIORITY_LABELS,
   TICKET_STATUS_LABELS,
+  type TicketArchiveTag,
   type TicketPriority,
   type TicketStatus,
 } from '../../types/ticket'
@@ -20,6 +22,12 @@ const PRIORITY_COLOR: Record<TicketPriority, ChipProps['color']> = {
   normal: 'default',
   alta: 'warning',
   critica: 'error',
+}
+
+const ARCHIVE_TAG_COLOR: Record<TicketArchiveTag, ChipProps['color']> = {
+  resolvido: 'success',
+  nao_solucionado: 'error',
+  teste: 'default',
 }
 
 export function TicketStatusChip({
@@ -64,6 +72,24 @@ export function TicketPriorityChip({
     <Chip
       size={size}
       label={`Prioridade: ${TICKET_PRIORITY_LABELS[priority]}`}
+      color={color}
+      variant={color === 'default' ? 'outlined' : 'filled'}
+    />
+  )
+}
+
+export function TicketArchiveTagChip({
+  tag,
+  size = 'small',
+}: {
+  tag: TicketArchiveTag
+  size?: ChipProps['size']
+}) {
+  const color = ARCHIVE_TAG_COLOR[tag]
+  return (
+    <Chip
+      size={size}
+      label={TICKET_ARCHIVE_TAG_LABELS[tag]}
       color={color}
       variant={color === 'default' ? 'outlined' : 'filled'}
     />

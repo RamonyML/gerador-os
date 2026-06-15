@@ -85,6 +85,26 @@ export type TicketResolution = {
   at: Date
 }
 
+/**
+ * Etiqueta de arquivamento (desfecho) de um chamado encerrado/arquivado.
+ * - `resolvido`: problema solucionado.
+ * - `nao_solucionado`: encerrado sem solução.
+ * - `teste`: chamado de teste (não conta como atendimento real).
+ */
+export type TicketArchiveTag = 'resolvido' | 'nao_solucionado' | 'teste'
+
+export const TICKET_ARCHIVE_TAGS: TicketArchiveTag[] = [
+  'resolvido',
+  'nao_solucionado',
+  'teste',
+]
+
+export const TICKET_ARCHIVE_TAG_LABELS: Record<TicketArchiveTag, string> = {
+  resolvido: 'Resolvido',
+  nao_solucionado: 'Não solucionado',
+  teste: 'Teste',
+}
+
 /** Imagem anexada a um chamado ou a uma atualização da linha do tempo. */
 export type TicketAttachment = {
   /** Caminho no Firebase Storage. */
@@ -123,6 +143,11 @@ export type Ticket = {
   lastReplyAt: Date | null
   lastReplyRole: 'solicitante' | 'ti' | null
   lastReplyByUid: string | null
+  /** Arquivamento (T.I): quando preenchido, sai das filas ativas. */
+  archivedAt: Date | null
+  archiveTag: TicketArchiveTag | null
+  archivedByUid: string | null
+  archivedByName: string | null
 }
 
 export type TicketDraft = {
@@ -167,5 +192,13 @@ export function isTicketCategory(value: unknown): value is TicketCategory {
   return (
     typeof value === 'string' &&
     (TICKET_CATEGORIES as string[]).includes(value)
+  )
+}
+
+export function isTicketArchiveTag(value: unknown): value is TicketArchiveTag {
+  return (
+    value === 'resolvido' ||
+    value === 'nao_solucionado' ||
+    value === 'teste'
   )
 }

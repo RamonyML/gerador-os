@@ -2,6 +2,7 @@ import {
   Timestamp,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   increment,
@@ -17,10 +18,12 @@ import {
 } from 'firebase/firestore'
 import type { Sector, UserProfile } from '../types/profile'
 import {
+  isTicketArchiveTag,
   isTicketCategory,
   isTicketPriority,
   isTicketStatus,
   type Ticket,
+  type TicketArchiveTag,
   type TicketAttachment,
   type TicketComment,
   type TicketDraft,
@@ -151,6 +154,12 @@ function parseTicket(id: string, data: Record<string, unknown>): Ticket | null {
           : null,
     lastReplyByUid:
       typeof data.lastReplyByUid === 'string' ? data.lastReplyByUid : null,
+    archivedAt: parseDateOrNull(data.archivedAt),
+    archiveTag: isTicketArchiveTag(data.archiveTag) ? data.archiveTag : null,
+    archivedByUid:
+      typeof data.archivedByUid === 'string' ? data.archivedByUid : null,
+    archivedByName:
+      typeof data.archivedByName === 'string' ? data.archivedByName : null,
   }
 }
 
@@ -345,6 +354,48 @@ export async function reopenTicket(
     resolvedAt: null,
     updatedAt: serverTimestamp(),
   })
+}
+
+/**
+ * Arquivar um chamado (T.I), com a etiqueta de desfecho escolhida
+ * (`resolvido`, `nao_solucionado` ou `teste`). Sai das filas ativas e passa a
+ * aparecer apenas na aba "Arquivados".
+ */
+export async function archiveTicket(
+  db: Firestore,
+  ticketId: string,
+  agent: TicketActor,
+  tag: TicketArchiveTag,
+): Promise<void> {
+  await updateDoc(doc(db, TICKETS_COLLECTION, ticketId), {
+    archiveTag: tag,
+    archivedAt: serverTimestamp(),
+    archivedByUid: agent.uid,
+    archivedByName: agent.name,
+    updatedAt: serverTimestamp(),
+  })
+}
+
+/** Desarquivar um chamado (T.I), retornando-o às filas ativas. */
+export async function unarchiveTicket(
+  db: Firestore,
+  ticketId: string,
+): Promise<void> {
+  await updateDoc(doc(db, TICKETS_COLLECTION, ticketId), {
+    archiveTag: null,
+    archivedAt: null,
+    archivedByUid: null,
+    archivedByName: null,
+    updatedAt: serverTimestamp(),
+  })
+}
+
+/** Excluir definitivamente um chamado. Restrito ao Dev (ver firestore.rules). */
+export async function deleteTicket(
+  db: Firestore,
+  ticketId: string,
+): Promise<void> {
+  await deleteDoc(doc(db, TICKETS_COLLECTION, ticketId))
 }
 
 function parseComment(

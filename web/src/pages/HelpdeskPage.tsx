@@ -23,14 +23,18 @@ import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { ticketActorFromProfile } from '../lib/ticketsFirestore'
 import { useTickets } from '../hooks/useTickets'
 import {
+  TICKET_ARCHIVE_TAG_LABELS,
+  TICKET_ARCHIVE_TAGS,
   TICKET_CATEGORY_LABELS,
   TICKET_STATUSES,
   TICKET_STATUS_LABELS,
   type Ticket,
+  type TicketArchiveTag,
   type TicketStatus,
 } from '../types/ticket'
 import { NewTicketDialog } from '../features/helpdesk/NewTicketDialog'
 import {
+  TicketArchiveTagChip,
   TicketPriorityChip,
   TicketStatusChip,
 } from '../features/helpdesk/ticketChips'
@@ -85,7 +89,11 @@ function TicketRow({
         </Box>
         <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', flexShrink: 0 }}>
           <TicketPriorityChip priority={ticket.priority} />
-          <TicketStatusChip status={ticket.status} />
+          {ticket.archiveTag ? (
+            <TicketArchiveTagChip tag={ticket.archiveTag} />
+          ) : (
+            <TicketStatusChip status={ticket.status} />
+          )}
         </Box>
       </Box>
     </Box>
@@ -97,8 +105,11 @@ export function HelpdeskPage() {
   const { user, profile, profileMissing, photoURL } = useAuth()
   const isAgent = canManageHelpdesk(profile)
 
-  const [view, setView] = useState<'gestao' | 'meus'>(isAgent ? 'gestao' : 'meus')
+  const [view, setView] = useState<'gestao' | 'meus' | 'arquivados'>(
+    isAgent ? 'gestao' : 'meus',
+  )
   const [statusFilter, setStatusFilter] = useState<TicketStatus | ''>('')
+  const [tagFilter, setTagFilter] = useState<TicketArchiveTag | ''>('')
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const actor = useMemo(
@@ -118,19 +129,37 @@ export function HelpdeskPage() {
   const effectiveView = isAgent ? view : 'meus'
 
   const mineState = useTickets({ scope: 'mine', uid: user?.uid ?? null })
-  const allState = useTickets({
-    scope: 'all',
-    statusFilter: statusFilter === '' ? null : statusFilter,
-  })
+  // Carrega todos os chamados e filtra no cliente (ativos x arquivados,
+  // status e etiqueta), evitando índices compostos adicionais no Firestore.
+  const allState = useTickets({ scope: 'all', statusFilter: null })
 
-  const state = effectiveView === 'gestao' ? allState : mineState
+  const baseState = effectiveView === 'meus' ? mineState : allState
+
+  const displayTickets = useMemo(() => {
+    if (effectiveView === 'meus') return mineState.tickets
+    if (effectiveView === 'arquivados') {
+      return allState.tickets.filter(
+        (t) => t.archivedAt && (tagFilter === '' || t.archiveTag === tagFilter),
+      )
+    }
+    // gestão: somente ativos (não arquivados), com filtro de status opcional
+    return allState.tickets.filter(
+      (t) => !t.archivedAt && (statusFilter === '' || t.status === statusFilter),
+    )
+  }, [effectiveView, mineState.tickets, allState.tickets, statusFilter, tagFilter])
 
   const queueCount = useMemo(
     () =>
-      effectiveView === 'gestao'
-        ? allState.tickets.filter((t) => t.status === 'aberto').length
+      isAgent
+        ? allState.tickets.filter((t) => !t.archivedAt && t.status === 'aberto')
+            .length
         : 0,
-    [effectiveView, allState.tickets],
+    [isAgent, allState.tickets],
+  )
+
+  const archivedCount = useMemo(
+    () => (isAgent ? allState.tickets.filter((t) => t.archivedAt).length : 0),
+    [isAgent, allState.tickets],
   )
 
   if (profileMissing) {
@@ -182,7 +211,7 @@ export function HelpdeskPage() {
               exclusive
               value={view}
               onChange={(_, v) => {
-                if (v) setView(v as 'gestao' | 'meus')
+                if (v) setView(v as 'gestao' | 'meus' | 'arquivados')
               }}
             >
               <ToggleButton value="gestao">
@@ -197,6 +226,16 @@ export function HelpdeskPage() {
                 ) : null}
               </ToggleButton>
               <ToggleButton value="meus">Meus chamados</ToggleButton>
+              <ToggleButton value="arquivados">
+                Arquivados
+                {archivedCount > 0 ? (
+                  <Chip
+                    size="small"
+                    label={archivedCount}
+                    sx={{ ml: 1, height: 20 }}
+                  />
+                ) : null}
+              </ToggleButton>
             </ToggleButtonGroup>
 
             {view === 'gestao' ? (
@@ -219,6 +258,27 @@ export function HelpdeskPage() {
                 </Select>
               </FormControl>
             ) : null}
+
+            {view === 'arquivados' ? (
+              <FormControl size="small" sx={{ minWidth: 220 }}>
+                <InputLabel id="ticket-tag-filter">Etiqueta</InputLabel>
+                <Select
+                  labelId="ticket-tag-filter"
+                  label="Etiqueta"
+                  value={tagFilter}
+                  onChange={(e) =>
+                    setTagFilter(e.target.value as TicketArchiveTag | '')
+                  }
+                >
+                  <MenuItem value="">Todas as etiquetas</MenuItem>
+                  {TICKET_ARCHIVE_TAGS.map((t) => (
+                    <MenuItem key={t} value={t}>
+                      {TICKET_ARCHIVE_TAG_LABELS[t]}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : null}
           </Box>
         ) : null}
 
@@ -233,34 +293,36 @@ export function HelpdeskPage() {
             mt: 2,
           }}
         >
-          {state.status === 'loading' ? (
+          {baseState.status === 'loading' ? (
             <Box sx={{ px: 2.5, py: 3 }}>
               <Typography variant="body2" color="text.secondary">
                 Carregando chamados…
               </Typography>
             </Box>
-          ) : state.status === 'error' ? (
+          ) : baseState.status === 'error' ? (
             <Box sx={{ px: 2.5, py: 3 }}>
               <Alert severity="error" sx={{ borderRadius: 2 }}>
-                {state.message}
+                {baseState.message}
               </Alert>
             </Box>
-          ) : state.tickets.length === 0 ? (
+          ) : displayTickets.length === 0 ? (
             <Box sx={{ px: 2.5, py: 4 }}>
               <Typography variant="body2" color="text.secondary">
                 {effectiveView === 'gestao'
                   ? 'Nenhum chamado para os critérios atuais.'
-                  : 'Você ainda não abriu chamados. Clique em «Abrir chamado» para começar.'}
+                  : effectiveView === 'arquivados'
+                    ? 'Nenhum chamado arquivado para os critérios atuais.'
+                    : 'Você ainda não abriu chamados. Clique em «Abrir chamado» para começar.'}
               </Typography>
             </Box>
           ) : (
             <Stack divider={<Divider />}>
-              {state.tickets.map((t) => (
+              {displayTickets.map((t) => (
                 <TicketRow
                   key={t.id}
                   ticket={t}
                   onOpen={(id) => navigate(`/chamados/${id}`)}
-                  showAuthor={effectiveView === 'gestao'}
+                  showAuthor={effectiveView !== 'meus'}
                 />
               ))}
             </Stack>

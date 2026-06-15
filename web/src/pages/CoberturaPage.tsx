@@ -17,6 +17,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined'
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, CircleMarker, Tooltip as LeafletTooltip } from 'react-leaflet'
 import type { Map as LeafletMap, PathOptions } from 'leaflet'
 import L from 'leaflet'
@@ -48,6 +49,27 @@ L.Icon.Default.mergeOptions({
 })
 
 const UBERLANDIA_CENTER: [number, number] = [-18.9186, -48.2772]
+
+/**
+ * Pin desenhado em SVG (divIcon) — independente das imagens padrão do Leaflet,
+ * que não carregam de forma confiável no bundle do Vite. A cor reflete o
+ * resultado da busca (verde = coberto, vermelho = fora).
+ */
+function makePin(color: string) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
+      <path d="M16 0C7.7 0 1 6.7 1 15c0 10.5 13.1 25.2 13.7 25.8a1.8 1.8 0 0 0 2.6 0C17.9 40.2 31 25.5 31 15 31 6.7 24.3 0 16 0z"
+        fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      <circle cx="16" cy="15" r="5.5" fill="#ffffff"/>
+    </svg>`
+  return L.divIcon({
+    className: 'coverage-result-pin',
+    html: svg,
+    iconSize: [32, 42],
+    iconAnchor: [16, 42],
+    popupAnchor: [0, -38],
+  })
+}
 
 type LoadState =
   | { status: 'loading' }
@@ -304,6 +326,19 @@ export function CoberturaPage() {
                 </Stack>
               </Stack>
 
+              <Stack
+                direction="row"
+                spacing={0.75}
+                sx={{ alignItems: 'flex-start', color: 'text.secondary' }}
+              >
+                <InfoOutlinedIcon fontSize="small" sx={{ mt: '1px', flexShrink: 0 }} />
+                <Typography variant="caption" sx={{ lineHeight: 1.5 }}>
+                  A precisão da localização exata do número está em desenvolvimento — o
+                  pino pode cair de forma aproximada na via. A verificação de cobertura
+                  por área já é confiável.
+                </Typography>
+              </Stack>
+
               {searchError ? (
                 <Alert severity="warning" sx={{ borderRadius: 2 }}>
                   {searchError}
@@ -434,7 +469,14 @@ export function CoberturaPage() {
                 )
               })}
               {result ? (
-                <Marker position={[result.lat, result.lng]}>
+                <Marker
+                  position={[result.lat, result.lng]}
+                  icon={makePin(
+                    result.covered
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
+                  )}
+                >
                   <Popup>
                     <strong>
                       {result.covered ? 'Dentro da cobertura' : 'Fora da cobertura'}

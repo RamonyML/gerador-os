@@ -12,13 +12,20 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Typography,
 } from '@mui/material'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined'
+import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined'
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import { alpha, useTheme } from '@mui/material/styles'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
@@ -26,21 +33,28 @@ import { db } from '../lib/firebase'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import {
   addComment,
+  archiveTicket,
   claimTicket,
+  deleteTicket,
   releaseTicket,
   reopenTicket,
   resolveTicket,
   subscribeComments,
   subscribeTicket,
   ticketActorFromProfile,
+  unarchiveTicket,
   updateTicketStatus,
 } from '../lib/ticketsFirestore'
 import {
+  TICKET_ARCHIVE_TAG_LABELS,
+  TICKET_ARCHIVE_TAGS,
   TICKET_CATEGORY_LABELS,
   type Ticket,
+  type TicketArchiveTag,
   type TicketComment,
 } from '../types/ticket'
 import {
+  TicketArchiveTagChip,
   TicketPriorityChip,
   TicketStatusChip,
 } from '../features/helpdesk/ticketChips'
@@ -78,6 +92,12 @@ export function HelpdeskTicketPage() {
 
   const [resolveOpen, setResolveOpen] = useState(false)
   const [parecer, setParecer] = useState('')
+
+  const [archiveOpen, setArchiveOpen] = useState(false)
+  const [archiveTag, setArchiveTag] = useState<TicketArchiveTag>('resolvido')
+  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  const isDev = profile?.isDev === true
 
   const actor = useMemo(
     () =>
@@ -138,6 +158,7 @@ export function HelpdeskTicketPage() {
   const isAuthor = !!ticket && !!user && ticket.authorUid === user.uid
   const canComment = isAgent || isAuthor
   const resolved = ticket?.status === 'resolvido'
+  const archived = !!ticket?.archivedAt
 
   const runAction = async (fn: () => Promise<void>) => {
     setBusy(true)
@@ -180,6 +201,26 @@ export function HelpdeskTicketPage() {
     setParecer('')
   }
 
+  const submitArchive = async () => {
+    if (!ticketId || !actor) return
+    await runAction(() => archiveTicket(db, ticketId, actor, archiveTag))
+    setArchiveOpen(false)
+  }
+
+  const confirmDelete = async () => {
+    if (!ticketId) return
+    setBusy(true)
+    setActionError(null)
+    try {
+      await deleteTicket(db, ticketId)
+      navigate('/chamados')
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Falha ao excluir o chamado.')
+      setBusy(false)
+      setDeleteOpen(false)
+    }
+  }
+
   if (loading) {
     return (
       <AppPageChrome overline="T.I" title="Chamado">
@@ -216,6 +257,9 @@ export function HelpdeskTicketPage() {
         subtitle={
           <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mt: 1 }}>
             <TicketStatusChip status={ticket.status} />
+            {ticket.archiveTag ? (
+              <TicketArchiveTagChip tag={ticket.archiveTag} />
+            ) : null}
             <TicketPriorityChip priority={ticket.priority} />
             <Chip
               size="small"
@@ -327,6 +371,33 @@ export function HelpdeskTicketPage() {
                   Por {ticket.resolution.byName}
                   {ticket.resolvedAt
                     ? ` · ${ticket.resolvedAt.toLocaleString('pt-BR')}`
+                    : ''}
+                </Typography>
+              </Paper>
+            ) : null}
+
+            {archived && ticket.archiveTag ? (
+              <Paper
+                elevation={0}
+                sx={{
+                  borderRadius: 2.5,
+                  p: 2.5,
+                  border: 1,
+                  borderColor: 'divider',
+                  bgcolor: 'action.hover',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                  <Inventory2OutlinedIcon fontSize="small" color="action" />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    Chamado arquivado
+                  </Typography>
+                  <TicketArchiveTagChip tag={ticket.archiveTag} />
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  {ticket.archivedByName ? `Por ${ticket.archivedByName}` : ''}
+                  {ticket.archivedAt
+                    ? `${ticket.archivedByName ? ' · ' : ''}${ticket.archivedAt.toLocaleString('pt-BR')}`
                     : ''}
                 </Typography>
               </Paper>
@@ -464,7 +535,7 @@ export function HelpdeskTicketPage() {
 
               {isAgent ? (
                 <Stack spacing={1}>
-                  {ticket.status === 'aberto' ? (
+                  {!archived && ticket.status === 'aberto' ? (
                     <Button
                       variant="contained"
                       disabled={busy}
@@ -476,7 +547,7 @@ export function HelpdeskTicketPage() {
                     </Button>
                   ) : null}
 
-                  {!resolved && ticket.status !== 'em_atendimento' ? (
+                  {!archived && !resolved && ticket.status !== 'em_atendimento' ? (
                     <Button
                       variant="outlined"
                       disabled={busy}
@@ -490,7 +561,7 @@ export function HelpdeskTicketPage() {
                     </Button>
                   ) : null}
 
-                  {!resolved && ticket.status !== 'aguardando_solicitante' ? (
+                  {!archived && !resolved && ticket.status !== 'aguardando_solicitante' ? (
                     <Button
                       variant="outlined"
                       disabled={busy}
@@ -508,7 +579,7 @@ export function HelpdeskTicketPage() {
                     </Button>
                   ) : null}
 
-                  {!resolved ? (
+                  {!archived && !resolved ? (
                     <Button
                       variant="contained"
                       color="success"
@@ -520,7 +591,9 @@ export function HelpdeskTicketPage() {
                     >
                       Encerrar com parecer
                     </Button>
-                  ) : (
+                  ) : null}
+
+                  {!archived && resolved ? (
                     <Button
                       variant="outlined"
                       disabled={busy}
@@ -528,9 +601,9 @@ export function HelpdeskTicketPage() {
                     >
                       Reabrir chamado
                     </Button>
-                  )}
+                  ) : null}
 
-                  {ticket.assigneeUid ? (
+                  {ticket.assigneeUid && !archived ? (
                     <Button
                       variant="text"
                       color="inherit"
@@ -538,6 +611,45 @@ export function HelpdeskTicketPage() {
                       onClick={() => void runAction(() => releaseTicket(db, ticket.id))}
                     >
                       Liberar (voltar à fila)
+                    </Button>
+                  ) : null}
+
+                  <Divider sx={{ my: 0.5 }} />
+
+                  {archived ? (
+                    <Button
+                      variant="outlined"
+                      startIcon={<UnarchiveOutlinedIcon />}
+                      disabled={busy}
+                      onClick={() =>
+                        void runAction(() => unarchiveTicket(db, ticket.id))
+                      }
+                    >
+                      Desarquivar
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      startIcon={<Inventory2OutlinedIcon />}
+                      disabled={busy}
+                      onClick={() => {
+                        setArchiveTag(resolved ? 'resolvido' : 'nao_solucionado')
+                        setArchiveOpen(true)
+                      }}
+                    >
+                      Arquivar
+                    </Button>
+                  )}
+
+                  {isDev ? (
+                    <Button
+                      variant="text"
+                      color="error"
+                      startIcon={<DeleteOutlineRoundedIcon />}
+                      disabled={busy}
+                      onClick={() => setDeleteOpen(true)}
+                    >
+                      Excluir chamado
                     </Button>
                   ) : null}
                 </Stack>
@@ -616,6 +728,82 @@ export function HelpdeskTicketPage() {
             disabled={busy || parecer.trim().length === 0}
           >
             {busy ? 'Encerrando…' : 'Encerrar chamado'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={archiveOpen}
+        onClose={() => {
+          if (!busy) setArchiveOpen(false)
+        }}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Arquivar chamado</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Escolha a etiqueta de desfecho. O chamado sairá das filas ativas e
+            ficará disponível na aba «Arquivados».
+          </Typography>
+          <FormControl fullWidth size="small">
+            <InputLabel id="archive-tag-label">Etiqueta</InputLabel>
+            <Select
+              labelId="archive-tag-label"
+              label="Etiqueta"
+              value={archiveTag}
+              onChange={(e) => setArchiveTag(e.target.value as TicketArchiveTag)}
+            >
+              {TICKET_ARCHIVE_TAGS.map((t) => (
+                <MenuItem key={t} value={t}>
+                  {TICKET_ARCHIVE_TAG_LABELS[t]}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setArchiveOpen(false)} disabled={busy}>
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Inventory2OutlinedIcon />}
+            onClick={() => void submitArchive()}
+            disabled={busy}
+          >
+            {busy ? 'Arquivando…' : 'Arquivar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteOpen}
+        onClose={() => {
+          if (!busy) setDeleteOpen(false)
+        }}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Excluir chamado</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            Esta ação é permanente e remove o chamado definitivamente. Não é
+            possível desfazer. Deseja continuar?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteOpen(false)} disabled={busy}>
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<DeleteOutlineRoundedIcon />}
+            onClick={() => void confirmDelete()}
+            disabled={busy}
+          >
+            {busy ? 'Excluindo…' : 'Excluir definitivamente'}
           </Button>
         </DialogActions>
       </Dialog>
