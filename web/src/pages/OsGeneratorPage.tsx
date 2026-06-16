@@ -26,7 +26,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import { AppPageChrome } from '../components/AppPageChrome'
-import { OsTemplateFieldsForm } from '../components/OsTemplateFieldsForm'
+import { OsTemplateFieldsForm, isFieldDisabled } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
 import { renderTemplate } from '../lib/renderTemplate'
@@ -533,6 +533,23 @@ export function OsGeneratorPage() {
 
   const multiPreviewTabs = previewSections.length > 1
 
+  const emptyFields = useMemo(() => {
+    if (!selected) return []
+    return selected.fields.filter((f) => {
+      if (f.control === 'select' || f.control === 'radio') return false
+      if (isFieldDisabled(f, values)) return false
+      if (f.showWhen) {
+        const depVal = values[f.showWhen.field] ?? ''
+        const expected = f.showWhen.equals
+        const isVisible = Array.isArray(expected)
+          ? expected.includes(depVal)
+          : expected === depVal
+        if (!isVisible) return false
+      }
+      return !(values[f.id] ?? '').trim()
+    })
+  }, [selected, values])
+
   const backTo = demandParam
     ? (DEMAND_HUB_ROUTES[demandParam] ??
       (demandMeta ? `/suporte/demanda/${demandParam}` : '/suporte'))
@@ -799,6 +816,26 @@ export function OsGeneratorPage() {
                 </Button>
               </Stack>
             </Stack>
+
+            {selected ? (
+              emptyFields.length > 0 ? (
+                <Alert
+                  severity="error"
+                  icon={false}
+                  sx={{ mb: 1.5, py: 0.5, px: 1.5, borderRadius: 1.5, fontSize: 13 }}
+                >
+                  <strong>Há campos a serem preenchidos</strong>
+                </Alert>
+              ) : (
+                <Alert
+                  severity="success"
+                  icon={false}
+                  sx={{ mb: 1.5, py: 0.5, px: 1.5, borderRadius: 1.5, fontSize: 13 }}
+                >
+                  <strong>Todos os campos preenchidos</strong>
+                </Alert>
+              )
+            ) : null}
 
             {multiPreviewTabs ? (
               <Tabs

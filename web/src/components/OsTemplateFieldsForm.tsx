@@ -3,6 +3,7 @@ import { Search as SearchIcon } from '@mui/icons-material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import {
+  Autocomplete,
   Box,
   CircularProgress,
   Divider,
@@ -21,6 +22,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { BAIRROS_UDI } from '../data/bairros'
+import { GRAU_RELACIONAMENTO } from '../data/grauRelacionamento'
+import { CARGO_FUNCAO } from '../data/cargoFuncao'
 import type { OsTemplateField } from '../types/osTemplate'
 import { getFieldControl, resolveFieldGridSize } from '../types/osTemplate'
 import {
@@ -118,6 +122,71 @@ function isFieldVisible(
     : current === expected
 }
 
+export function isFieldDisabled(
+  field: OsTemplateField,
+  values: Record<string, string>,
+): boolean {
+  // CTOI não tem identificação própria; o campo CTO só faz sentido para CTOE
+  if (field.id === 'cto') return (values['ctoType'] ?? '') === 'CTOI'
+  return false
+}
+
+const FIELD_SUGGESTIONS: Record<string, readonly string[]> = {
+  bairro: BAIRROS_UDI,
+  grauComp: GRAU_RELACIONAMENTO,
+  parente: GRAU_RELACIONAMENTO,
+  cargo: CARGO_FUNCAO,
+}
+
+function normalizeText(s: string): string {
+  return s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
+function SuggestionsField({
+  field: f,
+  value,
+  onChange,
+  disabled = false,
+  suggestions,
+}: {
+  field: OsTemplateField
+  value: string
+  onChange: (id: string, value: string) => void
+  disabled?: boolean
+  suggestions: readonly string[]
+}) {
+  return (
+    <Autocomplete
+      freeSolo
+      disabled={disabled}
+      options={suggestions as string[]}
+      value={value}
+      inputValue={value}
+      onInputChange={(_, newValue) => onChange(f.id, newValue.toUpperCase())}
+      onChange={(_, newValue) => {
+        if (typeof newValue === 'string') onChange(f.id, newValue)
+      }}
+      filterOptions={(options, { inputValue }) => {
+        const norm = normalizeText(inputValue)
+        if (!norm) return options
+        return options.filter((opt) => normalizeText(opt).includes(norm))
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={f.label}
+          placeholder={f.placeholder ?? 'Digite ou selecione'}
+          size="small"
+        />
+      )}
+    />
+  )
+}
+
 export function OsTemplateFieldsForm({
   fields,
   values,
@@ -161,6 +230,14 @@ export function OsTemplateFieldsForm({
           <Grid container spacing={2}>
             {block.fields.map((f) => {
               const g = resolveFieldGridSize(f)
+              const disabled = isFieldDisabled(f, values)
+              const fieldOnChange =
+                f.id === 'ctoType'
+                  ? (id: string, v: string) => {
+                      onChange(id, v)
+                      if (v === 'CTOI') onChange('cto', '')
+                    }
+                  : onChange
               return (
                 <Grid key={f.id} size={{ xs: g.xs, sm: g.sm, md: g.md }}>
                   {hasCepField && f.id === 'cep' ? (
@@ -171,11 +248,20 @@ export function OsTemplateFieldsForm({
                       onPatchValues={onPatchValues}
                       targets={cepTargets}
                     />
+                  ) : f.id in FIELD_SUGGESTIONS ? (
+                    <SuggestionsField
+                      field={f}
+                      value={values[f.id] ?? ''}
+                      onChange={fieldOnChange}
+                      disabled={disabled}
+                      suggestions={FIELD_SUGGESTIONS[f.id]!}
+                    />
                   ) : (
                     <FieldInput
                       field={f}
                       value={values[f.id] ?? ''}
-                      onChange={onChange}
+                      onChange={fieldOnChange}
+                      disabled={disabled}
                     />
                   )}
                 </Grid>
@@ -563,10 +649,12 @@ function FieldInput({
   field: f,
   value,
   onChange,
+  disabled = false,
 }: {
   field: OsTemplateField
   value: string
   onChange: (id: string, value: string) => void
+  disabled?: boolean
 }) {
   const kind = getFieldControl(f)
 
@@ -581,6 +669,7 @@ function FieldInput({
         value={parseBrDateString(value)}
         onChange={(d) => onChange(f.id, d ? toBrDateString(d) : '')}
         format="DD/MM/YYYY"
+        disabled={disabled}
         slotProps={{
           textField: {
             size: 'small',
@@ -604,6 +693,7 @@ function FieldInput({
         onChange={(d) => onChange(f.id, d ? toBrDateTimeString(d) : '')}
         format="DD/MM/YYYY HH:mm"
         ampm={false}
+        disabled={disabled}
         slotProps={{
           textField: {
             size: 'small',
@@ -628,6 +718,7 @@ function FieldInput({
         onChange={(e) => onChange(f.id, formatPhoneBrMask(e.target.value))}
         fullWidth
         size="small"
+        disabled={disabled}
         slotProps={{
           htmlInput: {
             inputMode: 'numeric',
@@ -648,6 +739,7 @@ function FieldInput({
         onChange={(e) => onChange(f.id, formatSinalFibraMask(e.target.value))}
         fullWidth
         size="small"
+        disabled={disabled}
         slotProps={{
           htmlInput: {
             inputMode: 'decimal',
@@ -660,7 +752,7 @@ function FieldInput({
 
   if (kind === 'select' && f.options && f.options.length > 0) {
     return (
-      <FormControl fullWidth size="small">
+      <FormControl fullWidth size="small" disabled={disabled}>
         <InputLabel id={`${f.id}-lbl`}>{f.label}</InputLabel>
         <Select
           labelId={`${f.id}-lbl`}
@@ -685,7 +777,7 @@ function FieldInput({
 
   if (kind === 'radio' && f.options && f.options.length > 0) {
     return (
-      <FormControl component="fieldset" variant="standard">
+      <FormControl component="fieldset" variant="standard" disabled={disabled}>
         <FormLabel component="legend" sx={{ mb: 1 }}>
           {f.label}
         </FormLabel>
@@ -720,6 +812,7 @@ function FieldInput({
         size="small"
         multiline
         minRows={3}
+        disabled={disabled}
       />
     )
   }
@@ -732,6 +825,7 @@ function FieldInput({
       onChange={(e) => onChange(f.id, e.target.value)}
       fullWidth
       size="small"
+      disabled={disabled}
     />
   )
 }

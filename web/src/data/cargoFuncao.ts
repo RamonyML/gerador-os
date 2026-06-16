@@ -1,0 +1,23 @@
+/** Cargos e funções comuns para autocomplete (PJ e PF). */
+export const CARGO_FUNCAO: readonly string[] = [
+  'PROPRIETÁRIO',
+  'SÓCIO',
+  'SÓCIO-GERENTE',
+  'DIRETOR',
+  'DIRETOR GERAL',
+  'GERENTE',
+  'GERENTE ADMINISTRATIVO',
+  'ADMINISTRADOR',
+  'REPRESENTANTE LEGAL',
+  'PROCURADOR',
+  'SUPERVISOR',
+  'COORDENADOR',
+  'ANALISTA',
+  'ASSISTENTE ADMINISTRATIVO',
+  'SECRETÁRIO',
+  'RECEPCIONISTA',
+  'CONTADOR',
+  'RESPONSÁVEL FINANCEIRO',
+  'RESPONSÁVEL DE TI',
+  'FUNCIONÁRIO',
+]
