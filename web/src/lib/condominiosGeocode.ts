@@ -35,8 +35,13 @@ export async function geocodeCondominio(
   const query = condominioAddressQuery(c)
   if (!query) return null
   const geo = await geocodeAddress(query, {
-    bairro: c.bairro.trim() || undefined,
     signal,
+    structured: {
+      street: c.rua,
+      number: c.numero || undefined,
+      neighborhood: c.bairro || undefined,
+      postalCode: c.cep || undefined,
+    },
   })
   if (!geo) return null
   return { lat: geo.lat, lng: geo.lng }

@@ -108,6 +108,22 @@ type SearchResult = {
   precise: boolean
 }
 
+/**
+ * Separa rua e número de um texto livre de endereço. Usa o ÚLTIMO número
+ * para evitar confundir nomes como "Rua 25 de Março" com o número da casa.
+ * Retorna null quando não há número no texto.
+ */
+function parseAddressText(
+  text: string,
+): { street: string; number: string } | null {
+  const matches = [...text.matchAll(/\b(\d{1,5}[A-Za-z]?)\b/g)]
+  const last = matches.at(-1)
+  if (!last || last.index == null) return null
+  const street = text.slice(0, last.index).trim().replace(/[,\s]+$/, '').trim()
+  if (!street) return null
+  return { street, number: last[1]! }
+}
+
 /** Primeiro campo do nome (antes do `;`) — útil para os pontos em CSV. */
 function shortName(name?: string): string {
   if (!name) return 'Sem nome'
@@ -195,7 +211,7 @@ export function CoberturaPage() {
   const [condominios, setCondominios] = useState<Condominio[]>([])
   const [condoFilters, setCondoFilters] = useState<
     Record<CondominioCategoria, boolean>
-  >({ viavel: true, inviavel: true })
+  >({ viavel: false, inviavel: false })
   const [selectedCondoId, setSelectedCondoId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -309,6 +325,7 @@ export function CoberturaPage() {
     try {
       const typed = endereco.trim()
       let bairroFromCep: string | null = null
+      let cepLogradouro = ''
       let cepAddress = ''
 
       const cepDigits = normalizeCepInput(cep)
@@ -317,6 +334,7 @@ export function CoberturaPage() {
         if (found.uf && found.uf !== 'MG') {
           throw new CepLookupError('Este CEP não pertence a Minas Gerais.')
         }
+        cepLogradouro = found.logradouro || ''
         bairroFromCep = found.bairro || null
         cepAddress = [found.logradouro, found.bairro].filter(Boolean).join(', ')
         if (!typed && cepAddress) {
@@ -333,7 +351,32 @@ export function CoberturaPage() {
         throw new CepLookupError('Informe um CEP ou um endereço para pesquisar.')
       }
 
-      const geo = await geocodeAddress(query, { bairro: bairroFromCep ?? undefined })
+      // Monta dados estruturados: CEP é a fonte mais confiável; quando não há
+      // CEP tenta extrair rua+número do texto digitado pelo operador.
+      let structured: Parameters<typeof geocodeAddress>[1]['structured']
+      if (cepLogradouro) {
+        const parsed = typed ? parseAddressText(typed) : null
+        structured = {
+          street: cepLogradouro,
+          number: parsed?.number,
+          neighborhood: bairroFromCep ?? undefined,
+          postalCode: cepDigits.length === 8 ? cepDigits : undefined,
+        }
+      } else if (typed) {
+        const parsed = parseAddressText(typed)
+        if (parsed) {
+          structured = {
+            street: parsed.street,
+            number: parsed.number,
+            neighborhood: bairroFromCep ?? undefined,
+          }
+        }
+      }
+
+      const geo = await geocodeAddress(query, {
+        bairro: bairroFromCep ?? undefined,
+        structured,
+      })
       if (!geo) {
         throw new CepLookupError(
           'Endereço não localizado no mapa. Tente detalhar a rua, o número e o bairro.',
@@ -477,9 +520,9 @@ export function CoberturaPage() {
               >
                 <InfoOutlinedIcon fontSize="small" sx={{ mt: '1px', flexShrink: 0 }} />
                 <Typography variant="caption" sx={{ lineHeight: 1.5 }}>
-                  A precisão da localização exata do número está em desenvolvimento — o
-                  pino pode cair de forma aproximada na via. A verificação de cobertura
-                  por área já é confiável.
+                  A localização do número exato depende da base de dados do mapa e pode
+                  ser imprecisa para alguns endereços. A verificação de cobertura por
+                  área é confiável.
                 </Typography>
               </Stack>
 
@@ -737,8 +780,7 @@ export function CoberturaPage() {
                   />
                 ) : null}
               </Pane>
-              <Pane name="coverage-points" style={{ zIndex: 610 }}>
-                {coverage?.points.map((p, i) => {
+              {coverage?.points.map((p, i) => {
                   const geom = p.geometry
                   if (!geom || geom.type !== 'Point') return null
                   const [lng, lat] = geom.coordinates
@@ -758,18 +800,15 @@ export function CoberturaPage() {
                     </CircleMarker>
                   )
                 })}
-              </Pane>
-              <Pane name="condominio-markers" style={{ zIndex: 650 }}>
-                {visibleCondos.map((c) => (
-                  <CondoMarker
-                    key={`condo-${c.id}`}
-                    condo={c}
-                    color={condoColor(c.categoria)}
-                    selected={c.id === selectedCondoId}
-                    onSelect={setSelectedCondoId}
-                  />
-                ))}
-              </Pane>
+              {visibleCondos.map((c) => (
+                <CondoMarker
+                  key={`condo-${c.id}`}
+                  condo={c}
+                  color={condoColor(c.categoria)}
+                  selected={c.id === selectedCondoId}
+                  onSelect={setSelectedCondoId}
+                />
+              ))}
               {result ? (
                 <Marker
                   position={[result.lat, result.lng]}

@@ -142,9 +142,20 @@ export type GeocodeResult = {
 }
 
 export type GeocodeOptions = {
-  /** Bairro (ex.: do CEP) usado para desempatar resultados no OSM. */
-  bairro?: string
   signal?: AbortSignal
+  /** Hint de bairro para o Nominatim quando não há `structured`. */
+  bairro?: string
+  /**
+   * Partes estruturadas do endereço. Quando presentes, o Mapbox usa o endpoint
+   * estruturado (v6) em vez de texto livre, e o Nominatim monta uma query mais
+   * limpa — sem CEP embutido nem separadores extras.
+   */
+  structured?: {
+    street: string
+    number?: string
+    neighborhood?: string
+    postalCode?: string
+  }
 }
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined
@@ -162,26 +173,46 @@ function normalize(text: string): string {
 }
 
 /**
- * Geocodifica via Mapbox (interpola número da casa). Restringe a Uberlândia
- * por bbox + proximity. Retorna `null` se não houver token ou resultado.
+ * Geocodifica via Mapbox. Com `opts.structured` usa o endpoint estruturado
+ * (campos separados, mais preciso); sem ele usa texto livre com bbox+proximity.
+ * Só retorna quando `feature_type === 'address'` — resultado impreciso (via ou
+ * bairro) é descartado para o Nominatim ter a chance de acertar.
  */
 async function geocodeMapbox(
-  query: string,
-  signal?: AbortSignal,
+  fallbackQuery: string,
+  opts: GeocodeOptions = {},
 ): Promise<GeocodeResult | null> {
   if (!MAPBOX_TOKEN) return null
-  const params = new URLSearchParams({
-    q: `${query}, Uberlândia, MG`,
-    country: 'br',
-    language: 'pt',
-    limit: '1',
-    proximity: `${UBERLANDIA_CENTER.lng},${UBERLANDIA_CENTER.lat}`,
-    bbox: `${UBERLANDIA_BBOX.west},${UBERLANDIA_BBOX.south},${UBERLANDIA_BBOX.east},${UBERLANDIA_BBOX.north}`,
-    access_token: MAPBOX_TOKEN,
-  })
+
+  let params: URLSearchParams
+  if (opts.structured) {
+    const { street, number, postalCode } = opts.structured
+    const addressLine1 = [street.trim(), number?.trim()].filter(Boolean).join(', ')
+    params = new URLSearchParams({
+      address_line1: addressLine1,
+      place: 'Uberlândia',
+      region: 'Minas Gerais',
+      country: 'BR',
+      language: 'pt',
+      limit: '1',
+      access_token: MAPBOX_TOKEN,
+    })
+    if (postalCode) params.set('postcode', postalCode.replace(/\D/g, ''))
+  } else {
+    params = new URLSearchParams({
+      q: `${fallbackQuery}, Uberlândia, MG`,
+      country: 'br',
+      language: 'pt',
+      limit: '1',
+      proximity: `${UBERLANDIA_CENTER.lng},${UBERLANDIA_CENTER.lat}`,
+      bbox: `${UBERLANDIA_BBOX.west},${UBERLANDIA_BBOX.south},${UBERLANDIA_BBOX.east},${UBERLANDIA_BBOX.north}`,
+      access_token: MAPBOX_TOKEN,
+    })
+  }
+
   const res = await fetch(
     `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`,
-    { signal },
+    { signal: opts.signal },
   )
   if (!res.ok) return null
   const data = (await res.json()) as {
@@ -194,25 +225,37 @@ async function geocodeMapbox(
   const coords = feature?.geometry?.coordinates
   if (!coords) return null
   const props = feature?.properties ?? {}
+  // Descarta resultado impreciso — deixa o Nominatim tentar
+  if (props.feature_type !== 'address') return null
   return {
     lng: coords[0],
     lat: coords[1],
-    displayName: props.full_address ?? props.name ?? query,
-    precise: props.feature_type === 'address',
+    displayName: props.full_address ?? props.name ?? fallbackQuery,
+    precise: true,
     source: 'mapbox',
   }
 }
 
 /**
- * Fallback via Nominatim (OpenStreetMap), sem chave. Quando há `bairro`,
- * escolhe entre os candidatos aquele cujo subúrbio casa com o bairro — assim
- * pega o trecho correto da via em vez do ponto representativo padrão.
+ * Fallback via Nominatim (OpenStreetMap), sem chave. Com `opts.structured`
+ * monta uma query limpa (rua + número + bairro, sem CEP nem separadores extras
+ * que confundem o parser). O hint de bairro desambigua quando a mesma rua
+ * existe em mais de um trecho da cidade.
  */
 async function geocodeNominatim(
-  query: string,
-  bairro: string | undefined,
-  signal?: AbortSignal,
+  fallbackQuery: string,
+  opts: GeocodeOptions = {},
 ): Promise<GeocodeResult | null> {
+  let q: string
+  if (opts.structured) {
+    const { street, number, neighborhood } = opts.structured
+    const streetPart = [street.trim(), number?.trim()].filter(Boolean).join(', ')
+    const parts = [streetPart, neighborhood?.trim()].filter(Boolean)
+    q = `${parts.join(', ')}, Uberlândia, MG`
+  } else {
+    q = `${fallbackQuery}, Uberlândia, MG`
+  }
+
   const params = new URLSearchParams({
     format: 'jsonv2',
     limit: '6',
@@ -220,11 +263,11 @@ async function geocodeNominatim(
     countrycodes: 'br',
     viewbox: `${UBERLANDIA_BBOX.west},${UBERLANDIA_BBOX.north},${UBERLANDIA_BBOX.east},${UBERLANDIA_BBOX.south}`,
     bounded: '1',
-    q: `${query}, Uberlândia, MG`,
+    q,
   })
   const res = await fetch(
     `https://nominatim.openstreetmap.org/search?${params.toString()}`,
-    { signal, headers: { Accept: 'application/json' } },
+    { signal: opts.signal, headers: { Accept: 'application/json' } },
   )
   if (!res.ok) return null
   const data = (await res.json()) as Array<{
@@ -235,7 +278,8 @@ async function geocodeNominatim(
   }>
   if (!Array.isArray(data) || data.length === 0) return null
 
-  const wanted = bairro ? normalize(bairro) : null
+  const neighborhoodHint = opts.structured?.neighborhood ?? opts.bairro
+  const wanted = neighborhoodHint ? normalize(neighborhoodHint) : null
   const byBairro = wanted
     ? data.find((d) => {
         const sub = d.address?.suburb ?? d.address?.neighbourhood
@@ -253,14 +297,16 @@ async function geocodeNominatim(
 }
 
 /**
- * Geocodifica um endereço. Usa Mapbox quando há `VITE_MAPBOX_TOKEN` (precisão
- * com número da casa) e cai para o Nominatim caso contrário.
+ * Geocodifica um endereço. Tenta Mapbox primeiro (só aceita resultado com
+ * número interpolado) e cai para Nominatim caso contrário. Com
+ * `opts.structured` ambos os geocoders usam os campos separados em vez de
+ * texto livre.
  */
 export async function geocodeAddress(
   query: string,
   opts: GeocodeOptions = {},
 ): Promise<GeocodeResult | null> {
-  const viaMapbox = await geocodeMapbox(query, opts.signal)
+  const viaMapbox = await geocodeMapbox(query, opts)
   if (viaMapbox) return viaMapbox
-  return geocodeNominatim(query, opts.bairro, opts.signal)
+  return geocodeNominatim(query, opts)
 }
