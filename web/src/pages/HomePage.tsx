@@ -21,8 +21,10 @@ import { NavCard } from '../components/NavCard'
 import { HeroIllustration } from '../components/HeroIllustration'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
+import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
@@ -63,6 +65,7 @@ export function HomePage() {
   }, [])
 
   const showSupportHub = profile != null && canAccessSupportHub(profile)
+  const showCadastroHub = profile != null && canAccessCadastroHub(profile)
   const showUsers = profile != null && canManageUsers(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
@@ -118,6 +121,18 @@ export function HomePage() {
               'Demandas por tipo: mudança de endereço, plano, manutenção e mais.',
             to: '/suporte',
             icon: <DashboardCustomizeOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
+    ...(showCadastroHub
+      ? [
+          {
+            key: 'cadastro',
+            title: 'Hub Cadastro',
+            description:
+              'Registre instalações grátis e com taxa para clientes PF e PJ.',
+            to: '/cadastro',
+            icon: <AssignmentIndOutlinedIcon sx={{ fontSize: 28 }} />,
           } satisfies QuickAction,
         ]
       : []),
@@ -302,7 +317,7 @@ export function HomePage() {
               }}
             >
               {actions.map((a, index) => {
-                const isSupportHub = a.key === 'suporte'
+                const isHubCard = a.key === 'suporte' || a.key === 'cadastro'
                 return (
                   <Fade
                     key={a.key}
@@ -316,8 +331,8 @@ export function HomePage() {
                         icon={a.icon}
                         title={a.title}
                         description={a.description}
-                        accent={isSupportHub ? success : primary}
-                        featured={isSupportHub}
+                        accent={isHubCard ? success : primary}
+                        featured={isHubCard}
                       />
                     </Box>
                   </Fade>
