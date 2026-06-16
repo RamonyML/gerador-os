@@ -10,6 +10,7 @@ import { MudancaEnderecoHubPage } from './pages/MudancaEnderecoHubPage'
 import { ManutencaoHubPage } from './pages/ManutencaoHubPage'
 import { MidiaTvHubPage } from './pages/MidiaTvHubPage'
 import { SenhaRedeHubPage } from './pages/SenhaRedeHubPage'
+import { WifiExtendHubPage } from './pages/WifiExtendHubPage'
 import { TermosDocumentosHubPage } from './pages/TermosDocumentosHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
@@ -86,6 +87,14 @@ export default function App() {
           element={
             <RequireSupport>
               <SenhaRedeHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/wifi-extend"
+          element={
+            <RequireSupport>
+              <WifiExtendHubPage />
             </RequireSupport>
           }
         />

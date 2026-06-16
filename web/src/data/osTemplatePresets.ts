@@ -22,6 +22,9 @@ import { getManutRoteadorResetDefaults } from './manutencao/roteadorReset'
 import { getMidiaRokuPadraoDefaults } from './midiaTv/rokuPadrao'
 import { getMidiaRokuPresencialDefaults } from './midiaTv/rokuPresencial'
 import { getAlteraSenhaDefaults } from './senhaRede/alteraSenha'
+import { getWifiExtendZteDefaults } from './wifiExtend/extendZte'
+import { getWifiExtendTplinkDefaults } from './wifiExtend/extendTplink'
+import { getPontoAdicionalDefaults } from './wifiExtend/pontoAdicional'
 import { getTermoRespPadraoDefaults } from './termoDocs/termoRespPadrao'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
@@ -236,6 +239,24 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Senha / SSID Wi-Fi',
     label: 'Alteração de SSID / Senha',
     getDefaults: getAlteraSenhaDefaults,
+  },
+  {
+    id: 'wifi-extend-zte',
+    category: 'Wi-Fi Extend',
+    label: 'Wi-Fi Extend — ZTE / Mesh',
+    getDefaults: getWifiExtendZteDefaults,
+  },
+  {
+    id: 'wifi-extend-tplink',
+    category: 'Wi-Fi Extend',
+    label: 'Wi-Fi Extend — TP-Link',
+    getDefaults: getWifiExtendTplinkDefaults,
+  },
+  {
+    id: 'wifi-extend-ponto',
+    category: 'Wi-Fi Extend',
+    label: 'Ponto adicional — roteador',
+    getDefaults: getPontoAdicionalDefaults,
   },
   {
     id: 'termo-resp-padrao',

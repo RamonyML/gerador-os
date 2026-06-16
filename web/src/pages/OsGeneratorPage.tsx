@@ -67,6 +67,9 @@ import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
 import { buildRokuPadraoTextos } from '../data/midiaTv/rokuPadrao'
 import { buildRokuPresencialTextos } from '../data/midiaTv/rokuPresencial'
 import { buildAlteraSenhaTextos } from '../data/senhaRede/alteraSenha'
+import { buildWifiExtendZteTextos } from '../data/wifiExtend/extendZte'
+import { buildWifiExtendTplinkTextos } from '../data/wifiExtend/extendTplink'
+import { buildPontoAdicionalTextos } from '../data/wifiExtend/pontoAdicional'
 import { buildTermoRespPadraoTextos } from '../data/termoDocs/termoRespPadrao'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
@@ -78,6 +81,7 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   manutencao: '/suporte/manutencao',
   'midia-tv': '/suporte/midia-tv',
   'senha-rede': '/suporte/senha-rede',
+  'wifi-extend': '/suporte/wifi-extend',
   'termo-docs': '/suporte/termos-documentos',
 }
 
@@ -475,6 +479,21 @@ export function OsGeneratorPage() {
       )
     } else if (selected?.slug === 'senha-altera-senha') {
       Object.assign(base, buildAlteraSenhaTextos(values))
+    } else if (selected?.slug === 'wifi-extend-zte') {
+      Object.assign(
+        base,
+        buildWifiExtendZteTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'wifi-extend-tplink') {
+      Object.assign(
+        base,
+        buildWifiExtendTplinkTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
+    } else if (selected?.slug === 'wifi-extend-ponto') {
+      Object.assign(
+        base,
+        buildPontoAdicionalTextos(values, String(base.operadorPrimeiroNome ?? '')),
+      )
     } else if (selected?.slug === 'termo-resp-padrao') {
       Object.assign(base, buildTermoRespPadraoTextos(values))
     }

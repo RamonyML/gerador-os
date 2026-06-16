@@ -180,6 +180,7 @@ export function SupportHomePage() {
                   manutencao: '/suporte/manutencao',
                   'midia-tv': '/suporte/midia-tv',
                   'senha-rede': '/suporte/senha-rede',
+                  'wifi-extend': '/suporte/wifi-extend',
                   'termo-docs': '/suporte/termos-documentos',
                 }
                 const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
