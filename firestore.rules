@@ -373,6 +373,27 @@ service cloud.firestore {
       allow delete: if isActiveUser() && userData().isDev == true;
     }
 
+    /**
+     * Modelos de O.S. para casos atípicos sem formulário dedicado.
+     * Leitura: qualquer usuário ativo do suporte (ou dev/admin).
+     * Escrita: gerente (ou dev/admin).
+     */
+    match /modelos_os/{docId} {
+      allow read: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().sector == 'suporte'
+        );
+
+      allow create, update, delete: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+        );
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
