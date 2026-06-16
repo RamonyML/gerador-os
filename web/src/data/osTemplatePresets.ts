@@ -27,6 +27,14 @@ import { getWifiExtendTplinkDefaults } from './wifiExtend/extendTplink'
 import { getPontoAdicionalDefaults } from './wifiExtend/pontoAdicional'
 import { getTermoRespPadraoDefaults } from './termoDocs/termoRespPadrao'
 import { getMudEndPadraoDefaults } from './mudEnd/padrao'
+import { getFeedbackSemSucessoDefaults } from './feedback/semSucesso'
+import { getFeedbackManExternalDefaults } from './feedback/manExternal'
+import { getFeedbackManOcasionadoDefaults } from './feedback/manOcasionado'
+import { getFeedbackTrocaEquipDefaults } from './feedback/trocaEquip'
+import { getFeedbackMudancaPontoDefaults } from './feedback/mudancaPonto'
+import { getFeedbackAltplanDefaults } from './feedback/altplan'
+import { getFeedbackStbRokuDefaults } from './feedback/stbRoku'
+import { getFeedbackWifiExtendDefaults } from './feedback/wifiExtend'
 import { getMudEndComFibraDefaults } from './mudEnd/comFibra'
 import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
 import { getMudEndAltplanPropostaDefaults } from './mudEnd/altplanProposta'
@@ -263,6 +271,54 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Termos e documentos',
     label: 'Termo de responsabilidade — padrão',
     getDefaults: getTermoRespPadraoDefaults,
+  },
+  {
+    id: 'feedback-sem-sucesso',
+    category: 'Feedback',
+    label: 'Feedback — Sem sucesso (2 tentativas)',
+    getDefaults: getFeedbackSemSucessoDefaults,
+  },
+  {
+    id: 'feedback-man-externa',
+    category: 'Feedback',
+    label: 'Feedback — Manutenção externa',
+    getDefaults: getFeedbackManExternalDefaults,
+  },
+  {
+    id: 'feedback-man-ocasionado',
+    category: 'Feedback',
+    label: 'Feedback — Manutenção ocasionado',
+    getDefaults: getFeedbackManOcasionadoDefaults,
+  },
+  {
+    id: 'feedback-troca-equip',
+    category: 'Feedback',
+    label: 'Feedback — Troca de equipamento',
+    getDefaults: getFeedbackTrocaEquipDefaults,
+  },
+  {
+    id: 'feedback-mudanca-ponto',
+    category: 'Feedback',
+    label: 'Feedback — Mudança de ponto interno',
+    getDefaults: getFeedbackMudancaPontoDefaults,
+  },
+  {
+    id: 'feedback-altplan',
+    category: 'Feedback',
+    label: 'Feedback — Alteração de plano',
+    getDefaults: getFeedbackAltplanDefaults,
+  },
+  {
+    id: 'feedback-stb-roku',
+    category: 'Feedback',
+    label: 'Feedback — STB / Roku TV',
+    getDefaults: getFeedbackStbRokuDefaults,
+  },
+  {
+    id: 'feedback-wifi-extend',
+    category: 'Feedback',
+    label: 'Feedback — Wi-Fi Extend',
+    getDefaults: getFeedbackWifiExtendDefaults,
   },
 ]
 

@@ -12,6 +12,7 @@ import { MidiaTvHubPage } from './pages/MidiaTvHubPage'
 import { SenhaRedeHubPage } from './pages/SenhaRedeHubPage'
 import { WifiExtendHubPage } from './pages/WifiExtendHubPage'
 import { TermosDocumentosHubPage } from './pages/TermosDocumentosHubPage'
+import { FeedbackHubPage } from './pages/FeedbackHubPage'
 import { SupportDemandPage } from './pages/SupportDemandPage'
 import { RequireSupport } from './components/RequireSupport'
 import { RequireUserManager } from './components/RequireUserManager'
@@ -104,6 +105,14 @@ export default function App() {
           element={
             <RequireSupport>
               <TermosDocumentosHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/feedback"
+          element={
+            <RequireSupport>
+              <FeedbackHubPage />
             </RequireSupport>
           }
         />

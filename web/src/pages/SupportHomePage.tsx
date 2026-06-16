@@ -184,6 +184,7 @@ export function SupportHomePage() {
                   'senha-rede': '/suporte/senha-rede',
                   'wifi-extend': '/suporte/wifi-extend',
                   'termo-docs': '/suporte/termos-documentos',
+                  feedback: '/suporte/feedback',
                 }
                 const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
 

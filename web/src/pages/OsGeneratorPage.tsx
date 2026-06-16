@@ -71,6 +71,14 @@ import { buildWifiExtendZteTextos } from '../data/wifiExtend/extendZte'
 import { buildWifiExtendTplinkTextos } from '../data/wifiExtend/extendTplink'
 import { buildPontoAdicionalTextos } from '../data/wifiExtend/pontoAdicional'
 import { buildTermoRespPadraoTextos } from '../data/termoDocs/termoRespPadrao'
+import { buildFeedbackSemSucessoTextos } from '../data/feedback/semSucesso'
+import { buildFeedbackManExternalTextos } from '../data/feedback/manExternal'
+import { buildFeedbackManOcasionadoTextos } from '../data/feedback/manOcasionado'
+import { buildFeedbackTrocaEquipTextos } from '../data/feedback/trocaEquip'
+import { buildFeedbackMudancaPontoTextos } from '../data/feedback/mudancaPonto'
+import { buildFeedbackAltplanTextos } from '../data/feedback/altplan'
+import { buildFeedbackStbRokuTextos } from '../data/feedback/stbRoku'
+import { buildFeedbackWifiExtendTextos } from '../data/feedback/wifiExtend'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -83,6 +91,7 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   'senha-rede': '/suporte/senha-rede',
   'wifi-extend': '/suporte/wifi-extend',
   'termo-docs': '/suporte/termos-documentos',
+  feedback: '/suporte/feedback',
 }
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
@@ -496,6 +505,22 @@ export function OsGeneratorPage() {
       )
     } else if (selected?.slug === 'termo-resp-padrao') {
       Object.assign(base, buildTermoRespPadraoTextos(values))
+    } else if (selected?.slug === 'feedback-sem-sucesso') {
+      Object.assign(base, buildFeedbackSemSucessoTextos(values))
+    } else if (selected?.slug === 'feedback-man-externa') {
+      Object.assign(base, buildFeedbackManExternalTextos(values))
+    } else if (selected?.slug === 'feedback-man-ocasionado') {
+      Object.assign(base, buildFeedbackManOcasionadoTextos(values))
+    } else if (selected?.slug === 'feedback-troca-equip') {
+      Object.assign(base, buildFeedbackTrocaEquipTextos(values))
+    } else if (selected?.slug === 'feedback-mudanca-ponto') {
+      Object.assign(base, buildFeedbackMudancaPontoTextos(values))
+    } else if (selected?.slug === 'feedback-altplan') {
+      Object.assign(base, buildFeedbackAltplanTextos(values))
+    } else if (selected?.slug === 'feedback-stb-roku') {
+      Object.assign(base, buildFeedbackStbRokuTextos(values))
+    } else if (selected?.slug === 'feedback-wifi-extend') {
+      Object.assign(base, buildFeedbackWifiExtendTextos(values))
     }
     return base
   }, [values, profile, user, selected?.slug])
