@@ -7,6 +7,7 @@ import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
 import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
@@ -21,6 +22,7 @@ export type NavItem = {
 
 type NavFlags = {
   showSupport: boolean
+  showCadastro: boolean
   showUsers: boolean
   showCondominios: boolean
 }
@@ -35,6 +37,7 @@ const startsWith = (prefix: string) => (pathname: string) =>
  */
 export function buildNavItems({
   showSupport,
+  showCadastro,
   showUsers,
   showCondominios,
 }: NavFlags): NavItem[] {
@@ -46,6 +49,14 @@ export function buildNavItems({
           to: '/suporte',
           icon: DashboardCustomizeOutlinedIcon,
           isActive: startsWith('/suporte'),
+        }
+      : null,
+    showCadastro
+      ? {
+          label: 'Cadastro',
+          to: '/cadastro',
+          icon: AssignmentIndOutlinedIcon,
+          isActive: startsWith('/cadastro'),
         }
       : null,
     {

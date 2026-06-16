@@ -31,6 +31,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
+import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { useNotices } from '../hooks/useNotices'
@@ -64,6 +65,7 @@ export function AppLayout() {
   const { user, profile, photoURL, logOut } = useAuth()
   const showUsers = profile != null && canManageUsers(profile)
   const showSupport = profile != null && canAccessSupportHub(profile)
+  const showCadastro = profile != null && canAccessCadastroHub(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
@@ -99,8 +101,8 @@ export function AppLayout() {
   const totalUnread = notices.unreadCount + helpdesk.unreadCount
 
   const navItems = useMemo(
-    () => buildNavItems({ showSupport, showUsers, showCondominios }),
-    [showSupport, showUsers, showCondominios],
+    () => buildNavItems({ showSupport, showCadastro, showUsers, showCondominios }),
+    [showSupport, showCadastro, showUsers, showCondominios],
   )
 
   const openNoticeMenu = (el: HTMLElement) => setNoticeAnchor(el)

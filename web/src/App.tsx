@@ -31,6 +31,10 @@ import { AgendaPage } from './pages/AgendaPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { CoberturaPage } from './pages/CoberturaPage'
 import { ModelosOsPage } from './pages/ModelosOsPage'
+import { CadastroHomePage } from './pages/CadastroHomePage'
+import { InstGratisHubPage } from './pages/InstGratisHubPage'
+import { InstTaxaHubPage } from './pages/InstTaxaHubPage'
+import { RequireCadastro } from './components/RequireCadastro'
 
 export default function App() {
   return (
@@ -122,6 +126,30 @@ export default function App() {
             <RequireSupport>
               <SupportDemandPage />
             </RequireSupport>
+          }
+        />
+        <Route
+          path="/cadastro"
+          element={
+            <RequireCadastro>
+              <CadastroHomePage />
+            </RequireCadastro>
+          }
+        />
+        <Route
+          path="/cadastro/instalacao-gratis"
+          element={
+            <RequireCadastro>
+              <InstGratisHubPage />
+            </RequireCadastro>
+          }
+        />
+        <Route
+          path="/cadastro/instalacao-taxa"
+          element={
+            <RequireCadastro>
+              <InstTaxaHubPage />
+            </RequireCadastro>
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />

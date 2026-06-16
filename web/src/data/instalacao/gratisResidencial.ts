@@ -1,0 +1,248 @@
+import type { OsTemplateField } from '../../types/osTemplate'
+import type { OsTemplatePresetPayload } from '../osTemplatePresets'
+
+// Variantes de solicitação
+const T_TITULAR = 'titular'
+const T_TITULAR_TERCEIRO = 'titular_terceiro'
+const T_TERCEIRO_TERCEIRO = 'terceiro_terceiro'
+const T_TERCEIRO_TITULAR = 'terceiro_titular'
+
+const S_SOLICITACAO = 'TIPO DE SOLICITAÇÃO'
+const S_ID = 'IDENTIFICAÇÃO'
+const S_PLANO = 'PLANO E AGENDAMENTO'
+
+const CANAL_OPTIONS = [
+  { value: 'PRESENCIALMENTE', label: 'Presencialmente' },
+  { value: 'VIA LIGAÇÃO', label: 'Via ligação' },
+  { value: 'VIA WHATSAPP', label: 'Via WhatsApp' },
+  { value: 'VIA FACEBOOK', label: 'Via Facebook' },
+]
+
+const VENCIMENTO_OPTIONS = [
+  { value: '5', label: 'Dia 5' },
+  { value: '10', label: 'Dia 10' },
+  { value: '15', label: 'Dia 15' },
+  { value: '20', label: 'Dia 20' },
+  { value: '25', label: 'Dia 25' },
+]
+
+const HORA_OPTIONS = [
+  { value: 'ÀS 08:30 HORAS', label: '08:30' },
+  { value: 'ÀS 10:30 HORAS', label: '10:30' },
+  { value: 'ÀS 11:30 HORAS', label: '11:30 (sáb)' },
+  { value: 'ÀS 12:30 HORAS', label: '12:30 (sáb)' },
+  { value: 'ÀS 13:30 HORAS', label: '13:30' },
+  { value: 'ÀS 15:30 HORAS', label: '15:30' },
+  { value: 'ÀS 16:30 HORAS', label: '16:30' },
+  { value: 'NO PERÍODO DA MANHÃ', label: 'Período da manhã' },
+  { value: 'NO PERÍODO DA TARDE', label: 'Período da tarde' },
+]
+
+// Planos — valores idênticos ao legado (HTML grátis residencial)
+const PLANO_GRATIS_OPTIONS = [
+  // 150 Mega
+  { value: '150 MEGA; MENSALIDADE: R$59,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$59,90 (CDNTV)' },
+  { value: '150 MEGA; MENSALIDADE: R$80,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$80,00 + IP Dinâmico' },
+  { value: '150 MEGA; MENSALIDADE: R$259,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$259,90 + IP Fixo' },
+  // 300 Mega
+  { value: '300 MEGA; MENSALIDADE: R$69,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$69,90 (CDNTV)' },
+  { value: '300 MEGA; MENSALIDADE: R$90,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$90,00 + IP Dinâmico' },
+  { value: '300 MEGA; MENSALIDADE: R$269,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$269,90 + IP Fixo' },
+  { value: '300 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$104,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega + 1 Extend — R$104,90' },
+  // 600 Mega
+  { value: '600 MEGA; MENSALIDADE: R$79,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$79,90 (CDNTV)' },
+  { value: '600 MEGA; MENSALIDADE: R$100,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$100,00 + IP Dinâmico' },
+  { value: '600 MEGA; MENSALIDADE: R$279,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$279,90 + IP Fixo' },
+  { value: '600 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$114,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 1 Extend — R$114,90' },
+  { value: '600 MEGA + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$144,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 2 Extend — R$144,90' },
+  { value: '600 MEGA + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$174,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 3 Extend — R$174,90' },
+  // 1 Giga
+  { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$99,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$99,90 + VOD (CDNTV)' },
+  { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$120,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$120,00 + IP Dinâmico + VOD' },
+  { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$299,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$299,90 + IP Fixo + VOD' },
+  { value: '1 GIGA (1.000 MEGA) + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$134,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 1 Extend — R$134,90 + VOD' },
+  { value: '1 GIGA (1.000 MEGA) + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$164,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 2 Extend — R$164,90 + VOD' },
+  { value: '1 GIGA (1.000 MEGA) + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$194,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 3 Extend — R$194,90 + VOD' },
+  // ITTV — valor = texto visível (bug no HTML legado fez value = text content)
+  { value: '600 MEGA/94,90 + MZTV (CDNTV+) + DEEZER PREMIUM (1 LICENÇA)', label: '600 Mega — R$94,90 + Deezer Premium (ITTV)' },
+  { value: '600 MEGA/109,90 + MZTV (CDNTV+) + ITTV-PLUS (1 LICENÇA)', label: '600 Mega — R$109,90 + ITTV-Plus (ITTV)' },
+  { value: '1000 MEGA/114,90 + MZTV (CDNTV+) + VOD + DEEZER PREMIUM (1 LICENÇA)', label: '1 Giga — R$114,90 + VOD + Deezer Premium (ITTV)' },
+  { value: '1000 MEGA/129,90 + MZTV (CDNTV+) + VOD + ITTV-PLUS (1 LICENÇA)', label: '1 Giga — R$129,90 + VOD + ITTV-Plus (ITTV)' },
+]
+
+const INDICACAO_TECNICA = `INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.`
+
+export const INST_GRATIS_RESIDENCIAL_OUTPUT = [
+  '=== Texto Protocolo ===',
+  '{{instTextoProtocolo}}',
+  '',
+  '=== Texto O.S ===',
+  '{{instTextoOS}}',
+].join('\n')
+
+function upper(v: unknown): string {
+  return String(v ?? '').trim().toUpperCase()
+}
+
+function first(v: string): string {
+  return v.split(/\s+/).filter(Boolean)[0] ?? ''
+}
+
+function digits(v: string): string {
+  return v.replace(/\D/g, '')
+}
+
+export function buildInstGratisResidencialTextos(
+  rawValues: Record<string, unknown>,
+): Record<string, string> {
+  const v: Record<string, string> = {}
+  for (const [k, val] of Object.entries(rawValues)) v[k] = String(val ?? '')
+
+  const tipo = v.tipoSolicitacao || T_TITULAR
+  const cp = first(upper(v.cliente))
+  const sp = first(upper(v.solicitante || ''))
+  const solicitante = upper(v.solicitante || '')
+  const parente = upper(v.parente || '')
+  const canal = v.canal || ''
+  const canaisComContato = ['VIA LIGAÇÃO', 'VIA WHATSAPP']
+  const canalStr = canaisComContato.includes(canal)
+    ? `${canal} ${digits(v.contato || '')}`
+    : canal
+  const plano = v.plano || ''
+  const vencimento = v.vencimento || ''
+  const dataVisita = v.dataVisita || ''
+  const horaVisita = v.horaVisita || ''
+
+  const quem =
+    tipo === T_TERCEIRO_TERCEIRO || tipo === T_TERCEIRO_TITULAR
+      ? `${sp} (${parente} DE ${cp})`
+      : cp
+
+  const ending =
+    tipo === T_TITULAR || tipo === T_TERCEIRO_TITULAR
+      ? `${cp} ACOMPANHARÁ INSTALAÇÃO.`
+      : `${cp} ASSINOU CONTRATO DIGITALMENTE E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR INSTALAÇÃO.`
+
+  const textoProtocolo =
+    `${quem} SOLICITOU ${canalStr} A INSTALAÇÃO DE INTERNET PARA O ENDEREÇO CITADO NA O.S, ` +
+    `PLANO DE ACESSO: ${plano}; VENCIMENTO: DIA ${vencimento} DO MÊS; VIGÊNCIA DO CONTRATO: 12 MESES. ` +
+    `INSTALAÇÃO AGENDADA PARA ${dataVisita} ${horaVisita}. ${ending}`
+
+  return { instTextoProtocolo: textoProtocolo, instTextoOS: INDICACAO_TECNICA }
+}
+
+const TERCEIRO_SHOW: OsTemplateField['showWhen'] = {
+  field: 'tipoSolicitacao',
+  equals: [T_TITULAR_TERCEIRO, T_TERCEIRO_TERCEIRO, T_TERCEIRO_TITULAR],
+}
+
+export const INST_GRATIS_RESIDENCIAL_FIELDS: OsTemplateField[] = [
+  {
+    id: 'tipoSolicitacao',
+    label: 'Tipo de solicitação',
+    control: 'radio',
+    defaultValue: T_TITULAR,
+    highlight: true,
+    section: S_SOLICITACAO,
+    layout: { md: 12 },
+    options: [
+      { value: T_TITULAR, label: 'Titular solicita e acompanha' },
+      { value: T_TITULAR_TERCEIRO, label: 'Titular solicita e autoriza terceiro' },
+      { value: T_TERCEIRO_TERCEIRO, label: 'Terceiro solicita, titular autoriza terceiro' },
+      { value: T_TERCEIRO_TITULAR, label: 'Terceiro solicita, titular acompanha' },
+    ],
+  },
+  {
+    id: 'cliente',
+    label: 'Nome do titular (contrato)',
+    control: 'text',
+    placeholder: 'Nome completo',
+    section: S_ID,
+    layout: { md: 8 },
+  },
+  {
+    id: 'solicitante',
+    label: 'Nome do solicitante / terceiro',
+    control: 'text',
+    placeholder: 'Nome completo',
+    section: S_ID,
+    layout: { md: 8 },
+    showWhen: TERCEIRO_SHOW,
+  },
+  {
+    id: 'parente',
+    label: 'Parentesco / relação com o titular',
+    control: 'text',
+    placeholder: 'Ex.: ESPOSA, FILHO, VIZINHO',
+    section: S_ID,
+    layout: { md: 4 },
+    showWhen: TERCEIRO_SHOW,
+  },
+  {
+    id: 'canal',
+    label: 'Canal de atendimento',
+    control: 'select',
+    section: S_ID,
+    layout: { md: 4 },
+    options: CANAL_OPTIONS,
+  },
+  {
+    id: 'contato',
+    label: 'Número de contato',
+    control: 'phone',
+    placeholder: 'Somente os números',
+    section: S_ID,
+    layout: { md: 4 },
+    showWhen: { field: 'canal', equals: ['VIA LIGAÇÃO', 'VIA WHATSAPP'] },
+  },
+  {
+    id: 'plano',
+    label: 'Plano de acesso',
+    control: 'select',
+    section: S_PLANO,
+    layout: { md: 12 },
+    options: PLANO_GRATIS_OPTIONS,
+  },
+  {
+    id: 'vencimento',
+    label: 'Dia de vencimento',
+    control: 'select',
+    section: S_PLANO,
+    layout: { md: 3 },
+    options: VENCIMENTO_OPTIONS,
+  },
+  {
+    id: 'dataVisita',
+    label: 'Data da instalação',
+    control: 'date',
+    section: S_PLANO,
+    layout: { md: 4 },
+  },
+  {
+    id: 'horaVisita',
+    label: 'Horário da instalação',
+    control: 'select',
+    section: S_PLANO,
+    layout: { md: 4 },
+    options: HORA_OPTIONS,
+  },
+]
+
+export function getInstGratisResidencialDefaults(): OsTemplatePresetPayload {
+  return {
+    slug: 'inst-gratis-residencial',
+    title: 'Instalação grátis — Residencial (PF)',
+    demandCategory: 'instalacao-gratis',
+    outputTemplate: INST_GRATIS_RESIDENCIAL_OUTPUT,
+    fields: INST_GRATIS_RESIDENCIAL_FIELDS.map((f) => ({ ...f })),
+    operatorGuidance: {
+      title: 'Orientação — Instalação grátis residencial',
+      items: [
+        'Selecione o tipo de solicitação que corresponde à situação: quem ligou e quem estará presente na instalação.',
+        'Para variantes com terceiro, informe o nome completo do terceiro e o parentesco/relação com o titular.',
+        'O canal PRESENCIALMENTE e VIA FACEBOOK não requerem número de contato.',
+        'Confira o plano e o dia de vencimento escolhidos antes de gerar.',
+      ],
+    },
+  }
+}

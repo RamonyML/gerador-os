@@ -40,6 +40,10 @@ import { getMudEndEquipamentosDefaults } from './mudEnd/equipamentos'
 import { getMudEndAltplanPropostaDefaults } from './mudEnd/altplanProposta'
 import { getMudEndAltplanPagoDefaults } from './mudEnd/altplanPago'
 import { getMudEndInviabilidadeDefaults } from './mudEnd/inviabilidade'
+import { getInstGratisResidencialDefaults } from './instalacao/gratisResidencial'
+import { getInstGratisEmpresarialDefaults } from './instalacao/gratisEmpresarial'
+import { getInstTaxaResidencialDefaults } from './instalacao/taxaResidencial'
+import { getInstTaxaEmpresarialDefaults } from './instalacao/taxaEmpresarial'
 import type { OsOperatorGuidance, OsTemplateField } from '../types/osTemplate'
 
 /** Retorno comum para definir um fluxo de O.S em código. */
@@ -319,6 +323,30 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Feedback',
     label: 'Feedback — Wi-Fi Extend',
     getDefaults: getFeedbackWifiExtendDefaults,
+  },
+  {
+    id: 'inst-gratis-residencial',
+    category: 'Instalação',
+    label: 'Instalação grátis — Residencial (PF)',
+    getDefaults: getInstGratisResidencialDefaults,
+  },
+  {
+    id: 'inst-gratis-empresarial',
+    category: 'Instalação',
+    label: 'Instalação grátis — Empresarial (PJ)',
+    getDefaults: getInstGratisEmpresarialDefaults,
+  },
+  {
+    id: 'inst-taxa-residencial',
+    category: 'Instalação',
+    label: 'Instalação com taxa — Residencial (PF)',
+    getDefaults: getInstTaxaResidencialDefaults,
+  },
+  {
+    id: 'inst-taxa-empresarial',
+    category: 'Instalação',
+    label: 'Instalação com taxa — Empresarial (PJ)',
+    getDefaults: getInstTaxaEmpresarialDefaults,
   },
 ]
 

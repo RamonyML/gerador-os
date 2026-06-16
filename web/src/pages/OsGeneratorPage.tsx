@@ -79,6 +79,11 @@ import { buildFeedbackMudancaPontoTextos } from '../data/feedback/mudancaPonto'
 import { buildFeedbackAltplanTextos } from '../data/feedback/altplan'
 import { buildFeedbackStbRokuTextos } from '../data/feedback/stbRoku'
 import { buildFeedbackWifiExtendTextos } from '../data/feedback/wifiExtend'
+import { buildInstGratisResidencialTextos } from '../data/instalacao/gratisResidencial'
+import { buildInstGratisEmpresarialTextos } from '../data/instalacao/gratisEmpresarial'
+import { buildInstTaxaResidencialTextos } from '../data/instalacao/taxaResidencial'
+import { buildInstTaxaEmpresarialTextos } from '../data/instalacao/taxaEmpresarial'
+import { isKnownCadastroDemandCategory } from '../data/cadastroDemands'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -92,6 +97,8 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   'wifi-extend': '/suporte/wifi-extend',
   'termo-docs': '/suporte/termos-documentos',
   feedback: '/suporte/feedback',
+  'instalacao-gratis': '/cadastro/instalacao-gratis',
+  'instalacao-taxa': '/cadastro/instalacao-taxa',
 }
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
@@ -125,10 +132,11 @@ export function OsGeneratorPage() {
   const slugParam = searchParams.get('slug')
 
   const visibleTemplates = useMemo(() => {
-    if (!demandParam || !isKnownDemandCategory(demandParam)) {
-      return templates
+    if (!demandParam) return templates
+    if (isKnownDemandCategory(demandParam) || isKnownCadastroDemandCategory(demandParam)) {
+      return templatesMatchingDemand(templates, demandParam)
     }
-    return templatesMatchingDemand(templates, demandParam)
+    return templates
   }, [templates, demandParam])
 
   const demandMeta = useMemo(
@@ -521,6 +529,14 @@ export function OsGeneratorPage() {
       Object.assign(base, buildFeedbackStbRokuTextos(values))
     } else if (selected?.slug === 'feedback-wifi-extend') {
       Object.assign(base, buildFeedbackWifiExtendTextos(values))
+    } else if (selected?.slug === 'inst-gratis-residencial') {
+      Object.assign(base, buildInstGratisResidencialTextos(values))
+    } else if (selected?.slug === 'inst-gratis-empresarial') {
+      Object.assign(base, buildInstGratisEmpresarialTextos(values))
+    } else if (selected?.slug === 'inst-taxa-residencial') {
+      Object.assign(base, buildInstTaxaResidencialTextos(values))
+    } else if (selected?.slug === 'inst-taxa-empresarial') {
+      Object.assign(base, buildInstTaxaEmpresarialTextos(values))
     }
     return base
   }, [values, profile, user, selected?.slug])

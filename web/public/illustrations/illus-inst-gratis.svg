@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320">
+  <!-- Background ring -->
+  <circle cx="188" cy="195" r="142" fill="#38af47" opacity="0.05"/>
+  <circle cx="188" cy="195" r="100" fill="#38af47" opacity="0.05"/>
+
+  <!-- WiFi signal arcs (above router) -->
+  <path d="M148 152 Q188 116 228 152" stroke="#38af47" stroke-width="5.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <path d="M120 126 Q188 84 256 126" stroke="#38af47" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M92 100 Q188 52 284 100" stroke="#38af47" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.32"/>
+  <!-- Dot -->
+  <circle cx="188" cy="166" r="8" fill="#2e7d32"/>
+
+  <!-- Router body -->
+  <rect x="120" y="174" width="136" height="72" rx="14" fill="#2e7d32"/>
+  <!-- Inner highlight -->
+  <rect x="130" y="183" width="116" height="22" rx="7" fill="#196e2e" opacity="0.45"/>
+  <!-- LEDs -->
+  <circle cx="158" cy="216" r="5.5" fill="#38af47"/>
+  <circle cx="178" cy="216" r="5.5" fill="#38af47" opacity="0.55"/>
+  <circle cx="198" cy="216" r="5.5" fill="#38af47" opacity="0.28"/>
+  <!-- Bottom strip -->
+  <rect x="130" y="228" width="116" height="11" rx="4" fill="#196e2e" opacity="0.3"/>
+  <!-- Antennas -->
+  <rect x="140" y="152" width="7" height="30" rx="3.5" fill="#196e2e"/>
+  <rect x="229" y="152" width="7" height="30" rx="3.5" fill="#196e2e"/>
+
+  <!-- Gift star badge (upper-right) -->
+  <circle cx="305" cy="110" r="42" fill="#FEF3C7" opacity="0.6"/>
+  <circle cx="305" cy="110" r="32" fill="#F59E0B" opacity="0.22"/>
+  <!-- 5-pointed star centered at (305,110) outer r=22 inner r=9 -->
+  <path d="M305 88 L309.7 102.7 L325 103.4 L313.7 112.8 L317.8 128 L305 119.8 L292.2 128 L296.3 112.8 L285 103.4 L300.3 102.7 Z" fill="#F59E0B"/>
+
+  <!-- Gift ribbon cross over badge circle -->
+  <line x1="305" y1="78" x2="305" y2="142" stroke="#F59E0B" stroke-width="3" opacity="0.35"/>
+  <line x1="263" y1="110" x2="347" y2="110" stroke="#F59E0B" stroke-width="3" opacity="0.35"/>
+
+  <!-- Router shadow -->
+  <ellipse cx="188" cy="250" rx="74" ry="9" fill="#2e7d32" opacity="0.14"/>
+
+  <!-- Floating dots -->
+  <circle cx="68" cy="198" r="7" fill="#38af47" opacity="0.1"/>
+  <circle cx="56" cy="218" r="5" fill="#38af47" opacity="0.07"/>
+  <circle cx="352" cy="222" r="6" fill="#38af47" opacity="0.09"/>
+  <circle cx="368" cy="202" r="4" fill="#38af47" opacity="0.06"/>
+</svg>
