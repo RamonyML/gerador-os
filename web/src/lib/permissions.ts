@@ -56,3 +56,10 @@ export function canManageNotices(profile: UserProfile | null): boolean {
   if (profile.isDev === true || profile.isAdmin === true) return true
   return profile.hierarchy === 'gerente'
 }
+
+/** Criar, editar e excluir modelos de O.S. */
+export function canManageModelosOs(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.hierarchy === 'gerente'
+}
