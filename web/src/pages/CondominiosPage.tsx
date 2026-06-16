@@ -34,6 +34,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
+import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../lib/firebase'
@@ -45,7 +46,9 @@ import {
   importCondominios,
   subscribeCondominios,
   updateCondominio,
+  updateCondominioLocation,
 } from '../lib/condominiosFirestore'
+import { geocodeCondominio, hasGeocodableAddress } from '../lib/condominiosGeocode'
 import {
   CONDOMINIO_CATEGORIA_LABELS,
   emptyCondominioDraft,
@@ -190,6 +193,9 @@ export function CondominiosPage() {
   const [importing, setImporting] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
 
+  const [geocoding, setGeocoding] = useState(false)
+  const [geocodeProgress, setGeocodeProgress] = useState({ done: 0, total: 0 })
+
   useEffect(() => {
     const unsub = subscribeCondominios(
       db,
@@ -248,6 +254,9 @@ export function CondominiosPage() {
       dataTentativa: c.dataTentativa,
       novaVistoria: c.novaVistoria,
       tecnicoResponsavel: c.tecnicoResponsavel,
+      lat: c.lat,
+      lng: c.lng,
+      geocodeStatus: c.geocodeStatus,
     })
     setActionError(null)
     setFormOpen(true)
@@ -261,16 +270,75 @@ export function CondominiosPage() {
     setSaving(true)
     setActionError(null)
     try {
+      const original = editingId ? items.find((i) => i.id === editingId) ?? null : null
+      const addressChanged =
+        !original ||
+        original.rua !== draft.rua.trim() ||
+        original.numero !== draft.numero.trim() ||
+        original.bairro !== draft.bairro.trim() ||
+        original.cep !== draft.cep.trim()
+      const alreadyLocated =
+        original?.geocodeStatus === 'ok' &&
+        original.lat != null &&
+        original.lng != null
+
+      let next = draft
+      if (hasGeocodableAddress(draft) && (addressChanged || !alreadyLocated)) {
+        try {
+          const loc = await geocodeCondominio(draft)
+          next = loc
+            ? { ...draft, lat: loc.lat, lng: loc.lng, geocodeStatus: 'ok' }
+            : { ...draft, lat: null, lng: null, geocodeStatus: 'failed' }
+        } catch {
+          next = { ...draft, lat: null, lng: null, geocodeStatus: 'failed' }
+        }
+      }
+
       if (editingId) {
-        await updateCondominio(db, editingId, draft)
+        await updateCondominio(db, editingId, next)
       } else {
-        await createCondominio(db, draft)
+        await createCondominio(db, next)
       }
       setFormOpen(false)
     } catch (e) {
       setActionError(e instanceof Error ? e.message : 'Falha ao salvar.')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const pendingGeocode = useMemo(
+    () =>
+      items.filter(
+        (i) => i.geocodeStatus !== 'ok' && hasGeocodableAddress(i),
+      ),
+    [items],
+  )
+
+  const runGeocodePending = async () => {
+    if (pendingGeocode.length === 0 || geocoding) return
+    setGeocoding(true)
+    setActionError(null)
+    setGeocodeProgress({ done: 0, total: pendingGeocode.length })
+    try {
+      for (let idx = 0; idx < pendingGeocode.length; idx++) {
+        const c = pendingGeocode[idx]!
+        try {
+          const loc = await geocodeCondominio(c)
+          await updateCondominioLocation(db, c.id, loc)
+        } catch {
+          try {
+            await updateCondominioLocation(db, c.id, null)
+          } catch {
+            // ignora falha individual e segue para o próximo
+          }
+        }
+        setGeocodeProgress({ done: idx + 1, total: pendingGeocode.length })
+        // Respeita o limite do Nominatim (1 req/s) entre as buscas.
+        await new Promise((resolve) => setTimeout(resolve, 1100))
+      }
+    } finally {
+      setGeocoding(false)
     }
   }
 
@@ -352,13 +420,37 @@ export function CondominiosPage() {
         illustrationAlt="Condomínios e viabilidade de fibra"
         headerRight={
           canManage && items.length > 0 ? (
-            <Button
-              variant="contained"
-              startIcon={<AddRoundedIcon />}
-              onClick={openCreate}
-            >
-              Adicionar
-            </Button>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              {pendingGeocode.length > 0 ? (
+                <Tooltip title="Geocodificar os condomínios sem localização para exibi-los no mapa de cobertura">
+                  <span>
+                    <Button
+                      variant="outlined"
+                      startIcon={
+                        geocoding ? (
+                          <CircularProgress size={16} color="inherit" />
+                        ) : (
+                          <MyLocationOutlinedIcon />
+                        )
+                      }
+                      onClick={() => void runGeocodePending()}
+                      disabled={geocoding}
+                    >
+                      {geocoding
+                        ? `Geolocalizando ${geocodeProgress.done}/${geocodeProgress.total}…`
+                        : `Geolocalizar pendentes (${pendingGeocode.length})`}
+                    </Button>
+                  </span>
+                </Tooltip>
+              ) : null}
+              <Button
+                variant="contained"
+                startIcon={<AddRoundedIcon />}
+                onClick={openCreate}
+              >
+                Adicionar
+              </Button>
+            </Stack>
           ) : undefined
         }
       >

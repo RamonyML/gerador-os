@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Container,
+  Divider,
+  FormControlLabel,
   InputAdornment,
   Paper,
   Stack,
@@ -18,8 +22,18 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined'
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, CircleMarker, Tooltip as LeafletTooltip } from 'react-leaflet'
-import type { Map as LeafletMap, PathOptions } from 'leaflet'
+import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded'
+import {
+  MapContainer,
+  TileLayer,
+  GeoJSON,
+  Marker,
+  Popup,
+  CircleMarker,
+  Pane,
+  Tooltip as LeafletTooltip,
+} from 'react-leaflet'
+import type { CircleMarker as LeafletCircleMarker, Map as LeafletMap, PathOptions } from 'leaflet'
 import L from 'leaflet'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import 'leaflet/dist/leaflet.css'
@@ -40,6 +54,15 @@ import {
   fetchCepWithFallback,
   normalizeCepInput,
 } from '../lib/cepLookup'
+import { useAuth } from '../contexts/AuthContext'
+import { db } from '../lib/firebase'
+import { canAccessCondominios } from '../lib/condominiosAccess'
+import { subscribeCondominios } from '../lib/condominiosFirestore'
+import {
+  CONDOMINIO_CATEGORIA_LABELS,
+  type Condominio,
+  type CondominioCategoria,
+} from '../types/condominio'
 
 // Corrige os ícones padrão do Leaflet quando empacotado pelo Vite.
 L.Icon.Default.mergeOptions({
@@ -92,9 +115,74 @@ function shortName(name?: string): string {
   return first || 'Sem nome'
 }
 
+/** Condomínio que já possui coordenadas e pode ser plotado no mapa. */
+type LocatedCondominio = Condominio & { lat: number; lng: number }
+
+function isLocated(c: Condominio): c is LocatedCondominio {
+  return c.lat != null && c.lng != null && c.geocodeStatus === 'ok'
+}
+
+/**
+ * Marcador de um condomínio no mapa. Reage à seleção crescendo e abrindo o
+ * popup automaticamente — o que permite destacar o item escolhido na busca.
+ */
+function CondoMarker({
+  condo,
+  color,
+  selected,
+  onSelect,
+}: {
+  condo: LocatedCondominio
+  color: string
+  selected: boolean
+  onSelect: (id: string) => void
+}) {
+  const ref = useRef<LeafletCircleMarker | null>(null)
+
+  useEffect(() => {
+    if (selected) ref.current?.openPopup()
+  }, [selected])
+
+  return (
+    <CircleMarker
+      ref={ref}
+      center={[condo.lat, condo.lng]}
+      radius={selected ? 11 : 7}
+      pathOptions={{
+        color: selected ? color : '#ffffff',
+        weight: selected ? 3 : 1.5,
+        fillColor: color,
+        fillOpacity: 0.9,
+      }}
+      eventHandlers={{ click: () => onSelect(condo.id) }}
+    >
+      <Popup>
+        <strong>{condo.nome}</strong>
+        <br />
+        {CONDOMINIO_CATEGORIA_LABELS[condo.categoria]}
+        {condo.bairro ? ` · ${condo.bairro}` : ''}
+        {[condo.rua, condo.numero].filter(Boolean).length > 0 ? (
+          <>
+            <br />
+            {[condo.rua, condo.numero].filter(Boolean).join(', ')}
+          </>
+        ) : null}
+        {condo.obs ? (
+          <>
+            <br />
+            <em>{condo.obs}</em>
+          </>
+        ) : null}
+      </Popup>
+    </CircleMarker>
+  )
+}
+
 export function CoberturaPage() {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
+  const { profile } = useAuth()
+  const canSeeCondominios = canAccessCondominios(profile)
   const [state, setState] = useState<LoadState>({ status: 'loading' })
   const [cep, setCep] = useState('')
   const [endereco, setEndereco] = useState('')
@@ -103,6 +191,62 @@ export function CoberturaPage() {
   const [result, setResult] = useState<SearchResult | null>(null)
   const mapRef = useRef<LeafletMap | null>(null)
   const fittedRef = useRef(false)
+
+  const [condominios, setCondominios] = useState<Condominio[]>([])
+  const [condoFilters, setCondoFilters] = useState<
+    Record<CondominioCategoria, boolean>
+  >({ viavel: true, inviavel: true })
+  const [selectedCondoId, setSelectedCondoId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!canSeeCondominios) return
+    const unsub = subscribeCondominios(
+      db,
+      (list) => setCondominios(list),
+      () => setCondominios([]),
+    )
+    return unsub
+  }, [canSeeCondominios])
+
+  const locatedCondos = useMemo(
+    () => condominios.filter(isLocated),
+    [condominios],
+  )
+
+  const condoCounts = useMemo(
+    () => ({
+      viavel: locatedCondos.filter((c) => c.categoria === 'viavel').length,
+      inviavel: locatedCondos.filter((c) => c.categoria === 'inviavel').length,
+    }),
+    [locatedCondos],
+  )
+
+  const missingLocation = useMemo(
+    () => condominios.filter((c) => !isLocated(c)).length,
+    [condominios],
+  )
+
+  const visibleCondos = useMemo(
+    () => locatedCondos.filter((c) => condoFilters[c.categoria]),
+    [locatedCondos, condoFilters],
+  )
+
+  const condoColor = (categoria: CondominioCategoria) =>
+    categoria === 'viavel'
+      ? theme.palette.success.main
+      : theme.palette.error.main
+
+  const handleSelectCondo = (condo: LocatedCondominio | null) => {
+    if (!condo) {
+      setSelectedCondoId(null)
+      return
+    }
+    setSelectedCondoId(condo.id)
+    if (!condoFilters[condo.categoria]) {
+      setCondoFilters((prev) => ({ ...prev, [condo.categoria]: true }))
+    }
+    mapRef.current?.flyTo([condo.lat, condo.lng], 17, { duration: 0.8 })
+  }
 
   const load = () => {
     const controller = new AbortController()
@@ -370,6 +514,148 @@ export function CoberturaPage() {
             </Stack>
           </Paper>
 
+          {canSeeCondominios ? (
+            <Paper
+              variant="outlined"
+              sx={{ p: { xs: 2, sm: 2.5 }, borderRadius: 3, bgcolor: 'background.paper' }}
+            >
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                  <ApartmentRoundedIcon fontSize="small" color="action" />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    Condomínios no mapa
+                  </Typography>
+                </Stack>
+
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  spacing={1.5}
+                  sx={{ alignItems: { md: 'center' } }}
+                >
+                  <Autocomplete
+                    size="small"
+                    sx={{ flex: 1, minWidth: { xs: '100%', md: 280 } }}
+                    options={locatedCondos}
+                    value={
+                      locatedCondos.find((c) => c.id === selectedCondoId) ?? null
+                    }
+                    onChange={(_, value) => handleSelectCondo(value)}
+                    getOptionLabel={(o) => o.nome}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    noOptionsText="Nenhum condomínio localizado"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Buscar e destacar condomínio"
+                        placeholder="Digite o nome do condomínio…"
+                        slotProps={{
+                          ...params.slotProps,
+                          input: {
+                            ...params.slotProps.input,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchRoundedIcon fontSize="small" color="action" />
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    )}
+                    renderOption={(props, option) => {
+                      const { key, ...optionProps } = props
+                      return (
+                      <Box component="li" key={key} {...optionProps}>
+                        <Box
+                          sx={{
+                            width: 10,
+                            height: 10,
+                            borderRadius: '50%',
+                            bgcolor: condoColor(option.categoria),
+                            mr: 1.5,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            {option.nome}
+                          </Typography>
+                          {option.bairro ? (
+                            <Typography variant="caption" color="text.secondary">
+                              {option.bairro}
+                            </Typography>
+                          ) : null}
+                        </Box>
+                      </Box>
+                      )
+                    }}
+                  />
+
+                  <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={condoFilters.viavel}
+                          onChange={(e) =>
+                            setCondoFilters((prev) => ({
+                              ...prev,
+                              viavel: e.target.checked,
+                            }))
+                          }
+                          sx={{
+                            color: theme.palette.success.main,
+                            '&.Mui-checked': { color: theme.palette.success.main },
+                          }}
+                        />
+                      }
+                      label={`${CONDOMINIO_CATEGORIA_LABELS.viavel} (${condoCounts.viavel})`}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={condoFilters.inviavel}
+                          onChange={(e) =>
+                            setCondoFilters((prev) => ({
+                              ...prev,
+                              inviavel: e.target.checked,
+                            }))
+                          }
+                          sx={{
+                            color: theme.palette.error.main,
+                            '&.Mui-checked': { color: theme.palette.error.main },
+                          }}
+                        />
+                      }
+                      label={`${CONDOMINIO_CATEGORIA_LABELS.inviavel} (${condoCounts.inviavel})`}
+                    />
+                  </Stack>
+                </Stack>
+
+                {missingLocation > 0 ? (
+                  <>
+                    <Divider />
+                    <Stack
+                      direction="row"
+                      spacing={0.75}
+                      sx={{ alignItems: 'flex-start', color: 'text.secondary' }}
+                    >
+                      <InfoOutlinedIcon fontSize="small" sx={{ mt: '1px', flexShrink: 0 }} />
+                      <Typography variant="caption" sx={{ lineHeight: 1.5 }}>
+                        {missingLocation}{' '}
+                        {missingLocation === 1
+                          ? 'condomínio ainda sem localização e não aparece no mapa'
+                          : 'condomínios ainda sem localização e não aparecem no mapa'}
+                        . Use "Geolocalizar pendentes" na tela de Condomínios para
+                        posicioná-los.
+                      </Typography>
+                    </Stack>
+                  </>
+                ) : null}
+              </Stack>
+            </Paper>
+          ) : null}
+
           <Paper
             variant="outlined"
             sx={{
@@ -437,37 +723,53 @@ export function CoberturaPage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {coverage ? (
-                <GeoJSON
-                  key={`cov-${polygonsFc.features.length}`}
-                  data={polygonsFc}
-                  style={() => polygonStyle}
-                  onEachFeature={(feature: CoverageFeature, layer) => {
-                    const name = feature.properties?.name
-                    if (name) layer.bindTooltip(shortName(name), { sticky: true })
-                  }}
-                />
-              ) : null}
-              {coverage?.points.map((p, i) => {
-                const geom = p.geometry
-                if (!geom || geom.type !== 'Point') return null
-                const [lng, lat] = geom.coordinates
-                return (
-                  <CircleMarker
-                    key={`pt-${i}`}
-                    center={[lat!, lng!]}
-                    radius={5}
-                    pathOptions={{
-                      color: theme.palette.primary.main,
-                      fillColor: theme.palette.primary.main,
-                      fillOpacity: 0.85,
-                      weight: 1,
+              <Pane name="coverage-polygons" style={{ zIndex: 390 }}>
+                {coverage ? (
+                  <GeoJSON
+                    key={`cov-${polygonsFc.features.length}`}
+                    data={polygonsFc}
+                    interactive={false}
+                    style={() => polygonStyle}
+                    onEachFeature={(feature: CoverageFeature, layer) => {
+                      const name = feature.properties?.name
+                      if (name) layer.bindTooltip(shortName(name), { sticky: true })
                     }}
-                  >
-                    <LeafletTooltip>{shortName(p.properties?.name)}</LeafletTooltip>
-                  </CircleMarker>
-                )
-              })}
+                  />
+                ) : null}
+              </Pane>
+              <Pane name="coverage-points" style={{ zIndex: 610 }}>
+                {coverage?.points.map((p, i) => {
+                  const geom = p.geometry
+                  if (!geom || geom.type !== 'Point') return null
+                  const [lng, lat] = geom.coordinates
+                  return (
+                    <CircleMarker
+                      key={`pt-${i}`}
+                      center={[lat!, lng!]}
+                      radius={5}
+                      pathOptions={{
+                        color: theme.palette.primary.main,
+                        fillColor: theme.palette.primary.main,
+                        fillOpacity: 0.85,
+                        weight: 1,
+                      }}
+                    >
+                      <LeafletTooltip>{shortName(p.properties?.name)}</LeafletTooltip>
+                    </CircleMarker>
+                  )
+                })}
+              </Pane>
+              <Pane name="condominio-markers" style={{ zIndex: 650 }}>
+                {visibleCondos.map((c) => (
+                  <CondoMarker
+                    key={`condo-${c.id}`}
+                    condo={c}
+                    color={condoColor(c.categoria)}
+                    selected={c.id === selectedCondoId}
+                    onSelect={setSelectedCondoId}
+                  />
+                ))}
+              </Pane>
               {result ? (
                 <Marker
                   position={[result.lat, result.lng]}

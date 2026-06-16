@@ -16,14 +16,20 @@ import {
 } from 'firebase/firestore'
 import {
   isCondominioCategoria,
+  isCondominioGeocodeStatus,
   type Condominio,
   type CondominioDraft,
+  type CondominioGeocodeStatus,
 } from '../types/condominio'
 
 const COLLECTION = 'condominios'
 
 function str(v: unknown): string {
   return typeof v === 'string' ? v : ''
+}
+
+function numOrNull(v: unknown): number | null {
+  return typeof v === 'number' && Number.isFinite(v) ? v : null
 }
 
 function dateOrNull(v: unknown): Date | null {
@@ -37,6 +43,15 @@ function parseCondominio(
   if (!isCondominioCategoria(data.categoria)) return null
   const nome = str(data.nome)
   if (!nome) return null
+  const lat = numOrNull(data.lat)
+  const lng = numOrNull(data.lng)
+  const geocodeStatus: CondominioGeocodeStatus = isCondominioGeocodeStatus(
+    data.geocodeStatus,
+  )
+    ? data.geocodeStatus
+    : lat != null && lng != null
+      ? 'ok'
+      : 'pending'
   return {
     id,
     categoria: data.categoria,
@@ -51,6 +66,10 @@ function parseCondominio(
     dataTentativa: str(data.dataTentativa),
     novaVistoria: str(data.novaVistoria),
     tecnicoResponsavel: str(data.tecnicoResponsavel),
+    lat,
+    lng,
+    geocodeStatus,
+    geocodedAt: dateOrNull(data.geocodedAt),
     createdAt: dateOrNull(data.createdAt),
     updatedAt: dateOrNull(data.updatedAt),
   }
@@ -58,6 +77,8 @@ function parseCondominio(
 
 /** Normaliza um rascunho garantindo strings em todos os campos de texto. */
 function normalizeDraft(draft: CondominioDraft): CondominioDraft {
+  const lat = numOrNull(draft.lat)
+  const lng = numOrNull(draft.lng)
   return {
     categoria: draft.categoria,
     nome: draft.nome.trim(),
@@ -71,6 +92,13 @@ function normalizeDraft(draft: CondominioDraft): CondominioDraft {
     dataTentativa: str(draft.dataTentativa).trim(),
     novaVistoria: str(draft.novaVistoria).trim(),
     tecnicoResponsavel: str(draft.tecnicoResponsavel).trim(),
+    lat,
+    lng,
+    geocodeStatus: isCondominioGeocodeStatus(draft.geocodeStatus)
+      ? draft.geocodeStatus
+      : lat != null && lng != null
+        ? 'ok'
+        : 'pending',
   }
 }
 
@@ -98,8 +126,10 @@ export async function createCondominio(
   db: Firestore,
   draft: CondominioDraft,
 ): Promise<string> {
+  const normalized = normalizeDraft(draft)
   const ref = await addDoc(collection(db, COLLECTION), {
-    ...normalizeDraft(draft),
+    ...normalized,
+    geocodedAt: normalized.geocodeStatus === 'ok' ? serverTimestamp() : null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
@@ -111,10 +141,40 @@ export async function updateCondominio(
   id: string,
   draft: CondominioDraft,
 ): Promise<void> {
+  const normalized = normalizeDraft(draft)
   await updateDoc(doc(db, COLLECTION, id), {
-    ...normalizeDraft(draft),
+    ...normalized,
+    geocodedAt: normalized.geocodeStatus === 'ok' ? serverTimestamp() : null,
     updatedAt: serverTimestamp(),
   })
+}
+
+/**
+ * Atualiza apenas a localização geocodificada de um condomínio, sem tocar nos
+ * demais campos. Usado pela rotina "Geolocalizar pendentes".
+ */
+export async function updateCondominioLocation(
+  db: Firestore,
+  id: string,
+  location: { lat: number; lng: number } | null,
+): Promise<void> {
+  if (location) {
+    await updateDoc(doc(db, COLLECTION, id), {
+      lat: location.lat,
+      lng: location.lng,
+      geocodeStatus: 'ok',
+      geocodedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
+  } else {
+    await updateDoc(doc(db, COLLECTION, id), {
+      lat: null,
+      lng: null,
+      geocodeStatus: 'failed',
+      geocodedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
+  }
 }
 
 export async function deleteCondominio(db: Firestore, id: string): Promise<void> {
