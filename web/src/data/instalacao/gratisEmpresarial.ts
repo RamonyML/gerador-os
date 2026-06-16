@@ -31,30 +31,38 @@ const HORA_OPTIONS = [
   { value: 'NO PERÍODO DA TARDE', label: 'Período da tarde' },
 ]
 
-const PLANO_GRATIS_OPTIONS = [
+const PLANO_150 = [
   { value: '150 MEGA; MENSALIDADE: R$59,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$59,90 (CDNTV)' },
   { value: '150 MEGA; MENSALIDADE: R$80,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$80,00 + IP Dinâmico' },
   { value: '150 MEGA; MENSALIDADE: R$259,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$259,90 + IP Fixo' },
+]
+const PLANO_300 = [
   { value: '300 MEGA; MENSALIDADE: R$69,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$69,90 (CDNTV)' },
   { value: '300 MEGA; MENSALIDADE: R$90,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$90,00 + IP Dinâmico' },
   { value: '300 MEGA; MENSALIDADE: R$269,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$269,90 + IP Fixo' },
   { value: '300 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$104,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega + 1 Extend — R$104,90' },
+]
+const PLANO_600 = [
   { value: '600 MEGA; MENSALIDADE: R$79,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$79,90 (CDNTV)' },
   { value: '600 MEGA; MENSALIDADE: R$100,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$100,00 + IP Dinâmico' },
   { value: '600 MEGA; MENSALIDADE: R$279,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$279,90 + IP Fixo' },
   { value: '600 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$114,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 1 Extend — R$114,90' },
   { value: '600 MEGA + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$144,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 2 Extend — R$144,90' },
   { value: '600 MEGA + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$174,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 3 Extend — R$174,90' },
-  { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$99,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$99,90 + VOD (CDNTV)' },
+]
+const PLANO_1G = [
+  { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$99,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$99,90 + VOD' },
   { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$120,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$120,00 + IP Dinâmico + VOD' },
   { value: '1 GIGA (1.000 MEGA); MENSALIDADE: R$299,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$299,90 + IP Fixo + VOD' },
   { value: '1 GIGA (1.000 MEGA) + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$134,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 1 Extend — R$134,90 + VOD' },
   { value: '1 GIGA (1.000 MEGA) + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$164,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 2 Extend — R$164,90 + VOD' },
   { value: '1 GIGA (1.000 MEGA) + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$194,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 3 Extend — R$194,90 + VOD' },
-  { value: '600 MEGA/94,90 + MZTV (CDNTV+) + DEEZER PREMIUM (1 LICENÇA)', label: '600 Mega — R$94,90 + Deezer Premium (ITTV)' },
-  { value: '600 MEGA/109,90 + MZTV (CDNTV+) + ITTV-PLUS (1 LICENÇA)', label: '600 Mega — R$109,90 + ITTV-Plus (ITTV)' },
-  { value: '1000 MEGA/114,90 + MZTV (CDNTV+) + VOD + DEEZER PREMIUM (1 LICENÇA)', label: '1 Giga — R$114,90 + VOD + Deezer Premium (ITTV)' },
-  { value: '1000 MEGA/129,90 + MZTV (CDNTV+) + VOD + ITTV-PLUS (1 LICENÇA)', label: '1 Giga — R$129,90 + VOD + ITTV-Plus (ITTV)' },
+]
+const PLANO_ITTV = [
+  { value: '600 MEGA/94,90 + MZTV (CDNTV+) + DEEZER PREMIUM (1 LICENÇA)', label: '600 Mega — R$94,90 + Deezer Premium' },
+  { value: '600 MEGA/109,90 + MZTV (CDNTV+) + ITTV-PLUS (1 LICENÇA)', label: '600 Mega — R$109,90 + ITTV-Plus' },
+  { value: '1000 MEGA/114,90 + MZTV (CDNTV+) + VOD + DEEZER PREMIUM (1 LICENÇA)', label: '1 Giga — R$114,90 + VOD + Deezer Premium' },
+  { value: '1000 MEGA/129,90 + MZTV (CDNTV+) + VOD + ITTV-PLUS (1 LICENÇA)', label: '1 Giga — R$129,90 + VOD + ITTV-Plus' },
 ]
 
 const INDICACAO_TECNICA = `INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.`
@@ -87,7 +95,8 @@ export function buildInstGratisEmpresarialTextos(
   const canalStr = canaisComContato.includes(canal)
     ? `${canal} ${digits(v.contato || '')}`
     : canal
-  const plano = v.plano || ''
+  const filtroPlano = v.filtroPlano || '150'
+  const plano = ({ '150': v.plano150, '300': v.plano300, '600': v.plano600, '1g': v.plano1g, 'ittv': v.planoIttv } as Record<string, string>)[filtroPlano] ?? ''
   const vencimento = v.vencimento || ''
   const dataVisita = v.dataVisita || ''
   const horaVisita = v.horaVisita || ''
@@ -144,13 +153,25 @@ export const INST_GRATIS_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'canal', equals: ['VIA LIGAÇÃO', 'VIA WHATSAPP'] },
   },
   {
-    id: 'plano',
-    label: 'Plano de acesso',
-    control: 'select',
+    id: 'filtroPlano',
+    label: 'Velocidade',
+    control: 'radio',
+    defaultValue: '150',
     section: S_PLANO,
     layout: { md: 12 },
-    options: PLANO_GRATIS_OPTIONS,
+    options: [
+      { value: '150', label: '150 Mb' },
+      { value: '300', label: '300 Mb' },
+      { value: '600', label: '600 Mb' },
+      { value: '1g', label: '1 Gb' },
+      { value: 'ittv', label: 'Outros (ITTV)' },
+    ],
   },
+  { id: 'plano150', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_150, showWhen: { field: 'filtroPlano', equals: '150' } },
+  { id: 'plano300', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_300, showWhen: { field: 'filtroPlano', equals: '300' } },
+  { id: 'plano600', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_600, showWhen: { field: 'filtroPlano', equals: '600' } },
+  { id: 'plano1g', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_1G, showWhen: { field: 'filtroPlano', equals: '1g' } },
+  { id: 'planoIttv', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_ITTV, showWhen: { field: 'filtroPlano', equals: 'ittv' } },
   {
     id: 'vencimento',
     label: 'Dia de vencimento',

@@ -43,36 +43,39 @@ const FORMA_PAG_OPTIONS = [
   { value: 'PIX', label: 'PIX' },
 ]
 
-// Taxa planos: valor começa com R$250,00 ou R$350,00 (extraído na build function)
-const PLANO_TAXA_OPTIONS = [
-  // 150 Mega — taxa R$250,00
+// Taxa planos agrupados por velocidade — valor inicia com taxa (R$250,00 ou R$350,00)
+const PLANO_150 = [
   { value: 'R$250,00 150 MEGA; MENSALIDADE: R$59,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$59,90 (taxa R$250,00)' },
   { value: 'R$250,00 150 MEGA; MENSALIDADE: R$80,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$80,00 + IP Dinâmico (taxa R$250,00)' },
   { value: 'R$250,00 150 MEGA; MENSALIDADE: R$259,90; + IP FIXO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '150 Mega — R$259,90 + IP Fixo (taxa R$250,00)' },
-  // 300 Mega — taxa R$250,00
+]
+const PLANO_300 = [
   { value: 'R$250,00 300 MEGA; MENSALIDADE: R$69,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$69,90 (taxa R$250,00)' },
   { value: 'R$250,00 300 MEGA; MENSALIDADE: R$90,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$90,00 + IP Dinâmico (taxa R$250,00)' },
   { value: 'R$250,00 300 MEGA; MENSALIDADE: R$269,90; + IP FIXO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega — R$269,90 + IP Fixo (taxa R$250,00)' },
   { value: 'R$250,00 300 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$104,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '300 Mega + 1 Extend — R$104,90 (taxa R$250,00)' },
-  // 600 Mega — taxa R$350,00
+]
+const PLANO_600 = [
   { value: 'R$350,00 600 MEGA; MENSALIDADE: R$79,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$79,90 (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA; MENSALIDADE: R$100,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$100,00 + IP Dinâmico (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA; MENSALIDADE: R$279,90; + IP FIXO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega — R$279,90 + IP Fixo (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$114,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 1 Extend — R$114,90 (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$144,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 2 Extend — R$144,90 (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$174,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV)', label: '600 Mega + 3 Extend — R$174,90 (taxa R$350,00)' },
-  // 1 Giga — taxa R$350,00
+]
+const PLANO_1G = [
   { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$99,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$99,90 + VOD (taxa R$350,00)' },
   { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$120,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$120,00 + IP Dinâmico + VOD (taxa R$350,00)' },
   { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$299,90; + IP FIXO; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$299,90 + IP Fixo + VOD (taxa R$350,00)' },
   { value: 'R$350,00 1 GIGA (1.000 MEGA) + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$134,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 1 Extend — R$134,90 + VOD (taxa R$350,00)' },
   { value: 'R$350,00 1 GIGA (1.000 MEGA) + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$164,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 2 Extend — R$164,90 + VOD (taxa R$350,00)' },
   { value: 'R$350,00 1 GIGA (1.000 MEGA) + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$194,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga + 3 Extend — R$194,90 + VOD (taxa R$350,00)' },
-  // ITTV — taxa R$350,00
+]
+const PLANO_ITTV = [
   { value: 'R$350,00 600 MEGA; MENSALIDADE: R$94,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) + ITTV-PLUS', label: '600 Mega — R$94,90 + ITTV-Plus (taxa R$350,00)' },
   { value: 'R$350,00 600 MEGA; MENSALIDADE: R$109,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) + ITTV-PLUS', label: '600 Mega — R$109,90 + ITTV-Plus (taxa R$350,00)' },
-  { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$114,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$114,90 + VOD (taxa R$350,00) ITTV' },
-  { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$129,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$129,90 + VOD (taxa R$350,00) ITTV' },
+  { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$114,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$114,90 + VOD ITTV (taxa R$350,00)' },
+  { value: 'R$350,00 1 GIGA (1.000 MEGA); MENSALIDADE: R$129,90; BENEFÍCIOS: ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)', label: '1 Giga — R$129,90 + VOD ITTV (taxa R$350,00)' },
 ]
 
 const INDICACAO_TECNICA = `INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.`
@@ -107,7 +110,8 @@ export function buildInstTaxaResidencialTextos(
   const canalStr = canaisComContato.includes(canal)
     ? `${canal} ${digits(v.contato || '')}`
     : canal
-  const planoRaw = v.plano || ''
+  const filtroPlano = v.filtroPlano || '150'
+  const planoRaw = ({ '150': v.plano150, '300': v.plano300, '600': v.plano600, '1g': v.plano1g, 'ittv': v.planoIttv } as Record<string, string>)[filtroPlano] ?? ''
   // extrai taxa (primeira palavra, ex: "R$250,00") e detalhes do plano (o resto)
   const taxa = planoRaw.split(' ')[0] ?? ''
   const planoDetalhes = planoRaw.split(' ').slice(1).join(' ')
@@ -200,13 +204,25 @@ export const INST_TAXA_RESIDENCIAL_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'canal', equals: ['VIA LIGAÇÃO', 'VIA WHATSAPP'] },
   },
   {
-    id: 'plano',
-    label: 'Plano de acesso',
-    control: 'select',
+    id: 'filtroPlano',
+    label: 'Velocidade',
+    control: 'radio',
+    defaultValue: '150',
     section: S_PLANO,
     layout: { md: 12 },
-    options: PLANO_TAXA_OPTIONS,
+    options: [
+      { value: '150', label: '150 Mb' },
+      { value: '300', label: '300 Mb' },
+      { value: '600', label: '600 Mb' },
+      { value: '1g', label: '1 Gb' },
+      { value: 'ittv', label: 'Outros (ITTV)' },
+    ],
   },
+  { id: 'plano150', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_150, showWhen: { field: 'filtroPlano', equals: '150' } },
+  { id: 'plano300', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_300, showWhen: { field: 'filtroPlano', equals: '300' } },
+  { id: 'plano600', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_600, showWhen: { field: 'filtroPlano', equals: '600' } },
+  { id: 'plano1g', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_1G, showWhen: { field: 'filtroPlano', equals: '1g' } },
+  { id: 'planoIttv', label: 'Plano de acesso', control: 'select', section: S_PLANO, layout: { md: 12 }, options: PLANO_ITTV, showWhen: { field: 'filtroPlano', equals: 'ittv' } },
   {
     id: 'vencimento',
     label: 'Dia de vencimento',
