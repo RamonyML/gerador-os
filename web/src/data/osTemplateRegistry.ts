@@ -1,19 +1,22 @@
 import { OS_TEMPLATE_PRESETS } from './osTemplatePresets'
+import { isKnownCadastroDemandCategory } from './cadastroDemands'
 import type { OsTemplate } from '../types/osTemplate'
 import type { Sector, UserProfile } from '../types/profile'
 
-/** Setor padrão dos fluxos cadastrados em código (presets atuais). */
-const DEFAULT_TEMPLATE_SECTOR: Sector = 'suporte'
-
 /** Versão embutida no bundle — incrementar ao alterar campos/texto de um fluxo. */
 const DEFAULT_TEMPLATE_VERSION = 1
+
+function sectorFromDemand(demandCategory: string): Sector {
+  if (isKnownCadastroDemandCategory(demandCategory)) return 'cadastro'
+  return 'suporte'
+}
 
 function buildAllTemplates(): OsTemplate[] {
   return OS_TEMPLATE_PRESETS.map((preset) => {
     const d = preset.getDefaults()
     return {
       id: preset.id,
-      sector: DEFAULT_TEMPLATE_SECTOR,
+      sector: sectorFromDemand(d.demandCategory),
       slug: d.slug,
       title: d.title,
       version: DEFAULT_TEMPLATE_VERSION,

@@ -37,6 +37,7 @@ import {
   isKnownDemandCategory,
   templatesMatchingDemand,
 } from '../data/supportDemands'
+import { CADASTRO_DEMANDS } from '../data/cadastroDemands'
 import { buildMudEndPadraoTextos } from '../data/mudEnd/padrao'
 import { buildMudEndComFibraTextos } from '../data/mudEnd/comFibra'
 import { buildMudEndEquipamentosTextos } from '../data/mudEnd/equipamentos'
@@ -139,13 +140,13 @@ export function OsGeneratorPage() {
     return templates
   }, [templates, demandParam])
 
-  const demandMeta = useMemo(
-    () =>
-      demandParam
-        ? SUPPORT_DEMANDS.find((d) => d.id === demandParam)
-        : undefined,
-    [demandParam],
-  )
+  const demandMeta = useMemo(() => {
+    if (!demandParam) return undefined
+    return (
+      SUPPORT_DEMANDS.find((d) => d.id === demandParam) ??
+      CADASTRO_DEMANDS.find((d) => d.id === demandParam)
+    )
+  }, [demandParam])
 
   const selected = useMemo(
     () => visibleTemplates.find((t) => t.id === selectedId) ?? null,
@@ -591,11 +592,21 @@ export function OsGeneratorPage() {
     })
   }, [selected, values])
 
+  const isCadastroDemand =
+    demandParam != null && isKnownCadastroDemandCategory(demandParam)
   const backTo = demandParam
     ? (DEMAND_HUB_ROUTES[demandParam] ??
-      (demandMeta ? `/suporte/demanda/${demandParam}` : '/suporte'))
-    : '/suporte'
-  const backLabel = demandMeta?.title ?? 'Hub Suporte'
+      (demandMeta
+        ? isCadastroDemand
+          ? '/cadastro'
+          : `/suporte/demanda/${demandParam}`
+        : isCadastroDemand
+          ? '/cadastro'
+          : '/suporte'))
+    : isCadastroDemand
+      ? '/cadastro'
+      : '/suporte'
+  const backLabel = demandMeta?.title ?? (isCadastroDemand ? 'Hub Cadastro' : 'Hub Suporte')
   const backButton = (
     <Button
       component={RouterLink}
