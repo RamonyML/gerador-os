@@ -48,6 +48,7 @@ import {
   geocodeAddress,
   type CoverageData,
   type CoverageFeature,
+  type GeocodeOptions,
 } from '../lib/coverageMap'
 import {
   CepLookupError,
@@ -353,7 +354,7 @@ export function CoberturaPage() {
 
       // Monta dados estruturados: CEP é a fonte mais confiável; quando não há
       // CEP tenta extrair rua+número do texto digitado pelo operador.
-      let structured: Parameters<typeof geocodeAddress>[1]['structured']
+      let structured: GeocodeOptions['structured']
       if (cepLogradouro) {
         const parsed = typed ? parseAddressText(typed) : null
         structured = {
