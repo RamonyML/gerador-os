@@ -4,7 +4,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Alert,
   Box,
   Button,
   Chip,
@@ -165,15 +164,16 @@ export function ModelosOsPage() {
                 expandIcon={<ExpandMoreRoundedIcon />}
                 sx={{
                   px: 2.5,
-                  py: 0.5,
+                  py: 1,
                   minHeight: 64,
                   '& .MuiAccordionSummary-content': {
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     gap: 2,
                     my: 1,
                   },
                   '& .MuiAccordionSummary-expandIconWrapper': {
                     color: 'text.secondary',
+                    mt: 0.5,
                   },
                 }}
               >
@@ -183,6 +183,7 @@ export function ModelosOsPage() {
                     height: 40,
                     borderRadius: 2,
                     flexShrink: 0,
+                    mt: 0.25,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -198,10 +199,13 @@ export function ModelosOsPage() {
                     {modelo.title}
                   </Typography>
                   {modelo.subtitle ? (
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.75 }}>
                       {modelo.subtitle}
                     </Typography>
                   ) : null}
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5 }}>
+                    {modelo.description}
+                  </Typography>
                 </Box>
 
                 <Tooltip title="Copiar texto">
@@ -210,6 +214,7 @@ export function ModelosOsPage() {
                     onClick={(e) => void handleCopy(modelo.text, e)}
                     sx={{
                       flexShrink: 0,
+                      mt: 0.25,
                       color: 'text.secondary',
                       '&:hover': { color: accent },
                     }}
@@ -220,23 +225,6 @@ export function ModelosOsPage() {
               </AccordionSummary>
 
               <AccordionDetails sx={{ px: 2.5, pb: 2.5, pt: 0 }}>
-                <Alert
-                  severity="info"
-                  icon={false}
-                  sx={{
-                    mb: 2,
-                    borderRadius: 2,
-                    bgcolor: alpha(accent, theme.palette.mode === 'dark' ? 0.12 : 0.07),
-                    color: theme.palette.mode === 'dark' ? alpha(accent, 0.9) : accent,
-                    border: `1px solid ${alpha(accent, 0.2)}`,
-                    '& .MuiAlert-message': { width: '100%' },
-                  }}
-                >
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {modelo.description}
-                  </Typography>
-                </Alert>
-
                 <Box
                   sx={{
                     position: 'relative',
