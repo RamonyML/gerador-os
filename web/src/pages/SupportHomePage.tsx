@@ -5,6 +5,7 @@ import {
   Chip,
   CircularProgress,
   Container,
+  Divider,
   Typography,
 } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -20,6 +21,7 @@ import { HeroIllustration } from '../components/HeroIllustration'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 
 export function SupportHomePage() {
   const theme = useTheme()
@@ -212,6 +214,34 @@ export function SupportHomePage() {
             </Box>
           </Box>
           ) : null}
+
+          <Divider sx={{ my: 1 }} />
+
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+              Referências
+            </Typography>
+            <NavCard
+              to="/suporte/modelos-os"
+              accent="#8b5cf6"
+              icon={<ArticleOutlinedIcon sx={{ fontSize: 26 }} />}
+              title="Modelos de O.S."
+              description="Textos base para casos atípicos sem formulário dedicado — copie, adapte e use."
+              badge={
+                <Chip
+                  size="small"
+                  label="15 modelos"
+                  sx={{
+                    height: 24,
+                    fontWeight: 600,
+                    bgcolor: alpha('#8b5cf6', mode === 'dark' ? 0.2 : 0.1),
+                    color: '#8b5cf6',
+                    border: 'none',
+                  }}
+                />
+              }
+            />
+          </Box>
         </Box>
       </Container>
     </Box>

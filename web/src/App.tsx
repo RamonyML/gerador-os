@@ -29,6 +29,7 @@ import { RequireCondominios } from './components/RequireCondominios'
 import { AgendaPage } from './pages/AgendaPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { CoberturaPage } from './pages/CoberturaPage'
+import { ModelosOsPage } from './pages/ModelosOsPage'
 
 export default function App() {
   return (
@@ -115,6 +116,14 @@ export default function App() {
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />
+        <Route
+          path="/suporte/modelos-os"
+          element={
+            <RequireSupport>
+              <ModelosOsPage />
+            </RequireSupport>
+          }
+        />
         <Route path="/cobertura" element={<CoberturaPage />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/escala" element={<EscalaPage />} />
