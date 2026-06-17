@@ -592,11 +592,9 @@ export function CoberturaPage() {
                     filterOptions={(options, { inputValue }) => {
                       const q = stripAccents(inputValue.trim())
                       if (!q) return options
-                      return options.filter((o) =>
-                        stripAccents(o.nome).includes(q) || stripAccents(o.bairro ?? '').includes(q),
-                      )
+                      return options.filter((o) => stripAccents(o.nome).includes(q))
                     }}
-                    noOptionsText="Nenhum condomínio localizado"
+                    noOptionsText="Nenhum condomínio listado com este nome"
                     renderInput={(params) => (
                       <TextField
                         {...params}
