@@ -116,26 +116,28 @@ export function HistoricoPage() {
 
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
-        <HistoryRoundedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-            Histórico de O.S
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Últimas 50 O.S salvas pela sua conta
-          </Typography>
-        </Box>
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <HistoryRoundedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+              Histórico de O.S
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Últimas 50 O.S salvas pela sua conta
+            </Typography>
+          </Box>
+        </Stack>
+        <Box
+          component="img"
+          src={ILLUSTRATIONS.historico}
+          alt="Histórico"
+          sx={{ width: 100, height: 'auto', display: { xs: 'none', sm: 'block' } }}
+        />
       </Stack>
 
       {grouped.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Box
-            component="img"
-            src={ILLUSTRATIONS.historico}
-            alt="Histórico vazio"
-            sx={{ width: '100%', maxWidth: 340, mb: 3, mx: 'auto', display: 'block' }}
-          />
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
             Nenhuma O.S salva ainda
           </Typography>
