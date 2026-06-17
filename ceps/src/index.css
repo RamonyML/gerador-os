@@ -102,6 +102,15 @@ body.full-mode .tab-content { flex: 1; min-height: 0; display: flex; flex-direct
   padding: 8px 16px; background: var(--green); color: #fff; gap: 12px;
   flex-shrink: 0;
 }
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.4); object-fit: cover;
+}
+.user-avatar-initials {
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.22); color: #fff;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+}
 .user-strip-info { display: flex; flex-direction: column; min-width: 0; }
 .user-strip-name { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-strip-email { font-size: 11px; opacity: 0.82; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

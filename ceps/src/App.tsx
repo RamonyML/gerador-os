@@ -12,6 +12,33 @@ function openPerfil() {
   chrome.tabs.create({ url: 'https://gerador-de-os-3ba02.firebaseapp.com' })
 }
 
+function initials(name: string | null): string {
+  if (!name) return '?'
+  const parts = name.trim().split(/\s+/)
+  return parts.length >= 2
+    ? (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
+    : parts[0]!.slice(0, 2).toUpperCase()
+}
+
+function UserAvatar({ user }: { user: User }) {
+  const [imgError, setImgError] = useState(false)
+  if (user.photoURL && !imgError) {
+    return (
+      <img
+        className="user-avatar"
+        src={user.photoURL}
+        alt={user.displayName ?? ''}
+        onError={() => setImgError(true)}
+      />
+    )
+  }
+  return (
+    <div className="user-avatar user-avatar-initials">
+      {initials(user.displayName)}
+    </div>
+  )
+}
+
 type Tab = 'mapa' | 'registros'
 
 export function App() {
@@ -38,6 +65,7 @@ export function App() {
     <div className="app-shell">
       {/* Faixa de usuário */}
       <div className="user-strip">
+        <UserAvatar user={user} />
         <div className="user-strip-info">
           <span className="user-strip-name">{user.displayName ?? 'Usuário'}</span>
           <span className="user-strip-email">{user.email}</span>
