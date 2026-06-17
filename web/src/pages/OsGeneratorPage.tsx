@@ -610,7 +610,7 @@ export function OsGeneratorPage() {
         title: selected.title,
         demandCategory: selected.demandCategory,
         preview,
-        clientName: (values.nome ?? '').trim(),
+        clientName: (values.cliente ?? values.nome ?? '').trim(),
         obs: saveObs.trim(),
       })
       setSaveDialogOpen(false)
@@ -618,7 +618,7 @@ export function OsGeneratorPage() {
     } finally {
       setSaving(false)
     }
-  }, [user, selected, preview, values.nome, saveObs])
+  }, [user, selected, preview, values.cliente, values.nome, saveObs])
 
   const multiPreviewTabs = previewSections.length > 1
 
@@ -888,16 +888,11 @@ export function OsGeneratorPage() {
                 flexWrap: 'wrap',
               }}
             >
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  2 · Resultado
+              {selected ? (
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {selected.title}
                 </Typography>
-                {selected ? (
-                  <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.25 }}>
-                    {selected.title}
-                  </Typography>
-                ) : null}
-              </Box>
+              ) : null}
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                 <Button
                   size="small"

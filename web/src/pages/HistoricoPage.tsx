@@ -123,17 +123,17 @@ export function HistoricoPage() {
         sx={{ width: '100%', maxWidth: 320, mx: 'auto', display: 'block', mb: 2 }}
       />
 
-      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
-        <HistoryRoundedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-        <Box>
+      <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', justifyContent: 'center', mb: 0.5 }}>
+          <HistoryRoundedIcon sx={{ color: 'primary.main', fontSize: 26 }} />
           <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
             Histórico de O.S
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Últimas 50 O.S salvas pela sua conta
-          </Typography>
-        </Box>
-      </Stack>
+        </Stack>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          Últimas 50 O.S salvas pela sua conta
+        </Typography>
+      </Box>
 
       {grouped.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 4 }}>
@@ -206,32 +206,31 @@ export function HistoricoPage() {
                           />
                         </Stack>
 
-                        {entry.clientName ? (
-                          <Typography
-                            variant="body2"
-                            noWrap
-                            sx={{ color: 'text.primary', fontWeight: 500, maxWidth: { xs: 200, sm: 360 } }}
-                          >
-                            {entry.clientName}
-                          </Typography>
-                        ) : null}
-
                         <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                             {formatTime(entry.createdAt)}
                           </Typography>
-                          {entry.obs ? (
+                          {entry.clientName ? (
                             <Typography
                               variant="caption"
                               noWrap
-                              sx={{
-                                color: 'text.secondary',
-                                fontStyle: 'italic',
-                                maxWidth: { xs: 160, sm: 280 },
-                              }}
+                              sx={{ color: 'text.primary', fontWeight: 500, maxWidth: { xs: 200, sm: 360 } }}
                             >
-                              — {entry.obs}
+                              — {entry.clientName}
                             </Typography>
+                          ) : null}
+                          {entry.obs ? (
+                            <Chip
+                              label={entry.obs}
+                              size="small"
+                              sx={{
+                                fontSize: 11,
+                                height: 20,
+                                bgcolor: alpha(theme.palette.warning.main, 0.15),
+                                color: 'warning.dark',
+                                fontWeight: 600,
+                              }}
+                            />
                           ) : null}
                         </Stack>
                       </Box>
