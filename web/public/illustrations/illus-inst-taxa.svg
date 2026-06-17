@@ -1,53 +1,161 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320">
-  <!-- Background ring -->
-  <circle cx="188" cy="200" r="140" fill="#38af47" opacity="0.05"/>
-  <circle cx="188" cy="200" r="98" fill="#38af47" opacity="0.05"/>
 
-  <!-- WiFi signal arcs -->
-  <path d="M148 155 Q188 119 228 155" stroke="#38af47" stroke-width="5.5" fill="none" stroke-linecap="round" opacity="0.9"/>
-  <path d="M120 129 Q188 87 256 129" stroke="#38af47" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
-  <path d="M92 103 Q188 55 284 103" stroke="#38af47" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.32"/>
-  <!-- Dot -->
-  <circle cx="188" cy="169" r="8" fill="#2e7d32"/>
+  <!-- FUNDO DECORATIVO -->
+  <circle cx="48" cy="268" r="88" fill="#38af47" opacity="0.07"/>
+  <circle cx="370" cy="50" r="66" fill="#2e7d32" opacity="0.07"/>
+  <circle cx="380" cy="284" r="50" fill="#a5d6a7" opacity="0.1"/>
 
-  <!-- Router body -->
-  <rect x="120" y="177" width="136" height="72" rx="14" fill="#2e7d32"/>
-  <rect x="130" y="186" width="116" height="22" rx="7" fill="#196e2e" opacity="0.45"/>
+  <!-- CHÃO / LINHA DE BASE -->
+  <rect x="0" y="272" width="400" height="48" fill="#E8F5E9" opacity="0.3"/>
+  <rect x="0" y="270" width="400" height="4" rx="2" fill="#a5d6a7" opacity="0.22"/>
+
+  <!-- BOLSA DE FERRAMENTAS -->
+  <ellipse cx="82" cy="276" rx="36" ry="7" fill="#1C0D00" opacity="0.1"/>
+  <rect x="54" y="238" width="56" height="36" rx="8" fill="#1C0D00" opacity="0.75"/>
+  <rect x="56" y="234" width="52" height="14" rx="6" fill="#2C1400" opacity="0.7"/>
+  <path d="M68 234 Q82 224 96 234" stroke="#2C1400" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <rect x="62" y="250" width="36" height="3" rx="1.5" fill="#2C1400" opacity="0.4"/>
+  <rect x="62" y="257" width="28" height="3" rx="1.5" fill="#2C1400" opacity="0.3"/>
+  <!-- Ferramentas -->
+  <rect x="70" y="222" width="5" height="18" rx="2.5" fill="#9E9E9E"/>
+  <circle cx="72.5" cy="220" r="4.5" fill="#F59E0B"/>
+  <rect x="82" y="219" width="5" height="21" rx="2.5" fill="#78909C"/>
+  <rect x="80" y="215" width="9" height="8" rx="2" fill="#455A64"/>
+
+  <!-- SUPORTE DE PAREDE -->
+  <rect x="120" y="176" width="12" height="86" rx="4" fill="#B0BEC5" opacity="0.7"/>
+  <rect x="114" y="204" width="24" height="8" rx="4" fill="#B0BEC5" opacity="0.7"/>
+
+  <!-- ROTEADOR / EQUIPAMENTO (montado) -->
+  <rect x="134" y="220" width="72" height="48" rx="10" fill="#1b5e20" opacity="0.1" transform="translate(3,4)"/>
+  <rect x="134" y="220" width="72" height="48" rx="10" fill="#2e7d32"/>
+  <rect x="142" y="228" width="56" height="22" rx="6" fill="#196e2e" opacity="0.5"/>
   <!-- LEDs -->
-  <circle cx="158" cy="219" r="5.5" fill="#38af47"/>
-  <circle cx="178" cy="219" r="5.5" fill="#38af47" opacity="0.55"/>
-  <circle cx="198" cy="219" r="5.5" fill="#38af47" opacity="0.28"/>
-  <rect x="130" y="231" width="116" height="11" rx="4" fill="#196e2e" opacity="0.3"/>
-  <!-- Antennas -->
-  <rect x="140" y="155" width="7" height="30" rx="3.5" fill="#196e2e"/>
-  <rect x="229" y="155" width="7" height="30" rx="3.5" fill="#196e2e"/>
+  <circle cx="154" cy="252" r="5" fill="#38af47"/>
+  <circle cx="168" cy="252" r="5" fill="#38af47" opacity="0.6"/>
+  <circle cx="182" cy="252" r="5" fill="#38af47" opacity="0.3"/>
+  <circle cx="196" cy="252" r="5" fill="#F59E0B" opacity="0.85"/>
+  <rect x="142" y="258" width="56" height="7" rx="3" fill="#196e2e" opacity="0.3"/>
+  <!-- Antenas -->
+  <rect x="148" y="196" width="7" height="30" rx="3.5" fill="#196e2e"/>
+  <circle cx="151.5" cy="195" r="5" fill="#38af47"/>
+  <rect x="185" y="196" width="7" height="30" rx="3.5" fill="#196e2e"/>
+  <circle cx="188.5" cy="195" r="5" fill="#38af47"/>
 
-  <!-- Credit card (upper-right) -->
-  <rect x="272" y="88" width="96" height="62" rx="9" fill="#D97706"/>
-  <!-- Card shine highlight -->
-  <rect x="272" y="88" width="96" height="22" rx="9" fill="#F59E0B" opacity="0.5"/>
-  <rect x="272" y="99" width="96" height="11" fill="#F59E0B" opacity="0.5"/>
-  <!-- Card stripe -->
-  <rect x="272" y="112" width="96" height="16" fill="#92400E" opacity="0.55"/>
-  <!-- Chip -->
-  <rect x="282" y="96" width="22" height="18" rx="3" fill="#FDE68A"/>
-  <line x1="282" y1="105" x2="304" y2="105" stroke="#92400E" stroke-width="1" opacity="0.5"/>
-  <line x1="293" y1="96" x2="293" y2="114" stroke="#92400E" stroke-width="1" opacity="0.5"/>
-  <!-- Card number dots -->
-  <circle cx="290" cy="140" r="3" fill="#FDE68A" opacity="0.8"/>
-  <circle cx="302" cy="140" r="3" fill="#FDE68A" opacity="0.8"/>
-  <circle cx="314" cy="140" r="3" fill="#FDE68A" opacity="0.8"/>
-  <circle cx="326" cy="140" r="3" fill="#FDE68A" opacity="0.8"/>
-  <!-- Card wifi icon (contactless) -->
-  <path d="M348 130 Q355 123 362 130" stroke="#FDE68A" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.7"/>
-  <path d="M344 126 Q355 117 366 126" stroke="#FDE68A" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.45"/>
-  <circle cx="355" cy="133" r="2" fill="#FDE68A" opacity="0.7"/>
+  <!-- SINAL WI-FI DO ROTEADOR -->
+  <path d="M152 190 Q170 168 188 190" stroke="#38af47" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M140 174 Q170 148 200 174" stroke="#38af47" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M128 158 Q170 128 212 158" stroke="#38af47" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.28"/>
+  <circle cx="170" cy="202" r="6" fill="#38af47"/>
 
-  <!-- Router shadow -->
-  <ellipse cx="188" cy="253" rx="74" ry="9" fill="#2e7d32" opacity="0.14"/>
+  <!-- CABO DA PAREDE PARA ROTEADOR -->
+  <path d="M134 244 Q112 244 126 220 Q130 208 128 192" stroke="#196e2e" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.45"/>
 
-  <!-- Floating dots -->
-  <circle cx="68" cy="200" r="7" fill="#38af47" opacity="0.1"/>
-  <circle cx="56" cy="220" r="5" fill="#38af47" opacity="0.07"/>
-  <circle cx="360" cy="228" r="6" fill="#38af47" opacity="0.09"/>
+  <!-- TÉCNICO (centro-direita, agachado instalando) -->
+
+  <!-- Pernas (ajoelhado) -->
+  <path d="M276 218 Q280 244 278 272" stroke="#1565C0" stroke-width="22" stroke-linecap="round" fill="none" opacity="0.85"/>
+  <path d="M298 218 Q310 242 320 268" stroke="#0D47A1" stroke-width="20" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <!-- Sapatos -->
+  <rect x="265" y="264" width="26" height="12" rx="6" fill="#1A0A00"/>
+  <rect x="310" y="262" width="26" height="11" rx="5.5" fill="#1A0A00"/>
+
+  <!-- Corpo / uniforme azul -->
+  <path d="M262 176 C257 195 256 208 258 222 L328 222 C330 208 329 195 324 176 C313 165 273 165 262 176 Z" fill="#1565C0"/>
+  <!-- Faixa no uniforme -->
+  <rect x="262" y="197" width="70" height="6" rx="3" fill="#38af47" opacity="0.3"/>
+  <!-- Bolso com emblema -->
+  <rect x="267" y="183" width="20" height="15" rx="3" fill="#0D47A1" opacity="0.5"/>
+  <rect x="269" y="185" width="16" height="4" rx="2" fill="#38af47" opacity="0.8"/>
+  <circle cx="277" cy="192" r="4" fill="#38af47" opacity="0.55"/>
+  <!-- Cinto -->
+  <rect x="256" y="217" width="76" height="10" rx="5" fill="#0D47A1"/>
+  <rect x="278" y="219" width="18" height="7" rx="2.5" fill="#F59E0B"/>
+
+  <!-- Gola V -->
+  <path d="M282 176 L289 188 L296 176 L293 172 L285 172 Z" fill="#0D47A1" opacity="0.9"/>
+  <!-- Pescoço -->
+  <rect x="282" y="163" width="14" height="16" rx="5" fill="#FBBF7A"/>
+
+  <!-- Cabeça -->
+  <circle cx="289" cy="144" r="29" fill="#FBBF7A"/>
+
+  <!-- Capacete verde (diferenciado do grátis) -->
+  <path d="M262 142 C262 118 289 110 289 110 C289 110 316 118 316 142 C311 136 302 132 289 132 C276 132 267 136 262 142 Z" fill="#38af47"/>
+  <rect x="257" y="140" width="64" height="9" rx="4.5" fill="#38af47"/>
+  <rect x="259" y="140" width="60" height="5" rx="2.5" fill="#4caf50" opacity="0.7"/>
+
+  <!-- Orelhas -->
+  <circle cx="261" cy="147" r="6.5" fill="#F5A057"/>
+  <circle cx="317" cy="147" r="6.5" fill="#F5A057"/>
+
+  <!-- Rosto — expressão focada/profissional -->
+  <ellipse cx="281" cy="148" rx="3.5" ry="4.5" fill="#1C0D00"/>
+  <circle cx="282.5" cy="146" r="1.3" fill="#fff" opacity="0.85"/>
+  <ellipse cx="297" cy="148" rx="3.5" ry="4.5" fill="#1C0D00"/>
+  <circle cx="298.5" cy="146" r="1.3" fill="#fff" opacity="0.85"/>
+  <!-- Sobrancelhas (concentrado) -->
+  <path d="M277 140 Q281 138 285 141" stroke="#1C0D00" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M293 140 Q297 138 301 141" stroke="#1C0D00" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <!-- Nariz -->
+  <path d="M286 152 Q289 157 292 152" stroke="#D48A5A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <!-- Sorriso discreto -->
+  <path d="M283 160 Q289 165 295 160" stroke="#1C0D00" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Braço esquerdo (alcança o roteador com chave de fenda) -->
+  <path d="M258 190 Q238 212 226 228" stroke="#FBBF7A" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <circle cx="226" cy="228" r="9" fill="#FBBF7A"/>
+  <!-- Chave de fenda na mão -->
+  <g transform="rotate(-38, 220, 232)">
+    <rect x="215" y="224" width="5" height="22" rx="2.5" fill="#9E9E9E"/>
+    <rect x="213" y="220" width="9" height="8" rx="2.5" fill="#F59E0B"/>
+  </g>
+
+  <!-- Braço direito (apoio) -->
+  <path d="M324 190 Q344 208 352 222" stroke="#FBBF7A" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <circle cx="352" cy="222" r="7.5" fill="#FBBF7A"/>
+
+  <!-- TERMINAL DE PAGAMENTO (flutuante, direita) -->
+  <rect x="338" y="132" width="54" height="92" rx="10" fill="#1b5e20" opacity="0.08" transform="translate(3,4)"/>
+  <rect x="338" y="132" width="54" height="92" rx="10" fill="#fff"/>
+  <!-- Cabeçalho verde -->
+  <rect x="338" y="132" width="54" height="22" rx="10" fill="#1b5e20"/>
+  <rect x="338" y="145" width="54" height="9" fill="#1b5e20"/>
+  <!-- Ícone de pagamento no header -->
+  <circle cx="365" cy="148" r="7" fill="#38af47" opacity="0.5"/>
+  <rect x="363" y="144" width="4" height="8" rx="1" fill="#fff" opacity="0.85"/>
+  <rect x="363" y="144" width="5" height="3" rx="1" fill="#fff" opacity="0.85"/>
+  <!-- Tela do terminal -->
+  <rect x="344" y="160" width="42" height="28" rx="4" fill="#E8F5E9"/>
+  <!-- Valor na tela -->
+  <rect x="348" y="165" width="22" height="5" rx="2.5" fill="#38af47" opacity="0.75"/>
+  <rect x="348" y="175" width="32" height="5" rx="2.5" fill="#CBD5E1"/>
+  <!-- Teclado numérico (bolinhas) -->
+  <circle cx="350" cy="198" r="5" fill="#E2E8F0"/>
+  <circle cx="365" cy="198" r="5" fill="#E2E8F0"/>
+  <circle cx="380" cy="198" r="5" fill="#38af47" opacity="0.75"/>
+  <circle cx="350" cy="212" r="5" fill="#E2E8F0"/>
+  <circle cx="365" cy="212" r="5" fill="#E2E8F0"/>
+  <circle cx="380" cy="212" r="5" fill="#E2E8F0"/>
+  <circle cx="350" cy="226" r="5" fill="#E2E8F0"/>
+  <!-- Botão OK (âmbar, destaque) -->
+  <circle cx="365" cy="226" r="8" fill="#F59E0B"/>
+  <!-- Slot de chip -->
+  <rect x="344" y="194" width="6" height="16" rx="1" fill="#B0BEC5" opacity="0.5"/>
+  <!-- Cabo do terminal -->
+  <path d="M365 228 Q365 242 365 252" stroke="#9E9E9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- PLANTA PEQUENA (esquerda, chão) -->
+  <rect x="14" y="270" width="26" height="22" rx="4" fill="#A07830"/>
+  <rect x="11" y="264" width="32" height="10" rx="5" fill="#B89240"/>
+  <path d="M27 264 C27 264 16 248 14 232 C20 244 24 256 27 260 Z" fill="#38af47"/>
+  <path d="M27 264 C27 264 38 248 42 232 C36 244 30 256 27 260 Z" fill="#2e7d32"/>
+  <path d="M27 264 C27 264 12 252 8 238 C14 248 20 258 25 262 Z" fill="#4caf50" opacity="0.7"/>
+
+  <!-- PONTOS DECORATIVOS -->
+  <circle cx="40" cy="162" r="7" fill="#38af47" opacity="0.12"/>
+  <circle cx="26" cy="186" r="4" fill="#38af47" opacity="0.08"/>
+  <circle cx="392" cy="160" r="5.5" fill="#F59E0B" opacity="0.2"/>
+  <circle cx="398" cy="184" r="3.5" fill="#38af47" opacity="0.1"/>
+
 </svg>

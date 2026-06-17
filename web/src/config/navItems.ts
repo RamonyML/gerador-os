@@ -25,6 +25,8 @@ type NavFlags = {
   showCadastro: boolean
   showUsers: boolean
   showCondominios: boolean
+  showAgenda: boolean
+  showUpgrades: boolean
 }
 
 const exact = (to: string) => (pathname: string) => pathname === to
@@ -40,6 +42,8 @@ export function buildNavItems({
   showCadastro,
   showUsers,
   showCondominios,
+  showAgenda,
+  showUpgrades,
 }: NavFlags): NavItem[] {
   const items: Array<NavItem | null> = [
     { label: 'Início', to: '/', icon: HomeOutlinedIcon, isActive: exact('/') },
@@ -71,24 +75,28 @@ export function buildNavItems({
       icon: CalendarMonthOutlinedIcon,
       isActive: startsWith('/escala'),
     },
-    {
-      label: 'Upgrades',
-      to: '/upgrades',
-      icon: TrendingUpOutlinedIcon,
-      isActive: startsWith('/upgrades'),
-    },
+    showUpgrades
+      ? {
+          label: 'Upgrades',
+          to: '/upgrades',
+          icon: TrendingUpOutlinedIcon,
+          isActive: startsWith('/upgrades'),
+        }
+      : null,
     {
       label: 'Chamados',
       to: '/chamados',
       icon: SupportAgentOutlinedIcon,
       isActive: startsWith('/chamados'),
     },
-    {
-      label: 'Agenda',
-      to: '/agenda',
-      icon: EventNoteOutlinedIcon,
-      isActive: startsWith('/agenda'),
-    },
+    showAgenda
+      ? {
+          label: 'Agenda',
+          to: '/agenda',
+          icon: EventNoteOutlinedIcon,
+          isActive: startsWith('/agenda'),
+        }
+      : null,
     showCondominios
       ? {
           label: 'Condomínios',

@@ -15,6 +15,7 @@ export function canUseHelpdesk(profile: UserProfile | null): boolean {
  */
 export function canManageHelpdesk(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
-  if (profile.isDev === true || profile.isAdmin === true) return true
+  if (profile.isDev === true) return true
+  if (profile.isAdmin === true && profile.isTi === true) return true
   return profile.isTi === true
 }

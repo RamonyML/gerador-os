@@ -35,6 +35,8 @@ import { CadastroHomePage } from './pages/CadastroHomePage'
 import { InstGratisHubPage } from './pages/InstGratisHubPage'
 import { InstTaxaHubPage } from './pages/InstTaxaHubPage'
 import { RequireCadastro } from './components/RequireCadastro'
+import { RequireAgenda } from './components/RequireAgenda'
+import { RequireUpgrades } from './components/RequireUpgrades'
 
 export default function App() {
   return (
@@ -164,10 +166,24 @@ export default function App() {
         <Route path="/cobertura" element={<CoberturaPage />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/escala" element={<EscalaPage />} />
-        <Route path="/upgrades" element={<UpgradesHubPage />} />
+        <Route
+          path="/upgrades"
+          element={
+            <RequireUpgrades>
+              <UpgradesHubPage />
+            </RequireUpgrades>
+          }
+        />
         <Route path="/chamados" element={<HelpdeskPage />} />
         <Route path="/chamados/:ticketId" element={<HelpdeskTicketPage />} />
-        <Route path="/agenda" element={<AgendaPage />} />
+        <Route
+          path="/agenda"
+          element={
+            <RequireAgenda>
+              <AgendaPage />
+            </RequireAgenda>
+          }
+        />
         <Route
           path="/condominios"
           element={

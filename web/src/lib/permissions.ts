@@ -1,12 +1,23 @@
 import type { UserProfile } from '../types/profile'
 
+/** Agenda: em desenvolvimento, restrita exclusivamente a dev. */
+export function canAccessAgenda(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  return profile.isDev === true
+}
+
+/** Upgrades: exclusivo do setor Suporte (operador, supervisor, gerente) + dev/admin. */
+export function canAccessUpgrades(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.sector === 'suporte'
+}
+
 /** Gestão de contas (Auth + documento `users/{uid}`) via Cloud Functions. */
 export function canManageUsers(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
   if (profile.isDev === true || profile.isAdmin === true) return true
-  return (
-    profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
-  )
+  return profile.hierarchy === 'gerente'
 }
 
 /**
@@ -45,9 +56,7 @@ export function canViewUpgradeCommissions(profile: UserProfile | null): boolean 
 export function canManageWorkSchedule(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
   if (profile.isDev === true || profile.isAdmin === true) return true
-  return (
-    profile.hierarchy === 'gerente' || profile.hierarchy === 'supervisor'
-  )
+  return profile.hierarchy === 'gerente'
 }
 
 /** Criar/editar avisos do sistema. */

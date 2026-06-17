@@ -66,11 +66,14 @@ function rowDisplayName(row: ManagedUserRow): string {
 
 export function AdminUsersPage() {
   const theme = useTheme()
-  const { profile } = useAuth()
+  const { user, profile } = useAuth()
   const isDev = profile?.isDev === true
   const canEditAdminFlag =
     profile?.isDev === true || profile?.isAdmin === true
   const canPickSector = profile?.isDev === true || profile?.isAdmin === true
+  const isCurrentUserProtected = isProtectedManagementAccount(
+    user?.email ?? profile?.email,
+  )
 
   const [rows, setRows] = useState<ManagedUserRow[]>([])
   const [nextPageToken, setNextPageToken] = useState<string | null>(null)
@@ -211,10 +214,10 @@ export function AdminUsersPage() {
     try {
       if (
         editing &&
-        !isDev &&
+        !isCurrentUserProtected &&
         isProtectedManagementAccount(editing.email)
       ) {
-        setFormError('Esta conta só pode ser alterada por um desenvolvedor.')
+        setFormError('Você não pode editar ou excluir o DEV fundador.')
         return
       }
       if (!editing) {
@@ -262,9 +265,9 @@ export function AdminUsersPage() {
           <Typography variant="body1" color="text.secondary" component="div">
             Crie e atualize contas no Authentication e o documento em{' '}
             <code>users/&#123;uid&#125;</code> (setor, hierarquia, nome, flags). Somente{' '}
-            <strong>gestor</strong>, <strong>supervisor</strong>,{' '}
-            <strong>administrador</strong> e <strong>dev</strong> acessam esta tela;
-            gestores e supervisores só enxergam o próprio setor. A senha só trafega ao
+            <strong>gestor</strong>, <strong>administrador</strong> e{' '}
+            <strong>dev</strong> acessam esta tela;
+            gestores só enxergam o próprio setor. A senha só trafega ao
             salvar e exige Cloud Functions implantadas.
           </Typography>
         }
@@ -454,9 +457,14 @@ export function AdminUsersPage() {
             ) : (
               <>
                 {filteredRows.map((r) => {
-                  const editLocked = !isDev && isProtectedManagementAccount(r.email)
+                  const editLocked =
+                    !isCurrentUserProtected && isProtectedManagementAccount(r.email)
                   return (
-                  <TableRow key={r.uid} hover>
+                  <TableRow
+                    key={r.uid}
+                    hover
+                    sx={editLocked ? { cursor: 'not-allowed' } : undefined}
+                  >
                     <TableCell>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
                         {rowDisplayName(r)}
@@ -498,7 +506,7 @@ export function AdminUsersPage() {
                       <Tooltip
                         title={
                           editLocked
-                            ? 'Somente desenvolvedor pode editar esta conta.'
+                            ? 'Você não pode editar ou excluir o DEV fundador'
                             : ''
                         }
                         disableHoverListener={!editLocked}
