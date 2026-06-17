@@ -17,6 +17,7 @@ import {
   Divider,
   FormControl,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -30,11 +31,13 @@ import {
 import { alpha, useTheme } from '@mui/material/styles'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded'
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../lib/firebase'
@@ -81,6 +84,7 @@ export function ModelosOsPage() {
   const canManage = canManageModelosOs(profile)
   const firestoreState = useModelosOsFirestore()
 
+  const [search, setSearch] = useState('')
   const [activeTab, setActiveTab] = useState(0)
   const [expanded, setExpanded] = useState<string | false>(false)
   const [copyOk, setCopyOk] = useState(false)
@@ -217,6 +221,22 @@ export function ModelosOsPage() {
     }
   }
 
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  const searchQuery = search.trim().toLowerCase()
+  const isSearching = searchQuery.length > 0
+  const allModelos = categories.flatMap((c) => c.modelos)
+  const searchResults = isSearching
+    ? allModelos.filter(
+        (m) =>
+          m.title.toLowerCase().includes(searchQuery) ||
+          m.subtitle.toLowerCase().includes(searchQuery) ||
+          m.description.toLowerCase().includes(searchQuery) ||
+          m.text.toLowerCase().includes(searchQuery),
+      )
+    : []
+  const visibleModelos = isSearching ? searchResults : activeCategory.modelos
+
   // ── Empty state ───────────────────────────────────────────────────────────
 
   const isEmpty =
@@ -262,45 +282,79 @@ export function ModelosOsPage() {
       }
     >
       <Container maxWidth="lg" disableGutters>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: 14, minHeight: 48 },
-              '& .MuiTabs-indicator': { backgroundColor: accent },
-              '& .Mui-selected': { color: `${accent} !important` },
-            }}
-          >
-            {categories.map((cat, i) => (
-              <Tab
-                key={cat.id}
-                value={i}
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {cat.label}
-                    <Chip
-                      label={cat.modelos.length}
-                      size="small"
-                      sx={{
-                        height: 20,
-                        fontSize: 11,
-                        fontWeight: 700,
-                        bgcolor: alpha(
-                          CATEGORY_COLORS[cat.id] ?? theme.palette.primary.main,
-                          activeTab === i ? 0.15 : 0.08,
-                        ),
-                        color: CATEGORY_COLORS[cat.id] ?? theme.palette.primary.main,
-                      }}
-                    />
-                  </Box>
-                }
-              />
-            ))}
-          </Tabs>
-        </Box>
+        {/* Search */}
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Buscar modelo por palavra-chave…"
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setExpanded(false) }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+              endAdornment: search ? (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearch('')}>
+                    <ClearRoundedIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+            },
+          }}
+          sx={{ mb: 2 }}
+        />
+
+        {isSearching ? (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {searchResults.length === 0
+              ? 'Nenhum modelo encontrado.'
+              : `${searchResults.length} modelo${searchResults.length === 1 ? '' : 's'} encontrado${searchResults.length === 1 ? '' : 's'} para "${search.trim()}"`}
+          </Typography>
+        ) : (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{
+                '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: 14, minHeight: 48 },
+                '& .MuiTabs-indicator': { backgroundColor: accent },
+                '& .Mui-selected': { color: `${accent} !important` },
+              }}
+            >
+              {categories.map((cat, i) => (
+                <Tab
+                  key={cat.id}
+                  value={i}
+                  label={
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      {cat.label}
+                      <Chip
+                        label={cat.modelos.length}
+                        size="small"
+                        sx={{
+                          height: 20,
+                          fontSize: 11,
+                          fontWeight: 700,
+                          bgcolor: alpha(
+                            CATEGORY_COLORS[cat.id] ?? theme.palette.primary.main,
+                            activeTab === i ? 0.15 : 0.08,
+                          ),
+                          color: CATEGORY_COLORS[cat.id] ?? theme.palette.primary.main,
+                        }}
+                      />
+                    </Box>
+                  }
+                />
+              ))}
+            </Tabs>
+          </Box>
+        )}
 
         {/* Loading */}
         {firestoreState.status === 'loading' && (
@@ -344,7 +398,7 @@ export function ModelosOsPage() {
         )}
 
         {/* Model list */}
-        {firestoreState.status === 'ready' && activeCategory.modelos.length === 0 && !isEmpty && (
+        {firestoreState.status === 'ready' && !isSearching && activeCategory.modelos.length === 0 && !isEmpty && (
           <Box sx={{ py: 4, textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
               Nenhum modelo nesta categoria.
@@ -353,7 +407,11 @@ export function ModelosOsPage() {
         )}
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-          {activeCategory.modelos.map((modelo) => (
+          {visibleModelos.map((modelo) => {
+            const modelAccent = isSearching
+              ? (CATEGORY_COLORS[modelo.category] ?? theme.palette.primary.main)
+              : accent
+            return (
             <Accordion
               key={modelo.id}
               expanded={expanded === modelo.id}
@@ -362,7 +420,7 @@ export function ModelosOsPage() {
               disableGutters
               sx={{
                 border: 1,
-                borderColor: expanded === modelo.id ? alpha(accent, 0.45) : 'divider',
+                borderColor: expanded === modelo.id ? alpha(modelAccent, 0.45) : 'divider',
                 borderRadius: '12px !important',
                 bgcolor: 'background.paper',
                 transition: 'border-color 0.2s ease',
@@ -371,7 +429,7 @@ export function ModelosOsPage() {
                   boxShadow:
                     theme.palette.mode === 'dark'
                       ? `0 8px 24px ${alpha('#000', 0.4)}`
-                      : `0 8px 24px ${alpha(accent, 0.1)}`,
+                      : `0 8px 24px ${alpha(modelAccent, 0.1)}`,
                 },
               }}
             >
@@ -396,8 +454,8 @@ export function ModelosOsPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    bgcolor: alpha(accent, theme.palette.mode === 'dark' ? 0.18 : 0.1),
-                    color: accent,
+                    bgcolor: alpha(modelAccent, theme.palette.mode === 'dark' ? 0.18 : 0.1),
+                    color: modelAccent,
                   }}
                 >
                   <InfoOutlinedIcon sx={{ fontSize: 20 }} />
@@ -405,9 +463,24 @@ export function ModelosOsPage() {
 
                 {/* Text content */}
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
-                    {modelo.title}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+                      {modelo.title}
+                    </Typography>
+                    {isSearching && (
+                      <Chip
+                        label={categories.find((c) => c.id === modelo.category)?.label ?? modelo.category}
+                        size="small"
+                        sx={{
+                          height: 18,
+                          fontSize: 10,
+                          fontWeight: 700,
+                          bgcolor: alpha(modelAccent, theme.palette.mode === 'dark' ? 0.2 : 0.1),
+                          color: modelAccent,
+                        }}
+                      />
+                    )}
+                  </Box>
                   {modelo.subtitle ? (
                     <Typography
                       variant="caption"
@@ -419,7 +492,7 @@ export function ModelosOsPage() {
                   ) : null}
                   <Typography
                     variant="body2"
-                    sx={{ lineHeight: 1.5, fontWeight: 700, color: accent }}
+                    sx={{ lineHeight: 1.5, fontWeight: 700, color: modelAccent }}
                   >
                     {modelo.description}
                   </Typography>
@@ -435,7 +508,7 @@ export function ModelosOsPage() {
                         <IconButton
                           size="small"
                           onClick={(e) => openEdit(modelo, e)}
-                          sx={{ color: 'text.secondary', '&:hover': { color: accent } }}
+                          sx={{ color: 'text.secondary', '&:hover': { color: modelAccent } }}
                         >
                           <EditOutlinedIcon fontSize="small" />
                         </IconButton>
@@ -458,7 +531,7 @@ export function ModelosOsPage() {
                     <IconButton
                       size="small"
                       onClick={(e) => void handleCopy(modelo.text, e)}
-                      sx={{ color: 'text.secondary', '&:hover': { color: accent } }}
+                      sx={{ color: 'text.secondary', '&:hover': { color: modelAccent } }}
                     >
                       <ContentCopyRoundedIcon fontSize="small" />
                     </IconButton>
@@ -508,9 +581,9 @@ export function ModelosOsPage() {
                       sx={{
                         height: 28,
                         fontSize: 12,
-                        borderColor: alpha(accent, 0.4),
-                        color: accent,
-                        '&:hover': { borderColor: accent, bgcolor: alpha(accent, 0.06) },
+                        borderColor: alpha(modelAccent, 0.4),
+                        color: modelAccent,
+                        '&:hover': { borderColor: modelAccent, bgcolor: alpha(modelAccent, 0.06) },
                       }}
                     >
                       Copiar
@@ -537,7 +610,8 @@ export function ModelosOsPage() {
                 </Box>
               </AccordionDetails>
             </Accordion>
-          ))}
+            )
+          })}
         </Box>
       </Container>
 
