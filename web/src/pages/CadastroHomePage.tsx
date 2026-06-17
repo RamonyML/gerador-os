@@ -7,9 +7,11 @@ import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import CardGiftcardOutlinedIcon from '@mui/icons-material/CardGiftcardOutlined'
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined'
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined'
 
 const GREEN = '#2e7d32'
 const AMBER = '#d97706'
+const BLUE = '#3b82f6'
 
 export function CadastroHomePage() {
   const { mode } = useColorMode()
@@ -65,6 +67,7 @@ export function CadastroHomePage() {
             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
               Categorias
             </Typography>
+
             <Box
               sx={{
                 display: 'grid',
@@ -107,6 +110,26 @@ export function CadastroHomePage() {
                       fontWeight: 600,
                       bgcolor: alpha(AMBER, mode === 'dark' ? 0.2 : 0.1),
                       color: AMBER,
+                      border: 'none',
+                    }}
+                  />
+                }
+              />
+              <NavCard
+                to="/cadastro/midia-tv"
+                accent={BLUE}
+                icon={<TvOutlinedIcon sx={{ fontSize: 26 }} />}
+                title="Roku TV"
+                description="Venda do conversor Roku TV Express. Atendimento remoto ou presencial na loja."
+                badge={
+                  <Chip
+                    size="small"
+                    label="2 variantes"
+                    sx={{
+                      height: 24,
+                      fontWeight: 600,
+                      bgcolor: alpha(BLUE, mode === 'dark' ? 0.2 : 0.1),
+                      color: BLUE,
                       border: 'none',
                     }}
                   />

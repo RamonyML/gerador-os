@@ -113,6 +113,7 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   'instalacao-gratis': '/cadastro/instalacao-gratis',
   'instalacao-taxa': '/cadastro/instalacao-taxa',
   'encerramentos-instalacao': '/instalacao/encerramentos',
+  'midia-tv-cadastro': '/cadastro/midia-tv',
 }
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */

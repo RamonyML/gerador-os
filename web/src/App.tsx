@@ -35,6 +35,7 @@ import { CadastroHomePage } from './pages/CadastroHomePage'
 import { InstGratisHubPage } from './pages/InstGratisHubPage'
 import { InstTaxaHubPage } from './pages/InstTaxaHubPage'
 import { RequireCadastro } from './components/RequireCadastro'
+import { CadastroMidiaTvHubPage } from './pages/CadastroMidiaTvHubPage'
 import { RequireAgenda } from './components/RequireAgenda'
 import { RequireUpgrades } from './components/RequireUpgrades'
 import { InstalacaoHomePage } from './pages/InstalacaoHomePage'
@@ -155,6 +156,14 @@ export default function App() {
           element={
             <RequireCadastro>
               <InstTaxaHubPage />
+            </RequireCadastro>
+          }
+        />
+        <Route
+          path="/cadastro/midia-tv"
+          element={
+            <RequireCadastro>
+              <CadastroMidiaTvHubPage />
             </RequireCadastro>
           }
         />
