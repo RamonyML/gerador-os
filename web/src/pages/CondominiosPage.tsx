@@ -177,7 +177,7 @@ export function CondominiosPage() {
   const [error, setError] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
 
-  const [tab, setTab] = useState<CondominioCategoria>('viavel')
+  const [tab, setTab] = useState<CondominioCategoria | 'todos'>('viavel')
   const [search, setSearch] = useState('')
 
   const [detail, setDetail] = useState<Condominio | null>(null)
@@ -222,7 +222,7 @@ export function CondominiosPage() {
   const filtered = useMemo(() => {
     const term = normalize(search.trim())
     return items
-      .filter((i) => i.categoria === tab)
+      .filter((i) => tab === 'todos' || i.categoria === tab)
       .filter((i) => {
         if (!term) return true
         const haystack = normalize(
@@ -234,7 +234,7 @@ export function CondominiosPage() {
 
   const openCreate = () => {
     setEditingId(null)
-    setDraft(emptyCondominioDraft(tab))
+    setDraft(emptyCondominioDraft(tab === 'todos' ? 'viavel' : tab))
     setActionError(null)
     setFormOpen(true)
   }
@@ -400,6 +400,7 @@ export function CondominiosPage() {
   }
 
   const isViavelTab = tab === 'viavel'
+  const isTodosTab = tab === 'todos'
   const showImport = canManage && !loading && items.length === 0
 
   return (
@@ -516,9 +517,10 @@ export function CondominiosPage() {
           >
             <Tabs
               value={tab}
-              onChange={(_, v) => setTab(v as CondominioCategoria)}
+              onChange={(_, v) => setTab(v as CondominioCategoria | 'todos')}
               sx={{ px: 1, borderBottom: 1, borderColor: 'divider' }}
             >
+              <Tab value="todos" label={`Todos (${items.length})`} />
               <Tab
                 value="viavel"
                 label={`${CONDOMINIO_CATEGORIA_LABELS.viavel} (${counts.viavel})`}
@@ -568,17 +570,20 @@ export function CondominiosPage() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ fontWeight: 700 }}>Condomínio</TableCell>
+                      {isTodosTab ? (
+                        <TableCell sx={{ fontWeight: 700 }}>Viabilidade</TableCell>
+                      ) : null}
                       <TableCell sx={{ fontWeight: 700 }}>Endereço</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>Bairro</TableCell>
                       <TableCell sx={{ fontWeight: 700 }}>CEP</TableCell>
-                      {isViavelTab ? (
+                      {!isTodosTab && isViavelTab ? (
                         <TableCell sx={{ fontWeight: 700 }}>Observação</TableCell>
-                      ) : (
+                      ) : !isTodosTab ? (
                         <>
                           <TableCell sx={{ fontWeight: 700 }}>Tentativa</TableCell>
                           <TableCell sx={{ fontWeight: 700 }}>Motivo</TableCell>
                         </>
-                      )}
+                      ) : null}
                       {canManage ? (
                         <TableCell align="right" sx={{ fontWeight: 700 }}>
                           Ações
@@ -597,12 +602,34 @@ export function CondominiosPage() {
                         <TableCell sx={{ fontWeight: 600, minWidth: 180 }}>
                           {c.nome}
                         </TableCell>
+                        {isTodosTab ? (
+                          <TableCell>
+                            <Chip
+                              size="small"
+                              label={CONDOMINIO_CATEGORIA_LABELS[c.categoria]}
+                              sx={{
+                                fontWeight: 600,
+                                fontSize: 11,
+                                bgcolor: alpha(
+                                  c.categoria === 'viavel'
+                                    ? theme.palette.success.main
+                                    : theme.palette.error.main,
+                                  0.12,
+                                ),
+                                color:
+                                  c.categoria === 'viavel'
+                                    ? theme.palette.success.main
+                                    : theme.palette.error.main,
+                              }}
+                            />
+                          </TableCell>
+                        ) : null}
                         <TableCell sx={{ minWidth: 160 }}>
                           {[c.rua, c.numero].filter(Boolean).join(', ') || '—'}
                         </TableCell>
                         <TableCell sx={{ minWidth: 120 }}>{c.bairro || '—'}</TableCell>
                         <TableCell sx={{ whiteSpace: 'nowrap' }}>{c.cep || '—'}</TableCell>
-                        {isViavelTab ? (
+                        {!isTodosTab && isViavelTab ? (
                           <TableCell sx={{ maxWidth: 360 }}>
                             <Box
                               sx={{
@@ -616,7 +643,7 @@ export function CondominiosPage() {
                               {c.obs || '—'}
                             </Box>
                           </TableCell>
-                        ) : (
+                        ) : !isTodosTab ? (
                           <>
                             <TableCell sx={{ whiteSpace: 'nowrap', minWidth: 110 }}>
                               {c.dataTentativa || '—'}
@@ -635,7 +662,7 @@ export function CondominiosPage() {
                               </Box>
                             </TableCell>
                           </>
-                        )}
+                        ) : null}
                         {canManage ? (
                           <TableCell
                             align="right"
