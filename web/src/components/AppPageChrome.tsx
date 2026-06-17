@@ -91,7 +91,7 @@ export function AppPageChrome({
             sx={{
               display: { xs: 'none', md: 'block' },
               width: '100%',
-              maxWidth: 300,
+              maxWidth: 380,
               flexShrink: 0,
               ml: 2,
             }}
@@ -99,7 +99,7 @@ export function AppPageChrome({
             <HeroIllustration
               src={ILLUSTRATIONS[illustration]}
               alt={illustrationAlt ?? ''}
-              maxWidth={300}
+              maxWidth={380}
             />
           </Box>
         ) : headerRight ? (
