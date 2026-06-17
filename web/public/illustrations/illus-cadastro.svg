@@ -1,147 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320">
-
-  <!-- FUNDO DECORATIVO -->
-  <circle cx="55" cy="272" r="84" fill="#38af47" opacity="0.07"/>
-  <circle cx="372" cy="52" r="64" fill="#2e7d32" opacity="0.08"/>
-  <circle cx="382" cy="288" r="48" fill="#a5d6a7" opacity="0.12"/>
-
-  <!-- PLANTA ESQUERDA -->
-  <rect x="13" y="267" width="36" height="24" rx="5" fill="#A07830"/>
-  <rect x="10" y="261" width="42" height="10" rx="5" fill="#B89240"/>
-  <path d="M31 261 C31 261 14 242 14 224 C20 234 28 244 31 254 Z" fill="#2e7d32"/>
-  <path d="M31 261 C31 261 16 246 10 228 C18 236 26 248 31 254 Z" fill="#38af47" opacity="0.7"/>
-  <path d="M31 261 C31 261 48 242 50 222 C44 234 36 244 31 254 Z" fill="#2e7d32"/>
-  <path d="M31 261 C31 261 52 248 56 230 C48 238 38 250 31 254 Z" fill="#38af47" opacity="0.7"/>
-  <path d="M31 261 C31 261 22 245 16 230 C22 240 28 252 31 258 Z" fill="#196e2e"/>
-
-  <!-- MESA -->
-  <rect x="50" y="232" width="316" height="14" rx="7" fill="#C4A265"/>
-  <rect x="50" y="232" width="316" height="5" rx="2.5" fill="#D9B87A" opacity="0.65"/>
-  <rect x="70" y="246" width="12" height="60" rx="4" fill="#A08040"/>
-  <rect x="316" y="246" width="12" height="60" rx="4" fill="#A08040"/>
-
-  <!-- CADEIRA -->
-  <rect x="65" y="165" width="12" height="72" rx="6" fill="#1b5e20" opacity="0.3"/>
-  <rect x="52" y="218" width="86" height="14" rx="7" fill="#1b5e20" opacity="0.25"/>
-
-  <!-- CORPO (camisa verde) -->
-  <path d="M80 196 C76 211 74 222 76 232 L152 232 C154 222 152 211 148 196 C136 185 92 185 80 196 Z" fill="#38af47"/>
-  <path d="M108 196 L116 208 L124 196 L120 190 L112 190 Z" fill="#2e7d32" opacity="0.8"/>
-  <rect x="108" y="183" width="16" height="16" rx="5" fill="#FBBF7A"/>
-
-  <!-- CABEÇA -->
-  <circle cx="116" cy="161" r="29" fill="#FBBF7A"/>
-
-  <!-- CABELO ESCURO -->
-  <path d="M88 153 C89 126 116 118 116 118 C116 118 143 126 144 153 C139 145 128 140 116 140 C104 140 93 145 88 153 Z" fill="#1C0D00"/>
-  <ellipse cx="90" cy="157" rx="5" ry="14" fill="#1C0D00"/>
-  <ellipse cx="142" cy="157" rx="5" ry="14" fill="#1C0D00"/>
-  <ellipse cx="116" cy="133" rx="24" ry="13" fill="#1C0D00"/>
-  <path d="M90 145 Q94 138 100 140" stroke="#2C1400" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
-
-  <!-- ORELHAS -->
-  <circle cx="88" cy="163" r="6.5" fill="#F5A057"/>
-  <circle cx="144" cy="163" r="6.5" fill="#F5A057"/>
-  <circle cx="88" cy="168" r="3" fill="#F59E0B"/>
-  <circle cx="144" cy="168" r="3" fill="#F59E0B"/>
-
-  <!-- OLHOS -->
-  <ellipse cx="108" cy="163" rx="3.5" ry="4.5" fill="#1C0D00"/>
-  <circle cx="109.5" cy="161" r="1.3" fill="#fff" opacity="0.85"/>
-  <ellipse cx="124" cy="163" rx="3.5" ry="4.5" fill="#1C0D00"/>
-  <circle cx="125.5" cy="161" r="1.3" fill="#fff" opacity="0.85"/>
-
-  <!-- SOBRANCELHAS -->
-  <path d="M104 155 Q108 152 112 155" stroke="#1C0D00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-  <path d="M120 155 Q124 152 128 155" stroke="#1C0D00" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-
-  <!-- NARIZ -->
-  <path d="M113 167 Q116 172 119 167" stroke="#D48A5A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-
-  <!-- SORRISO -->
-  <path d="M108 174 Q116 181 124 174" stroke="#1C0D00" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-
-  <!-- BLUSH -->
-  <ellipse cx="102" cy="170" rx="7" ry="4" fill="#E88060" opacity="0.2"/>
-  <ellipse cx="130" cy="170" rx="7" ry="4" fill="#E88060" opacity="0.2"/>
-
-  <!-- BRAÇO ESQUERDO -->
-  <path d="M80 205 Q60 220 58 230" stroke="#FBBF7A" stroke-width="15" stroke-linecap="round" fill="none"/>
-  <circle cx="58" cy="230" r="8.5" fill="#FBBF7A"/>
-
-  <!-- BRAÇO DIREITO -->
-  <path d="M148 205 Q168 218 186 226" stroke="#FBBF7A" stroke-width="14" stroke-linecap="round" fill="none"/>
-  <circle cx="186" cy="226" r="7.5" fill="#FBBF7A"/>
-
-  <!-- LAPTOP — TELA -->
-  <rect x="186" y="146" width="150" height="88" rx="9" fill="#1b5e20"/>
-  <rect x="194" y="153" width="134" height="72" rx="6" fill="#0d3b14"/>
-
-  <!-- CONTEÚDO DA TELA: formulário de cadastro -->
-  <rect x="199" y="158" width="124" height="13" rx="4" fill="#38af47" opacity="0.2"/>
-  <circle cx="303" cy="164" r="9" fill="#38af47" opacity="0.18"/>
-  <circle cx="303" cy="162" r="5" fill="#38af47" opacity="0.6"/>
-  <path d="M296 172 Q303 169 310 172" fill="#38af47" opacity="0.5"/>
-  <rect x="199" y="176" width="72" height="8" rx="4" fill="#38af47" opacity="0.7"/>
-  <rect x="199" y="188" width="124" height="1.5" rx="0.75" fill="#38af47" opacity="0.2"/>
-  <rect x="199" y="193" width="38" height="4" rx="2" fill="#38af47" opacity="0.38"/>
-  <rect x="199" y="200" width="120" height="8" rx="4" fill="#196e2e" opacity="0.4"/>
-  <rect x="199" y="212" width="38" height="4" rx="2" fill="#38af47" opacity="0.38"/>
-  <rect x="199" y="219" width="120" height="8" rx="4" fill="#196e2e" opacity="0.4"/>
-  <rect x="205" y="221" width="2.5" height="5" rx="1.25" fill="#38af47" opacity="0.9"/>
-
-  <!-- LAPTOP — BASE/TECLADO -->
-  <rect x="177" y="234" width="168" height="20" rx="8" fill="#1b5e20"/>
-  <rect x="185" y="239" width="152" height="11" rx="3" fill="#2e7d32" opacity="0.45"/>
-  <rect x="247" y="240" width="36" height="9" rx="3.5" fill="#196e2e" opacity="0.6"/>
-  <rect x="193" y="232" width="138" height="5" rx="2.5" fill="#196e2e"/>
-
-  <!-- CARTEIRA DE IDENTIDADE / DOC (flutuante, direita) -->
-  <rect x="321" y="136" width="68" height="52" rx="9" fill="#1b5e20" opacity="0.1" transform="translate(3,4)"/>
-  <rect x="321" y="136" width="68" height="52" rx="9" fill="#fff"/>
-  <rect x="321" y="136" width="68" height="17" rx="9" fill="#38af47"/>
-  <rect x="321" y="145" width="68" height="8" fill="#38af47"/>
-  <rect x="328" y="160" width="22" height="22" rx="5" fill="#E8F5E9"/>
-  <circle cx="339" cy="165" r="6" fill="#a5d6a7"/>
-  <path d="M330 180 Q339 176 348 180" fill="#a5d6a7"/>
-  <rect x="357" y="160" width="26" height="4" rx="2" fill="#CBD5E1"/>
-  <rect x="357" y="168" width="20" height="4" rx="2" fill="#CBD5E1"/>
-  <rect x="357" y="176" width="24" height="4" rx="2" fill="#CBD5E1"/>
-  <circle cx="371" cy="145" r="2.5" fill="#fff" opacity="0.6"/>
-  <circle cx="379" cy="145" r="2.5" fill="#fff" opacity="0.45"/>
-
-  <!-- BADGE DE APROVAÇÃO -->
-  <circle cx="380" cy="198" r="16" fill="#38af47" opacity="0.12"/>
-  <circle cx="380" cy="198" r="13" fill="#38af47"/>
-  <circle cx="380" cy="198" r="10" fill="#4caf50"/>
-  <path d="M374 198 L378 202 L387 190" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- CANECA DE CAFÉ -->
-  <rect x="296" y="208" width="30" height="24" rx="6" fill="#F59E0B"/>
-  <rect x="299" y="211" width="24" height="10" rx="3" fill="#D97706" opacity="0.3"/>
-  <path d="M326 213 Q337 218 326 224" stroke="#D97706" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-  <path d="M303 206 Q305 199 303 192" stroke="#B0B0B0" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.5"/>
-  <path d="M311 205 Q313 197 311 189" stroke="#B0B0B0" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.42"/>
-  <path d="M319 206 Q321 199 319 192" stroke="#B0B0B0" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.4"/>
-
-  <!-- PLANTA DIREITA (pequena) -->
-  <rect x="371" y="269" width="24" height="22" rx="4" fill="#A07830"/>
-  <rect x="368" y="263" width="30" height="10" rx="5" fill="#B89240"/>
-  <path d="M383 263 C383 263 392 248 392 234 C388 244 386 254 383 260 Z" fill="#38af47"/>
-  <path d="M383 263 C383 263 372 250 368 236 C374 246 380 256 383 260 Z" fill="#2e7d32"/>
-  <path d="M383 263 C383 263 396 252 398 240 C392 250 388 258 383 260 Z" fill="#4caf50" opacity="0.7"/>
-
-  <!-- LÁPIS NA MESA -->
-  <g transform="rotate(-8, 250, 232)">
-    <rect x="228" y="228" width="44" height="7" rx="3.5" fill="#F59E0B"/>
-    <rect x="228" y="228" width="9" height="7" rx="2" fill="#F5A057"/>
-    <polygon points="272,228 280,231.5 272,235" fill="#1C0D00"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW 2020 (64 Bit) -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="5000px" height="5000px" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 5000 5000"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+ <defs>
+   <clipPath id="id0">
+    <rect x="-3379" y="412" width="4360" height="2080"/>
+   </clipPath>
+ </defs>
+ <g id="Camada_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g style="clip-path:url(#id0)">
+   <image x="-3379" y="412" width="4360.01" height="2080" xlink:href="illus-cadastro_Images\illus-cadastro_ImgID1.png"/>
   </g>
-
-  <!-- PONTOS DECORATIVOS -->
-  <circle cx="36" cy="158" r="7" fill="#38af47" opacity="0.13"/>
-  <circle cx="24" cy="181" r="4.5" fill="#38af47" opacity="0.08"/>
-  <circle cx="390" cy="172" r="5.5" fill="#F59E0B" opacity="0.2"/>
-  <circle cx="396" cy="196" r="3.5" fill="#38af47" opacity="0.1"/>
-
+ </g>
 </svg>
