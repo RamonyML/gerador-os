@@ -309,7 +309,7 @@ export function MapaPage({ isFullMode }: { isFullMode: boolean }) {
               key={`cov-${polygonsFc.features.length}`}
               data={polygonsFc}
               interactive={false}
-              style={() => ({ color: '#00b353', weight: 1.5, fillColor: '#00b353', fillOpacity: 0.2 })}
+              style={() => ({ color: '#00b353', weight: 1.5, fillColor: '#00b353', fillOpacity: 0.35 })}
               onEachFeature={(feature, layer) => {
                 const name = (feature as Feature<Geometry, { name?: string }>).properties?.name
                 if (name) layer.bindTooltip(shortName(name), { sticky: true })

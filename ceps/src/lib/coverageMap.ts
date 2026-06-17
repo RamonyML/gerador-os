@@ -1,8 +1,7 @@
 import { kml } from '@tmcw/togeojson'
 import type { Feature, FeatureCollection, Geometry, Position } from 'geojson'
 
-const COVERAGE_MID = '1W78joEfkyIPieGT57NwcHA9s5BYH1Mbb'
-const KML_URL = `https://www.google.com/maps/d/kml?mid=${COVERAGE_MID}&forcekml=1`
+const KML_URL = '/coverage.kml'
 
 export type LatLng = { lat: number; lng: number }
 export type CoverageFeature = Feature<Geometry, { name?: string }>
