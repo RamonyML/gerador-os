@@ -37,6 +37,9 @@ import { InstTaxaHubPage } from './pages/InstTaxaHubPage'
 import { RequireCadastro } from './components/RequireCadastro'
 import { RequireAgenda } from './components/RequireAgenda'
 import { RequireUpgrades } from './components/RequireUpgrades'
+import { InstalacaoHomePage } from './pages/InstalacaoHomePage'
+import { EncerramentosInstHubPage } from './pages/EncerramentosInstHubPage'
+import { RequireInstalacao } from './components/RequireInstalacao'
 
 export default function App() {
   return (
@@ -152,6 +155,22 @@ export default function App() {
             <RequireCadastro>
               <InstTaxaHubPage />
             </RequireCadastro>
+          }
+        />
+        <Route
+          path="/instalacao"
+          element={
+            <RequireInstalacao>
+              <InstalacaoHomePage />
+            </RequireInstalacao>
+          }
+        />
+        <Route
+          path="/instalacao/encerramentos"
+          element={
+            <RequireInstalacao>
+              <EncerramentosInstHubPage />
+            </RequireInstalacao>
           }
         />
         <Route path="/gerar-os" element={<OsGeneratorPage />} />

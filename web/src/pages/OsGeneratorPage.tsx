@@ -84,7 +84,11 @@ import { buildInstGratisResidencialTextos } from '../data/instalacao/gratisResid
 import { buildInstGratisEmpresarialTextos } from '../data/instalacao/gratisEmpresarial'
 import { buildInstTaxaResidencialTextos } from '../data/instalacao/taxaResidencial'
 import { buildInstTaxaEmpresarialTextos } from '../data/instalacao/taxaEmpresarial'
+import { buildEncPadraoCasaTextos } from '../data/encerramentoInst/padraoCasa'
+import { buildEncPadraoEmpresaTextos } from '../data/encerramentoInst/padraoEmpresa'
+import { buildEncPadraoCasaExtendTextos } from '../data/encerramentoInst/padraoCasaExtend'
 import { isKnownCadastroDemandCategory } from '../data/cadastroDemands'
+import { INSTALACAO_DEMANDS, isKnownInstalacaoDemandCategory } from '../data/instalacaoDemands'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -100,6 +104,7 @@ const DEMAND_HUB_ROUTES: Record<string, string> = {
   feedback: '/suporte/feedback',
   'instalacao-gratis': '/cadastro/instalacao-gratis',
   'instalacao-taxa': '/cadastro/instalacao-taxa',
+  'encerramentos-instalacao': '/instalacao/encerramentos',
 }
 
 /** Descrição do processo por demanda, exibida no cabeçalho do gerador. */
@@ -134,7 +139,7 @@ export function OsGeneratorPage() {
 
   const visibleTemplates = useMemo(() => {
     if (!demandParam) return templates
-    if (isKnownDemandCategory(demandParam) || isKnownCadastroDemandCategory(demandParam)) {
+    if (isKnownDemandCategory(demandParam) || isKnownCadastroDemandCategory(demandParam) || isKnownInstalacaoDemandCategory(demandParam)) {
       return templatesMatchingDemand(templates, demandParam)
     }
     return templates
@@ -144,7 +149,8 @@ export function OsGeneratorPage() {
     if (!demandParam) return undefined
     return (
       SUPPORT_DEMANDS.find((d) => d.id === demandParam) ??
-      CADASTRO_DEMANDS.find((d) => d.id === demandParam)
+      CADASTRO_DEMANDS.find((d) => d.id === demandParam) ??
+      INSTALACAO_DEMANDS.find((d) => d.id === demandParam)
     )
   }, [demandParam])
 
@@ -538,6 +544,12 @@ export function OsGeneratorPage() {
       Object.assign(base, buildInstTaxaResidencialTextos(values))
     } else if (selected?.slug === 'inst-taxa-empresarial') {
       Object.assign(base, buildInstTaxaEmpresarialTextos(values))
+    } else if (selected?.slug === 'ence-padrao-casa') {
+      Object.assign(base, buildEncPadraoCasaTextos(values))
+    } else if (selected?.slug === 'ence-padrao-empresa') {
+      Object.assign(base, buildEncPadraoEmpresaTextos(values))
+    } else if (selected?.slug === 'ence-padrao-casa-extend') {
+      Object.assign(base, buildEncPadraoCasaExtendTextos(values))
     }
     return base
   }, [values, profile, user, selected?.slug])

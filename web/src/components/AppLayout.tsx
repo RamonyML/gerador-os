@@ -32,6 +32,7 @@ import { useColorMode } from '../contexts/ColorModeContext'
 import { canAccessAgenda, canAccessUpgrades, canManageUsers } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
+import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { useNotices } from '../hooks/useNotices'
@@ -66,6 +67,7 @@ export function AppLayout() {
   const showUsers = profile != null && canManageUsers(profile)
   const showSupport = profile != null && canAccessSupportHub(profile)
   const showCadastro = profile != null && canAccessCadastroHub(profile)
+  const showInstalacao = profile != null && canAccessInstalacaoHub(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showAgenda = profile != null && canAccessAgenda(profile)
   const showUpgrades = profile != null && canAccessUpgrades(profile)
@@ -103,8 +105,8 @@ export function AppLayout() {
   const totalUnread = notices.unreadCount + helpdesk.unreadCount
 
   const navItems = useMemo(
-    () => buildNavItems({ showSupport, showCadastro, showUsers, showCondominios, showAgenda, showUpgrades }),
-    [showSupport, showCadastro, showUsers, showCondominios, showAgenda, showUpgrades],
+    () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades }),
+    [showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades],
   )
 
   const openNoticeMenu = (el: HTMLElement) => setNoticeAnchor(el)

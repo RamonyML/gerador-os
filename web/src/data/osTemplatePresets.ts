@@ -44,6 +44,9 @@ import { getInstGratisResidencialDefaults } from './instalacao/gratisResidencial
 import { getInstGratisEmpresarialDefaults } from './instalacao/gratisEmpresarial'
 import { getInstTaxaResidencialDefaults } from './instalacao/taxaResidencial'
 import { getInstTaxaEmpresarialDefaults } from './instalacao/taxaEmpresarial'
+import { getEncPadraoCasaDefaults } from './encerramentoInst/padraoCasa'
+import { getEncPadraoEmpresaDefaults } from './encerramentoInst/padraoEmpresa'
+import { getEncPadraoCasaExtendDefaults } from './encerramentoInst/padraoCasaExtend'
 import type { OsOperatorGuidance, OsTemplateField } from '../types/osTemplate'
 
 /** Retorno comum para definir um fluxo de O.S em código. */
@@ -347,6 +350,24 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Instalação',
     label: 'Instalação com taxa — Empresarial (PJ)',
     getDefaults: getInstTaxaEmpresarialDefaults,
+  },
+  {
+    id: 'ence-padrao-casa',
+    category: 'Encerramento de O.S',
+    label: 'Encerramento — Padrão Casa',
+    getDefaults: getEncPadraoCasaDefaults,
+  },
+  {
+    id: 'ence-padrao-casa-extend',
+    category: 'Encerramento de O.S',
+    label: 'Encerramento — Padrão Casa (Wi-Fi Extend)',
+    getDefaults: getEncPadraoCasaExtendDefaults,
+  },
+  {
+    id: 'ence-padrao-empresa',
+    category: 'Encerramento de O.S',
+    label: 'Encerramento — Padrão Empresa',
+    getDefaults: getEncPadraoEmpresaDefaults,
   },
 ]
 
