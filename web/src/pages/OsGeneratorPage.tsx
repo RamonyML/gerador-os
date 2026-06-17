@@ -131,6 +131,7 @@ export function OsGeneratorPage() {
   const [values, setValues] = useState<Record<string, string>>({})
   const [copyOk, setCopyOk] = useState(false)
   const [previewTab, setPreviewTab] = useState(0)
+  const [attempted, setAttempted] = useState(false)
 
   const templates = state.status === 'ready' ? state.templates : []
   const demandParam = searchParams.get('demanda')
@@ -201,6 +202,7 @@ export function OsGeneratorPage() {
     setSelectedId(next.id)
     setValues(buildInitialValues(next))
     setPreviewTab(0)
+    setAttempted(false)
   }, [state.status, visibleTemplates, tplParam, slugParam, demandParam])
 
   useEffect(() => {
@@ -568,6 +570,7 @@ export function OsGeneratorPage() {
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
 
   const handleCopyAll = useCallback(async () => {
+    setAttempted(true)
     try {
       await navigator.clipboard.writeText(preview)
       setCopyOk(true)
@@ -577,6 +580,7 @@ export function OsGeneratorPage() {
   }, [preview])
 
   const handleCopySection = useCallback(async () => {
+    setAttempted(true)
     try {
       await navigator.clipboard.writeText(activePreviewBody)
       setCopyOk(true)
@@ -603,6 +607,11 @@ export function OsGeneratorPage() {
       return !(values[f.id] ?? '').trim()
     })
   }, [selected, values])
+
+  const errorFieldIds = useMemo(
+    () => (attempted ? new Set(emptyFields.map((f) => f.id)) : new Set<string>()),
+    [attempted, emptyFields],
+  )
 
   const isCadastroDemand =
     demandParam != null && isKnownCadastroDemandCategory(demandParam)
@@ -809,12 +818,13 @@ export function OsGeneratorPage() {
                 fields={selected.fields}
                 values={values}
                 accent={accent}
-                onChange={(id, v) =>
+                onChange={(id, v) => {
                   setValues((prev) => ({ ...prev, [id]: v }))
-                }
+                }}
                 onPatchValues={(patch) =>
                   setValues((prev) => ({ ...prev, ...patch }))
                 }
+                errorFieldIds={errorFieldIds}
               />
             ) : null}
           </Paper>

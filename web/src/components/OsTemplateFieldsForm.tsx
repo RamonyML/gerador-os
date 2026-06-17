@@ -49,6 +49,8 @@ type Props = {
   onPatchValues?: (patch: Record<string, string>) => void
   /** Tom dos títulos de seção (default verde/primary). */
   accent?: 'green' | 'red'
+  /** IDs de campos com valor vazio que devem ser destacados em vermelho. */
+  errorFieldIds?: ReadonlySet<string>
 }
 
 /** Ids de destino compatíveis com o legado (MUD END usa `adress`). */
@@ -193,6 +195,7 @@ export function OsTemplateFieldsForm({
   onChange,
   onPatchValues,
   accent = 'green',
+  errorFieldIds,
 }: Props) {
   const sectionColor = accent === 'red' ? 'error.main' : 'primary.main'
   const hasCepField = fields.some((f) => f.id === 'cep')
@@ -262,6 +265,7 @@ export function OsTemplateFieldsForm({
                       value={values[f.id] ?? ''}
                       onChange={fieldOnChange}
                       disabled={disabled}
+                      hasError={errorFieldIds?.has(f.id) ?? false}
                     />
                   )}
                 </Grid>
@@ -650,11 +654,13 @@ function FieldInput({
   value,
   onChange,
   disabled = false,
+  hasError = false,
 }: {
   field: OsTemplateField
   value: string
   onChange: (id: string, value: string) => void
   disabled?: boolean
+  hasError?: boolean
 }) {
   const kind = getFieldControl(f)
 
@@ -719,6 +725,7 @@ function FieldInput({
         fullWidth
         size="small"
         disabled={disabled}
+        error={hasError}
         slotProps={{
           htmlInput: {
             inputMode: 'numeric',
@@ -740,6 +747,7 @@ function FieldInput({
         fullWidth
         size="small"
         disabled={disabled}
+        error={hasError}
         slotProps={{
           htmlInput: {
             inputMode: 'decimal',
@@ -813,6 +821,7 @@ function FieldInput({
         multiline
         minRows={3}
         disabled={disabled}
+        error={hasError}
       />
     )
   }
@@ -826,6 +835,7 @@ function FieldInput({
       fullWidth
       size="small"
       disabled={disabled}
+      error={hasError}
     />
   )
 }
