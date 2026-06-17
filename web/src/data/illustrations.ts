@@ -21,9 +21,9 @@ export const ILLUSTRATIONS = {
   senha: '/illustrations/illus-senha.png',
   wifiextend: '/illustrations/illus-wifiextend.png',
   instalacao: '/illustrations/illus-instalacao.png',
-  cadastro: '/illustrations/illus-cadastro.svg',
-  instGratis: '/illustrations/illus-inst-gratis.svg',
-  instTaxa: '/illustrations/illus-inst-taxa.svg',
+  cadastro: '/illustrations/illus-cadastro.png',
+  instGratis: '/illustrations/illus-inst-gratis.png',
+  instTaxa: '/illustrations/illus-inst-taxa.png',
 } as const
 
 export type IllustrationKey = keyof typeof ILLUSTRATIONS
