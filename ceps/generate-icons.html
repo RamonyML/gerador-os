@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Ícones</title>
+</head>
+<body>
+    <h1>Gerador de Ícones para Extensão</h1>
+    <p>Clique nos botões abaixo para baixar os ícones em diferentes tamanhos:</p>
+    
+    <button onclick="generateIcon(16)">Baixar ícone 16x16</button>
+    <button onclick="generateIcon(32)">Baixar ícone 32x32</button>
+    <button onclick="generateIcon(48)">Baixar ícone 48x48</button>
+    <button onclick="generateIcon(128)">Baixar ícone 128x128</button>
+    
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <script>
+        function generateIcon(size) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Background circle
+            ctx.fillStyle = '#38af47';
+            ctx.strokeStyle = '#2f9e3d';
+            ctx.lineWidth = size / 32;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - size/32, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Magnifying glass
+            const scale = size / 128;
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 6 * scale;
+            ctx.lineCap = 'round';
+            
+            // Circle part of magnifying glass
+            ctx.beginPath();
+            ctx.arc(45 * scale, 45 * scale, 15 * scale, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Handle of magnifying glass
+            ctx.beginPath();
+            ctx.moveTo(55 * scale, 55 * scale);
+            ctx.lineTo(75 * scale, 75 * scale);
+            ctx.stroke();
+            
+            // Location pin
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(85 * scale, 35 * scale, 8 * scale, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Pin bottom
+            ctx.beginPath();
+            ctx.moveTo(85 * scale, 43 * scale);
+            ctx.lineTo(85 * scale, 55 * scale);
+            ctx.lineTo(77 * scale, 65 * scale);
+            ctx.lineTo(93 * scale, 65 * scale);
+            ctx.closePath();
+            ctx.fill();
+            
+            // CEP text
+            ctx.fillStyle = 'white';
+            ctx.font = `${12 * scale}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('CEP', size/2, 95 * scale);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html> 
