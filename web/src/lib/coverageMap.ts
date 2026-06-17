@@ -14,7 +14,7 @@ export const COVERAGE_MID = '1W78joEfkyIPieGT57NwcHA9s5BYH1Mbb'
  * endpoint responde com `Access-Control-Allow-Origin: *`, então o fetch direto
  * pelo navegador funciona sem proxy — dado sempre atualizado em runtime.
  */
-const KML_URL = `https://www.google.com/maps/d/kml?mid=${COVERAGE_MID}&forcekml=1`
+const KML_URL = '/coverage.kml'
 
 export type LatLng = { lat: number; lng: number }
 

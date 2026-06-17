@@ -316,7 +316,7 @@ export function CoberturaPage() {
       color: theme.palette.success.main,
       weight: 1.5,
       fillColor: theme.palette.success.main,
-      fillOpacity: isDark ? 0.28 : 0.22,
+      fillOpacity: isDark ? 0.38 : 0.35,
     }),
     [theme.palette.success.main, isDark],
   )
