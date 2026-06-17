@@ -89,6 +89,8 @@ import { buildEncPadraoEmpresaTextos } from '../data/encerramentoInst/padraoEmpr
 import { buildEncPadraoCasaExtendTextos } from '../data/encerramentoInst/padraoCasaExtend'
 import { isKnownCadastroDemandCategory } from '../data/cadastroDemands'
 import { INSTALACAO_DEMANDS, isKnownInstalacaoDemandCategory } from '../data/instalacaoDemands'
+import { db } from '../lib/firebase'
+import { saveOsHistory } from '../lib/osHistoryFirestore'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -569,25 +571,41 @@ export function OsGeneratorPage() {
   const activePreviewBody =
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
 
+  const saveHistory = useCallback(
+    (text: string) => {
+      if (!user || !selected) return
+      saveOsHistory(db, {
+        uid: user.uid,
+        slug: selected.slug,
+        title: selected.title,
+        demandCategory: selected.demandCategory,
+        preview: text,
+      }).catch(() => {/* silently ignore */})
+    },
+    [user, selected],
+  )
+
   const handleCopyAll = useCallback(async () => {
     setAttempted(true)
     try {
       await navigator.clipboard.writeText(preview)
       setCopyOk(true)
+      saveHistory(preview)
     } catch {
       /* ignore */
     }
-  }, [preview])
+  }, [preview, saveHistory])
 
   const handleCopySection = useCallback(async () => {
     setAttempted(true)
     try {
       await navigator.clipboard.writeText(activePreviewBody)
       setCopyOk(true)
+      saveHistory(activePreviewBody)
     } catch {
       /* ignore */
     }
-  }, [activePreviewBody])
+  }, [activePreviewBody, saveHistory])
 
   const multiPreviewTabs = previewSections.length > 1
 

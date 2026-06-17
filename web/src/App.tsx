@@ -40,6 +40,7 @@ import { RequireUpgrades } from './components/RequireUpgrades'
 import { InstalacaoHomePage } from './pages/InstalacaoHomePage'
 import { EncerramentosInstHubPage } from './pages/EncerramentosInstHubPage'
 import { RequireInstalacao } from './components/RequireInstalacao'
+import { HistoricoPage } from './pages/HistoricoPage'
 
 export default function App() {
   return (
@@ -211,6 +212,7 @@ export default function App() {
             </RequireCondominios>
           }
         />
+        <Route path="/historico" element={<HistoricoPage />} />
         <Route path="/avisos" element={<AvisosPage />} />
         <Route
           path="/upgrades/comissoes"

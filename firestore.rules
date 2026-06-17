@@ -394,6 +394,23 @@ service cloud.firestore {
         );
     }
 
+    /**
+     * Histórico de O.S geradas por usuário.
+     * Cada usuário lê, cria e exclui apenas os próprios registros.
+     */
+    match /osHistory/{entryId} {
+      allow read, delete: if isActiveUser()
+        && resource.data.uid == request.auth.uid;
+
+      allow create: if isActiveUser()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.slug is string
+        && request.resource.data.title is string
+        && request.resource.data.demandCategory is string
+        && request.resource.data.preview is string
+        && request.resource.data.createdAt is timestamp;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

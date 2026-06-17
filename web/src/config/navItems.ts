@@ -12,6 +12,7 @@ import HomeRepairServiceOutlinedIcon from '@mui/icons-material/HomeRepairService
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
 
 export type NavItem = {
   label: string
@@ -124,6 +125,12 @@ export function buildNavItems({
           isActive: startsWith('/admin/usuarios'),
         }
       : null,
+    {
+      label: 'Histórico de O.S',
+      to: '/historico',
+      icon: HistoryRoundedIcon,
+      isActive: startsWith('/historico'),
+    },
     {
       label: 'Avisos',
       to: '/avisos',
