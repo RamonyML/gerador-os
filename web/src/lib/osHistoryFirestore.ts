@@ -23,11 +23,13 @@ export interface OsHistoryEntry {
   title: string
   demandCategory: string
   preview: string
+  clientName: string
+  obs: string
   createdAt: Date
 }
 
 function parseEntry(id: string, data: Record<string, unknown>): OsHistoryEntry | null {
-  const { uid, slug, title, demandCategory, preview, createdAt } = data
+  const { uid, slug, title, demandCategory, preview, createdAt, clientName, obs } = data
   if (
     typeof uid !== 'string' ||
     typeof slug !== 'string' ||
@@ -37,7 +39,17 @@ function parseEntry(id: string, data: Record<string, unknown>): OsHistoryEntry |
     !(createdAt instanceof Timestamp)
   )
     return null
-  return { id, uid, slug, title, demandCategory, preview, createdAt: createdAt.toDate() }
+  return {
+    id,
+    uid,
+    slug,
+    title,
+    demandCategory,
+    preview,
+    clientName: typeof clientName === 'string' ? clientName : '',
+    obs: typeof obs === 'string' ? obs : '',
+    createdAt: createdAt.toDate(),
+  }
 }
 
 export async function saveOsHistory(
@@ -50,6 +62,8 @@ export async function saveOsHistory(
     title: entry.title,
     demandCategory: entry.demandCategory,
     preview: entry.preview,
+    clientName: entry.clientName,
+    obs: entry.obs,
     createdAt: serverTimestamp(),
   })
 }

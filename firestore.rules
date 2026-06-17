@@ -408,6 +408,8 @@ service cloud.firestore {
         && request.resource.data.title is string
         && request.resource.data.demandCategory is string
         && request.resource.data.preview is string
+        && request.resource.data.clientName is string
+        && request.resource.data.obs is string
         && request.resource.data.createdAt is timestamp;
     }
 

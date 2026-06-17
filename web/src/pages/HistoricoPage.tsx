@@ -30,6 +30,7 @@ import type { OsHistoryEntry } from '../lib/osHistoryFirestore'
 import { SUPPORT_DEMANDS } from '../data/supportDemands'
 import { CADASTRO_DEMANDS } from '../data/cadastroDemands'
 import { INSTALACAO_DEMANDS } from '../data/instalacaoDemands'
+import { ILLUSTRATIONS } from '../data/illustrations'
 
 const ALL_DEMANDS = [...SUPPORT_DEMANDS, ...CADASTRO_DEMANDS, ...INSTALACAO_DEMANDS]
 
@@ -59,15 +60,23 @@ function dayLabel(key: string): string {
   return formatDate(new Date(y!, m! - 1, d!))
 }
 
+const SECTOR_HUB: Record<string, string> = {
+  suporte: '/suporte',
+  cadastro: '/cadastro',
+  instalacao: '/instalacao',
+}
+
 export function HistoricoPage() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const histState = useOsHistory(user?.uid ?? null)
 
   const [previewEntry, setPreviewEntry] = useState<OsHistoryEntry | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [copyOk, setCopyOk] = useState<string | null>(null)
+
+  const hubRoute = profile ? (SECTOR_HUB[profile.sector] ?? '/gerar-os') : '/gerar-os'
 
   const grouped = useMemo(() => {
     if (histState.status !== 'ready') return []
@@ -114,40 +123,49 @@ export function HistoricoPage() {
             Histórico de O.S
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Últimas 50 O.S geradas pela sua conta
+            Últimas 50 O.S salvas pela sua conta
           </Typography>
         </Box>
       </Stack>
 
       {grouped.length === 0 ? (
-        <Paper
-          variant="outlined"
-          sx={{ borderRadius: 3, p: 5, textAlign: 'center', borderStyle: 'dashed' }}
-        >
-          <HistoryRoundedIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-            Nenhuma O.S gerada ainda.
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Box
+            component="img"
+            src={ILLUSTRATIONS.historico}
+            alt="Histórico vazio"
+            sx={{ width: '100%', maxWidth: 340, mb: 3, mx: 'auto', display: 'block' }}
+          />
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
+            Nenhuma O.S salva ainda
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.disabled', mt: 0.5 }}>
-            Copie uma O.S no gerador e ela aparecerá aqui.
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+            Salve uma O.S no gerador e ela aparecerá aqui.
           </Typography>
           <Button
             variant="contained"
             disableElevation
-            sx={{ mt: 2.5, borderRadius: 2 }}
-            onClick={() => navigate('/gerar-os')}
+            sx={{ borderRadius: 2 }}
+            onClick={() => navigate(hubRoute)}
           >
-            Ir para o gerador
+            Ir para o hub
           </Button>
-        </Paper>
+        </Box>
       ) : (
         <Stack spacing={3}>
           {grouped.map(({ key, label, entries }) => (
             <Box key={key}>
               <Typography
                 variant="caption"
-                color="text.secondary"
-                sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, px: 0.5, mb: 1, display: 'block' }}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: 1,
+                  px: 0.5,
+                  mb: 1,
+                  display: 'block',
+                  color: 'text.secondary',
+                }}
               >
                 {label}
               </Typography>
@@ -170,7 +188,7 @@ export function HistoricoPage() {
                           <Typography
                             variant="body2"
                             noWrap
-                            sx={{ fontWeight: 600, maxWidth: { xs: 180, sm: 320 } }}
+                            sx={{ fontWeight: 600, maxWidth: { xs: 180, sm: 280 } }}
                           >
                             {entry.title}
                           </Typography>
@@ -186,9 +204,35 @@ export function HistoricoPage() {
                             }}
                           />
                         </Stack>
-                        <Typography variant="caption" color="text.secondary">
-                          {formatTime(entry.createdAt)}
-                        </Typography>
+
+                        {entry.clientName ? (
+                          <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{ color: 'text.primary', fontWeight: 500, maxWidth: { xs: 200, sm: 360 } }}
+                          >
+                            {entry.clientName}
+                          </Typography>
+                        ) : null}
+
+                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                            {formatTime(entry.createdAt)}
+                          </Typography>
+                          {entry.obs ? (
+                            <Typography
+                              variant="caption"
+                              noWrap
+                              sx={{
+                                color: 'text.secondary',
+                                fontStyle: 'italic',
+                                maxWidth: { xs: 160, sm: 280 },
+                              }}
+                            >
+                              — {entry.obs}
+                            </Typography>
+                          ) : null}
+                        </Stack>
                       </Box>
 
                       <Stack direction="row" spacing={0.5}>
@@ -196,9 +240,7 @@ export function HistoricoPage() {
                           <IconButton
                             size="small"
                             onClick={() => handleCopy(entry)}
-                            sx={{
-                              color: copyOk === entry.id ? 'success.main' : 'text.secondary',
-                            }}
+                            sx={{ color: copyOk === entry.id ? 'success.main' : 'text.secondary' }}
                           >
                             <ContentCopyRoundedIcon fontSize="small" />
                           </IconButton>
@@ -243,8 +285,14 @@ export function HistoricoPage() {
           <>
             <DialogTitle sx={{ fontWeight: 700, pb: 0.5 }}>
               {previewEntry.title}
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 400 }}>
+              {previewEntry.clientName ? (
+                <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                  {previewEntry.clientName}
+                </Typography>
+              ) : null}
+              <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
                 {formatDate(previewEntry.createdAt)} às {formatTime(previewEntry.createdAt)}
+                {previewEntry.obs ? ` — ${previewEntry.obs}` : ''}
               </Typography>
             </DialogTitle>
             <DialogContent>
@@ -288,7 +336,7 @@ export function HistoricoPage() {
       >
         <DialogTitle sx={{ fontWeight: 700 }}>Remover do histórico?</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Este registro será excluído permanentemente.
           </Typography>
         </DialogContent>

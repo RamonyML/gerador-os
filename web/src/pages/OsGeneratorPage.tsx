@@ -8,6 +8,10 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Link,
   List,
   ListItem,
@@ -17,12 +21,14 @@ import {
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
   useTheme,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { ContentCopy } from '@mui/icons-material'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
+import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import { AppPageChrome } from '../components/AppPageChrome'
@@ -134,6 +140,9 @@ export function OsGeneratorPage() {
   const [copyOk, setCopyOk] = useState(false)
   const [previewTab, setPreviewTab] = useState(0)
   const [attempted, setAttempted] = useState(false)
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
+  const [saveObs, setSaveObs] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const templates = state.status === 'ready' ? state.templates : []
   const demandParam = searchParams.get('demanda')
@@ -571,41 +580,45 @@ export function OsGeneratorPage() {
   const activePreviewBody =
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
 
-  const saveHistory = useCallback(
-    (text: string) => {
-      if (!user || !selected) return
-      saveOsHistory(db, {
-        uid: user.uid,
-        slug: selected.slug,
-        title: selected.title,
-        demandCategory: selected.demandCategory,
-        preview: text,
-      }).catch(() => {/* silently ignore */})
-    },
-    [user, selected],
-  )
-
   const handleCopyAll = useCallback(async () => {
     setAttempted(true)
     try {
       await navigator.clipboard.writeText(preview)
       setCopyOk(true)
-      saveHistory(preview)
     } catch {
       /* ignore */
     }
-  }, [preview, saveHistory])
+  }, [preview])
 
   const handleCopySection = useCallback(async () => {
     setAttempted(true)
     try {
       await navigator.clipboard.writeText(activePreviewBody)
       setCopyOk(true)
-      saveHistory(activePreviewBody)
     } catch {
       /* ignore */
     }
-  }, [activePreviewBody, saveHistory])
+  }, [activePreviewBody])
+
+  const handleSaveConfirm = useCallback(async () => {
+    if (!user || !selected) return
+    setSaving(true)
+    try {
+      await saveOsHistory(db, {
+        uid: user.uid,
+        slug: selected.slug,
+        title: selected.title,
+        demandCategory: selected.demandCategory,
+        preview,
+        clientName: (values.nome ?? '').trim(),
+        obs: saveObs.trim(),
+      })
+      setSaveDialogOpen(false)
+      setSaveObs('')
+    } finally {
+      setSaving(false)
+    }
+  }, [user, selected, preview, values.nome, saveObs])
 
   const multiPreviewTabs = previewSections.length > 1
 
@@ -886,6 +899,15 @@ export function OsGeneratorPage() {
                 ) : null}
               </Box>
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<BookmarkBorderRoundedIcon />}
+                  onClick={() => setSaveDialogOpen(true)}
+                  disabled={!preview.trim()}
+                >
+                  Salvar O.S
+                </Button>
                 {multiPreviewTabs ? (
                   <Button
                     size="small"
@@ -990,6 +1012,44 @@ export function OsGeneratorPage() {
         message="Copiado para a área de transferência"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
+
+      <Dialog
+        open={saveDialogOpen}
+        onClose={() => { setSaveDialogOpen(false); setSaveObs('') }}
+        fullWidth
+        maxWidth="xs"
+        slotProps={{ paper: { sx: { borderRadius: 3 } } }}
+      >
+        <DialogTitle sx={{ fontWeight: 700 }}>Salvar O.S no histórico</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+            Adicione uma observação para identificar esta O.S no histórico (opcional).
+          </Typography>
+          <TextField
+            autoFocus
+            fullWidth
+            size="small"
+            label="Observação / tag"
+            placeholder="Ex: cliente reclamou de queda, visita às 14h…"
+            value={saveObs}
+            onChange={(e) => setSaveObs(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') void handleSaveConfirm() }}
+            multiline
+            minRows={2}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
+          <Button onClick={() => { setSaveDialogOpen(false); setSaveObs('') }}>Cancelar</Button>
+          <Button
+            variant="contained"
+            disableElevation
+            onClick={() => void handleSaveConfirm()}
+            disabled={saving}
+          >
+            {saving ? 'Salvando…' : 'Salvar'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AppPageChrome>
   )
 }
