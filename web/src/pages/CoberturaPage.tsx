@@ -74,6 +74,9 @@ L.Icon.Default.mergeOptions({
 
 const UBERLANDIA_CENTER: [number, number] = [-18.9186, -48.2772]
 
+const DIACRITIC_RE = /\p{Diacritic}/gu
+const stripAccents = (s: string) => s.toLowerCase().normalize('NFD').replace(DIACRITIC_RE, '')
+
 /**
  * Pin desenhado em SVG (divIcon) — independente das imagens padrão do Leaflet,
  * que não carregam de forma confiável no bundle do Vite. A cor reflete o
@@ -586,6 +589,13 @@ export function CoberturaPage() {
                     onChange={(_, value) => handleSelectCondo(value)}
                     getOptionLabel={(o) => o.nome}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
+                    filterOptions={(options, { inputValue }) => {
+                      const q = stripAccents(inputValue.trim())
+                      if (!q) return options
+                      return options.filter((o) =>
+                        stripAccents(o.nome).includes(q) || stripAccents(o.bairro ?? '').includes(q),
+                      )
+                    }}
                     noOptionsText="Nenhum condomínio localizado"
                     renderInput={(params) => (
                       <TextField

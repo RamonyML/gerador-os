@@ -177,7 +177,7 @@ export function FeedbackHubPage() {
           Registre o retorno ao cliente após a visita técnica ou resolução remota.
         </Typography>
       }
-      illustration="helpdesk"
+      illustration="feedback"
       illustrationAlt="Feedback pós-atendimento"
       toolbarLabel="Tipos de feedback"
       backTo="/suporte"

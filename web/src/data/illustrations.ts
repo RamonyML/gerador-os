@@ -24,6 +24,7 @@ export const ILLUSTRATIONS = {
   cadastro: '/illustrations/illus-cadastro.png',
   instGratis: '/illustrations/illus-inst-gratis.png',
   instTaxa: '/illustrations/illus-inst-taxa.png',
+  feedback: '/illustrations/illus-feedback.png',
 } as const
 
 export type IllustrationKey = keyof typeof ILLUSTRATIONS
