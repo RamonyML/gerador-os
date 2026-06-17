@@ -7,6 +7,7 @@ import { alpha, useTheme } from '@mui/material/styles'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
+import HomeRepairServiceOutlinedIcon from '@mui/icons-material/HomeRepairServiceOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
 import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
@@ -22,9 +23,10 @@ import { HeroIllustration } from '../components/HeroIllustration'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
-import { canManageUsers } from '../lib/permissions'
+import { canManageUsers, canAccessUpgrades } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
+import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
@@ -66,6 +68,8 @@ export function HomePage() {
 
   const showSupportHub = profile != null && canAccessSupportHub(profile)
   const showCadastroHub = profile != null && canAccessCadastroHub(profile)
+  const showInstalacaoHub = profile != null && canAccessInstalacaoHub(profile)
+  const showUpgrades = profile != null && canAccessUpgrades(profile)
   const showUsers = profile != null && canManageUsers(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
@@ -136,14 +140,30 @@ export function HomePage() {
           } satisfies QuickAction,
         ]
       : []),
-    {
-      key: 'upgrades',
-      title: 'Registro de Upgrades',
-      description:
-        'Acesse a área de registro de upgrades e gerencie as suas comissões.',
-      to: '/upgrades',
-      icon: <TrendingUpOutlinedIcon sx={{ fontSize: 28 }} />,
-    },
+    ...(showInstalacaoHub
+      ? [
+          {
+            key: 'instalacao',
+            title: 'Hub Instalação',
+            description:
+              'Formulários de encerramento de O.S: Padrão Casa, Wi-Fi Extend e Empresa.',
+            to: '/instalacao',
+            icon: <HomeRepairServiceOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
+    ...(showUpgrades
+      ? [
+          {
+            key: 'upgrades',
+            title: 'Registro de Upgrades',
+            description:
+              'Acesse a área de registro de upgrades e gerencie as suas comissões.',
+            to: '/upgrades',
+            icon: <TrendingUpOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
     {
       key: 'escala',
       title: 'Escala de trabalho',
@@ -317,7 +337,7 @@ export function HomePage() {
               }}
             >
               {actions.map((a, index) => {
-                const isHubCard = a.key === 'suporte' || a.key === 'cadastro'
+                const isHubCard = a.key === 'suporte' || a.key === 'cadastro' || a.key === 'instalacao'
                 return (
                   <Fade
                     key={a.key}
