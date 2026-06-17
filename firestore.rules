@@ -413,6 +413,15 @@ service cloud.firestore {
         && request.resource.data.createdAt is timestamp;
     }
 
+    /**
+     * Mensagens rápidas da extensão MZ Cobertura.
+     * Cada usuário lê e gerencia apenas os próprios itens.
+     */
+    match /mensagensRapidas/{userId}/itens/{itemId} {
+      allow read, create, update, delete: if request.auth != null
+        && request.auth.uid == userId;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
