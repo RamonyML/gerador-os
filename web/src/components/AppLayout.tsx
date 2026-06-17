@@ -22,6 +22,7 @@ import { alpha } from '@mui/material/styles'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded'
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
 import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
@@ -41,6 +42,7 @@ import { useSidebarTexture } from '../contexts/SidebarTextureContext'
 import { SECTOR_LABELS } from '../types/profile'
 import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
+import { TemplateSearchDialog } from './TemplateSearchDialog'
 import { GlobalMeshBackground } from './GlobalMeshBackground'
 import { GlobalCircuitBackground } from './GlobalCircuitBackground'
 import { GlobalDotsBackground } from './GlobalDotsBackground'
@@ -92,6 +94,7 @@ export function AppLayout() {
       }
       return next
     })
+  const [searchOpen, setSearchOpen] = useState(false)
   const [noticeAnchor, setNoticeAnchor] = useState<HTMLElement | null>(null)
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
   const notices = useNotices({ uid: user?.uid ?? null, profile })
@@ -102,7 +105,23 @@ export function AppLayout() {
     if (pathname.startsWith('/chamados')) helpdesk.markSeenAll()
   }, [pathname, helpdesk.markSeenAll])
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
+
   const totalUnread = notices.unreadCount + helpdesk.unreadCount
+
+  const navBadges: Record<string, number> = {
+    '/avisos': notices.unreadCount,
+    '/chamados': helpdesk.unreadCount,
+  }
 
   const navItems = useMemo(
     () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades }),
@@ -210,6 +229,7 @@ export function AppLayout() {
           {navItems.map((item) => {
             const active = item.isActive(pathname)
             const Icon = item.icon
+            const badgeCount = navBadges[item.to] ?? 0
             return (
               <Tooltip
                 key={item.to}
@@ -281,7 +301,14 @@ export function AppLayout() {
                       transition: 'min-width 0.25s ease',
                     }}
                   >
-                    <Icon fontSize="small" />
+                    <Badge
+                      badgeContent={badgeCount}
+                      color="error"
+                      max={99}
+                      sx={{ '& .MuiBadge-badge': { fontSize: 10, height: 16, minWidth: 16 } }}
+                    >
+                      <Icon fontSize="small" />
+                    </Badge>
                   </ListItemIcon>
                   <ListItemText
                     primary={item.label}
@@ -515,6 +542,16 @@ export function AppLayout() {
               </Typography>
             ) : null}
 
+            <Tooltip title="Buscar modelo (Ctrl+K)">
+              <IconButton
+                color="inherit"
+                aria-label="Buscar modelo"
+                onClick={() => setSearchOpen(true)}
+              >
+                <SearchRoundedIcon />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip
               title={
                 totalUnread > 0
@@ -734,6 +771,12 @@ export function AppLayout() {
               isUnread={
                 selectedNotice ? notices.state.unreadIds.has(selectedNotice.id) : false
               }
+            />
+
+            <TemplateSearchDialog
+              open={searchOpen}
+              onClose={() => setSearchOpen(false)}
+              profile={profile}
             />
 
             <Tooltip title={mode === 'dark' ? 'Tema claro' : 'Tema escuro'}>
