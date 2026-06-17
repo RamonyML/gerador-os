@@ -3,6 +3,7 @@ import type {
   Feature,
   FeatureCollection,
   Geometry,
+  GeometryCollection,
   Position,
 } from 'geojson'
 
@@ -43,6 +44,12 @@ export async function fetchCoverage(signal?: AbortSignal): Promise<CoverageData>
     const type = feature.geometry?.type
     if (type === 'Polygon' || type === 'MultiPolygon') {
       polygons.push(feature)
+    } else if (type === 'GeometryCollection') {
+      // KML <MultiGeometry> com <Polygon> vira GeometryCollection no GeoJSON
+      const gc = feature.geometry as GeometryCollection
+      if (gc.geometries.some((g) => g.type === 'Polygon' || g.type === 'MultiPolygon')) {
+        polygons.push(feature)
+      }
     } else if (type === 'Point') {
       points.push(feature)
     }
@@ -78,6 +85,9 @@ function pointInGeometry(pt: [number, number], geom: Geometry): boolean {
       if (!outer || !pointInRing(pt, outer)) return false
       return !holes.some((hole) => pointInRing(pt, hole))
     })
+  }
+  if (geom.type === 'GeometryCollection') {
+    return geom.geometries.some((g) => pointInGeometry(pt, g))
   }
   return false
 }
@@ -120,7 +130,12 @@ export function coverageBounds(
   }
 
   for (const feature of coverage.polygons) {
-    if (feature.geometry && 'coordinates' in feature.geometry) {
+    if (!feature.geometry) continue
+    if (feature.geometry.type === 'GeometryCollection') {
+      for (const g of feature.geometry.geometries) {
+        if ('coordinates' in g) visit(g.coordinates as Position[][])
+      }
+    } else if ('coordinates' in feature.geometry) {
       visit(feature.geometry.coordinates as Position[][])
     }
   }

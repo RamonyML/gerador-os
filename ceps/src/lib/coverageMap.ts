@@ -1,5 +1,5 @@
 import { kml } from '@tmcw/togeojson'
-import type { Feature, FeatureCollection, Geometry, Position } from 'geojson'
+import type { Feature, FeatureCollection, Geometry, GeometryCollection, Position } from 'geojson'
 
 const KML_URL = '/coverage.kml'
 
@@ -17,8 +17,16 @@ export async function fetchCoverage(signal?: AbortSignal): Promise<CoverageData>
   const points: CoverageFeature[] = []
   for (const f of geojson.features) {
     const t = f.geometry?.type
-    if (t === 'Polygon' || t === 'MultiPolygon') polygons.push(f)
-    else if (t === 'Point') points.push(f)
+    if (t === 'Polygon' || t === 'MultiPolygon') {
+      polygons.push(f)
+    } else if (t === 'GeometryCollection') {
+      const gc = f.geometry as GeometryCollection
+      if (gc.geometries.some((g) => g.type === 'Polygon' || g.type === 'MultiPolygon')) {
+        polygons.push(f)
+      }
+    } else if (t === 'Point') {
+      points.push(f)
+    }
   }
   return { polygons, points }
 }
@@ -47,6 +55,9 @@ function pointInGeometry(pt: [number, number], geom: Geometry): boolean {
       return !holes.some((h) => pointInRing(pt, h))
     })
   }
+  if (geom.type === 'GeometryCollection') {
+    return geom.geometries.some((g) => pointInGeometry(pt, g))
+  }
   return false
 }
 
@@ -72,7 +83,14 @@ export function coverageBounds(coverage: CoverageData): [[number, number], [numb
     if (Array.isArray(coords)) coords.forEach(visit)
   }
   for (const f of coverage.polygons) {
-    if (f.geometry && 'coordinates' in f.geometry) visit(f.geometry.coordinates)
+    if (!f.geometry) continue
+    if (f.geometry.type === 'GeometryCollection') {
+      for (const g of f.geometry.geometries) {
+        if ('coordinates' in g) visit(g.coordinates)
+      }
+    } else if ('coordinates' in f.geometry) {
+      visit(f.geometry.coordinates)
+    }
   }
   if (minLat === Infinity) return null
   return [[minLat, minLng], [maxLat, maxLng]]
