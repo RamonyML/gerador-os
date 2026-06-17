@@ -80,6 +80,14 @@ export function buildNavItems({
       icon: MapOutlinedIcon,
       isActive: startsWith('/cobertura'),
     },
+    showCondominios
+      ? {
+          label: 'Condomínios',
+          to: '/condominios',
+          icon: ApartmentOutlinedIcon,
+          isActive: startsWith('/condominios'),
+        }
+      : null,
     {
       label: 'Escala',
       to: '/escala',
@@ -106,14 +114,6 @@ export function buildNavItems({
           to: '/agenda',
           icon: EventNoteOutlinedIcon,
           isActive: startsWith('/agenda'),
-        }
-      : null,
-    showCondominios
-      ? {
-          label: 'Condomínios',
-          to: '/condominios',
-          icon: ApartmentOutlinedIcon,
-          isActive: startsWith('/condominios'),
         }
       : null,
     showUsers
