@@ -95,26 +95,6 @@ export function EncerramentosInstHubPage() {
                 }
               />
               <NavCard
-                to="/gerar-os?slug=ence-padrao-casa-extend&demanda=encerramentos-instalacao"
-                accent={PURPLE}
-                icon={<RouterOutlinedIcon sx={{ fontSize: 26 }} />}
-                title="Wi-Fi Extend"
-                description="Encerramento com pontos de extensão Wi-Fi: ponto primário e até 3 pontos adicionais."
-                badge={
-                  <Chip
-                    size="small"
-                    label="Multi-ponto"
-                    sx={{
-                      height: 24,
-                      fontWeight: 600,
-                      bgcolor: alpha(PURPLE, mode === 'dark' ? 0.2 : 0.1),
-                      color: PURPLE,
-                      border: 'none',
-                    }}
-                  />
-                }
-              />
-              <NavCard
                 to="/gerar-os?slug=ence-padrao-empresa&demanda=encerramentos-instalacao"
                 accent={TEAL}
                 icon={<BusinessOutlinedIcon sx={{ fontSize: 26 }} />}
@@ -129,6 +109,26 @@ export function EncerramentosInstHubPage() {
                       fontWeight: 600,
                       bgcolor: alpha(TEAL, mode === 'dark' ? 0.2 : 0.1),
                       color: TEAL,
+                      border: 'none',
+                    }}
+                  />
+                }
+              />
+              <NavCard
+                to="/gerar-os?slug=ence-padrao-casa-extend&demanda=encerramentos-instalacao"
+                accent={PURPLE}
+                icon={<RouterOutlinedIcon sx={{ fontSize: 26 }} />}
+                title="Wi-Fi Extend"
+                description="Encerramento com pontos de extensão Wi-Fi: ponto primário e até 3 pontos adicionais."
+                badge={
+                  <Chip
+                    size="small"
+                    label="Multi-ponto"
+                    sx={{
+                      height: 24,
+                      fontWeight: 600,
+                      bgcolor: alpha(PURPLE, mode === 'dark' ? 0.2 : 0.1),
+                      color: PURPLE,
                       border: 'none',
                     }}
                   />
