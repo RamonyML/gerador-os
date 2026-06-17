@@ -7,6 +7,7 @@ web/.env
 web/.env.local
 web/dist
 dist
+!ceps/dist
 functions/lib
 functions/node_modules
 .DS_Store
