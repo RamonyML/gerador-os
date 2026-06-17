@@ -25,6 +25,14 @@ export function RegistrosPage({ uid }: { uid: string }) {
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
+
+  const toggleExpand = (id: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
 
   useEffect(() => {
     const q = query(
@@ -134,13 +142,27 @@ export function RegistrosPage({ uid }: { uid: string }) {
             )}
           </div>
         )}
-        {filtered.map((item) => (
+        {filtered.map((item) => {
+          const isExpanded = expanded.has(item.id)
+          return (
           <div key={item.id} className="reg-item">
             <div className="reg-item-body">
               <div className="reg-item-title">{item.title}</div>
-              <div className="reg-item-msg">{item.message}</div>
+              <div className={`reg-item-msg${isExpanded ? ' expanded' : ''}`}>{item.message}</div>
             </div>
             <div className="reg-item-actions">
+              <button
+                className={`reg-action-btn expand${isExpanded ? ' active' : ''}`}
+                onClick={() => toggleExpand(item.id)}
+                title={isExpanded ? 'Recolher' : 'Ver mensagem completa'}
+              >
+                <svg
+                  width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+                  style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+                >
+                  <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+              </button>
               <button
                 className={`reg-action-btn${copied === item.id ? ' copied' : ''}`}
                 onClick={() => handleCopy(item)}
@@ -167,7 +189,7 @@ export function RegistrosPage({ uid }: { uid: string }) {
               </button>
             </div>
           </div>
-        ))}
+        )})}
       </div>
 
       {/* Modal Add/Edit */}
