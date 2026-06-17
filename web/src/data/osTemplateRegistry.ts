@@ -1,5 +1,6 @@
 import { OS_TEMPLATE_PRESETS } from './osTemplatePresets'
 import { isKnownCadastroDemandCategory } from './cadastroDemands'
+import { isKnownInstalacaoDemandCategory } from './instalacaoDemands'
 import type { OsTemplate } from '../types/osTemplate'
 import type { Sector, UserProfile } from '../types/profile'
 
@@ -8,6 +9,7 @@ const DEFAULT_TEMPLATE_VERSION = 1
 
 function sectorFromDemand(demandCategory: string): Sector {
   if (isKnownCadastroDemandCategory(demandCategory)) return 'cadastro'
+  if (isKnownInstalacaoDemandCategory(demandCategory)) return 'instalacao'
   return 'suporte'
 }
 
