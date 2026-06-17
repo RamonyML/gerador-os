@@ -20,6 +20,7 @@ export const ILLUSTRATIONS = {
   mudend: '/illustrations/illus-mudend.png',
   senha: '/illustrations/illus-senha.png',
   wifiextend: '/illustrations/illus-wifiextend.png',
+  instalacao: '/illustrations/illus-instalacao.png',
   cadastro: '/illustrations/illus-cadastro.svg',
   instGratis: '/illustrations/illus-inst-gratis.svg',
   instTaxa: '/illustrations/illus-inst-taxa.svg',

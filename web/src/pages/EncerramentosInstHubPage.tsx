@@ -58,7 +58,7 @@ export function EncerramentosInstHubPage() {
                   ml: { md: 2 },
                 }}
               >
-                <HeroIllustration src={ILLUSTRATIONS.operations} alt="Encerramentos" />
+                <HeroIllustration src={ILLUSTRATIONS.instalacao} alt="Encerramentos de instalação" />
               </Box>
             </Box>
           </Reveal>
