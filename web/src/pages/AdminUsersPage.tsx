@@ -98,6 +98,7 @@ export function AdminUsersPage() {
   const [flagAdmin, setFlagAdmin] = useState(false)
   const [flagDev, setFlagDev] = useState(false)
   const [flagTi, setFlagTi] = useState(false)
+  const [flagValidacao, setFlagValidacao] = useState(false)
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterSector, setFilterSector] = useState<Sector | ''>('')
@@ -201,6 +202,7 @@ export function AdminUsersPage() {
     setFlagAdmin(row.isAdmin === true)
     setFlagDev(row.isDev === true)
     setFlagTi(row.isTi === true)
+    setFlagValidacao(row.isValidacao === true)
     setDialogOpen(true)
   }
 
@@ -232,6 +234,7 @@ export function AdminUsersPage() {
           ...(canEditAdminFlag ? { isAdmin: flagAdmin } : {}),
           ...(isDev ? { isDev: flagDev } : {}),
           ...(canEditAdminFlag ? { isTi: flagTi } : {}),
+          isValidacao: flagValidacao,
         })
       } else {
         const payload: Parameters<typeof manageUsersUpdate>[0] = {
@@ -246,6 +249,7 @@ export function AdminUsersPage() {
         if (canEditAdminFlag) payload.isAdmin = flagAdmin
         if (isDev) payload.isDev = flagDev
         if (canEditAdminFlag) payload.isTi = flagTi
+        payload.isValidacao = flagValidacao
         await manageUsersUpdate(payload)
       }
       setDialogOpen(false)
@@ -688,6 +692,15 @@ export function AdminUsersPage() {
                 label="Desenvolvedor (acesso total aos templates e flag dev)"
               />
             ) : null}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={flagValidacao}
+                  onChange={(e) => setFlagValidacao(e.target.checked)}
+                />
+              }
+              label="Validação (editar histórico e status operacional na agenda)"
+            />
           </Stack>
         </DialogContent>
         <DialogActions>

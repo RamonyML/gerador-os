@@ -252,7 +252,7 @@ export function HelpdeskTicketPage() {
   return (
     <>
       <AppPageChrome
-        overline={`Chamado · ${TICKET_CATEGORY_LABELS[ticket.category]}`}
+        overline={`Chamado${ticket.chamadoNum ? ` #${ticket.chamadoNum}` : ''} · ${TICKET_CATEGORY_LABELS[ticket.category]}`}
         title={ticket.title}
         subtitle={
           <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mt: 1 }}>
@@ -670,6 +670,11 @@ export function HelpdeskTicketPage() {
                 Detalhes
               </Typography>
               <Stack spacing={0.75} sx={{ mt: 0.5 }}>
+                {ticket.chamadoNum ? (
+                  <Typography variant="body2">
+                    <strong>Chamado:</strong> #{ticket.chamadoNum}
+                  </Typography>
+                ) : null}
                 <Typography variant="body2">
                   <strong>Categoria:</strong>{' '}
                   {TICKET_CATEGORY_LABELS[ticket.category]}

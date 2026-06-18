@@ -77,6 +77,11 @@ function TicketRow({
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700 }} noWrap>
+            {ticket.chamadoNum ? (
+              <Box component="span" sx={{ color: 'text.disabled', fontWeight: 400, mr: 0.75 }}>
+                #{ticket.chamadoNum}
+              </Box>
+            ) : null}
             {ticket.title}
           </Typography>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>

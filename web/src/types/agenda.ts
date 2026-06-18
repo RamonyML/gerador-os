@@ -78,17 +78,53 @@ export const AREA_PALETTE: Record<AgendaArea, CellColor[]> = {
   manutencao: ['branco', 'amareloVivo', 'verde', 'azulPastel', 'laranja', 'azulClaro', 'cinza', 'verdeClaro'],
 }
 
+export type AgendaCellStatus = 'redes' | 'validado' | 'com_pendencia' | 'reagendar'
+
+export const AGENDA_CELL_STATUS_LABELS: Record<AgendaCellStatus, string> = {
+  redes: 'Redes',
+  validado: 'Validado',
+  com_pendencia: 'Com pendência',
+  reagendar: 'Reagendar',
+}
+
+export type AgendaCellHistoryEntry = {
+  /** ISO 8601 da edição. */
+  at: string
+  byUid: string
+  byName: string
+  /** Texto que existia ANTES desta edição. */
+  prevText: string
+}
+
 export type AgendaCell = {
   text: string
   color: CellColor
   /** Destaque (negrito + ícone) para estados que exigem atenção. */
   bold: boolean
+  /** Status operacional da célula (validação). */
+  status?: AgendaCellStatus
+  /** Observação livre associada ao status. */
+  statusObs?: string
+  /** Histórico de edições do texto (mais recente primeiro). */
+  history?: AgendaCellHistoryEntry[]
 }
 
 export type AgendaTecnico = {
   id: string
   nome: string
+  veiculo: 'carro' | 'moto'
 }
+
+export const DEFAULT_TECNICOS: AgendaTecnico[] = [
+  { id: 'tec-franklim',  nome: 'FRANKLIM',  veiculo: 'carro' },
+  { id: 'tec-ericles',   nome: 'ERICLES',   veiculo: 'carro' },
+  { id: 'tec-kelson',    nome: 'KELSON',    veiculo: 'carro' },
+  { id: 'tec-thalisson', nome: 'THALISSON', veiculo: 'carro' },
+  { id: 'tec-wanderson', nome: 'WANDERSON', veiculo: 'carro' },
+  { id: 'tec-junior',    nome: 'JUNIOR',    veiculo: 'moto'  },
+  { id: 'tec-everton',   nome: 'EVERTON',   veiculo: 'moto'  },
+  { id: 'tec-tolentino', nome: 'TOLENTINO', veiculo: 'moto'  },
+]
 
 export type AgendaSlot = {
   id: string
@@ -137,7 +173,7 @@ export function emptyDia(area: AgendaArea, date: string): AgendaDia {
     area,
     date,
     slots: defaultSlots(area),
-    tecnicos: [],
+    tecnicos: DEFAULT_TECNICOS,
     cells: {},
     negados: [],
   }

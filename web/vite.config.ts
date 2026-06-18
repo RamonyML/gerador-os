@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      host: true, // escuta em 0.0.0.0 — acessível na rede local
       // Permite que os testes de paridade importem os HTML legados (fora de /web) via `?raw`.
       fs: { allow: [dir, repoRoot] },
       proxy: {

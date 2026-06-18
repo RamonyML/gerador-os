@@ -230,6 +230,11 @@ export function buildMudEndAltplanPropostaTextos(
           })()
         : ''
 
+  const autorizacaoProto =
+    tipo === T_TITULAR_TERCEIRO
+      ? `\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO.`
+      : ''
+
   const protocolo = `${primeiroContato} ENTROU EM CONTATO POR ${v.canal ?? ''} (${contatoUsado}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.
 
 ${SEP}
@@ -272,7 +277,7 @@ ${SEP}
 
 CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.
 
-${primeiroContato} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.
+${primeiroContato} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.${autorizacaoProto}
 
 MUDANÇA E ALTERAÇÃO DE PLANO AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.
 

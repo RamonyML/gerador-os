@@ -32,6 +32,8 @@ export interface UserProfile {
   isAdmin?: boolean
   /** Função T.I: gerencia o ambiente de chamados (GLPI), independente do setor. */
   isTi?: boolean
+  /** Validador de agenda: pode editar histórico e adicionar status nas células. */
+  isValidacao?: boolean
   active?: boolean
 }
 
@@ -47,6 +49,7 @@ export function parseUserProfile(data: Record<string, unknown>): UserProfile | n
     isDev: data.isDev === true,
     isAdmin: data.isAdmin === true,
     isTi: data.isTi === true,
+    isValidacao: data.isValidacao === true,
     active: data.active !== false,
   }
 }

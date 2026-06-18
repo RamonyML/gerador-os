@@ -28,9 +28,12 @@ import {
 import { alpha } from '@mui/material/styles'
 import { ContentCopy } from '@mui/icons-material'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined'
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded'
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
+import { AgendarVisitaModal } from '../components/AgendarVisitaModal'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { OsTemplateFieldsForm, isFieldDisabled } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
@@ -93,6 +96,7 @@ import { buildInstTaxaEmpresarialTextos } from '../data/instalacao/taxaEmpresari
 import { buildEncPadraoCasaTextos } from '../data/encerramentoInst/padraoCasa'
 import { buildEncPadraoEmpresaTextos } from '../data/encerramentoInst/padraoEmpresa'
 import { buildEncPadraoCasaExtendTextos } from '../data/encerramentoInst/padraoCasaExtend'
+import { buildEncAltplanRemotoTextos } from '../data/encerramentoInst/altplanRemoto'
 import { isKnownCadastroDemandCategory } from '../data/cadastroDemands'
 import { INSTALACAO_DEMANDS, isKnownInstalacaoDemandCategory } from '../data/instalacaoDemands'
 import { db } from '../lib/firebase'
@@ -144,6 +148,7 @@ export function OsGeneratorPage() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveObs, setSaveObs] = useState('')
   const [saving, setSaving] = useState(false)
+  const [agendarOpen, setAgendarOpen] = useState(false)
 
   const templates = state.status === 'ready' ? state.templates : []
   const demandParam = searchParams.get('demanda')
@@ -558,6 +563,8 @@ export function OsGeneratorPage() {
       Object.assign(base, buildInstTaxaResidencialTextos(values))
     } else if (selected?.slug === 'inst-taxa-empresarial') {
       Object.assign(base, buildInstTaxaEmpresarialTextos(values))
+    } else if (selected?.slug === 'ence-altplan-remoto') {
+      Object.assign(base, buildEncAltplanRemotoTextos(values))
     } else if (selected?.slug === 'ence-padrao-casa') {
       Object.assign(base, buildEncPadraoCasaTextos(values))
     } else if (selected?.slug === 'ence-padrao-empresa') {
@@ -580,6 +587,28 @@ export function OsGeneratorPage() {
 
   const activePreviewBody =
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
+
+  const handleCopyEncerramento = useCallback(async () => {
+    const roteador = (values.roteador ?? '').trim()
+    const agora = new Date()
+    const dataFormatada = agora.toLocaleDateString('pt-BR')
+    const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    const texto = [
+      'ALTERAÇÃO DE PLANO EXECUTADA REMOTAMENTE COM SUCESSO.',
+      'ASSINATURA DIGITAL + SELFIE EM ANEXO.',
+      `NÃO HOUVE INTERVENÇÃO TÉCNICA DEVIDO O ROTEADOR EM COMODATO SER COMPATÍVEL AO PLANO ACORDADO (${roteador}).`,
+      '',
+      'CLIENTE SEM DÚVIDAS.',
+      '',
+      `DATA/HORA DO ENCERRAMENTO: ${dataFormatada} ÀS ${horaFormatada}HRS`,
+    ].join('\n')
+    try {
+      await navigator.clipboard.writeText(texto)
+      setCopyOk(true)
+    } catch {
+      /* ignore */
+    }
+  }, [values.roteador])
 
   const handleCopyAll = useCallback(async () => {
     setAttempted(true)
@@ -859,6 +888,31 @@ export function OsGeneratorPage() {
                 errorFieldIds={errorFieldIds}
               />
             ) : null}
+
+            {selected?.slug === 'manut-luz-vermelha' ? (
+              <Button
+                fullWidth
+                variant="outlined"
+                size="large"
+                startIcon={<HomeOutlinedIcon />}
+                onClick={() => setAgendarOpen(true)}
+                sx={{
+                  mt: 2,
+                  borderColor: '#f57c00',
+                  color: '#f57c00',
+                  borderWidth: 1.5,
+                  py: 1.25,
+                  fontWeight: 600,
+                  '&:hover': {
+                    borderColor: '#e65100',
+                    bgcolor: 'rgba(245,124,0,0.06)',
+                    borderWidth: 1.5,
+                  },
+                }}
+              >
+                Agendar Visita
+              </Button>
+            ) : null}
           </Paper>
 
           <Paper
@@ -895,6 +949,18 @@ export function OsGeneratorPage() {
                 </Typography>
               ) : null}
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+                {selected?.slug === 'altplan-remoto' ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="success"
+                    startIcon={<AssignmentTurnedInOutlinedIcon />}
+                    onClick={() => void handleCopyEncerramento()}
+                    disabled={!values.roteador}
+                  >
+                    Encerrar O.S
+                  </Button>
+                ) : null}
                 <Button
                   size="small"
                   variant="outlined"
@@ -1000,6 +1066,16 @@ export function OsGeneratorPage() {
           </Paper>
         </Box>
       ) : null}
+
+      <AgendarVisitaModal
+        open={agendarOpen}
+        onClose={() => setAgendarOpen(false)}
+        textoAgenda={String(context.luzVmTextoAgenda ?? '')}
+        initialDate={values.dataVisita}
+        onScheduled={(dataVisita, horaVisita) => {
+          setValues((prev) => ({ ...prev, dataVisita, horaVisita }))
+        }}
+      />
 
       <Snackbar
         open={copyOk}

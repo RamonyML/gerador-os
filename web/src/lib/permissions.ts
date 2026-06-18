@@ -1,9 +1,28 @@
 import type { UserProfile } from '../types/profile'
 
-/** Agenda: em desenvolvimento, restrita exclusivamente a dev. */
+/** Agenda: todo o setor Suporte (operador, supervisor, gerente) + dev/admin. */
 export function canAccessAgenda(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
-  return profile.isDev === true
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.sector === 'suporte'
+}
+
+/**
+ * Editar células da agenda: histórico de edições e status operacional.
+ * Liberado para isValidacao, gerentes do suporte e dev/admin.
+ */
+export function canEditAgendaCells(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  if (profile.isValidacao === true) return true
+  return profile.sector === 'suporte' && profile.hierarchy === 'gerente'
+}
+
+/** Gerenciar técnicos da agenda (adicionar, renomear, remover, trocar veículo). */
+export function canManageAgendaTecnicos(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.sector === 'suporte' && profile.hierarchy === 'gerente'
 }
 
 /** Upgrades: exclusivo do setor Suporte (operador, supervisor, gerente) + dev/admin. */

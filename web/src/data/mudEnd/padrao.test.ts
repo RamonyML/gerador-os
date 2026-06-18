@@ -107,8 +107,6 @@ MUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.
 
 ${SEP}
 
->>> Este deve ser o ultimo comentário <<<
-
 COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO
 NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`
 

@@ -11,12 +11,17 @@ import {
   DialogTitle,
   Divider,
   IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Popover,
   Stack,
+  SvgIcon,
   Tab,
   Tabs,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -34,7 +39,14 @@ import BlockRoundedIcon from '@mui/icons-material/BlockRounded'
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined'
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
+import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
+import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined'
 import { useColorMode } from '../contexts/ColorModeContext'
+import { useAuth } from '../contexts/AuthContext'
+import { canEditAgendaCells, canManageAgendaTecnicos } from '../lib/permissions'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { db } from '../lib/firebase'
 import {
@@ -44,6 +56,7 @@ import {
 } from '../lib/agendaFirestore'
 import {
   AGENDA_AREA_LABELS,
+  AGENDA_CELL_STATUS_LABELS,
   AREA_PALETTE,
   COLOR_DEFS,
   NEGADO_COLOR,
@@ -52,6 +65,8 @@ import {
   newId,
   type AgendaArea,
   type AgendaCell,
+  type AgendaCellHistoryEntry,
+  type AgendaCellStatus,
   type AgendaDia,
   type CellColor,
 } from '../types/agenda'
@@ -69,6 +84,16 @@ function shiftISO(iso: string, days: number): string {
   return local.toISOString().slice(0, 10)
 }
 
+/** Extrai o bairro do padrão "... - BAIRRO" ao final do texto da célula. */
+function extractBairro(text: string): string {
+  const idx = text.lastIndexOf(' - ')
+  if (idx === -1) return ''
+  const candidate = text.slice(idx + 3).trim()
+  // Descarta se parecer protocolo/valor (contém ':', '(' ou número isolado)
+  if (candidate.includes(':') || candidate.includes('(') || /^\d+$/.test(candidate)) return ''
+  return candidate
+}
+
 function labelBR(iso: string): string {
   const d = new Date(`${iso}T00:00:00`)
   return d.toLocaleDateString('pt-BR', {
@@ -79,12 +104,68 @@ function labelBR(iso: string): string {
   })
 }
 
+const CAR_COLOR = '#2e7d32'
+const MOTO_COLOR = '#e65100'
+
+// [light, dark]
+const CELL_STATUS_BG: Record<AgendaCellStatus, [string, string]> = {
+  redes:          ['rgba(29,78,216,0.10)',  'rgba(147,197,253,0.14)'],
+  validado:       ['rgba(21,128,61,0.10)',  'rgba(134,239,172,0.14)'],
+  com_pendencia:  ['rgba(180,83,9,0.10)',   'rgba(252,211,77,0.14)'],
+  reagendar:      ['rgba(185,28,28,0.10)',  'rgba(252,165,165,0.14)'],
+}
+const CELL_STATUS_TEXT: Record<AgendaCellStatus, [string, string]> = {
+  redes:          ['#1d4ed8', '#93c5fd'],
+  validado:       ['#15803d', '#86efac'],
+  com_pendencia:  ['#b45309', '#fcd34d'],
+  reagendar:      ['#b91c1c', '#fca5a5'],
+}
+const CELL_STATUS_BORDER: Record<AgendaCellStatus, string> = {
+  redes:          'rgba(29,78,216,0.20)',
+  validado:       'rgba(21,128,61,0.20)',
+  com_pendencia:  'rgba(180,83,9,0.20)',
+  reagendar:      'rgba(185,28,28,0.20)',
+}
+
+const STATUS_OPTION_COLOR: Record<AgendaCellStatus, string> = {
+  redes:         '#1d4ed8',
+  validado:      '#15803d',
+  com_pendencia: '#b45309',
+  reagendar:     '#b91c1c',
+}
+
+function CarIcon() {
+  return (
+    <SvgIcon sx={{ fontSize: 18, color: CAR_COLOR }}>
+      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+      <circle cx="7" cy="17" r="2" />
+      <path d="M9 17h6" />
+      <circle cx="17" cy="17" r="2" />
+    </SvgIcon>
+  )
+}
+
+function MotoIcon() {
+  return (
+    <SvgIcon sx={{ fontSize: 18, color: MOTO_COLOR }}>
+      <path d="m18 14-1-3" />
+      <path d="m3 9 6 2a2 2 0 0 1 2-2h2a2 2 0 0 1 1.99 1.81" />
+      <path d="M8 17h3a1 1 0 0 0 1-1 6 6 0 0 1 6-6 1 1 0 0 0 1-1v-.75A5 5 0 0 0 17 5" />
+      <circle cx="19" cy="17" r="3" />
+      <circle cx="5" cy="17" r="3" />
+    </SvgIcon>
+  )
+}
+
 export function AgendaPage() {
   const theme = useTheme()
   const { mode } = useColorMode()
+  const { profile, user } = useAuth()
   const isDark = mode === 'dark'
+  const canManageTecnicos = canManageAgendaTecnicos(profile ?? null)
+  const canEditCells = canEditAgendaCells(profile ?? null)
 
-  const [area, setArea] = useState<AgendaArea>('agenda')
+  const [area, setArea] = useState<AgendaArea>('manutencao')
   const [date, setDate] = useState<string>(todayISO())
   const [dia, setDia] = useState<AgendaDia>(emptyDia('agenda', date))
   const [loading, setLoading] = useState(true)
@@ -102,6 +183,11 @@ export function AgendaPage() {
   const [slotsOpen, setSlotsOpen] = useState(false)
   const [negadoEdit, setNegadoEdit] = useState<{ id: string } | null>(null)
   const [negadoValue, setNegadoValue] = useState('')
+  const [draggingKey, setDraggingKey] = useState<string | null>(null)
+  const [dragOverKey, setDragOverKey] = useState<string | null>(null)
+  const [cellMenuAnchor, setCellMenuAnchor] = useState<{ el: HTMLElement; key: string } | null>(null)
+  const [historyKey, setHistoryKey] = useState<string | null>(null)
+  const [statusKey, setStatusKey] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(true)
@@ -148,13 +234,25 @@ export function AgendaPage() {
     const prev = getCell(key)
     const text = textValue.trim()
     const cells = { ...dia.cells }
-    if (!text && !(prev?.color && prev.color !== 'branco')) {
+    const history: AgendaCellHistoryEntry[] = [...(prev?.history ?? [])]
+    if (prev?.text && prev.text !== text) {
+      history.unshift({
+        at: new Date().toISOString(),
+        byUid: user?.uid ?? '',
+        byName: profile?.displayName ?? 'Usuário',
+        prevText: prev.text,
+      })
+    }
+    if (!text && !(prev?.color && prev.color !== 'branco') && !prev?.status) {
       delete cells[key]
     } else {
       cells[key] = {
         text,
         color: prev?.color ?? 'branco',
         bold: textBold,
+        status: prev?.status,
+        statusObs: prev?.statusObs,
+        history: history.length > 0 ? history : undefined,
       }
     }
     persist({ ...dia, cells })
@@ -168,7 +266,7 @@ export function AgendaPage() {
       setColorAnchor(null)
       return
     }
-    cells[key] = { text: prev?.text ?? '', color, bold: prev?.bold ?? false }
+    cells[key] = { text: prev?.text ?? '', color, bold: prev?.bold ?? false, status: prev?.status, statusObs: prev?.statusObs, history: prev?.history }
     persist({ ...dia, cells })
     setColorAnchor(null)
   }
@@ -178,6 +276,36 @@ export function AgendaPage() {
     delete cells[key]
     persist({ ...dia, cells })
     setTextEdit(null)
+  }
+
+  const moveCell = (srcKey: string, tgtKey: string) => {
+    if (srcKey === tgtKey) return
+    const srcCell = dia.cells[srcKey]
+    const tgtCell = dia.cells[tgtKey]
+    const cells = { ...dia.cells }
+    if (srcCell) cells[tgtKey] = srcCell; else delete cells[tgtKey]
+    if (tgtCell) cells[srcKey] = tgtCell; else delete cells[srcKey]
+    persist({ ...dia, cells })
+  }
+
+  const setCellStatus = (key: string, status: AgendaCellStatus | null, obs: string) => {
+    const prev = getCell(key)
+    if (!prev) return
+    const cells = { ...dia.cells }
+    cells[key] = { ...prev, status: status ?? undefined, statusObs: obs.trim() || undefined }
+    persist({ ...dia, cells })
+  }
+
+  const revertToHistory = (key: string, prevText: string) => {
+    const current = getCell(key)
+    if (!current) return
+    const cells = { ...dia.cells }
+    const history: AgendaCellHistoryEntry[] = [
+      { at: new Date().toISOString(), byUid: user?.uid ?? '', byName: profile?.displayName ?? 'Usuário', prevText: current.text },
+      ...(current.history ?? []),
+    ]
+    cells[key] = { ...current, text: prevText, history }
+    persist({ ...dia, cells })
   }
 
   const moverParaNegados = (key: string, origem: string) => {
@@ -194,18 +322,24 @@ export function AgendaPage() {
   }
 
   // ---- Técnicos ----
-  const addTecnico = (nome: string) => {
+  const addTecnico = (nome: string, veiculo: 'carro' | 'moto' = 'carro') => {
     const n = nome.trim()
     if (!n) return
     persist({
       ...dia,
-      tecnicos: [...dia.tecnicos, { id: newId('tec'), nome: n }],
+      tecnicos: [...dia.tecnicos, { id: newId('tec'), nome: n, veiculo }],
     })
   }
   const renameTecnico = (id: string, nome: string) => {
     persist({
       ...dia,
       tecnicos: dia.tecnicos.map((t) => (t.id === id ? { ...t, nome } : t)),
+    })
+  }
+  const changeVeiculo = (id: string, veiculo: 'carro' | 'moto') => {
+    persist({
+      ...dia,
+      tecnicos: dia.tecnicos.map((t) => (t.id === id ? { ...t, veiculo } : t)),
     })
   }
   const removeTecnico = (id: string) => {
@@ -223,7 +357,7 @@ export function AgendaPage() {
         return
       }
       // Gera novos ids para não colidir com células existentes.
-      const tecnicos = prev.map((t) => ({ id: newId('tec'), nome: t.nome }))
+      const tecnicos = prev.map((t) => ({ id: newId('tec'), nome: t.nome, veiculo: t.veiculo }))
       persist({ ...dia, tecnicos: [...dia.tecnicos, ...tecnicos] })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Falha ao copiar técnicos.')
@@ -278,6 +412,14 @@ export function AgendaPage() {
   const isAgenda = area === 'agenda'
   const stickyBg = theme.palette.background.paper
 
+  const tecnicosOrdenados = useMemo(
+    () => [...dia.tecnicos].sort((a, b) => {
+      const order: Record<string, number> = { carro: 0, moto: 1 }
+      return (order[a.veiculo] ?? 0) - (order[b.veiculo] ?? 0)
+    }),
+    [dia.tecnicos],
+  )
+
   const totalAgendados = useMemo(
     () => Object.values(dia.cells).filter((c) => c.text.trim()).length,
     [dia.cells],
@@ -315,7 +457,6 @@ export function AgendaPage() {
               onChange={(_, v) => setArea(v as AgendaArea)}
               sx={{ px: 1, borderBottom: 1, borderColor: 'divider' }}
             >
-              <Tab value="agenda" label={AGENDA_AREA_LABELS.agenda} />
               <Tab value="manutencao" label={AGENDA_AREA_LABELS.manutencao} />
             </Tabs>
 
@@ -373,22 +514,26 @@ export function AgendaPage() {
                 alignItems: 'center',
               }}
             >
-              <Button
-                size="small"
-                variant="outlined"
-                startIcon={<PersonAddAlt1OutlinedIcon />}
-                onClick={() => setTecnicosOpen(true)}
-              >
-                Técnicos
-              </Button>
-              <Button
-                size="small"
-                color="inherit"
-                startIcon={<ContentCopyRoundedIcon />}
-                onClick={() => void copyTecnicos()}
-              >
-                Copiar técnicos do dia anterior
-              </Button>
+              {canManageTecnicos ? (
+                <>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<PersonAddAlt1OutlinedIcon />}
+                    onClick={() => setTecnicosOpen(true)}
+                  >
+                    Técnicos
+                  </Button>
+                  <Button
+                    size="small"
+                    color="inherit"
+                    startIcon={<ContentCopyRoundedIcon />}
+                    onClick={() => void copyTecnicos()}
+                  >
+                    Copiar técnicos do dia anterior
+                  </Button>
+                </>
+              ) : null}
               <Button
                 size="small"
                 color="inherit"
@@ -414,22 +559,24 @@ export function AgendaPage() {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Adicione técnicos para montar a grade, ou copie os do dia anterior.
                 </Typography>
-                <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<PersonAddAlt1OutlinedIcon />}
-                    onClick={() => setTecnicosOpen(true)}
-                  >
-                    Adicionar técnico
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<ContentCopyRoundedIcon />}
-                    onClick={() => void copyTecnicos()}
-                  >
-                    Copiar do dia anterior
-                  </Button>
-                </Stack>
+                {canManageTecnicos ? (
+                  <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<PersonAddAlt1OutlinedIcon />}
+                      onClick={() => setTecnicosOpen(true)}
+                    >
+                      Adicionar técnico
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<ContentCopyRoundedIcon />}
+                      onClick={() => void copyTecnicos()}
+                    >
+                      Copiar do dia anterior
+                    </Button>
+                  </Stack>
+                ) : null}
               </Box>
             ) : (
               <Box sx={{ overflowX: 'auto' }}>
@@ -476,7 +623,7 @@ export function AgendaPage() {
                   ))}
 
                   {/* Linhas */}
-                  {dia.tecnicos.map((t) => (
+                  {tecnicosOrdenados.map((t) => (
                     <Box key={t.id} sx={{ display: 'contents' }}>
                       <Box
                         sx={{
@@ -488,69 +635,217 @@ export function AgendaPage() {
                           borderRight: 1,
                           borderColor: 'divider',
                           p: 1,
-                          fontWeight: 700,
-                          fontSize: 13,
                           display: 'flex',
                           alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 0.5,
                           wordBreak: 'break-word',
                         }}
                       >
-                        {t.nome}
+                        <Typography sx={{ fontWeight: 700, fontSize: 13 }}>{t.nome}</Typography>
+                        {t.veiculo === 'carro' ? <CarIcon /> : <MotoIcon />}
                       </Box>
                       {dia.slots.map((s) => {
                         const key = cellKey(t.id, s.id)
                         const c = getCell(key)
                         const fill = c ? colorFill(c.color) : 'transparent'
+                        const bairro = c?.text ? extractBairro(c.text) : ''
+                        const mainText = bairro && c?.text
+                          ? c.text.slice(0, c.text.lastIndexOf(' - ' + bairro)).trim()
+                          : (c?.text ?? '')
+                        const isDragOver = dragOverKey === key && draggingKey !== key
                         return (
                           <Box
                             key={s.id}
+                            draggable={!!c?.text}
+                            onDragStart={(e) => {
+                              e.dataTransfer.effectAllowed = 'move'
+                              e.dataTransfer.setData('text/plain', key)
+                              setDraggingKey(key)
+                            }}
+                            onDragEnd={() => { setDraggingKey(null); setDragOverKey(null) }}
+                            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move' }}
+                            onDragEnter={(e) => { e.preventDefault(); setDragOverKey(key) }}
+                            onDragLeave={(e) => {
+                              if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverKey(null)
+                            }}
+                            onDrop={(e) => {
+                              e.preventDefault()
+                              const src = e.dataTransfer.getData('text/plain')
+                              if (src) moveCell(src, key)
+                              setDraggingKey(null)
+                              setDragOverKey(null)
+                            }}
                             sx={{
                               position: 'relative',
                               borderBottom: 1,
                               borderRight: 1,
                               borderColor: 'divider',
+                              outline: isDragOver ? `2px solid ${theme.palette.primary.main}` : 'none',
+                              outlineOffset: -2,
                               minHeight: 84,
                               bgcolor: fill,
                               p: 0.75,
-                              cursor: 'pointer',
+                              cursor: c?.text ? 'default' : 'pointer',
+                              opacity: draggingKey === key ? 0.35 : 1,
+                              transition: 'opacity 0.15s',
                               '&:hover .cell-actions': { opacity: 1 },
+                              '&:hover .drag-handle': { opacity: 0.5 },
+                              '&:hover .cell-menu-btn': { opacity: 1 },
                             }}
-                            onClick={() => openText(key)}
+                            onClick={() => { if (!draggingKey) openText(key) }}
                           >
+                            {/* Handle de arrasto — canto superior esquerdo */}
+                            {c?.text ? (
+                              <Box
+                                className="drag-handle"
+                                sx={{
+                                  position: 'absolute',
+                                  top: 2,
+                                  left: 2,
+                                  opacity: 0.18,
+                                  transition: 'opacity 0.15s',
+                                  cursor: 'grab',
+                                  display: 'flex',
+                                  color: 'text.secondary',
+                                  '&:active': { cursor: 'grabbing' },
+                                }}
+                              >
+                                <DragIndicatorIcon sx={{ fontSize: 14 }} />
+                              </Box>
+                            ) : null}
+
+                            {/* 3 pontos — canto superior direito (só para canEditCells, aparece no hover) */}
+                            {canEditCells && c?.text ? (
+                              <Box
+                                className="cell-menu-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setCellMenuAnchor({ el: e.currentTarget as HTMLElement, key })
+                                }}
+                                sx={{
+                                  position: 'absolute',
+                                  top: 1,
+                                  right: 1,
+                                  opacity: 0,
+                                  transition: 'opacity 0.15s',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  color: 'text.secondary',
+                                  zIndex: 1,
+                                }}
+                              >
+                                <MoreVertRoundedIcon sx={{ fontSize: 15 }} />
+                              </Box>
+                            ) : null}
+
+                            {/* Indicador negrito — canto superior direito */}
                             {c?.bold ? (
                               <PriorityHighRoundedIcon
                                 sx={{
                                   position: 'absolute',
                                   top: 2,
-                                  right: 2,
+                                  right: canEditCells ? 16 : 2,
                                   fontSize: 16,
                                   color: theme.palette.warning.main,
                                 }}
                               />
                             ) : null}
+
+                            {/* Conteúdo */}
                             {c?.text ? (
-                              <Typography
-                                sx={{
-                                  fontSize: 12,
-                                  lineHeight: 1.3,
-                                  color: cellTextColor,
-                                  fontWeight: c.bold ? 800 : 400,
-                                  whiteSpace: 'pre-wrap',
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 5,
-                                  WebkitBoxOrient: 'vertical',
-                                  overflow: 'hidden',
-                                  pr: 1.5,
-                                }}
-                              >
-                                {c.text}
-                              </Typography>
+                              <>
+                                <Typography
+                                  sx={{
+                                    fontSize: 12,
+                                    lineHeight: 1.3,
+                                    color: cellTextColor,
+                                    fontWeight: c.bold ? 800 : 400,
+                                    whiteSpace: 'pre-wrap',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: bairro ? 4 : 5,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    pl: 1.5,
+                                    pr: 1.5,
+                                  }}
+                                >
+                                  {mainText}
+                                </Typography>
+                                {bairro ? (
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 0.25,
+                                      mt: 0.5,
+                                      mx: -0.75,
+                                      px: 1,
+                                      py: 0.4,
+                                      bgcolor: isDark
+                                        ? 'rgba(255,255,255,0.11)'
+                                        : 'rgba(0,0,0,0.08)',
+                                      borderTop: 1,
+                                      borderColor: isDark
+                                        ? 'rgba(255,255,255,0.08)'
+                                        : 'rgba(0,0,0,0.06)',
+                                    }}
+                                  >
+                                    <PlaceOutlinedIcon sx={{ fontSize: 11, color: 'text.disabled' }} />
+                                    <Typography
+                                      sx={{
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                        color: 'text.secondary',
+                                        lineHeight: 1,
+                                        letterSpacing: 0.3,
+                                      }}
+                                    >
+                                      {bairro}
+                                    </Typography>
+                                  </Box>
+                                ) : null}
+
+                                {c.status ? (
+                                  <Tooltip title={c.statusObs || ''} placement="top" arrow disableHoverListener={!c.statusObs}>
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        mt: 0.25,
+                                        mx: -0.75,
+                                        px: 1,
+                                        py: 0.35,
+                                        bgcolor: CELL_STATUS_BG[c.status][isDark ? 1 : 0],
+                                        borderTop: '1px solid',
+                                        borderColor: CELL_STATUS_BORDER[c.status],
+                                        cursor: c.statusObs ? 'help' : 'default',
+                                      }}
+                                    >
+                                      <Typography
+                                        sx={{
+                                          fontSize: 9,
+                                          fontWeight: 800,
+                                          letterSpacing: 0.5,
+                                          textTransform: 'uppercase',
+                                          color: CELL_STATUS_TEXT[c.status][isDark ? 1 : 0],
+                                          lineHeight: 1,
+                                        }}
+                                      >
+                                        {AGENDA_CELL_STATUS_LABELS[c.status]}
+                                      </Typography>
+                                    </Box>
+                                  </Tooltip>
+                                ) : null}
+                              </>
                             ) : (
                               <Typography sx={{ fontSize: 12, color: 'text.disabled' }}>
                                 +
                               </Typography>
                             )}
 
+                            {/* Ações */}
                             <Box
                               className="cell-actions"
                               onClick={(e) => e.stopPropagation()}
@@ -769,6 +1064,53 @@ export function AgendaPage() {
         </DialogActions>
       </Dialog>
 
+      {/* Menu 3 pontos da célula */}
+      <Menu
+        open={cellMenuAnchor != null}
+        anchorEl={cellMenuAnchor?.el ?? null}
+        onClose={() => setCellMenuAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MenuItem
+          onClick={() => {
+            if (cellMenuAnchor) { setHistoryKey(cellMenuAnchor.key); setCellMenuAnchor(null) }
+          }}
+        >
+          <HistoryRoundedIcon sx={{ fontSize: 18, mr: 1.25, color: 'text.secondary' }} />
+          Histórico de edições
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (cellMenuAnchor) { setStatusKey(cellMenuAnchor.key); setCellMenuAnchor(null) }
+          }}
+        >
+          <LabelOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: 'text.secondary' }} />
+          Adicionar status
+        </MenuItem>
+      </Menu>
+
+      {/* Diálogo de histórico de edições */}
+      <HistoryDialog
+        open={historyKey != null}
+        cell={historyKey ? getCell(historyKey) : undefined}
+        onClose={() => setHistoryKey(null)}
+        onRevert={(prevText) => {
+          if (historyKey) revertToHistory(historyKey, prevText)
+          setHistoryKey(null)
+        }}
+      />
+
+      {/* Diálogo de status da célula */}
+      <StatusDialog
+        open={statusKey != null}
+        cell={statusKey ? getCell(statusKey) : undefined}
+        onClose={() => setStatusKey(null)}
+        onSave={(status, obs) => {
+          if (statusKey) setCellStatus(statusKey, status, obs)
+        }}
+      />
+
       {/* Diálogo de técnicos */}
       <TecnicosDialog
         open={tecnicosOpen}
@@ -777,6 +1119,7 @@ export function AgendaPage() {
         onAdd={addTecnico}
         onRename={renameTecnico}
         onRemove={removeTecnico}
+        onChangeVeiculo={changeVeiculo}
       />
 
       {/* Diálogo de horários */}
@@ -816,6 +1159,172 @@ export function AgendaPage() {
   )
 }
 
+function HistoryDialog({
+  open,
+  cell,
+  onClose,
+  onRevert,
+}: {
+  open: boolean
+  cell: AgendaCell | undefined
+  onClose: () => void
+  onRevert: (prevText: string) => void
+}) {
+  const [confirmIdx, setConfirmIdx] = useState<number | null>(null)
+  const history = cell?.history ?? []
+
+  return (
+    <>
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogTitle>Histórico de edições</DialogTitle>
+        <DialogContent>
+          {history.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
+              Nenhuma edição registrada para esta célula.
+            </Typography>
+          ) : (
+            <Stack divider={<Divider />}>
+              {history.map((entry, idx) => (
+                <Box key={idx} sx={{ py: 1.5 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 1 }}>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {new Date(entry.at).toLocaleString('pt-BR')}
+                        {entry.byName ? ` · ${entry.byName}` : ''}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 0.5, whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: 12, color: 'text.secondary' }}
+                      >
+                        {entry.prevText || '(célula vazia)'}
+                      </Typography>
+                    </Box>
+                    <Button size="small" variant="outlined" color="warning" sx={{ flexShrink: 0 }} onClick={() => setConfirmIdx(idx)}>
+                      Reverter
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={confirmIdx !== null} onClose={() => setConfirmIdx(null)} maxWidth="xs" fullWidth>
+        <DialogTitle>Confirmar reversão</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            O texto atual será preservado no histórico e o conteúdo anterior será restaurado. Tem certeza?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmIdx(null)}>Cancelar</Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => {
+              if (confirmIdx !== null) {
+                onRevert(history[confirmIdx]!.prevText)
+                setConfirmIdx(null)
+              }
+            }}
+          >
+            Reverter
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
+
+function StatusDialog({
+  open,
+  cell,
+  onClose,
+  onSave,
+}: {
+  open: boolean
+  cell: AgendaCell | undefined
+  onClose: () => void
+  onSave: (status: AgendaCellStatus | null, obs: string) => void
+}) {
+  const [selectedStatus, setSelectedStatus] = useState<AgendaCellStatus | null>(null)
+  const [obs, setObs] = useState('')
+
+  useEffect(() => {
+    if (open) {
+      setSelectedStatus(cell?.status ?? null)
+      setObs(cell?.statusObs ?? '')
+    }
+  }, [open, cell])
+
+  const statusOptions = Object.entries(AGENDA_CELL_STATUS_LABELS) as [AgendaCellStatus, string][]
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+      <DialogTitle>Adicionar status</DialogTitle>
+      <DialogContent>
+        <Stack spacing={1} sx={{ mt: 0.5 }}>
+          {statusOptions.map(([value, label]) => {
+            const color = STATUS_OPTION_COLOR[value]
+            const active = selectedStatus === value
+            return (
+              <Box
+                key={value}
+                onClick={() => setSelectedStatus(active ? null : value)}
+                sx={{
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  border: 2,
+                  borderColor: active ? color : 'divider',
+                  bgcolor: active ? alpha(color, 0.08) : 'transparent',
+                  transition: 'all 0.15s',
+                  '&:hover': { borderColor: color },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: active ? 700 : 400, color: active ? color : 'text.primary' }}
+                >
+                  {label}
+                </Typography>
+              </Box>
+            )
+          })}
+        </Stack>
+        {selectedStatus ? (
+          <TextField
+            fullWidth
+            multiline
+            minRows={2}
+            label="Observação"
+            placeholder="Ex.: CTOE com abelhas, cliente ausente…"
+            value={obs}
+            onChange={(e) => setObs(e.target.value)}
+            sx={{ mt: 2 }}
+          />
+        ) : null}
+      </DialogContent>
+      <DialogActions>
+        {cell?.status ? (
+          <Button color="inherit" onClick={() => { onSave(null, ''); onClose() }}>
+            Remover status
+          </Button>
+        ) : null}
+        <Button onClick={onClose}>Cancelar</Button>
+        <Button variant="contained" onClick={() => { onSave(selectedStatus, obs); onClose() }}>
+          Salvar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
 function TecnicosDialog({
   open,
   onClose,
@@ -823,52 +1332,70 @@ function TecnicosDialog({
   onAdd,
   onRename,
   onRemove,
+  onChangeVeiculo,
 }: {
   open: boolean
   onClose: () => void
-  tecnicos: { id: string; nome: string }[]
-  onAdd: (nome: string) => void
+  tecnicos: { id: string; nome: string; veiculo: 'carro' | 'moto' }[]
+  onAdd: (nome: string, veiculo: 'carro' | 'moto') => void
   onRename: (id: string, nome: string) => void
   onRemove: (id: string) => void
+  onChangeVeiculo: (id: string, veiculo: 'carro' | 'moto') => void
 }) {
   const [novo, setNovo] = useState('')
+  const [novoVeiculo, setNovoVeiculo] = useState<'carro' | 'moto'>('carro')
+
+  const tecOrdenados = [...tecnicos].sort((a, b) => {
+    const order: Record<string, number> = { carro: 0, moto: 1 }
+    return (order[a.veiculo] ?? 0) - (order[b.veiculo] ?? 0)
+  })
+
+  const handleAdd = () => {
+    if (novo.trim()) {
+      onAdd(novo, novoVeiculo)
+      setNovo('')
+    }
+  }
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle>Técnicos do dia</DialogTitle>
+      <DialogTitle>Técnicos</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', gap: 1, mt: 0.5, mb: 1.5 }}>
+        <Box sx={{ display: 'flex', gap: 1, mt: 0.5, mb: 0.5, alignItems: 'flex-start' }}>
           <TextField
             size="small"
             fullWidth
             placeholder="Nome do técnico"
             value={novo}
             onChange={(e) => setNovo(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && novo.trim()) {
-                onAdd(novo)
-                setNovo('')
-              }
-            }}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleAdd() }}
           />
-          <Button
-            variant="contained"
-            onClick={() => {
-              if (novo.trim()) {
-                onAdd(novo)
-                setNovo('')
-              }
-            }}
-          >
+          <Button variant="contained" onClick={handleAdd} sx={{ flexShrink: 0 }}>
             Add
           </Button>
         </Box>
+        <Box sx={{ mb: 2 }}>
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={novoVeiculo}
+            onChange={(_, v) => { if (v) setNovoVeiculo(v as 'carro' | 'moto') }}
+          >
+            <ToggleButton value="carro" sx={{ gap: 0.75, px: 1.5 }}>
+              <CarIcon /> Carro
+            </ToggleButton>
+            <ToggleButton value="moto" sx={{ gap: 0.75, px: 1.5 }}>
+              <MotoIcon /> Moto
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
         <Stack spacing={1}>
-          {tecnicos.length === 0 ? (
+          {tecOrdenados.length === 0 ? (
             <Typography variant="body2" color="text.secondary">
               Nenhum técnico ainda.
             </Typography>
           ) : (
-            tecnicos.map((t) => (
+            tecOrdenados.map((t) => (
               <Box key={t.id} sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField
                   size="small"
@@ -876,6 +1403,15 @@ function TecnicosDialog({
                   value={t.nome}
                   onChange={(e) => onRename(t.id, e.target.value)}
                 />
+                <ToggleButtonGroup
+                  size="small"
+                  exclusive
+                  value={t.veiculo}
+                  onChange={(_, v) => { if (v) onChangeVeiculo(t.id, v as 'carro' | 'moto') }}
+                >
+                  <ToggleButton value="carro" title="Carro"><CarIcon /></ToggleButton>
+                  <ToggleButton value="moto" title="Moto"><MotoIcon /></ToggleButton>
+                </ToggleButtonGroup>
                 <IconButton size="small" color="error" onClick={() => onRemove(t.id)}>
                   <DeleteOutlineRoundedIcon fontSize="small" />
                 </IconButton>
@@ -885,9 +1421,7 @@ function TecnicosDialog({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={onClose}>
-          Concluir
-        </Button>
+        <Button variant="contained" onClick={onClose}>Concluir</Button>
       </DialogActions>
     </Dialog>
   )

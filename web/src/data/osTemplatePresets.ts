@@ -47,6 +47,7 @@ import { getInstTaxaEmpresarialDefaults } from './instalacao/taxaEmpresarial'
 import { getEncPadraoCasaDefaults } from './encerramentoInst/padraoCasa'
 import { getEncPadraoEmpresaDefaults } from './encerramentoInst/padraoEmpresa'
 import { getEncPadraoCasaExtendDefaults } from './encerramentoInst/padraoCasaExtend'
+import { getEncAltplanRemotoDefaults } from './encerramentoInst/altplanRemoto'
 import type { OsOperatorGuidance, OsTemplateField } from '../types/osTemplate'
 
 /** Retorno comum para definir um fluxo de O.S em código. */
@@ -350,6 +351,12 @@ export const OS_TEMPLATE_PRESETS: OsTemplatePreset[] = [
     category: 'Instalação',
     label: 'Instalação com taxa — Empresarial (PJ)',
     getDefaults: getInstTaxaEmpresarialDefaults,
+  },
+  {
+    id: 'ence-altplan-remoto',
+    category: 'Encerramento de O.S',
+    label: 'Encerramento — Alt. Plano Remoto',
+    getDefaults: getEncAltplanRemotoDefaults,
   },
   {
     id: 'ence-padrao-casa',

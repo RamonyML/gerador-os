@@ -7,14 +7,14 @@ const AMBER = '#d97706'
 
 const SECTIONS: HubSection[] = [
   {
-    title: 'Responsabilidade',
+    title: 'Padrão',
     accent: AMBER,
     items: [
       {
         label: 'Termo de responsabilidade — Padrão',
         to: '/gerar-os?demanda=termo-docs&slug=termo-resp-padrao',
         description:
-          'Formalização de acesso administrativo ao roteador em comodato do cliente.',
+          'Formalização de acesso administrativo ao roteador emprestado em comodato.',
         icon: <VerifiedUserOutlinedIcon sx={ICON_SX} />,
         badgeLabel: 'Termo + Protocolo',
       },
@@ -26,15 +26,15 @@ export function TermosDocumentosHubPage() {
   return (
     <HubCatalog
       overline="Demandas · Suporte"
-      title="Termos e documentos"
+      title="Termo de responsabilidade"
       subtitle={
         <Typography variant="body1" color="text.secondary">
-          Textos formais e termos de responsabilidade para registrar aceite do cliente.
+          Termo de responsabilidade de acesso ao roteador emprestado em comodato pela MZ NET.
         </Typography>
       }
-      illustration="contracts"
-      illustrationAlt="Termos e documentos formais"
-      toolbarLabel="Tipos de documento"
+      illustration="responsabilidade"
+      illustrationAlt="Termo de responsabilidade de comodato"
+      toolbarLabel="Modelos disponíveis"
       backTo="/suporte"
       backLabel="Todas as categorias"
       sections={SECTIONS}

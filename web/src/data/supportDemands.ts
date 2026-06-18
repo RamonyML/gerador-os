@@ -69,8 +69,8 @@ export const SUPPORT_DEMANDS: SupportDemandMeta[] = [
   },
   {
     id: 'termo-docs',
-    title: 'Termos e documentos',
-    description: 'Termos de responsabilidade e textos formais.',
+    title: 'Termo de responsabilidade',
+    description: 'Acesso ao roteador emprestado em comodato.',
     Icon: DescriptionOutlinedIcon,
   },
   {

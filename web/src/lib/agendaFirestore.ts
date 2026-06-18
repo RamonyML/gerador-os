@@ -14,12 +14,37 @@ import {
   isAgendaArea,
   type AgendaArea,
   type AgendaCell,
+  type AgendaCellHistoryEntry,
+  type AgendaCellStatus,
   type AgendaDia,
   type AgendaSlot,
   type AgendaTecnico,
   type CellColor,
   type NegadoItem,
 } from '../types/agenda'
+
+const VALID_STATUSES: AgendaCellStatus[] = ['redes', 'validado', 'com_pendencia', 'reagendar']
+
+function isAgendaCellStatus(v: unknown): v is AgendaCellStatus {
+  return VALID_STATUSES.includes(v as AgendaCellStatus)
+}
+
+function parseHistory(v: unknown): AgendaCellHistoryEntry[] | undefined {
+  if (!Array.isArray(v) || v.length === 0) return undefined
+  const out: AgendaCellHistoryEntry[] = []
+  for (const item of v) {
+    if (!item || typeof item !== 'object') continue
+    const h = item as Record<string, unknown>
+    if (typeof h.at !== 'string' || typeof h.prevText !== 'string') continue
+    out.push({
+      at: h.at,
+      byUid: typeof h.byUid === 'string' ? h.byUid : '',
+      byName: typeof h.byName === 'string' ? h.byName : '',
+      prevText: h.prevText,
+    })
+  }
+  return out.length ? out : undefined
+}
 
 const COLLECTION = 'agendaDias'
 
@@ -51,7 +76,8 @@ function parseTecnicos(v: unknown): AgendaTecnico[] {
     if (!item || typeof item !== 'object') continue
     const t = item as Record<string, unknown>
     if (typeof t.id === 'string' && typeof t.nome === 'string') {
-      out.push({ id: t.id, nome: t.nome })
+      const veiculo: 'carro' | 'moto' = t.veiculo === 'moto' ? 'moto' : 'carro'
+      out.push({ id: t.id, nome: t.nome, veiculo })
     }
   }
   return out
@@ -65,8 +91,11 @@ function parseCells(v: unknown): Record<string, AgendaCell> {
     const c = raw as Record<string, unknown>
     const text = str(c.text)
     const color = (typeof c.color === 'string' ? c.color : 'branco') as CellColor
-    if (!text && color === 'branco' && c.bold !== true) continue
-    out[key] = { text, color, bold: c.bold === true }
+    const status = isAgendaCellStatus(c.status) ? c.status : undefined
+    const statusObs = typeof c.statusObs === 'string' && c.statusObs.trim() ? c.statusObs : undefined
+    const history = parseHistory(c.history)
+    if (!text && color === 'branco' && c.bold !== true && !status) continue
+    out[key] = { text, color, bold: c.bold === true, status, statusObs, history }
   }
   return out
 }
@@ -128,10 +157,15 @@ export function subscribeDia(
 
 /** Grava o documento inteiro do dia (last-write-wins). */
 export async function saveDia(db: Firestore, dia: AgendaDia): Promise<void> {
-  // Remove células "vazias" para não inflar o documento.
-  const cells: Record<string, AgendaCell> = {}
+  // Remove células "vazias" e campos undefined (Firestore rejeita undefined).
+  const cells: Record<string, unknown> = {}
   for (const [key, c] of Object.entries(dia.cells)) {
-    if (c.text.trim() || c.color !== 'branco' || c.bold) cells[key] = c
+    if (!c.text.trim() && c.color === 'branco' && !c.bold && !c.status) continue
+    const cell: Record<string, unknown> = { text: c.text, color: c.color, bold: c.bold }
+    if (c.status !== undefined) cell.status = c.status
+    if (c.statusObs !== undefined) cell.statusObs = c.statusObs
+    if (c.history !== undefined && c.history.length > 0) cell.history = c.history
+    cells[key] = cell
   }
   const negados = dia.negados.map((n) => ({
     id: n.id,
@@ -171,6 +205,17 @@ export async function getTecnicosFromPreviousDay(
     }
   }
   return []
+}
+
+/** Busca um dia/área uma única vez (sem assinatura). */
+export async function getDia(
+  db: Firestore,
+  area: AgendaArea,
+  date: string,
+): Promise<AgendaDia> {
+  const snap = await getDoc(doc(db, COLLECTION, docId(area, date)))
+  if (!snap.exists()) return emptyDia(area, date)
+  return parseDia(area, date, snap.data() as Record<string, unknown>)
 }
 
 /** Reexporta utilitários úteis para a página. */

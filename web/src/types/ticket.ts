@@ -121,6 +121,7 @@ export type TicketAttachment = {
 
 export type Ticket = {
   id: string
+  chamadoNum: number | null
   title: string
   description: string
   category: TicketCategory

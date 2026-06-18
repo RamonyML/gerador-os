@@ -14,6 +14,7 @@ export type ManagedUserRow = {
   isDev: boolean
   isAdmin: boolean
   isTi: boolean
+  isValidacao: boolean
   profileMissing: boolean
 }
 
@@ -172,6 +173,7 @@ export async function manageUsersCreate(payload: {
   isAdmin?: boolean
   isDev?: boolean
   isTi?: boolean
+  isValidacao?: boolean
 }): Promise<{ uid: string }> {
   return invokeCallable<{ uid: string }>('manageUsersCreate', payload)
 }
@@ -187,6 +189,7 @@ export async function manageUsersUpdate(payload: {
   isAdmin?: boolean
   isDev?: boolean
   isTi?: boolean
+  isValidacao?: boolean
 }): Promise<{ ok: boolean }> {
   return invokeCallable<{ ok: boolean }>('manageUsersUpdate', payload)
 }

@@ -422,6 +422,16 @@ service cloud.firestore {
         && request.auth.uid == userId;
     }
 
+    /**
+     * Contadores atômicos internos (ex.: numeração sequencial de chamados).
+     * Leitura e escrita restritas a usuários ativos; campo lastNumber obrigatório.
+     */
+    match /counters/{counterId} {
+      allow read: if isActiveUser();
+      allow write: if isActiveUser()
+        && request.resource.data.lastNumber is int;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -9,8 +9,8 @@ import {
   onSnapshot,
   orderBy,
   query,
+  runTransaction,
   serverTimestamp,
-  setDoc,
   updateDoc,
   where,
   type Firestore,
@@ -33,6 +33,7 @@ import {
 import { uploadTicketImages } from './ticketAttachments'
 
 const TICKETS_COLLECTION = 'tickets'
+const COUNTERS_COLLECTION = 'counters'
 
 export type TicketActor = {
   uid: string
@@ -121,6 +122,7 @@ function parseTicket(id: string, data: Record<string, unknown>): Ticket | null {
 
   return {
     id,
+    chamadoNum: typeof data.chamadoNum === 'number' ? data.chamadoNum : null,
     title,
     description,
     category,
@@ -181,25 +183,33 @@ export async function createTicket(
   const attachments = files.length
     ? await uploadTicketImages(ref.id, files, 'root')
     : []
-  await setDoc(ref, {
-    title: draft.title.trim(),
-    description: draft.description.trim(),
-    category: draft.category,
-    priority: draft.priority,
-    status: 'aberto' satisfies TicketStatus,
-    authorUid: actor.uid,
-    authorName: actor.name,
-    authorEmail: actor.email,
-    authorPhotoURL: actor.photoURL ?? null,
-    authorSector: actor.sector,
-    assigneeUid: null,
-    assigneeName: null,
-    resolution: null,
-    resolvedAt: null,
-    commentsCount: 0,
-    attachments,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+  const counterRef = doc(db, COUNTERS_COLLECTION, 'tickets')
+  await runTransaction(db, async (transaction) => {
+    const counterSnap = await transaction.get(counterRef)
+    const chamadoNum =
+      (counterSnap.exists() ? (counterSnap.data().lastNumber as number) : 0) + 1
+    transaction.set(counterRef, { lastNumber: chamadoNum }, { merge: true })
+    transaction.set(ref, {
+      chamadoNum,
+      title: draft.title.trim(),
+      description: draft.description.trim(),
+      category: draft.category,
+      priority: draft.priority,
+      status: 'aberto' satisfies TicketStatus,
+      authorUid: actor.uid,
+      authorName: actor.name,
+      authorEmail: actor.email,
+      authorPhotoURL: actor.photoURL ?? null,
+      authorSector: actor.sector,
+      assigneeUid: null,
+      assigneeName: null,
+      resolution: null,
+      resolvedAt: null,
+      commentsCount: 0,
+      attachments,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
   })
   return ref.id
 }

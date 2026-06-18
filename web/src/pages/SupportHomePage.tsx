@@ -178,6 +178,7 @@ export function SupportHomePage() {
 
                 const hubRoute: Record<string, string> = {
                   'alteracao-plano': '/suporte/alteracao-plano',
+                  'mudanca-endereco': '/suporte/mudanca-endereco',
                   manutencao: '/suporte/manutencao',
                   'midia-tv': '/suporte/midia-tv',
                   'senha-rede': '/suporte/senha-rede',
@@ -185,17 +186,12 @@ export function SupportHomePage() {
                   'termo-docs': '/suporte/termos-documentos',
                   feedback: '/suporte/feedback',
                 }
-                const isMudancaEndereco = d.id === 'mudanca-endereco'
-                const to = isMudancaEndereco ? undefined : (hubRoute[d.id] ?? `/suporte/demanda/${d.id}`)
-                const onClick = isMudancaEndereco
-                  ? () => window.open('https://mznet.digital/mud-end', '_blank', 'noopener,noreferrer')
-                  : undefined
+                const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
 
                 return (
                   <NavCard
                     key={d.id}
                     to={to}
-                    onClick={onClick}
                     accent={accentMain}
                     icon={<Icon sx={{ fontSize: 26 }} />}
                     title={d.title}

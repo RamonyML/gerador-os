@@ -26,6 +26,7 @@ export const ILLUSTRATIONS = {
   instTaxa: '/illustrations/illus-inst-taxa.png',
   feedback: '/illustrations/illus-feedback.png',
   historico: '/illustrations/illus-historico.png',
+  responsabilidade: '/illustrations/illus-responsabilidade.png',
 } as const
 
 export type IllustrationKey = keyof typeof ILLUSTRATIONS

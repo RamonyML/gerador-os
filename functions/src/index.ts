@@ -218,6 +218,7 @@ export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       isDev: prof?.isDev === true,
       isAdmin: prof?.isAdmin === true,
       isTi: prof?.isTi === true,
+      isValidacao: prof?.isValidacao === true,
       profileMissing,
     })
   }
@@ -375,6 +376,7 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   if (wantIsAdmin) profile.isAdmin = true
   if (wantIsDev) profile.isDev = true
   if (wantIsTi) profile.isTi = true
+  if (request.data?.isValidacao === true) profile.isValidacao = true
 
   await getFirestore().doc(`users/${userRecord.uid}`).set(profile)
 
@@ -553,6 +555,9 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   }
   if (canAssignTiFlag(actor)) {
     profileUpdate.isTi = wantIsTi === true
+  }
+  if (request.data?.isValidacao !== undefined) {
+    profileUpdate.isValidacao = request.data.isValidacao === true
   }
 
   await db.doc(`users/${uid}`).set(profileUpdate, { merge: true })

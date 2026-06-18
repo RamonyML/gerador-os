@@ -7,9 +7,8 @@ import {
 } from './wifiExtendShared'
 
 /**
- * Wi-Fi Extend — TP-Link (PF/PJ, com/sem troca).
- * Consolida as 4 variações TP-Link do legado em um único fluxo com selects.
- * Não há variante "ofertado" no legado TP-Link.
+ * Wi-Fi Extend — TP-Link (PF/PJ, solicitado/ofertado, com/sem troca).
+ * Consolida as variações TP-Link do legado em um único fluxo com selects.
  */
 export function buildWifiExtendTplinkTextos(
   rawValues: Record<string, unknown>,
@@ -24,7 +23,7 @@ export function getWifiExtendTplinkDefaults(): OsTemplatePresetPayload {
     title: 'Wi-Fi Extend — TP-Link',
     demandCategory: 'wifi-extend',
     outputTemplate: WIFI_EXTEND_OUTPUT,
-    fields: buildExtendFields(ROTEADOR_TPLINK_OPTS, false),
+    fields: buildExtendFields(ROTEADOR_TPLINK_OPTS, true),
     operatorGuidance: {
       title: 'Atenção ao agendar a visita técnica',
       items: [

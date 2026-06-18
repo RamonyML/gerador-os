@@ -153,6 +153,23 @@ export const PLANO_ESCOLHIDO_OPTS: FieldOption[] = [
   },
 ]
 
+export const ROTEADOR_ATUAL_OPTS: FieldOption[] = [
+  { value: 'MULTILASER', label: 'MULTILASER' },
+  { value: 'TP-LINK 840', label: 'TP-LINK 840' },
+  { value: 'TP LINK C-20', label: 'TP LINK C-20' },
+  { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
+  { value: 'TP LINK C-5', label: 'TP LINK C-5' },
+  { value: 'TP LINK G-5', label: 'TP LINK G-5' },
+  { value: 'GREATEK', label: 'GREATEK' },
+  { value: 'INTELBRAS', label: 'INTELBRAS' },
+  { value: 'HUAWEI AX2', label: 'HUAWEI AX2' },
+  { value: 'ZTE H196-MESH', label: 'ZTE H196-MESH' },
+  { value: 'ZTE H199-A', label: 'ZTE H199-A' },
+  { value: 'ONT ZTE F 670-L', label: 'ONT ZTE F 670-L' },
+  { value: 'ONT TP-LINK XC220', label: 'ONT TP-LINK XC220' },
+  { value: 'ONT TP-LINK XC230', label: 'ONT TP-LINK XC230' },
+]
+
 export const ROTEADOR_ZTE_OPTS: FieldOption[] = [
   { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
   { value: 'TP LINK C-5', label: 'TP LINK C-5' },
@@ -231,8 +248,7 @@ export function buildExtendTextos(
   family: ExtendFamily,
 ): Record<string, string> {
   const isPJ = String(rawValues.segmento ?? SEGMENTO_PF) === SEGMENTO_PJ
-  const isOfertado =
-    family === 'ZTE' && String(rawValues.origem ?? ORIGEM_SOLICITADO) === ORIGEM_OFERTADO
+  const isOfertado = String(rawValues.origem ?? ORIGEM_SOLICITADO) === ORIGEM_OFERTADO
   const troca = String(rawValues.troca ?? TROCA_NAO) === TROCA_SIM
 
   const cliente = upper(rawValues.cliente)
@@ -247,6 +263,7 @@ export function buildExtendTextos(
   const planoAtual = String(rawValues.planoAtual ?? '')
   const planoEscolhido = String(rawValues.planoEscolhido ?? '')
   const roteador = String(rawValues.roteador ?? '')
+  const roteadorAtual = String(rawValues.roteadorAtual ?? '')
   const dataContrato = String(rawValues.dataContrato ?? '')
   const dataVisita = String(rawValues.dataVisita ?? '')
   const horaVisita = String(rawValues.horaVisita ?? '')
@@ -276,7 +293,7 @@ export function buildExtendTextos(
     'INFORMEI AO CLIENTE QUE PARA CASOS COMO ESTE (RESIDENCIA GRANDE, SOBRADO, AREA DE LAZER ETC) TRABALHAMOS COM OS PLANOS QUE POSSUEM O WI-FI EXTEND.'
   const emResumo =
     'EM RESUMO EXPLIQUEI QUE WI-FI EXTEND CONSISTE NUM SEGUNDO ROTEADOR ADICIONAL QUE TRABALHA NA REDE MESH. ESTE EM SI UTILIZA O MESMO NOME DE REDE E SENHA DO ROTEADOR PRINCIPAL SENDO COMO UM ESCRAVO.\nESTE 2° ROTEADOR FICA EMPRESTADO EM REGIME DE COMODATO.'
-  const planoAtualLn = `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}`
+  const planoAtualLn = `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${troca ? roteadorAtual : roteador}`
   const planoEscLn = `PLANO ${isOfertado ? 'OFERTADO' : 'ESCOLHIDO'}: ${planoEscolhido};\nFIDELIDADE DE 12 MESES`
   const informeiNec =
     'INFORMEI A NECESSIDADE DO AGENDAMENTO DE VISITA TÉCNICA PARA INSTALAÇÃO E CONFIGURAÇÃO DO ROTEADOR ADICIONAL, REALIZAR OS TESTES DE ABRANGÊNCIA, QUALIDADE, VELOCIDADE E SANAR TODAS AS DÚVIDAS QUE CLIENTE/USUÁRIOS POSSAM TER. \nVISITA ISENTA DE CUSTOS.'
@@ -476,6 +493,16 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       section: S_PLANO,
       layout: { md: 4 },
       options: roteadorOpts,
+      showWhen: { field: 'troca', equals: TROCA_NAO },
+    },
+    {
+      id: 'roteadorAtual',
+      label: 'Roteador atualmente instalado (a ser retirado)',
+      control: 'select',
+      section: S_PLANO,
+      layout: { md: 4 },
+      options: ROTEADOR_ATUAL_OPTS,
+      showWhen: { field: 'troca', equals: TROCA_SIM },
     },
     {
       id: 'dataContrato',
