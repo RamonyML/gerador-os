@@ -3,9 +3,9 @@ import type { Shadows } from '@mui/material/styles'
 
 /** Tema claro — verdes corporativos sobre canvas suave (estética SaaS). */
 const LIGHT = {
-  primary: '#1B5E20',
-  primaryHover: '#2E7D32',
-  secondary: '#2E7D32',
+  primary: '#3CAE63',
+  primaryHover: '#52BE78',
+  secondary: '#2A9452',
   bg: '#F4F6F8',
   paper: '#FFFFFF',
   text: '#1A2027',
@@ -56,7 +56,7 @@ export function createAppTheme(mode: AppColorMode) {
       primary: {
         main: c.primary,
         light: isDark ? DARK.primaryHover : LIGHT.primaryHover,
-        dark: isDark ? '#43A047' : '#14532D',
+        dark: isDark ? '#43A047' : '#2A9452',
         contrastText: '#FFFFFF',
       },
       secondary: {
@@ -131,7 +131,7 @@ export function createAppTheme(mode: AppColorMode) {
             '&.MuiButton-containedPrimary:hover': {
               backgroundColor: c.primaryHover,
               boxShadow: `0 8px 20px ${
-                isDark ? 'rgba(0,0,0,0.45)' : 'rgba(27, 94, 32, 0.22)'
+                isDark ? 'rgba(0,0,0,0.45)' : 'rgba(60, 174, 99, 0.28)'
               }`,
             },
           },

@@ -377,7 +377,7 @@ export function LoginPage() {
             <HeroIllustration
               src={ILLUSTRATIONS.login}
               alt="Colaboradora utilizando a plataforma no notebook"
-              maxWidth={520}
+              maxWidth={780}
             />
           </Box>
         </Box>
