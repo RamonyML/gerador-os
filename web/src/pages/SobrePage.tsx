@@ -782,15 +782,18 @@ export function SobrePage() {
         }}
       >
         <Container maxWidth="lg">
-          <Typography variant="body2" sx={{ textAlign: 'center', lineHeight: 1.8 }}>
-            <Box component="span" sx={{ opacity: 0.5, fontSize: 11, letterSpacing: '0.06em' }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: 'center', lineHeight: 1.8, color: '#bdbdbd' }}
+          >
+            <Box component="span" sx={{ opacity: 0.5, fontSize: 11, letterSpacing: '0.06em', color: '#bdbdbd' }}>
               GERADOR DE O.S · v4.0.1
             </Box>
             <br />
-            © <strong>2025 Ramony Lima – Todos os direitos reservados.</strong>
+            © <strong style={{ color: '#e0e0e0' }}>2026 Ramony Lima – Todos os direitos reservados.</strong>
             <br />
-            <Box component="em" sx={{ display: 'block', mt: 1, opacity: 0.9 }}>
-              Esta aplicação (Gerador de O.S / Sistema de Upgrades) está protegida pela Lei nº 9.609/1998
+            <Box component="em" sx={{ display: 'block', mt: 1, opacity: 0.9, color: '#bdbdbd' }}>
+              Esta aplicação ( Gerador de O.S ) está protegida pela Lei nº 9.609/1998
               (Lei de Software – Brasil), que assegura os direitos autorais do desenvolvedor.
             </Box>
           </Typography>

@@ -632,6 +632,12 @@ export function LoginPage() {
               >
                 {isMdUp ? 'Acesso restrito para colaboradores.' : 'Acesso restrito.'}
               </Typography>
+              <Typography
+                variant="caption"
+                sx={{ display: 'block', textAlign: 'center', mt: 0.75, color: 'text.disabled', fontSize: 10, letterSpacing: '0.04em' }}
+              >
+                v4.0.1
+              </Typography>
             </Box>
           </Box>
           </Paper>
