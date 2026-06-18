@@ -403,6 +403,22 @@ export function AppLayout() {
           </IconButton>
         </Tooltip>
       </Box>
+
+      <Box
+        sx={{
+          pb: 1.5,
+          textAlign: 'center',
+          opacity: isCollapsed ? 0 : 1,
+          transition: 'opacity 0.2s ease',
+        }}
+      >
+        <Typography
+          variant="caption"
+          sx={{ color: 'text.disabled', fontSize: 10, letterSpacing: '0.04em' }}
+        >
+          Gerador de O.S · v4.0.1
+        </Typography>
+      </Box>
       </Box>
     </Box>
   )

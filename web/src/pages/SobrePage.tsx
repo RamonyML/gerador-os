@@ -373,18 +373,30 @@ export function SobrePage() {
               }}
             >
               <Box sx={{ flex: '1 1 auto', maxWidth: { lg: '58%' } }}>
-                <Chip
-                  label="Plataforma operacional"
-                  size="small"
-                  sx={{
-                    mb: 2,
-                    fontWeight: 700,
-                    color: 'primary.main',
-                    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.1),
-                    border: 1,
-                    borderColor: alpha(primary, 0.25),
-                  }}
-                />
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+                  <Chip
+                    label="Plataforma operacional"
+                    size="small"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'primary.main',
+                      bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.1),
+                      border: 1,
+                      borderColor: alpha(primary, 0.25),
+                    }}
+                  />
+                  <Chip
+                    label="v4.0.1"
+                    size="small"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'text.secondary',
+                      bgcolor: alpha(theme.palette.grey[500], mode === 'dark' ? 0.18 : 0.1),
+                      border: 1,
+                      borderColor: alpha(theme.palette.grey[500], 0.25),
+                    }}
+                  />
+                </Box>
                 <Typography
                   variant="h2"
                   component="h1"
@@ -771,6 +783,10 @@ export function SobrePage() {
       >
         <Container maxWidth="lg">
           <Typography variant="body2" sx={{ textAlign: 'center', lineHeight: 1.8 }}>
+            <Box component="span" sx={{ opacity: 0.5, fontSize: 11, letterSpacing: '0.06em' }}>
+              GERADOR DE O.S · v4.0.1
+            </Box>
+            <br />
             © <strong>2025 Ramony Lima – Todos os direitos reservados.</strong>
             <br />
             <Box component="em" sx={{ display: 'block', mt: 1, opacity: 0.9 }}>
