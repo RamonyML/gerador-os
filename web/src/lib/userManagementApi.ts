@@ -6,6 +6,7 @@ export type ManagedUserRow = {
   email: string | null
   emailVerified: boolean
   displayName: string | null
+  photoURL: string | null
   disabled: boolean
   sector: string | null
   hierarchy: string | null

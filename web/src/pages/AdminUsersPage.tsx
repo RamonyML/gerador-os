@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Chip,
@@ -466,12 +467,22 @@ export function AdminUsersPage() {
                     sx={editLocked ? { cursor: 'not-allowed' } : undefined}
                   >
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {rowDisplayName(r)}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                        {r.email ?? '—'}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Avatar
+                          src={r.photoURL ?? undefined}
+                          sx={{ width: 32, height: 32, fontSize: 13, bgcolor: 'primary.main', flexShrink: 0 }}
+                        >
+                          {rowDisplayName(r).charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            {rowDisplayName(r)}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                            {r.email ?? '—'}
+                          </Typography>
+                        </Box>
+                      </Box>
                     </TableCell>
                     <TableCell>
                       <Box

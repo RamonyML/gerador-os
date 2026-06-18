@@ -210,6 +210,7 @@ export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       email: u.email ?? null,
       emailVerified: u.emailVerified,
       displayName: u.displayName ?? (prof?.displayName as string | undefined) ?? null,
+      photoURL: u.photoURL ?? null,
       disabled: u.disabled,
       sector: sector ?? null,
       hierarchy: hierarchy ?? null,
