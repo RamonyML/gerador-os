@@ -2,18 +2,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Stack,
   SvgIcon,
   TextField,
   Typography,
 } from '@mui/material'
-import { alpha } from '@mui/material/styles'
+import { alpha, useTheme } from '@mui/material/styles'
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import { db } from '../lib/firebase'
 import { getDia, saveDia } from '../lib/agendaFirestore'
 import { cellKey, COLOR_DEFS, defaultSlots, type AgendaDia, type CellColor } from '../types/agenda'
@@ -47,6 +50,14 @@ function MotoIcon() {
   )
 }
 
+function extractBairro(text: string): string {
+  const idx = text.lastIndexOf(' - ')
+  if (idx === -1) return ''
+  const candidate = text.slice(idx + 3).trim()
+  if (candidate.includes(':') || candidate.includes('(') || /^\d+$/.test(candidate)) return ''
+  return candidate
+}
+
 function brDateToISO(br: string): string {
   const parts = br.split('/')
   if (parts.length !== 3) return ''
@@ -75,6 +86,8 @@ interface Props {
 }
 
 export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, onScheduled }: Props) {
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
   const [pickedDate, setPickedDate]   = useState('')           // yyyy-MM-dd
   const [pickedSlotId, setSlotId]     = useState<string | null>(null)
   const [selectedTecId, setSelected]  = useState<string | null>(null)
@@ -82,6 +95,8 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
   const [dia, setDia]                 = useState<AgendaDia | null>(null)
   const [loading, setLoading]         = useState(false)
   const [saving, setSaving]           = useState(false)
+  const [extras, setExtras]           = useState<Set<string>>(new Set())
+  const [outroText, setOutroText]     = useState('')
 
   // Reset ao abrir
   useEffect(() => {
@@ -92,6 +107,8 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
     setSelected(null)
     setCor('branco')
     setDia(null)
+    setExtras(new Set())
+    setOutroText('')
   }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Carrega agenda quando a data muda
@@ -127,12 +144,22 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
     })
   }, [dia])
 
+  const EXTRA_OPTS = ['PODE ANTECIPAR', 'NÃO PODE ANTECIPAR', 'CLIENTE SEM FIDELIDADE']
+
+  const finalTextoAgenda = useMemo(() => {
+    const suffixes: string[] = [
+      ...EXTRA_OPTS.filter((o) => extras.has(o)),
+      ...(extras.has('OUTRO') && outroText.trim() ? [outroText.trim().toUpperCase()] : []),
+    ]
+    return textoAgenda + suffixes.map((s) => ` // ${s}`).join('')
+  }, [textoAgenda, extras, outroText])
+
   const handleAgendar = useCallback(async () => {
     if (!selectedTecId || !dia || !targetSlot || !pickedDate) return
     setSaving(true)
     try {
       const key   = cellKey(selectedTecId, targetSlot.id)
-      const cells = { ...dia.cells, [key]: { text: textoAgenda, color: cor, bold: false } }
+      const cells = { ...dia.cells, [key]: { text: finalTextoAgenda, color: cor, bold: false } }
       await saveDia(db, { ...dia, cells })
       const brDate = isoToBr(pickedDate)
       // Normaliza '8:30' → '08:30' para manter consistência com os textos da O.S.
@@ -142,7 +169,7 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
     } finally {
       setSaving(false)
     }
-  }, [selectedTecId, dia, targetSlot, pickedDate, textoAgenda, cor, onScheduled, onClose])
+  }, [selectedTecId, dia, targetSlot, pickedDate, finalTextoAgenda, cor, onScheduled, onClose])
 
   const n        = tecOrdered.length
   const minW     = SLOT_COL + n * TEC_COL
@@ -300,11 +327,15 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
 
                     {/* Células */}
                     {tecOrdered.map((tec) => {
-                      const key       = cellKey(tec.id, slot.id)
-                      const cell      = dia.cells[key]
-                      const occupied  = !!cell?.text?.trim()
+                      const key        = cellKey(tec.id, slot.id)
+                      const cell       = dia.cells[key]
+                      const occupied   = !!cell?.text?.trim()
                       const isSelected = isTarget && selectedTecId === tec.id
                       const clickable  = isTarget && !occupied
+                      const bairro     = occupied ? extractBairro(cell!.text) : ''
+                      const mainText   = bairro
+                        ? cell!.text.slice(0, cell!.text.lastIndexOf(' - ' + bairro)).trim()
+                        : (cell?.text ?? '')
 
                       const cellBg = isSelected
                         ? alpha(ORANGE, 0.18)
@@ -323,6 +354,7 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
                             minHeight: isTarget ? 48 : 36,
                             p: 0.5,
                             display: 'flex',
+                            flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: clickable ? 'pointer' : occupied && isTarget ? 'not-allowed' : 'default',
@@ -334,22 +366,47 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
                           }}
                         >
                           {occupied ? (
-                            <Typography
-                              sx={{
-                                fontSize: 9,
-                                lineHeight: 1.3,
-                                overflow: 'hidden',
-                                display: '-webkit-box',
-                                WebkitLineClamp: isTarget ? 4 : 3,
-                                WebkitBoxOrient: 'vertical',
-                                wordBreak: 'break-word',
-                                textAlign: 'center',
-                                width: '100%',
-                                opacity: isTarget ? 0.85 : 0.65,
-                              }}
-                            >
-                              {cell!.text}
-                            </Typography>
+                            <>
+                              <Typography
+                                sx={{
+                                  fontSize: 9,
+                                  lineHeight: 1.3,
+                                  overflow: 'hidden',
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: bairro ? (isTarget ? 3 : 2) : (isTarget ? 4 : 3),
+                                  WebkitBoxOrient: 'vertical',
+                                  wordBreak: 'break-word',
+                                  textAlign: 'center',
+                                  width: '100%',
+                                  opacity: isTarget ? 0.85 : 0.65,
+                                }}
+                              >
+                                {mainText}
+                              </Typography>
+                              {bairro ? (
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: 0.25,
+                                    mt: 0.5,
+                                    mx: -0.5,
+                                    px: 0.5,
+                                    py: 0.3,
+                                    width: 'calc(100% + 8px)',
+                                    bgcolor: isDark ? 'rgba(255,255,255,0.11)' : 'rgba(0,0,0,0.08)',
+                                    borderTop: 1,
+                                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                                  }}
+                                >
+                                  <PlaceOutlinedIcon sx={{ fontSize: 9, color: 'text.disabled' }} />
+                                  <Typography sx={{ fontSize: 9, fontWeight: 700, color: 'text.secondary', lineHeight: 1 }}>
+                                    {bairro}
+                                  </Typography>
+                                </Box>
+                              ) : null}
+                            </>
                           ) : isTarget ? (
                             <Typography
                               sx={{
@@ -421,8 +478,49 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
                 variant="body2"
                 sx={{ fontFamily: 'monospace', fontSize: 11, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
               >
-                {textoAgenda}
+                {finalTextoAgenda}
               </Typography>
+            </Box>
+          ) : null}
+
+          {/* ── Informações extras ── */}
+          {textoAgenda ? (
+            <Box>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: 'block', mb: 0.5 }}>
+                Informações adicionais
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>
+                {[...EXTRA_OPTS, 'OUTRO'].map((opt) => (
+                  <FormControlLabel
+                    key={opt}
+                    label={<Typography sx={{ fontSize: 13 }}>{opt}</Typography>}
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={extras.has(opt)}
+                        onChange={(e) => {
+                          setExtras((prev) => {
+                            const next = new Set(prev)
+                            if (e.target.checked) next.add(opt)
+                            else { next.delete(opt); if (opt === 'OUTRO') setOutroText('') }
+                            return next
+                          })
+                        }}
+                      />
+                    }
+                  />
+                ))}
+              </Box>
+              {extras.has('OUTRO') ? (
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="Digite a informação adicional…"
+                  value={outroText}
+                  onChange={(e) => setOutroText(e.target.value)}
+                  sx={{ mt: 1 }}
+                />
+              ) : null}
             </Box>
           ) : null}
 

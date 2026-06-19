@@ -42,6 +42,8 @@ import { InstalacaoHomePage } from './pages/InstalacaoHomePage'
 import { EncerramentosInstHubPage } from './pages/EncerramentosInstHubPage'
 import { RequireInstalacao } from './components/RequireInstalacao'
 import { HistoricoPage } from './pages/HistoricoPage'
+import { MkTestesPage } from './pages/MkTestesPage'
+import { RequireDev } from './components/RequireDev'
 
 export default function App() {
   return (
@@ -232,6 +234,14 @@ export default function App() {
           }
         />
         <Route path="/sobre" element={<SobrePage />} />
+        <Route
+          path="/dev/mk"
+          element={
+            <RequireDev>
+              <MkTestesPage />
+            </RequireDev>
+          }
+        />
         <Route
           path="/admin/usuarios"
           element={

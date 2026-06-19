@@ -23,6 +23,7 @@ import { HeroIllustration } from '../components/HeroIllustration'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
+import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined'
 import { canManageUsers, canAccessUpgrades } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
@@ -73,6 +74,7 @@ export function HomePage() {
   const showUsers = profile != null && canManageUsers(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
+  const showMkTestes = profile?.isDev === true
 
   const greetingName =
     profile?.displayName?.trim() || user?.email?.split('@')[0] || 'usuário'
@@ -184,7 +186,7 @@ export function HomePage() {
       key: 'agenda',
       title: 'Agenda',
       description:
-        'Agende visitas técnicas de instalação, mudança de endereço e manutenção.',
+        'Organize e acompanhe as visitas da equipe técnica em tempo real.',
       to: '/agenda',
       icon: <EventNoteOutlinedIcon sx={{ fontSize: 28 }} />,
     },
@@ -208,6 +210,17 @@ export function HomePage() {
             description: 'Gerencie contas no Auth e perfis em users/{uid}.',
             to: '/admin/usuarios',
             icon: <PeopleOutlineOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
+    ...(showMkTestes
+      ? [
+          {
+            key: 'mk-testes',
+            title: 'Laboratório MK',
+            description: 'Teste a integração com a API do MK Solutions — auth, busca, criação de OS.',
+            to: '/dev/mk',
+            icon: <BiotechOutlinedIcon sx={{ fontSize: 28 }} />,
           } satisfies QuickAction,
         ]
       : []),

@@ -236,18 +236,6 @@ const COMPAT_OPTS = [
   { value: COMPAT_NAO, label: 'Não — roteador incompatível' },
 ]
 
-const HORA_VISITA_OPTS = [
-  { value: '08:30', label: '08:30' },
-  { value: '09:30', label: '09:30' },
-  { value: '10:30', label: '10:30' },
-  { value: '11:30', label: '11:30' },
-  { value: '14:30', label: '14:30' },
-  { value: '15:30', label: '15:30' },
-  { value: '16:30', label: '16:30' },
-  { value: '17:30', label: '17:30' },
-  { value: '18:30', label: '18:30 (Tolentino)' },
-]
-
 const FORMA_PAG_OPTS = [
   { value: 'PIX', label: 'PIX' },
   { value: 'DINHEIRO', label: 'DINHEIRO' },
@@ -449,22 +437,6 @@ export const ALTPLAN_TROCA_VISITA_PAGA_FIELDS: OsTemplateField[] = [
     placeholder: 'Ex.: ONT ZTE F 670-L',
     section: S_PLANO,
     layout: { md: 6 },
-  },
-  {
-    id: 'dataVisita',
-    label: 'Data da visita técnica',
-    control: 'date',
-    placeholder: 'dd/mm/aaaa',
-    section: S_AGE,
-    layout: { md: 3 },
-  },
-  {
-    id: 'horaVisita',
-    label: 'Hora',
-    control: 'select',
-    section: S_AGE,
-    options: HORA_VISITA_OPTS,
-    layout: { md: 3 },
   },
   {
     id: 'formaPag',

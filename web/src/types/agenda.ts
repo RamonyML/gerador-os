@@ -53,6 +53,10 @@ export type ColorDef = {
   fillDark: string
   /** Cor da borda/realce. */
   border: string
+  /** Cor do texto (opcional — usa o padrão global se ausente). */
+  textColor?: string
+  /** Cor do texto no tema escuro. */
+  textColorDark?: string
 }
 
 export const COLOR_DEFS: Record<CellColor, ColorDef> = {
@@ -113,6 +117,23 @@ export type AgendaTecnico = {
   id: string
   nome: string
   veiculo: 'carro' | 'moto'
+  /** Técnico autorizado a receber agendamentos no horário 18:30. */
+  tem1830?: boolean
+}
+
+export type AgendaColorOverride = {
+  label?: string
+  fill?: string
+  fillDark?: string
+  border?: string
+  textColor?: string
+  textColorDark?: string
+}
+
+export type AgendaColorSettings = {
+  overrides: Partial<Record<CellColor, AgendaColorOverride>>
+  /** Cores ativadas pelo gerente além da paleta padrão da área. */
+  extraPaletteColors?: CellColor[]
 }
 
 export const DEFAULT_TECNICOS: AgendaTecnico[] = [
@@ -123,7 +144,7 @@ export const DEFAULT_TECNICOS: AgendaTecnico[] = [
   { id: 'tec-wanderson', nome: 'WANDERSON', veiculo: 'carro' },
   { id: 'tec-junior',    nome: 'JUNIOR',    veiculo: 'moto'  },
   { id: 'tec-everton',   nome: 'EVERTON',   veiculo: 'moto'  },
-  { id: 'tec-tolentino', nome: 'TOLENTINO', veiculo: 'moto'  },
+  { id: 'tec-tolentino', nome: 'TOLENTINO', veiculo: 'moto', tem1830: true },
 ]
 
 export type AgendaSlot = {

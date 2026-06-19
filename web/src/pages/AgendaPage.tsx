@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
   Box,
@@ -14,6 +14,7 @@ import {
   Menu,
   MenuItem,
   Paper,
+  InputAdornment,
   Popover,
   Stack,
   SvgIcon,
@@ -25,12 +26,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { alpha, keyframes, useTheme } from '@mui/material/styles'
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded'
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
 import TodayRoundedIcon from '@mui/icons-material/TodayRounded'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import BrushOutlinedIcon from '@mui/icons-material/BrushOutlined'
+import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined'
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined'
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded'
 import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded'
@@ -44,15 +45,20 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { useAuth } from '../contexts/AuthContext'
-import { canEditAgendaCells, canManageAgendaTecnicos } from '../lib/permissions'
+import { canManageAgendaTecnicos } from '../lib/permissions'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { db } from '../lib/firebase'
 import {
   getTecnicosFromPreviousDay,
   saveDia,
+  saveColorSettings,
+  searchAgendaCells,
   subscribeDia,
+  subscribeColorSettings,
+  type CellSearchResult,
 } from '../lib/agendaFirestore'
 import {
   AGENDA_AREA_LABELS,
@@ -67,8 +73,11 @@ import {
   type AgendaCell,
   type AgendaCellHistoryEntry,
   type AgendaCellStatus,
+  type AgendaColorSettings,
   type AgendaDia,
+  type AgendaTecnico,
   type CellColor,
+  type ColorDef,
 } from '../types/agenda'
 
 function todayISO(): string {
@@ -136,7 +145,7 @@ const STATUS_OPTION_COLOR: Record<AgendaCellStatus, string> = {
 
 function CarIcon() {
   return (
-    <SvgIcon sx={{ fontSize: 18, color: CAR_COLOR }}>
+    <SvgIcon sx={{ fontSize: 24, color: CAR_COLOR }}>
       <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
       <circle cx="7" cy="17" r="2" />
       <path d="M9 17h6" />
@@ -147,7 +156,7 @@ function CarIcon() {
 
 function MotoIcon() {
   return (
-    <SvgIcon sx={{ fontSize: 18, color: MOTO_COLOR }}>
+    <SvgIcon sx={{ fontSize: 24, color: MOTO_COLOR }}>
       <path d="m18 14-1-3" />
       <path d="m3 9 6 2a2 2 0 0 1 2-2h2a2 2 0 0 1 1.99 1.81" />
       <path d="M8 17h3a1 1 0 0 0 1-1 6 6 0 0 1 6-6 1 1 0 0 0 1-1v-.75A5 5 0 0 0 17 5" />
@@ -157,19 +166,45 @@ function MotoIcon() {
   )
 }
 
+const cellHighlightPulse = keyframes`
+  0%, 65% {
+    outline: 3px solid #3CAE63;
+    outline-offset: -2px;
+    box-shadow: 0 0 10px 2px rgba(60,174,99,0.35);
+  }
+  100% {
+    outline: 3px solid transparent;
+    outline-offset: -2px;
+    box-shadow: none;
+  }
+`
+
+function slotHour(label: string): number {
+  const m = label.match(/^(\d+)/)
+  return m ? parseInt(m[1], 10) : 0
+}
+
+function isAfternoonSlot(label: string): boolean {
+  return slotHour(label) >= 13
+}
+
+function is1830Slot(label: string): boolean {
+  return label.trim() === '18:30'
+}
+
 export function AgendaPage() {
   const theme = useTheme()
   const { mode } = useColorMode()
   const { profile, user } = useAuth()
   const isDark = mode === 'dark'
   const canManageTecnicos = canManageAgendaTecnicos(profile ?? null)
-  const canEditCells = canEditAgendaCells(profile ?? null)
 
   const [area, setArea] = useState<AgendaArea>('manutencao')
   const [date, setDate] = useState<string>(todayISO())
   const [dia, setDia] = useState<AgendaDia>(emptyDia('agenda', date))
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [colorSettings, setColorSettings] = useState<AgendaColorSettings>({ overrides: {} })
 
   // Editores
   const [textEdit, setTextEdit] = useState<{ key: string } | null>(null)
@@ -188,6 +223,9 @@ export function AgendaPage() {
   const [cellMenuAnchor, setCellMenuAnchor] = useState<{ el: HTMLElement; key: string } | null>(null)
   const [historyKey, setHistoryKey] = useState<string | null>(null)
   const [statusKey, setStatusKey] = useState<string | null>(null)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [highlightedCellKey, setHighlightedCellKey] = useState<string | null>(null)
+  const prevLoadingRef = useRef(true)
 
   useEffect(() => {
     setLoading(true)
@@ -207,6 +245,30 @@ export function AgendaPage() {
     return unsub
   }, [area, date])
 
+  useEffect(() => {
+    setColorSettings({ overrides: {} })
+    return subscribeColorSettings(db, area, setColorSettings, (e) => {
+      console.error('color settings:', e)
+    })
+  }, [area])
+
+  // Scroll para célula destacada quando o loading termina
+  useEffect(() => {
+    const wasLoading = prevLoadingRef.current
+    prevLoadingRef.current = loading
+    if (wasLoading && !loading && highlightedCellKey) {
+      const el = document.querySelector(`[data-cellkey="${highlightedCellKey}"]`)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    }
+  }, [loading, highlightedCellKey])
+
+  // Apaga o destaque após 4 segundos
+  useEffect(() => {
+    if (!highlightedCellKey) return
+    const t = setTimeout(() => setHighlightedCellKey(null), 4000)
+    return () => clearTimeout(t)
+  }, [highlightedCellKey])
+
   const persist = (next: AgendaDia) => {
     setDia(next)
     void saveDia(db, next).catch((e) => {
@@ -214,8 +276,37 @@ export function AgendaPage() {
     })
   }
 
+  const resolvedColorDefs = useMemo((): Record<CellColor, ColorDef> => {
+    const defs: Record<CellColor, ColorDef> = { ...COLOR_DEFS }
+    for (const [k, ov] of Object.entries(colorSettings.overrides)) {
+      if (!ov) continue
+      const c = k as CellColor
+      defs[c] = {
+        ...defs[c],
+        ...(ov.label !== undefined ? { label: ov.label } : {}),
+        ...(ov.fill !== undefined ? { fill: ov.fill } : {}),
+        ...(ov.fillDark !== undefined ? { fillDark: ov.fillDark } : {}),
+        ...(ov.border !== undefined ? { border: ov.border } : {}),
+        ...(ov.textColor !== undefined ? { textColor: ov.textColor } : {}),
+        ...(ov.textColorDark !== undefined ? { textColorDark: ov.textColorDark } : {}),
+      }
+    }
+    return defs
+  }, [colorSettings])
+
+  const dayOfWeek = useMemo(() => new Date(`${date}T00:00:00`).getDay(), [date])
+  const isSunday = dayOfWeek === 0
+  const isSaturday = dayOfWeek === 6
+
+  const isCellDisabled = (slotLabel: string, tec: AgendaTecnico): boolean => {
+    if (isSunday) return true
+    if (isSaturday && isAfternoonSlot(slotLabel)) return true
+    if (is1830Slot(slotLabel) && !tec.tem1830) return true
+    return false
+  }
+
   const colorFill = (color: CellColor): string =>
-    isDark ? COLOR_DEFS[color].fillDark : COLOR_DEFS[color].fill
+    isDark ? resolvedColorDefs[color].fillDark : resolvedColorDefs[color].fill
   const cellTextColor = isDark ? '#e9ecef' : '#1f2937'
 
   // ---- Operações de célula ----
@@ -244,7 +335,11 @@ export function AgendaPage() {
       })
     }
     if (!text && !(prev?.color && prev.color !== 'branco') && !prev?.status) {
-      delete cells[key]
+      if (history.length > 0) {
+        cells[key] = { text: '', color: 'branco', bold: false, history }
+      } else {
+        delete cells[key]
+      }
     } else {
       cells[key] = {
         text,
@@ -272,8 +367,17 @@ export function AgendaPage() {
   }
 
   const clearCell = (key: string) => {
+    const prev = getCell(key)
     const cells = { ...dia.cells }
-    delete cells[key]
+    if (prev?.text?.trim()) {
+      const history: AgendaCellHistoryEntry[] = [
+        { at: new Date().toISOString(), byUid: user?.uid ?? '', byName: profile?.displayName ?? 'Usuário', prevText: prev.text },
+        ...(prev.history ?? []),
+      ]
+      cells[key] = { text: '', color: 'branco', bold: false, history }
+    } else {
+      delete cells[key]
+    }
     persist({ ...dia, cells })
     setTextEdit(null)
   }
@@ -342,6 +446,20 @@ export function AgendaPage() {
       tecnicos: dia.tecnicos.map((t) => (t.id === id ? { ...t, veiculo } : t)),
     })
   }
+  const toggle1830 = (id: string) => {
+    persist({
+      ...dia,
+      tecnicos: dia.tecnicos.map((t): AgendaTecnico => {
+        if (t.id !== id) return t
+        if (t.tem1830) {
+          const updated = { ...t }
+          delete updated.tem1830
+          return updated
+        }
+        return { ...t, tem1830: true }
+      }),
+    })
+  }
   const removeTecnico = (id: string) => {
     const cells = { ...dia.cells }
     for (const key of Object.keys(cells)) {
@@ -408,7 +526,20 @@ export function AgendaPage() {
     persist({ ...dia, negados: dia.negados.filter((n) => n.id !== id) })
   }
 
+  const handleSaveColorSettings = (newSettings: AgendaColorSettings) => {
+    setColorSettings(newSettings)
+    void saveColorSettings(db, area, newSettings).catch((e) => {
+      setError(e instanceof Error ? e.message : 'Falha ao salvar configurações de cores.')
+    })
+  }
+
   const palette = AREA_PALETTE[area]
+
+  const effectivePalette = useMemo(() => {
+    const extra = (colorSettings.extraPaletteColors ?? []).filter(c => !palette.includes(c))
+    return [...palette, ...extra]
+  }, [palette, colorSettings.extraPaletteColors])
+
   const isAgenda = area === 'agenda'
   const stickyBg = theme.palette.background.paper
 
@@ -432,9 +563,8 @@ export function AgendaPage() {
         title="Agenda"
         subtitle={
           <Typography variant="body1" color="text.secondary">
-            Agendamento de visitas técnicas. Na aba <strong>Agenda</strong>: instalação
-            e mudança de endereço. Na aba <strong>Manutenção</strong>: visitas de
-            manutenção. Edite o texto (lápis) e a cor/status (pincel) de cada célula.
+            Grade compartilhada da equipe técnica. Organize os agendamentos, acompanhe
+            o andamento de cada visita e mantenha o time alinhado em tempo real.
           </Typography>
         }
         maxWidth="xl"
@@ -542,6 +672,16 @@ export function AgendaPage() {
               >
                 Horários
               </Button>
+              <Box sx={{ flex: 1 }} />
+              <Button
+                size="small"
+                color="inherit"
+                startIcon={<SearchRoundedIcon />}
+                onClick={() => setSearchOpen(true)}
+                sx={{ ml: 'auto' }}
+              >
+                Buscar
+              </Button>
             </Box>
 
             <Divider />
@@ -579,310 +719,307 @@ export function AgendaPage() {
                 ) : null}
               </Box>
             ) : (
-              <Box sx={{ overflowX: 'auto' }}>
-                <Box
-                  sx={{
-                    display: 'grid',
-                    gridTemplateColumns: `170px repeat(${dia.slots.length}, minmax(180px, 1fr))`,
-                    minWidth: 'fit-content',
-                  }}
-                >
-                  {/* Cabeçalho */}
+              <Box sx={{ display: 'flex', alignItems: 'stretch' }}>
+                <Box sx={{ flex: 1, overflowX: 'auto', minWidth: 0, transform: 'scaleY(-1)' }}>
                   <Box
                     sx={{
-                      position: 'sticky',
-                      left: 0,
-                      zIndex: 3,
-                      bgcolor: stickyBg,
-                      borderBottom: 1,
-                      borderRight: 1,
-                      borderColor: 'divider',
-                      p: 1,
-                      fontWeight: 700,
-                      fontSize: 13,
+                      display: 'grid',
+                      gridTemplateColumns: `170px repeat(${dia.slots.length}, minmax(180px, 1fr))`,
+                      minWidth: 'fit-content',
+                      transform: 'scaleY(-1)',
                     }}
                   >
-                    Técnico
-                  </Box>
-                  {dia.slots.map((s) => (
+                    {/* Cabeçalho */}
                     <Box
-                      key={s.id}
                       sx={{
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 3,
+                        bgcolor: stickyBg,
                         borderBottom: 1,
                         borderRight: 1,
                         borderColor: 'divider',
                         p: 1,
                         fontWeight: 700,
                         fontSize: 13,
-                        textAlign: 'center',
-                        bgcolor: alpha(theme.palette.primary.main, isDark ? 0.12 : 0.05),
                       }}
                     >
-                      {s.label}
+                      Técnico
                     </Box>
-                  ))}
-
-                  {/* Linhas */}
-                  {tecnicosOrdenados.map((t) => (
-                    <Box key={t.id} sx={{ display: 'contents' }}>
+                    {dia.slots.map((s) => (
                       <Box
+                        key={s.id}
                         sx={{
-                          position: 'sticky',
-                          left: 0,
-                          zIndex: 2,
-                          bgcolor: stickyBg,
                           borderBottom: 1,
                           borderRight: 1,
                           borderColor: 'divider',
                           p: 1,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          gap: 0.5,
-                          wordBreak: 'break-word',
+                          fontWeight: 700,
+                          fontSize: 13,
+                          textAlign: 'center',
+                          bgcolor: alpha(theme.palette.primary.main, isDark ? 0.12 : 0.05),
                         }}
                       >
-                        <Typography sx={{ fontWeight: 700, fontSize: 13 }}>{t.nome}</Typography>
-                        {t.veiculo === 'carro' ? <CarIcon /> : <MotoIcon />}
+                        {s.label}
                       </Box>
-                      {dia.slots.map((s) => {
-                        const key = cellKey(t.id, s.id)
-                        const c = getCell(key)
-                        const fill = c ? colorFill(c.color) : 'transparent'
-                        const bairro = c?.text ? extractBairro(c.text) : ''
-                        const mainText = bairro && c?.text
-                          ? c.text.slice(0, c.text.lastIndexOf(' - ' + bairro)).trim()
-                          : (c?.text ?? '')
-                        const isDragOver = dragOverKey === key && draggingKey !== key
-                        return (
-                          <Box
-                            key={s.id}
-                            draggable={!!c?.text}
-                            onDragStart={(e) => {
-                              e.dataTransfer.effectAllowed = 'move'
-                              e.dataTransfer.setData('text/plain', key)
-                              setDraggingKey(key)
-                            }}
-                            onDragEnd={() => { setDraggingKey(null); setDragOverKey(null) }}
-                            onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move' }}
-                            onDragEnter={(e) => { e.preventDefault(); setDragOverKey(key) }}
-                            onDragLeave={(e) => {
-                              if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverKey(null)
-                            }}
-                            onDrop={(e) => {
-                              e.preventDefault()
-                              const src = e.dataTransfer.getData('text/plain')
-                              if (src) moveCell(src, key)
-                              setDraggingKey(null)
-                              setDragOverKey(null)
-                            }}
-                            sx={{
-                              position: 'relative',
-                              borderBottom: 1,
-                              borderRight: 1,
-                              borderColor: 'divider',
-                              outline: isDragOver ? `2px solid ${theme.palette.primary.main}` : 'none',
-                              outlineOffset: -2,
-                              minHeight: 84,
-                              bgcolor: fill,
-                              p: 0.75,
-                              cursor: c?.text ? 'default' : 'pointer',
-                              opacity: draggingKey === key ? 0.35 : 1,
-                              transition: 'opacity 0.15s',
-                              '&:hover .cell-actions': { opacity: 1 },
-                              '&:hover .drag-handle': { opacity: 0.5 },
-                              '&:hover .cell-menu-btn': { opacity: 1 },
-                            }}
-                            onClick={() => { if (!draggingKey) openText(key) }}
-                          >
-                            {/* Handle de arrasto — canto superior esquerdo */}
-                            {c?.text ? (
-                              <Box
-                                className="drag-handle"
-                                sx={{
-                                  position: 'absolute',
-                                  top: 2,
-                                  left: 2,
-                                  opacity: 0.18,
-                                  transition: 'opacity 0.15s',
-                                  cursor: 'grab',
-                                  display: 'flex',
-                                  color: 'text.secondary',
-                                  '&:active': { cursor: 'grabbing' },
-                                }}
-                              >
-                                <DragIndicatorIcon sx={{ fontSize: 14 }} />
-                              </Box>
-                            ) : null}
+                    ))}
 
-                            {/* 3 pontos — canto superior direito (só para canEditCells, aparece no hover) */}
-                            {canEditCells && c?.text ? (
-                              <Box
-                                className="cell-menu-btn"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setCellMenuAnchor({ el: e.currentTarget as HTMLElement, key })
-                                }}
-                                sx={{
-                                  position: 'absolute',
-                                  top: 1,
-                                  right: 1,
-                                  opacity: 0,
-                                  transition: 'opacity 0.15s',
-                                  cursor: 'pointer',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  color: 'text.secondary',
+                    {/* Linhas */}
+                    {tecnicosOrdenados.map((t) => (
+                      <Box key={t.id} sx={{ display: 'contents' }}>
+                        <Box
+                          sx={{
+                            position: 'sticky',
+                            left: 0,
+                            zIndex: 2,
+                            bgcolor: stickyBg,
+                            borderBottom: 1,
+                            borderRight: 1,
+                            borderColor: 'divider',
+                            p: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 0.5,
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: 700, fontSize: 13 }}>{t.nome}</Typography>
+                          {t.veiculo === 'carro' ? <CarIcon /> : <MotoIcon />}
+                        </Box>
+                        {dia.slots.map((s) => {
+                          const key = cellKey(t.id, s.id)
+                          const c = getCell(key)
+                          const disabled = isCellDisabled(s.label, t)
+                          const fill = c && !disabled ? colorFill(c.color) : 'transparent'
+                          const resolvedTextColor = c && !disabled
+                            ? (isDark
+                              ? (resolvedColorDefs[c.color].textColorDark ?? cellTextColor)
+                              : (resolvedColorDefs[c.color].textColor ?? cellTextColor))
+                            : cellTextColor
+                          const bairro = c?.text ? extractBairro(c.text) : ''
+                          const mainText = bairro && c?.text
+                            ? c.text.slice(0, c.text.lastIndexOf(' - ' + bairro)).trim()
+                            : (c?.text ?? '')
+                          const isDragOver = !disabled && dragOverKey === key && draggingKey !== key
+                          return (
+                            <Box
+                              key={s.id}
+                              data-cellkey={key}
+                              draggable={!disabled && !!c?.text}
+                              onDragStart={disabled ? undefined : (e) => {
+                                e.dataTransfer.effectAllowed = 'move'
+                                e.dataTransfer.setData('text/plain', key)
+                                setDraggingKey(key)
+                              }}
+                              onDragEnd={disabled ? undefined : () => { setDraggingKey(null); setDragOverKey(null) }}
+                              onDragOver={disabled ? undefined : (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move' }}
+                              onDragEnter={disabled ? undefined : (e) => { e.preventDefault(); setDragOverKey(key) }}
+                              onDragLeave={disabled ? undefined : (e) => {
+                                if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverKey(null)
+                              }}
+                              onDrop={disabled ? undefined : (e) => {
+                                e.preventDefault()
+                                const src = e.dataTransfer.getData('text/plain')
+                                if (src) moveCell(src, key)
+                                setDraggingKey(null)
+                                setDragOverKey(null)
+                              }}
+                              sx={{
+                                position: 'relative',
+                                borderBottom: 1,
+                                borderRight: 1,
+                                borderColor: 'divider',
+                                outline: isDragOver ? `2px solid ${theme.palette.primary.main}` : 'none',
+                                outlineOffset: -2,
+                                minHeight: 84,
+                                bgcolor: fill,
+                                p: 0.75,
+                                opacity: draggingKey === key ? 0.35 : 1,
+                                transition: 'opacity 0.15s',
+                                ...(highlightedCellKey === key ? {
+                                  animation: `${cellHighlightPulse} 4s ease-out forwards`,
                                   zIndex: 1,
-                                }}
-                              >
-                                <MoreVertRoundedIcon sx={{ fontSize: 15 }} />
-                              </Box>
-                            ) : null}
+                                } : {}),
+                                ...(disabled ? {
+                                  cursor: 'not-allowed',
+                                  backgroundImage: `repeating-linear-gradient(-45deg, transparent, transparent 5px, ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'} 5px, ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'} 7px)`,
+                                } : {
+                                  cursor: c?.text ? 'default' : 'pointer',
+                                  '&:hover .drag-handle': { opacity: 0.5 },
+                                  '&:hover .cell-menu-btn': { opacity: 1 },
+                                }),
+                              }}
+                              onClick={() => { if (!disabled && !draggingKey) openText(key) }}
+                            >
+                              {disabled ? null : (
+                                <>
+                                  {/* Handle de arrasto — canto superior esquerdo */}
+                                  {c?.text ? (
+                                    <Box
+                                      className="drag-handle"
+                                      sx={{
+                                        position: 'absolute',
+                                        top: 2,
+                                        left: 2,
+                                        opacity: 0.18,
+                                        transition: 'opacity 0.15s',
+                                        cursor: 'grab',
+                                        display: 'flex',
+                                        color: 'text.secondary',
+                                        '&:active': { cursor: 'grabbing' },
+                                      }}
+                                    >
+                                      <DragIndicatorIcon sx={{ fontSize: 14 }} />
+                                    </Box>
+                                  ) : null}
 
-                            {/* Indicador negrito — canto superior direito */}
-                            {c?.bold ? (
-                              <PriorityHighRoundedIcon
-                                sx={{
-                                  position: 'absolute',
-                                  top: 2,
-                                  right: canEditCells ? 16 : 2,
-                                  fontSize: 16,
-                                  color: theme.palette.warning.main,
-                                }}
-                              />
-                            ) : null}
-
-                            {/* Conteúdo */}
-                            {c?.text ? (
-                              <>
-                                <Typography
-                                  sx={{
-                                    fontSize: 12,
-                                    lineHeight: 1.3,
-                                    color: cellTextColor,
-                                    fontWeight: c.bold ? 800 : 400,
-                                    whiteSpace: 'pre-wrap',
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: bairro ? 4 : 5,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                    pl: 1.5,
-                                    pr: 1.5,
-                                  }}
-                                >
-                                  {mainText}
-                                </Typography>
-                                {bairro ? (
+                                  {/* 3 pontos — canto superior direito, aparece no hover */}
                                   <Box
+                                    className="cell-menu-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setCellMenuAnchor({ el: e.currentTarget as HTMLElement, key })
+                                    }}
                                     sx={{
+                                      position: 'absolute',
+                                      top: 1,
+                                      right: 1,
+                                      opacity: 0,
+                                      transition: 'opacity 0.15s',
+                                      cursor: 'pointer',
                                       display: 'flex',
                                       alignItems: 'center',
-                                      gap: 0.25,
-                                      mt: 0.5,
-                                      mx: -0.75,
-                                      px: 1,
-                                      py: 0.4,
-                                      bgcolor: isDark
-                                        ? 'rgba(255,255,255,0.11)'
-                                        : 'rgba(0,0,0,0.08)',
-                                      borderTop: 1,
-                                      borderColor: isDark
-                                        ? 'rgba(255,255,255,0.08)'
-                                        : 'rgba(0,0,0,0.06)',
+                                      color: 'text.secondary',
+                                      zIndex: 1,
                                     }}
                                   >
-                                    <PlaceOutlinedIcon sx={{ fontSize: 11, color: 'text.disabled' }} />
-                                    <Typography
-                                      sx={{
-                                        fontSize: 10,
-                                        fontWeight: 700,
-                                        color: 'text.secondary',
-                                        lineHeight: 1,
-                                        letterSpacing: 0.3,
-                                      }}
-                                    >
-                                      {bairro}
-                                    </Typography>
+                                    <MoreVertRoundedIcon sx={{ fontSize: 15 }} />
                                   </Box>
-                                ) : null}
 
-                                {c.status ? (
-                                  <Tooltip title={c.statusObs || ''} placement="top" arrow disableHoverListener={!c.statusObs}>
-                                    <Box
+                                  {/* Indicador negrito — canto superior direito */}
+                                  {c?.bold ? (
+                                    <PriorityHighRoundedIcon
                                       sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        mt: 0.25,
-                                        mx: -0.75,
-                                        px: 1,
-                                        py: 0.35,
-                                        bgcolor: CELL_STATUS_BG[c.status][isDark ? 1 : 0],
-                                        borderTop: '1px solid',
-                                        borderColor: CELL_STATUS_BORDER[c.status],
-                                        cursor: c.statusObs ? 'help' : 'default',
+                                        position: 'absolute',
+                                        top: 2,
+                                        right: 16,
+                                        fontSize: 16,
+                                        color: theme.palette.warning.main,
                                       }}
-                                    >
+                                    />
+                                  ) : null}
+
+                                  {/* Conteúdo */}
+                                  {c?.text ? (
+                                    <>
                                       <Typography
                                         sx={{
-                                          fontSize: 9,
-                                          fontWeight: 800,
-                                          letterSpacing: 0.5,
-                                          textTransform: 'uppercase',
-                                          color: CELL_STATUS_TEXT[c.status][isDark ? 1 : 0],
-                                          lineHeight: 1,
+                                          fontSize: 12,
+                                          lineHeight: 1.3,
+                                          color: resolvedTextColor,
+                                          fontWeight: c.bold ? 800 : 400,
+                                          whiteSpace: 'pre-wrap',
+                                          display: '-webkit-box',
+                                          WebkitLineClamp: bairro ? 4 : 5,
+                                          WebkitBoxOrient: 'vertical',
+                                          overflow: 'hidden',
+                                          pl: 1.5,
+                                          pr: 1.5,
                                         }}
                                       >
-                                        {AGENDA_CELL_STATUS_LABELS[c.status]}
+                                        {mainText}
                                       </Typography>
-                                    </Box>
-                                  </Tooltip>
-                                ) : null}
-                              </>
-                            ) : (
-                              <Typography sx={{ fontSize: 12, color: 'text.disabled' }}>
-                                +
-                              </Typography>
-                            )}
+                                      {bairro ? (
+                                        <Box
+                                          sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 0.25,
+                                            mt: 0.5,
+                                            mx: -0.75,
+                                            px: 1,
+                                            py: 0.4,
+                                            bgcolor: isDark
+                                              ? 'rgba(255,255,255,0.11)'
+                                              : 'rgba(0,0,0,0.08)',
+                                            borderTop: 1,
+                                            borderColor: isDark
+                                              ? 'rgba(255,255,255,0.08)'
+                                              : 'rgba(0,0,0,0.06)',
+                                          }}
+                                        >
+                                          <PlaceOutlinedIcon sx={{ fontSize: 11, color: 'text.disabled' }} />
+                                          <Typography
+                                            sx={{
+                                              fontSize: 10,
+                                              fontWeight: 700,
+                                              color: 'text.secondary',
+                                              lineHeight: 1,
+                                              letterSpacing: 0.3,
+                                            }}
+                                          >
+                                            {bairro}
+                                          </Typography>
+                                        </Box>
+                                      ) : null}
 
-                            {/* Ações */}
-                            <Box
-                              className="cell-actions"
-                              onClick={(e) => e.stopPropagation()}
-                              sx={{
-                                position: 'absolute',
-                                bottom: 2,
-                                right: 2,
-                                display: 'flex',
-                                gap: 0.25,
-                                opacity: 0,
-                                transition: 'opacity 0.15s ease',
-                                bgcolor: alpha(stickyBg, 0.85),
-                                borderRadius: 1,
-                              }}
-                            >
-                              <Tooltip title="Editar texto">
-                                <IconButton size="small" onClick={() => openText(key)}>
-                                  <EditOutlinedIcon sx={{ fontSize: 15 }} />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Mudar cor">
-                                <IconButton
-                                  size="small"
-                                  onClick={(e) =>
-                                    setColorAnchor({ el: e.currentTarget, key })
-                                  }
-                                >
-                                  <BrushOutlinedIcon sx={{ fontSize: 15 }} />
-                                </IconButton>
-                              </Tooltip>
+                                      {c.status ? (
+                                        <Tooltip title={c.statusObs || ''} placement="top" arrow disableHoverListener={!c.statusObs}>
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              mt: 0.25,
+                                              mx: -0.75,
+                                              px: 1,
+                                              py: 0.35,
+                                              bgcolor: CELL_STATUS_BG[c.status][isDark ? 1 : 0],
+                                              borderTop: '1px solid',
+                                              borderColor: CELL_STATUS_BORDER[c.status],
+                                              cursor: c.statusObs ? 'help' : 'default',
+                                            }}
+                                          >
+                                            <Typography
+                                              sx={{
+                                                fontSize: 9,
+                                                fontWeight: 800,
+                                                letterSpacing: 0.5,
+                                                textTransform: 'uppercase',
+                                                color: CELL_STATUS_TEXT[c.status][isDark ? 1 : 0],
+                                                lineHeight: 1,
+                                              }}
+                                            >
+                                              {AGENDA_CELL_STATUS_LABELS[c.status]}
+                                            </Typography>
+                                          </Box>
+                                        </Tooltip>
+                                      ) : null}
+                                    </>
+                                  ) : (
+                                    <Typography sx={{ fontSize: 12, color: 'text.disabled' }}>
+                                      +
+                                    </Typography>
+                                  )}
+
+                                </>
+                              )}
                             </Box>
-                          </Box>
-                        )
-                      })}
-                    </Box>
-                  ))}
+                          )
+                        })}
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
+                <ColorLegendSidebar
+                  area={area}
+                  colorSettings={colorSettings}
+                  effectivePalette={effectivePalette}
+                  canManage={canManageTecnicos}
+                  isDark={isDark}
+                  resolvedColorDefs={resolvedColorDefs}
+                  onSave={handleSaveColorSettings}
+                />
               </Box>
             )}
           </Paper>
@@ -983,23 +1120,24 @@ export function AgendaPage() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Box sx={{ p: 1.25, display: 'flex', gap: 0.75, flexWrap: 'wrap', maxWidth: 200 }}>
-          {palette.map((color) => (
-            <Box
-              key={color}
-              onClick={() => colorAnchor && setColor(colorAnchor.key, color)}
-              sx={{
-                width: 30,
-                height: 30,
-                borderRadius: '50%',
-                cursor: 'pointer',
-                bgcolor: colorFill(color),
-                border: 2,
-                borderColor: COLOR_DEFS[color].border,
-                transition: 'transform 0.1s ease',
-                '&:hover': { transform: 'scale(1.12)' },
-              }}
-            />
+        <Box sx={{ p: 1.25, display: 'flex', gap: 0.75, flexWrap: 'wrap', maxWidth: 220 }}>
+          {effectivePalette.map((color) => (
+            <Tooltip key={color} title={resolvedColorDefs[color].label} placement="top" arrow>
+              <Box
+                onClick={() => colorAnchor && setColor(colorAnchor.key, color)}
+                sx={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  bgcolor: colorFill(color),
+                  border: 2,
+                  borderColor: resolvedColorDefs[color].border,
+                  transition: 'transform 0.1s ease',
+                  '&:hover': { transform: 'scale(1.12)' },
+                }}
+              />
+            </Tooltip>
           ))}
         </Box>
       </Popover>
@@ -1074,6 +1212,25 @@ export function AgendaPage() {
       >
         <MenuItem
           onClick={() => {
+            if (cellMenuAnchor) { openText(cellMenuAnchor.key); setCellMenuAnchor(null) }
+          }}
+        >
+          <EditOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: 'text.secondary' }} />
+          Editar texto
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (cellMenuAnchor) {
+              setColorAnchor({ el: cellMenuAnchor.el, key: cellMenuAnchor.key })
+              setCellMenuAnchor(null)
+            }
+          }}
+        >
+          <ColorLensOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: 'text.secondary' }} />
+          Mudar cor
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             if (cellMenuAnchor) { setHistoryKey(cellMenuAnchor.key); setCellMenuAnchor(null) }
           }}
         >
@@ -1120,6 +1277,7 @@ export function AgendaPage() {
         onRename={renameTecnico}
         onRemove={removeTecnico}
         onChangeVeiculo={changeVeiculo}
+        onToggle1830={toggle1830}
       />
 
       {/* Diálogo de horários */}
@@ -1130,6 +1288,17 @@ export function AgendaPage() {
         onAdd={addSlot}
         onRename={renameSlot}
         onRemove={removeSlot}
+      />
+
+      {/* Busca */}
+      <SearchModal
+        open={searchOpen}
+        area={area}
+        onClose={() => setSearchOpen(false)}
+        onNavigate={(d, k) => {
+          setDate(d)
+          setHighlightedCellKey(k)
+        }}
       />
 
       {/* Diálogo de edição de negado */}
@@ -1156,6 +1325,182 @@ export function AgendaPage() {
         </DialogActions>
       </Dialog>
     </>
+  )
+}
+
+function SearchModal({
+  open,
+  area,
+  onClose,
+  onNavigate,
+}: {
+  open: boolean
+  area: AgendaArea
+  onClose: () => void
+  onNavigate: (date: string, key: string) => void
+}) {
+  const [startDate, setStartDate] = useState(() => shiftISO(todayISO(), -60))
+  const [endDate, setEndDate] = useState(() => shiftISO(todayISO(), 30))
+  const [queryText, setQueryText] = useState('')
+  const [results, setResults] = useState<CellSearchResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [searched, setSearched] = useState(false)
+  const [searchError, setSearchError] = useState<string | null>(null)
+
+  const handleSearch = async () => {
+    const q = queryText.trim()
+    if (!q) return
+    setSearching(true)
+    setSearchError(null)
+    try {
+      const res = await searchAgendaCells(db, area, startDate, endDate, q)
+      setResults(res)
+      setSearched(true)
+    } catch (e) {
+      setSearchError(e instanceof Error ? e.message : 'Erro ao buscar')
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  const formatDate = (iso: string) => {
+    const d = new Date(`${iso}T00:00:00`)
+    return d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })
+  }
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <SearchRoundedIcon fontSize="small" />
+        Buscar na Agenda
+      </DialogTitle>
+      <DialogContent>
+        <Box sx={{ display: 'flex', gap: 1.5, mb: 2, flexWrap: 'wrap', alignItems: 'center', pt: 0.5 }}>
+          <TextField
+            type="date"
+            label="De"
+            size="small"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            slotProps={{ inputLabel: { shrink: true } }}
+            sx={{ width: 155 }}
+          />
+          <TextField
+            type="date"
+            label="Até"
+            size="small"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            slotProps={{ inputLabel: { shrink: true } }}
+            sx={{ width: 155 }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Buscar por nome ou texto"
+            placeholder="Ex: JOSIANA APARECIDA"
+            value={queryText}
+            onChange={(e) => setQueryText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') void handleSearch() }}
+            autoFocus
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchRoundedIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: queryText ? (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      edge="end"
+                      onClick={() => { setQueryText(''); setResults([]); setSearched(false) }}
+                      tabIndex={-1}
+                    >
+                      <DeleteOutlineRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+              },
+            }}
+          />
+          <Button
+            variant="contained"
+            onClick={() => void handleSearch()}
+            disabled={searching || !queryText.trim()}
+            sx={{ flexShrink: 0, height: 40 }}
+          >
+            {searching ? <CircularProgress size={18} color="inherit" /> : 'Buscar'}
+          </Button>
+        </Box>
+
+        {searchError && <Alert severity="error" sx={{ mt: 1.5 }}>{searchError}</Alert>}
+
+        {searched && !searching && results.length === 0 && (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography color="text.secondary" variant="body2">
+              Nenhum resultado encontrado no período selecionado.
+            </Typography>
+          </Box>
+        )}
+
+        {results.length > 0 && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+              {results.length} resultado(s) encontrado(s)
+            </Typography>
+            <Stack spacing={0.5}>
+              {results.map((r, i) => (
+                <Box
+                  key={i}
+                  onClick={() => { onNavigate(r.date, r.key); onClose() }}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 1.5,
+                    cursor: 'pointer',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    transition: 'background 0.12s',
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      bgcolor: COLOR_DEFS[r.color].fill,
+                      border: '1.5px solid',
+                      borderColor: COLOR_DEFS[r.color].border,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.4 }} noWrap>
+                      {r.text}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {formatDate(r.date)} · {r.tecnicoNome} · {r.slotLabel}h
+                    </Typography>
+                  </Box>
+                  <ChevronRightRoundedIcon fontSize="small" sx={{ color: 'text.disabled', flexShrink: 0 }} />
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Fechar</Button>
+      </DialogActions>
+    </Dialog>
   )
 }
 
@@ -1333,14 +1678,16 @@ function TecnicosDialog({
   onRename,
   onRemove,
   onChangeVeiculo,
+  onToggle1830,
 }: {
   open: boolean
   onClose: () => void
-  tecnicos: { id: string; nome: string; veiculo: 'carro' | 'moto' }[]
+  tecnicos: AgendaTecnico[]
   onAdd: (nome: string, veiculo: 'carro' | 'moto') => void
   onRename: (id: string, nome: string) => void
   onRemove: (id: string) => void
   onChangeVeiculo: (id: string, veiculo: 'carro' | 'moto') => void
+  onToggle1830: (id: string) => void
 }) {
   const [novo, setNovo] = useState('')
   const [novoVeiculo, setNovoVeiculo] = useState<'carro' | 'moto'>('carro')
@@ -1412,6 +1759,16 @@ function TecnicosDialog({
                   <ToggleButton value="carro" title="Carro"><CarIcon /></ToggleButton>
                   <ToggleButton value="moto" title="Moto"><MotoIcon /></ToggleButton>
                 </ToggleButtonGroup>
+                <Tooltip title={t.tem1830 ? 'Pode receber 18:30 (clique para remover)' : 'Não recebe 18:30 (clique para habilitar)'}>
+                  <Chip
+                    size="small"
+                    label="18:30"
+                    variant={t.tem1830 ? 'filled' : 'outlined'}
+                    color={t.tem1830 ? 'success' : 'default'}
+                    onClick={() => onToggle1830(t.id)}
+                    sx={{ cursor: 'pointer', fontWeight: 700, fontSize: 10 }}
+                  />
+                </Tooltip>
                 <IconButton size="small" color="error" onClick={() => onRemove(t.id)}>
                   <DeleteOutlineRoundedIcon fontSize="small" />
                 </IconButton>
@@ -1495,5 +1852,399 @@ function SlotsDialog({
         </Button>
       </DialogActions>
     </Dialog>
+  )
+}
+
+function ColorLegendSidebar({
+  area,
+  colorSettings,
+  effectivePalette,
+  canManage,
+  isDark,
+  resolvedColorDefs,
+  onSave,
+}: {
+  area: AgendaArea
+  colorSettings: AgendaColorSettings
+  effectivePalette: CellColor[]
+  canManage: boolean
+  isDark: boolean
+  resolvedColorDefs: Record<CellColor, ColorDef>
+  onSave: (settings: AgendaColorSettings) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [editColor, setEditColor] = useState<CellColor | null>(null)
+  const [editLabel, setEditLabel] = useState('')
+  const [editFill, setEditFill] = useState('')
+  const [editFillDark, setEditFillDark] = useState('')
+  const [editBorder, setEditBorder] = useState('')
+  const [editTextColor, setEditTextColor] = useState('')
+  const [editTextColorDark, setEditTextColorDark] = useState('')
+  const [addOpen, setAddOpen] = useState(false)
+
+  const defaultPalette = AREA_PALETTE[area]
+  const availableToAdd = useMemo(
+    () => (Object.keys(COLOR_DEFS) as CellColor[]).filter(c => !effectivePalette.includes(c)),
+    [effectivePalette],
+  )
+
+  const getSwatchColor = (color: CellColor) =>
+    isDark ? resolvedColorDefs[color].fillDark : resolvedColorDefs[color].fill
+
+  const openEdit = (color: CellColor) => {
+    const ov = colorSettings.overrides[color] ?? {}
+    const def = COLOR_DEFS[color]
+    setEditLabel(ov.label ?? def.label)
+    setEditFill(ov.fill ?? def.fill)
+    setEditFillDark(ov.fillDark ?? def.fillDark)
+    setEditBorder(ov.border ?? def.border)
+    setEditTextColor(ov.textColor ?? '#1f2937')
+    setEditTextColorDark(ov.textColorDark ?? '#e9ecef')
+    setEditColor(color)
+  }
+
+  const saveEdit = () => {
+    if (!editColor) return
+    onSave({
+      ...colorSettings,
+      overrides: {
+        ...colorSettings.overrides,
+        [editColor]: { label: editLabel, fill: editFill, fillDark: editFillDark, border: editBorder, textColor: editTextColor, textColorDark: editTextColorDark },
+      },
+    })
+    setEditColor(null)
+  }
+
+  const resetToDefault = (color: CellColor) => {
+    const { [color]: _removed, ...rest } = colorSettings.overrides
+    onSave({ ...colorSettings, overrides: rest })
+    setEditColor(null)
+  }
+
+  const handleAddColor = (color: CellColor) => {
+    const newExtra = [...(colorSettings.extraPaletteColors ?? []), color]
+    onSave({ ...colorSettings, extraPaletteColors: newExtra })
+    setAddOpen(false)
+    openEdit(color)
+  }
+
+  const handleRemoveColor = (color: CellColor) => {
+    const newExtra = (colorSettings.extraPaletteColors ?? []).filter(c => c !== color)
+    onSave({ ...colorSettings, extraPaletteColors: newExtra })
+  }
+
+  return (
+    <>
+      <Box
+        sx={{
+          borderLeft: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column',
+          width: open ? 196 : 40,
+          minWidth: open ? 196 : 40,
+          transition: 'width 0.2s ease, min-width 0.2s ease',
+          flexShrink: 0,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Cabeçalho toggle */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: open ? 'space-between' : 'center',
+            px: open ? 1.5 : 0.5,
+            py: 1,
+            borderBottom: 1,
+            borderColor: 'divider',
+            minHeight: 42,
+          }}
+        >
+          {open ? (
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', color: 'text.secondary', fontSize: 10 }}
+            >
+              Legenda
+            </Typography>
+          ) : null}
+          <Tooltip title={open ? 'Recolher legenda' : 'Expandir legenda'}>
+            <IconButton size="small" onClick={() => setOpen((o) => !o)}>
+              {open
+                ? <ChevronRightRoundedIcon sx={{ fontSize: 18 }} />
+                : <ChevronLeftRoundedIcon sx={{ fontSize: 18 }} />}
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        {/* Entradas */}
+        <Box sx={{ flex: 1, overflowY: 'auto', py: 0.75, px: open ? 1 : 0.5 }}>
+          {effectivePalette.map((color) => {
+            const isCustom = !defaultPalette.includes(color)
+            return (
+              <Tooltip
+                key={color}
+                title={open ? (canManage ? 'Clique para editar' : '') : resolvedColorDefs[color].label}
+                placement="left"
+                disableHoverListener={open && !canManage}
+              >
+                <Box
+                  onClick={() => canManage ? openEdit(color) : undefined}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    py: 0.6,
+                    px: 0.5,
+                    borderRadius: 1,
+                    cursor: canManage ? 'pointer' : 'default',
+                    '&:hover': canManage ? { bgcolor: 'action.hover' } : {},
+                    mb: 0.25,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 18,
+                      height: 18,
+                      borderRadius: '50%',
+                      bgcolor: getSwatchColor(color),
+                      border: 2,
+                      borderColor: resolvedColorDefs[color].border,
+                      flexShrink: 0,
+                      ...(colorSettings.overrides[color] ? { boxShadow: `0 0 0 1px ${resolvedColorDefs[color].border}` } : {}),
+                    }}
+                  />
+                  {open ? (
+                    <>
+                      <Typography
+                        sx={{
+                          fontSize: 11,
+                          lineHeight: 1.3,
+                          flex: 1,
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          color: 'text.secondary',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {resolvedColorDefs[color].label}
+                      </Typography>
+                      {isCustom && canManage ? (
+                        <Tooltip title="Remover da paleta">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => { e.stopPropagation(); handleRemoveColor(color) }}
+                            sx={{ flexShrink: 0, p: 0.25, opacity: 0.5, '&:hover': { opacity: 1 } }}
+                          >
+                            <DeleteOutlineRoundedIcon sx={{ fontSize: 13 }} />
+                          </IconButton>
+                        </Tooltip>
+                      ) : null}
+                    </>
+                  ) : null}
+                </Box>
+              </Tooltip>
+            )
+          })}
+        </Box>
+
+        {/* Botão adicionar cor (só gerente, só quando expandido e há cores disponíveis) */}
+        {canManage && open && availableToAdd.length > 0 ? (
+          <Box sx={{ borderTop: 1, borderColor: 'divider', p: 1 }}>
+            <Button
+              size="small"
+              fullWidth
+              startIcon={<AddRoundedIcon />}
+              onClick={() => setAddOpen(true)}
+              sx={{ fontSize: 11 }}
+            >
+              Adicionar cor
+            </Button>
+          </Box>
+        ) : null}
+      </Box>
+
+      {/* Diálogo para adicionar nova cor à paleta */}
+      <Dialog open={addOpen} onClose={() => setAddOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle>Adicionar cor à legenda</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Selecione uma cor para ativar nesta área. Você poderá personalizar a cor e o significado em seguida.
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {availableToAdd.map((color) => (
+              <Tooltip key={color} title={resolvedColorDefs[color].label} placement="top" arrow>
+                <Box
+                  onClick={() => handleAddColor(color)}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    cursor: 'pointer',
+                    p: 1,
+                    borderRadius: 1.5,
+                    border: 1,
+                    borderColor: 'divider',
+                    minWidth: 58,
+                    '&:hover': { bgcolor: 'action.hover', borderColor: resolvedColorDefs[color].border },
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      bgcolor: getSwatchColor(color),
+                      border: 2,
+                      borderColor: resolvedColorDefs[color].border,
+                    }}
+                  />
+                  <Typography sx={{ fontSize: 10, textAlign: 'center', lineHeight: 1.2, color: 'text.secondary', maxWidth: 56 }}>
+                    {resolvedColorDefs[color].label}
+                  </Typography>
+                </Box>
+              </Tooltip>
+            ))}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAddOpen(false)}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Diálogo de edição de cor */}
+      <Dialog open={editColor !== null} onClose={() => setEditColor(null)} maxWidth="xs" fullWidth>
+        <DialogTitle>Editar cor da legenda</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 0.5 }}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Descrição / significado"
+              value={editLabel}
+              onChange={(e) => setEditLabel(e.target.value)}
+            />
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Fundo (tema claro)
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="color"
+                    value={editFill}
+                    onChange={(e) => setEditFill(e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+                  />
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 11 }}>{editFill}</Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Fundo (tema escuro)
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="color"
+                    value={editFillDark}
+                    onChange={(e) => setEditFillDark(e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+                  />
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 11 }}>{editFillDark}</Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Borda
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="color"
+                    value={editBorder}
+                    onChange={(e) => setEditBorder(e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+                  />
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 11 }}>{editBorder}</Typography>
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Texto (tema claro)
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="color"
+                    value={editTextColor}
+                    onChange={(e) => setEditTextColor(e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+                  />
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 11 }}>{editTextColor}</Typography>
+                </Box>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                  Texto (tema escuro)
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="color"
+                    value={editTextColorDark}
+                    onChange={(e) => setEditTextColorDark(e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: 'none', cursor: 'pointer', borderRadius: 4, background: 'none' }}
+                  />
+                  <Typography variant="caption" sx={{ fontFamily: 'monospace', fontSize: 11 }}>{editTextColorDark}</Typography>
+                </Box>
+              </Box>
+            </Box>
+            {/* Preview */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                pt: 0.5,
+                px: 1.5,
+                py: 1,
+                borderRadius: 1.5,
+                bgcolor: isDark ? editFillDark : editFill,
+                border: 2,
+                borderColor: editBorder,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  bgcolor: isDark ? editFillDark : editFill,
+                  border: 2,
+                  borderColor: editBorder,
+                  flexShrink: 0,
+                }}
+              />
+              <Typography variant="caption" sx={{ color: isDark ? editTextColorDark : editTextColor, fontWeight: 600 }}>
+                {editLabel || '(sem descrição)'}
+              </Typography>
+            </Box>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          {editColor !== null && colorSettings.overrides[editColor] !== undefined ? (
+            <Button color="inherit" onClick={() => editColor !== null && resetToDefault(editColor)}>
+              Restaurar padrão
+            </Button>
+          ) : null}
+          <Button onClick={() => setEditColor(null)}>Cancelar</Button>
+          <Button variant="contained" onClick={saveEdit}>Salvar</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }

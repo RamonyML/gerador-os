@@ -252,9 +252,38 @@ export function buildLuzVermelhaIsentoTextos(
   }
 }
 
-export const LUZ_VERMELHA_ISENTO_FIELDS: OsTemplateField[] = LUZ_VERMELHA_FIELDS.filter(
-  (f) => f.id !== 'formaPag',
-).map((f) => ({ ...f }))
+const S_AGE = 'AGENDAMENTO'
+
+export const LUZ_VERMELHA_ISENTO_FIELDS: OsTemplateField[] = [
+  ...LUZ_VERMELHA_FIELDS.filter((f) => f.id !== 'formaPag').map((f) => ({ ...f })),
+  {
+    id: 'dataVisita',
+    label: 'Visita Técnica',
+    control: 'date' as const,
+    placeholder: 'dd/mm/aaaa',
+    section: S_AGE,
+    layout: { md: 4 },
+  },
+  {
+    id: 'horaVisita',
+    label: 'Hora',
+    control: 'select' as const,
+    section: S_AGE,
+    options: [
+      { value: '08:00', label: '08:00' },
+      { value: '08:30', label: '08:30' },
+      { value: '10:00', label: '10:00' },
+      { value: '10:30', label: '10:30' },
+      { value: '13:00', label: '13:00' },
+      { value: '13:30', label: '13:30' },
+      { value: '15:00', label: '15:00' },
+      { value: '15:30', label: '15:30' },
+      { value: '17:00', label: '17:00 (somente com autorização)' },
+      { value: 'APÓS ÀS 11:00', label: 'Após às 11:00 (aos sábados)' },
+    ],
+    layout: { md: 4 },
+  },
+]
 
 export function getManutLuzVermelhaIsentoDefaults(): OsTemplatePresetPayload {
   return {

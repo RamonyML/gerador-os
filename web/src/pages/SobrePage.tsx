@@ -64,7 +64,7 @@ const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
   {
     icon: MapPin,
     title: 'Agenda de Visitas',
-    desc: 'Agendamento de visitas técnicas de instalação, mudança de endereço e manutenção.',
+    desc: 'Grade colaborativa da equipe técnica, com acompanhamento em tempo real.',
   },
   {
     icon: Building2,

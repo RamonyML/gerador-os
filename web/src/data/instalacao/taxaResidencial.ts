@@ -25,18 +25,6 @@ const VENCIMENTO_OPTIONS = [
   { value: '25', label: 'Dia 25' },
 ]
 
-const HORA_OPTIONS = [
-  { value: 'ÀS 08:30 HORAS', label: '08:30' },
-  { value: 'ÀS 10:30 HORAS', label: '10:30' },
-  { value: 'ÀS 11:30 HORAS', label: '11:30 (sáb)' },
-  { value: 'ÀS 12:30 HORAS', label: '12:30 (sáb)' },
-  { value: 'ÀS 13:30 HORAS', label: '13:30' },
-  { value: 'ÀS 15:30 HORAS', label: '15:30' },
-  { value: 'ÀS 16:30 HORAS', label: '16:30' },
-  { value: 'NO PERÍODO DA MANHÃ', label: 'Período da manhã' },
-  { value: 'NO PERÍODO DA TARDE', label: 'Período da tarde' },
-]
-
 const FORMA_PAG_OPTIONS = [
   { value: 'CARTÃO', label: 'Cartão' },
   { value: 'DINHEIRO', label: 'Dinheiro' },
@@ -80,7 +68,7 @@ const PLANO_ITTV = [
 
 const INDICACAO_TECNICA = `INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.`
 
-export const INST_TAXA_RESIDENCIAL_OUTPUT = '{{instTextoProtocolo}}\n\n{{instTextoOS}}'
+export const INST_TAXA_RESIDENCIAL_OUTPUT = '{{instTextoProtocolo}}\n\n{{instTextoOS}}\n\n=== Texto da Agenda ===\n{{instTextoAgenda}}'
 
 function upper(v: unknown): string {
   return String(v ?? '').trim().toUpperCase()
@@ -230,21 +218,6 @@ export const INST_TAXA_RESIDENCIAL_FIELDS: OsTemplateField[] = [
     section: S_PLANO,
     layout: { md: 3 },
     options: VENCIMENTO_OPTIONS,
-  },
-  {
-    id: 'dataVisita',
-    label: 'Data da instalação',
-    control: 'date',
-    section: S_PLANO,
-    layout: { md: 4 },
-  },
-  {
-    id: 'horaVisita',
-    label: 'Horário da instalação',
-    control: 'select',
-    section: S_PLANO,
-    layout: { md: 4 },
-    options: HORA_OPTIONS,
   },
   {
     id: 'formaPag',

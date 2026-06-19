@@ -521,22 +521,6 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       options: VENCIMENTO_OPTS,
     },
     {
-      id: 'dataVisita',
-      label: 'Data da Visita Técnica',
-      control: 'date',
-      placeholder: 'dd/mm/aaaa',
-      section: S_AGE,
-      layout: { md: 3 },
-    },
-    {
-      id: 'horaVisita',
-      label: 'Hora',
-      control: 'select',
-      section: S_AGE,
-      layout: { md: 3 },
-      options: HORA_VISITA_OPTS,
-    },
-    {
       id: 'protocolo',
       label: 'Nº Protocolo',
       control: 'text',

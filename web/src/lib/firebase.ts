@@ -34,7 +34,9 @@ if (useEmulators) {
 
 export function getFirebaseFunctions() {
   const functions = getFunctions(app, FUNCTIONS_REGION)
-  if (useEmulators) {
+  const useFnEmulator =
+    useEmulators || import.meta.env.VITE_USE_FUNCTIONS_EMULATOR === 'true'
+  if (useFnEmulator) {
     connectFunctionsEmulator(functions, '127.0.0.1', 5001)
   }
   return functions

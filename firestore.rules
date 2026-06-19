@@ -374,6 +374,20 @@ service cloud.firestore {
     }
 
     /**
+     * Configurações da agenda (legenda de cores por área).
+     * Leitura: usuários ativos. Escrita: gerente (ou dev/admin).
+     */
+    match /agendaSettings/{settingId} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || (userData().sector == 'suporte' && userData().hierarchy == 'gerente')
+        );
+    }
+
+    /**
      * Modelos de O.S. para casos atípicos sem formulário dedicado.
      * Leitura: qualquer usuário ativo do suporte (ou dev/admin).
      * Escrita: gerente (ou dev/admin).

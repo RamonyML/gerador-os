@@ -12,6 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Grid,
   Link,
   List,
   ListItem,
@@ -103,6 +104,32 @@ import { db } from '../lib/firebase'
 import { saveOsHistory } from '../lib/osHistoryFirestore'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
+
+const AGENDA_CONTEXT_KEY: Record<string, string> = {
+  'manut-luz-vermelha': 'luzVmTextoAgenda',
+  'manut-luz-vermelha-pj': 'luzVmPjTextoAgenda',
+  'manut-fibra-externa': 'fibraExtTextoAgenda',
+  'manut-ocas-conector': 'ocasConectTextoAgenda',
+  'manut-ocas-fibra': 'ocasFibraTextoAgenda',
+  'manut-sinal-alto': 'sinalAltoTextoAgenda',
+  'manut-roteador-queimado': 'roteadorQueimadoTextoAgenda',
+  'manut-ont-queimada': 'ontQueimadaTextoAgenda',
+  'manut-onu-queimada': 'onuQueimadaTextoAgenda',
+  'manut-fonte-queimada': 'fonteQueimadaTextoAgenda',
+  'manut-mud-ponto-int': 'mudPontoIntTextoAgenda',
+  'manut-realoc-fibra': 'realocFibraTextoAgenda',
+  'manut-visita-testes': 'visitaTestesTextoAgenda',
+  'altplan-sem-troca-visita-isenta': 'altplanSemTrocaVisitaIsentaTextoAgenda',
+  'altplan-sem-troca-visita-paga': 'altplanSemTrocaVisitaPagaTextoAgenda',
+  'altplan-troca-visita-isenta': 'altplanTrocaVisitaIsentaTextoAgenda',
+  'altplan-troca-visita-paga': 'altplanTrocaVisitaPagaTextoAgenda',
+  'wifi-extend-zte': 'wifiExtendTextoAgenda',
+  'wifi-extend-tplink': 'wifiExtendTextoAgenda',
+  'wifi-extend-ponto': 'pontoTextoAgenda',
+  'midia-roku-padrao': 'rokuPadraoTextoAgenda',
+  'midia-roku-presencial': 'rokuPresencialTextoAgenda',
+  'manut-roteador-reset': 'roteadorResetTextoAgenda',
+}
 
 /** Demandas com hub dedicado; as demais voltam para a página da demanda. */
 const DEMAND_HUB_ROUTES: Record<string, string> = {
@@ -572,8 +599,21 @@ export function OsGeneratorPage() {
     } else if (selected?.slug === 'ence-padrao-casa-extend') {
       Object.assign(base, buildEncPadraoCasaExtendTextos(values))
     }
+
+    if (selected?.slug?.startsWith('inst-')) {
+      base.instTextoAgenda = `INST ${String(values.cliente ?? '').trim().toUpperCase()} (${String(base.operadorPrimeiroNome ?? '')})`
+    }
+
     return base
   }, [values, profile, user, selected?.slug])
+
+  const modalTextoAgenda = useMemo(() => {
+    if (!selected) return ''
+    const key = AGENDA_CONTEXT_KEY[selected.slug]
+    if (key) return String(context[key] ?? '')
+    if (selected.slug.startsWith('inst-')) return String(context.instTextoAgenda ?? '')
+    return ''
+  }, [selected, context])
 
   const preview = useMemo(() => {
     if (!selected) return ''
@@ -886,32 +926,29 @@ export function OsGeneratorPage() {
                   setValues((prev) => ({ ...prev, ...patch }))
                 }
                 errorFieldIds={errorFieldIds}
+                appendToLastSection={
+                  (selected.slug in AGENDA_CONTEXT_KEY || selected.slug.startsWith('inst-')) &&
+                  !(selected.slug === 'manut-roteador-reset' && values.tipoSolicitacao === 'loja') ? (
+                    <Grid size={{ xs: 12, md: 8 }} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        size="large"
+                        startIcon={<HomeOutlinedIcon />}
+                        onClick={() => setAgendarOpen(true)}
+                        sx={{
+                          py: 1,
+                          fontWeight: 600,
+                          bgcolor: 'primary.main',
+                          '&:hover': { bgcolor: 'primary.dark' },
+                        }}
+                      >
+                        Agendar Visita
+                      </Button>
+                    </Grid>
+                  ) : undefined
+                }
               />
-            ) : null}
-
-            {selected?.slug === 'manut-luz-vermelha' ? (
-              <Button
-                fullWidth
-                variant="outlined"
-                size="large"
-                startIcon={<HomeOutlinedIcon />}
-                onClick={() => setAgendarOpen(true)}
-                sx={{
-                  mt: 2,
-                  borderColor: '#f57c00',
-                  color: '#f57c00',
-                  borderWidth: 1.5,
-                  py: 1.25,
-                  fontWeight: 600,
-                  '&:hover': {
-                    borderColor: '#e65100',
-                    bgcolor: 'rgba(245,124,0,0.06)',
-                    borderWidth: 1.5,
-                  },
-                }}
-              >
-                Agendar Visita
-              </Button>
             ) : null}
           </Paper>
 
@@ -1070,7 +1107,7 @@ export function OsGeneratorPage() {
       <AgendarVisitaModal
         open={agendarOpen}
         onClose={() => setAgendarOpen(false)}
-        textoAgenda={String(context.luzVmTextoAgenda ?? '')}
+        textoAgenda={modalTextoAgenda}
         initialDate={values.dataVisita}
         onScheduled={(dataVisita, horaVisita) => {
           setValues((prev) => ({ ...prev, dataVisita, horaVisita }))

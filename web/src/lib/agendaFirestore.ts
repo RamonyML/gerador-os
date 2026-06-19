@@ -1,9 +1,14 @@
 import {
+  collection,
   doc,
+  documentId,
   getDoc,
+  getDocs,
   onSnapshot,
+  query,
   serverTimestamp,
   setDoc,
+  where,
   type Firestore,
   type Unsubscribe,
 } from 'firebase/firestore'
@@ -16,6 +21,8 @@ import {
   type AgendaCell,
   type AgendaCellHistoryEntry,
   type AgendaCellStatus,
+  type AgendaColorOverride,
+  type AgendaColorSettings,
   type AgendaDia,
   type AgendaSlot,
   type AgendaTecnico,
@@ -77,7 +84,9 @@ function parseTecnicos(v: unknown): AgendaTecnico[] {
     const t = item as Record<string, unknown>
     if (typeof t.id === 'string' && typeof t.nome === 'string') {
       const veiculo: 'carro' | 'moto' = t.veiculo === 'moto' ? 'moto' : 'carro'
-      out.push({ id: t.id, nome: t.nome, veiculo })
+      const entry: AgendaTecnico = { id: t.id, nome: t.nome, veiculo }
+      if (t.tem1830 === true) entry.tem1830 = true
+      out.push(entry)
     }
   }
   return out
@@ -94,7 +103,8 @@ function parseCells(v: unknown): Record<string, AgendaCell> {
     const status = isAgendaCellStatus(c.status) ? c.status : undefined
     const statusObs = typeof c.statusObs === 'string' && c.statusObs.trim() ? c.statusObs : undefined
     const history = parseHistory(c.history)
-    if (!text && color === 'branco' && c.bold !== true && !status) continue
+    const hasHistory = Array.isArray(c.history) && c.history.length > 0
+    if (!text && color === 'branco' && c.bold !== true && !status && !hasHistory) continue
     out[key] = { text, color, bold: c.bold === true, status, statusObs, history }
   }
   return out
@@ -160,7 +170,8 @@ export async function saveDia(db: Firestore, dia: AgendaDia): Promise<void> {
   // Remove células "vazias" e campos undefined (Firestore rejeita undefined).
   const cells: Record<string, unknown> = {}
   for (const [key, c] of Object.entries(dia.cells)) {
-    if (!c.text.trim() && c.color === 'branco' && !c.bold && !c.status) continue
+    const hasHist = c.history && c.history.length > 0
+    if (!c.text.trim() && c.color === 'branco' && !c.bold && !c.status && !hasHist) continue
     const cell: Record<string, unknown> = { text: c.text, color: c.color, bold: c.bold }
     if (c.status !== undefined) cell.status = c.status
     if (c.statusObs !== undefined) cell.statusObs = c.statusObs
@@ -172,13 +183,18 @@ export async function saveDia(db: Firestore, dia: AgendaDia): Promise<void> {
     text: n.text,
     ...(n.origem?.trim() ? { origem: n.origem } : {}),
   }))
+  const tecnicos = dia.tecnicos.map((t) => {
+    const entry: Record<string, unknown> = { id: t.id, nome: t.nome, veiculo: t.veiculo }
+    if (t.tem1830 === true) entry.tem1830 = true
+    return entry
+  })
   await setDoc(
     doc(db, COLLECTION, docId(dia.area, dia.date)),
     {
       area: dia.area,
       date: dia.date,
       slots: dia.slots,
-      tecnicos: dia.tecnicos,
+      tecnicos,
       cells,
       negados,
       updatedAt: serverTimestamp(),
@@ -220,3 +236,109 @@ export async function getDia(
 
 /** Reexporta utilitários úteis para a página. */
 export { cellKey, emptyDia, docId }
+
+// ---- Configurações de cores da legenda ----
+
+const COLOR_SETTINGS_COLLECTION = 'agendaSettings'
+
+function colorSettingsDocId(area: AgendaArea): string {
+  return `${area}_colors`
+}
+
+export function subscribeColorSettings(
+  db: Firestore,
+  area: AgendaArea,
+  onNext: (settings: AgendaColorSettings) => void,
+  onError: (error: unknown) => void,
+): Unsubscribe {
+  return onSnapshot(
+    doc(db, COLOR_SETTINGS_COLLECTION, colorSettingsDocId(area)),
+    (snap) => {
+      if (!snap.exists()) {
+        onNext({ overrides: {} })
+        return
+      }
+      const data = snap.data() as Record<string, unknown>
+      const overrides: Partial<Record<CellColor, AgendaColorOverride>> = {}
+      if (data.overrides && typeof data.overrides === 'object') {
+        for (const [k, v] of Object.entries(data.overrides as Record<string, unknown>)) {
+          if (!v || typeof v !== 'object') continue
+          const obj = v as Record<string, unknown>
+          const override: AgendaColorOverride = {}
+          if (typeof obj.label === 'string') override.label = obj.label
+          if (typeof obj.fill === 'string') override.fill = obj.fill
+          if (typeof obj.fillDark === 'string') override.fillDark = obj.fillDark
+          if (typeof obj.border === 'string') override.border = obj.border
+          if (typeof obj.textColor === 'string') override.textColor = obj.textColor
+          if (typeof obj.textColorDark === 'string') override.textColorDark = obj.textColorDark
+          overrides[k as CellColor] = override
+        }
+      }
+      const extraPaletteColors = Array.isArray(data.extraPaletteColors)
+        ? (data.extraPaletteColors as unknown[]).filter((c): c is CellColor => typeof c === 'string')
+        : []
+      onNext({ overrides, extraPaletteColors })
+    },
+    (err) => onError(err),
+  )
+}
+
+export async function saveColorSettings(
+  db: Firestore,
+  area: AgendaArea,
+  settings: AgendaColorSettings,
+): Promise<void> {
+  await setDoc(
+    doc(db, COLOR_SETTINGS_COLLECTION, colorSettingsDocId(area)),
+    { area, overrides: settings.overrides, extraPaletteColors: settings.extraPaletteColors ?? [] },
+    { merge: false },
+  )
+}
+
+// ---- Busca ----
+
+export type CellSearchResult = {
+  date: string
+  tecnicoNome: string
+  slotLabel: string
+  key: string
+  text: string
+  color: CellColor
+}
+
+export async function searchAgendaCells(
+  db: Firestore,
+  area: AgendaArea,
+  startDate: string,
+  endDate: string,
+  needle: string,
+): Promise<CellSearchResult[]> {
+  const q = query(
+    collection(db, COLLECTION),
+    where(documentId(), '>=', `${area}_${startDate}`),
+    where(documentId(), '<=', `${area}_${endDate}`),
+  )
+  const snap = await getDocs(q)
+  const n = needle.trim().toLowerCase()
+  const results: CellSearchResult[] = []
+  for (const docSnap of snap.docs) {
+    const data = docSnap.data() as Record<string, unknown>
+    const dia = parseDia(area, str(data.date) || '', data)
+    for (const [key, cell] of Object.entries(dia.cells)) {
+      if (!cell.text || !cell.text.toLowerCase().includes(n)) continue
+      const [tecId, slotId] = key.split('__')
+      const tec = dia.tecnicos.find((t) => t.id === tecId)
+      const slot = dia.slots.find((s) => s.id === slotId)
+      results.push({
+        date: dia.date,
+        tecnicoNome: tec?.nome ?? tecId,
+        slotLabel: slot?.label ?? slotId,
+        key,
+        text: cell.text,
+        color: cell.color,
+      })
+    }
+  }
+  results.sort((a, b) => a.date.localeCompare(b.date) || a.slotLabel.localeCompare(b.slotLabel))
+  return results
+}

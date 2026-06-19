@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Search as SearchIcon } from '@mui/icons-material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
@@ -51,6 +52,8 @@ type Props = {
   accent?: 'green' | 'red'
   /** IDs de campos com valor vazio que devem ser destacados em vermelho. */
   errorFieldIds?: ReadonlySet<string>
+  /** Conteúdo extra (já envolto em Grid item) inserido no final da última seção. */
+  appendToLastSection?: ReactNode
 }
 
 /** Ids de destino compatíveis com o legado (MUD END usa `adress`). */
@@ -196,6 +199,7 @@ export function OsTemplateFieldsForm({
   onPatchValues,
   accent = 'green',
   errorFieldIds,
+  appendToLastSection,
 }: Props) {
   const sectionColor = accent === 'red' ? 'error.main' : 'primary.main'
   const hasCepField = fields.some((f) => f.id === 'cep')
@@ -271,6 +275,7 @@ export function OsTemplateFieldsForm({
                 </Grid>
               )
             })}
+            {bi === sections.length - 1 ? appendToLastSection : null}
           </Grid>
         </Box>
       ))}

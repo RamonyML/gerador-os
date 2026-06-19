@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase-admin/app'
+export { mkSuporte } from './mk-suporte'
 import { FieldValue, getFirestore } from 'firebase-admin/firestore'
 import { getAuth, type UserRecord } from 'firebase-admin/auth'
 import { setGlobalOptions } from 'firebase-functions/v2/options'

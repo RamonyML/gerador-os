@@ -90,7 +90,7 @@ export function buildNavItems({
         }
       : null,
     {
-      label: 'Escala',
+      label: 'Escala Plantão',
       to: '/escala',
       icon: CalendarMonthOutlinedIcon,
       isActive: startsWith('/escala'),
