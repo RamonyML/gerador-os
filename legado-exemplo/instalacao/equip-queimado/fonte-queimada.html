@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonte Queimada</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">    <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler text-white border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="https://geradordeos-mz2.netlify.app/suporte/modelos.html">Modelos de O.S</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Tutoriais
+            </a>
+            <div class="dropdown-menu border-0 shadow-sm rounded-lg">
+              <a class="dropdown-item" href="https://geradordeos-mz2.netlify.app/suporte/tuto-rot-reset/tuto-home/tutorial" target="_blank">Roteador resetado</a>
+              <a class="dropdown-item" href="/suporte/tuto-rot-reset/tuto-roku.html" target="_blank">RokuTV</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Outros</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/suporte/encerramentos/altplano-troca/altplano-troca.html">Encerramentos de O.S</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geradordeos-mz2.netlify.app/" style="color: #a5d6a7; font-weight: 500;">Versão Anterior</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+          <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+        </div>
+      </div>
+      </nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/suporte/dashboard.html" class="text-success">Suporte</a></li>
+      <li class="breadcrumb-item"><a href="/suporte/dash-man.html" class="text-success">Manutenção</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Fonte Queimada</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 950px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffff8e;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo003.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+#textoAgenda {
+    height: 50px; /* Defina a altura desejada */
+}
+    ::selection {
+    background-color: #28a746;
+    color: #ffffff; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+</style>
+  
+    <div class="container">
+        <div class="form-header">
+            <a href="/index.html">
+                <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+            </a>
+            <div class="title">
+                <h1 class="mb-4 font-weight-bold">MANUTENÇÃO</h1>
+                <h3 class="mb-4 font-weight-bold">FONTE QUEIMADA</h3>
+          </div>
+          
+          
+        </div>
+        <div class="form">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active font-weight-bold text-success" href="#">Com Visita</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suporte/equip-queimado/fonte-queimada-loja.html">Retirar na Loja</a>
+                </li>
+              </ul><br>
+            <!-- Assinante solicitando e autorizando um terceiro a acompanhar o técnico. -->
+            <!-- Terceiro solicitando e assinante autorizando. Porém, assinante ausente. -->
+            <!-- Terceiro solicitando, assinante autorizando e confirmando que estará presente. -->
+
+            <div class="alert alert-success" role="alert">
+                Instalação elétrica dentro do padrão indicado. Cliente é isento do custo da fonte de energia e pagará apenas a taxa padrão (R$50,00) pelo deslocamento do técnico.
+              </div>
+            
+            <hr>
+
+                        <!-- Identificação do Cliente -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="cliente">Nome Completo:</label>
+                        <input type="text" class="form-control" id="cliente" placeholder="Nome completo">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="canal">Canal:</label>
+                        <select class="form-control" id="canal">
+                            <option value="LIGAÇÃO">Telefone</option>
+                            <option value="WHATSAPP">WhatsApp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="contato">Contato:</label>
+                        <input type="text" class="form-control" id="contato" placeholder="Somente os números">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="sinalONU">Sinal Atual:</label>
+                        <input type="text" class="form-control" id="sinalONU" data-toggle="tooltip" title="Informe o sinal atual da fibra ótica conforme exemplo." placeholder="Ex.: -31.87 dBm">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="bairro">Bairro:</label>
+                        <input type="text" class="form-control" id="bairro" placeholder="Insira o bairro do cliente">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- Detalhes da Solicitação -->
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>DETALHES DA OCORRENCIA E AGENDAMENTO</h5>
+                </div>
+            </div>
+            <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="equip">Tipo da fonte:</label>
+                    <select class="form-control" id="equip">
+                        <option value="">Selecione...</option>
+                        <option value="ONU">Fonte ONU</option>
+                        <option value="ONT">Fonte ONT</option>
+                        <option value="ROTEADOR">Fonte Roteador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="proced">Procedimento:</label>
+                        <select class="form-control" id="proced">
+                            <option value="">Selecione...</option>
+                            <option value="ORIENTEI CLIENTE A INVERTER A FONTE DA ONU COM A DO ROTEADOR, E ASSIM EQUIPAMENTO FUNCIONOU">Realizado inversão das fontes (ONU/Roteador)</option>
+                            <option value="ORIENTEI CLIENTE A CONECTAR A FONTE DE ENERGIA EM OUTRA TOMADA, E EQUIPAMENTO NÃO LIGOU">Realizado teste em outra tomada (ONT)</option>
+                            </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="formaPag">Forma de pagamento:</label>
+                        <select class="form-control" id="formaPag">
+                            <option value="PIX">PIX</option>
+                            <option value="DINHEIRO">DINHEIRO</option>
+                            <option value="CARTAO">CARTAO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="dataVisita">Data da Visita:</label>
+                        <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="horaVisita">Hora:</label>
+                        <select class="form-control" id="horaVisita">
+                            <option value="08:30">08:30</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:30">11:30</option>
+                            <option value="13:30">13:30</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:30">17:30</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="protocolo">Nº Protocolo:</label>
+                        <input type="text" class="form-control" id="protocolo" placeholder="123.456">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="operador">Nome do operador:</label>
+                        <select class="form-control" id="operador" required>
+                            <option value="">Selecione...</option>
+                            <option value="ANA">ANA CAROLINA</option>
+                            <option value="DEIVIT">DEIVIT</option>
+                            <option value="EDUARDO">EDUARDO</option>
+                            <option value="GABRIEL M.">GABRIEL MARTINS</option>
+                            <option value="GABRIEL V.">GABRIEL VICTOR</option>
+                            <option value="HIAGO">HIAGO</option>
+                            <option value="KAROLAYNE">KAROLAYNE</option>
+                            <option value="LUIS">LUIS</option>
+                            <option value="PEDRO">PEDRO</option>
+                            <option value="PRISCILA">PRISCILA</option>
+                            <option value="RAMONY">RAMONY</option>
+                            <option value="RENATA">RENATA</option>
+                            <option value="VICTOR H.">VICTOR HUGO</option>
+                            <option value="VITOR M.">VITOR MANOEL</option>
+                            <option value="VAGNER">VAGNER</option>
+            </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="buttons">
+                <button class="btn btn-success btn-block" onclick="gerarTextos()">Gerar textos</button>
+                <button class="btn btn-secondary btn-block" onclick="limparCampos()">Limpar</button>
+            </div>
+        </div>
+        <div class="output">
+            <div class="output-group" data-toggle="tooltip" title="Leia o texto gerado, e insira as particularidades de seu atendimento (se necessário).">
+                <h4 class="font-weight-bold">Texto Protocolo:</h4>
+                <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoProtocolo')">Copiar</button>
+            </div>
+        
+            <div class="output-group" data-toggle="tooltip" title="Leia atentamente o texto gerado, verifique se não há nenhuma informação incorreta antes de registrar no MK.">
+                <h4 class="font-weight-bold">Texto O.S:</h4>
+                <textarea class="form-control" id="textoOS" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoOS')">Copiar</button>
+            </div>
+        </div>
+        <div class="output">
+            <div class="output-group">
+                <h4 class="font-weight-bold">Texto Agenda:</h4>
+                <textarea class="form-control" id="textoAgenda" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block" onclick="copiarTexto('textoAgenda')">Copiar</button>
+            </div>
+        </div>
+    </div>
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                <script>
+document.title = "EQUIP. QUEIMADO";
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+function gerarTextos() {
+    // Obtenha os valores dos campos de entrada
+    const cliente = document.getElementById('cliente').value.toUpperCase();
+    const canal = document.getElementById('canal').value;
+    const contato = document.getElementById('contato').value.replace(/\D/g, '');
+    const sinalONU = document.getElementById('sinalONU').value.toUpperCase();
+    const bairro = document.getElementById('bairro').value.toUpperCase();
+    const dataVisita = document.getElementById('dataVisita').value;
+    const horaVisita = document.getElementById('horaVisita').value;
+    const protocolo = document.getElementById('protocolo').value;
+    const formaPag = document.getElementById('formaPag').value;
+    const equip = document.getElementById('equip').value;
+    const operador = document.getElementById('operador').value;
+    const proced = document.getElementById('proced').value;
+
+    // Verifique se o campo de entrada do sinal da ONU está vazio
+    if (operador === "" && !document.getElementById('operador').checked) {
+        // Se estiver vazio e a caixa de seleção não estiver marcada, insira "SEM SINAL" no texto do protocolo
+        operador = "SEM SINAL";
+    }
+    
+    // Crie os textos com os valores
+    const textoProtocolo = `${cliente.split(' ')[0]} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.
+
+*******************
+    
+CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.
+    
+*******************
+    
+QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NÃO ESTÁ LIGANDO.
+
+REMOTAMENTE VERIFIQUEI QUE ${equip} ESTÁ DESCONECTADO. 
+${proced}.
+    
+PERGUNTEI A ${cliente.split(' ')[0]} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. 
+    
+*******************
+    
+INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE DEVIDO ${cliente.split(' ')[0]} CONECTAR O EQUIPAMENTO À ENERGIA CONFORME RECOMENDAÇÃO DA MZNET, ESTARÁ ISENTO DO CUSTO DA FONTE DE ENERGIA. FICANDO APENAS A COBRANÇA DO DESLOCAMENTO DO TÉCNICO COM O CUSTO DE R$50,00.
+    
+*******************
+    
+${cliente.split(' ')[0]} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E PAGARÁ EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} A PARTIR DE ${horaVisita} HRS.
+
+CLIENTE SEM DUVIDAS.`;
+
+const textoOS = `${cliente.split(' ')[0]} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${equip} ESTÁ COM TODAS AS LUZES APAGADAS". REMOTAMENTE VERIFIQUEI QUE ${equip} ESTÁ DESCONECTADO/APAGADA. ${proced}. PERGUNTEI ${cliente.split(' ')[0]} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA REALIZAR A SUBSTITUIÇÃO DA FONTE QUEIMADA POR OUTRA DE MODELO SIMILAR. VISITA TÉCNICA POSSUI O CUSTO DE R$50,00 REFERENTE AO DESLOCAMENTO TÉCNICO. ${cliente.split(' ')[0]} CONCORDOU E PAGARÁ NO ATO COM ${formaPag}. VISITA AGENDADA PARA ${dataVisita} A PARTIR DE ${horaVisita} HRS.
+
+******************************************
+
+INDICAÇÃO TÉCNICA:
+
+TÉCNICO: CONFERIR EQUIPAMENTOS E PARTE ELÉTRICA. SUBSTITUIR FONTE QUEIMADA E RESTABELECER ACESSO À INTERNET. CASO HAJA EQUIPAMENTOS DANIFICADOS POR MAL USO ENTRAR EM CONTATO COM O SUPORTE DE IMEDIATO PARA TRATATIVA. TESTAR REDE WI-FI E DISPOSITIVOS LIGADOS POR CABOS, CONFERIR NAVEGAÇÃO IPv6 E AFERIR O PLANO CONTRATADO. SANAR TODAS AS DÚVIDAS DE ${cliente.split(' ')[0]}, COLHER ASSINATURA DA ORDEM DE SERVIÇO E RECEBER SERVIÇO.`;
+
+
+const textoAgenda = `MAN TROCA FONTE ${cliente} PROT:${protocolo} ${formaPag} (${operador}) - ${bairro}`;
+
+    // Preencha os campos de saída
+    document.getElementById('textoProtocolo').value = textoProtocolo;
+    document.getElementById('textoOS').value = textoOS;
+    document.getElementById('textoAgenda').value = textoAgenda;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+
+function limparCampos() {
+    if (confirm("Tem certeza que deseja limpar todos os campos? 🤔")) {
+        const camposEntrada = document.querySelectorAll('input, select');
+        camposEntrada.forEach(campo => {
+            campo.value = '';
+        });
+        const textos = document.querySelectorAll('.output textarea');
+        textos.forEach(texto => {
+            texto.value = '';
+        });
+    }
+}
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+   })
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#dataVisita", {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            onChange: function(selectedDates, dateStr, instance) {
+                const date = new Date(dateStr.split('/').reverse().join('-'));
+                const day = date.getDay();
+                const horaVisita = document.getElementById('horaVisita');
+    
+                if (day === 5) { // Sábado
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                } else if (day === 6) { // Domingo
+                    horaVisita.innerHTML = '';
+                    horaVisita.disabled = true;
+                } else {
+                    horaVisita.innerHTML = `
+                        <option value="08:30">08:30</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:30">11:30</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:30">17:30</option>
+                    `;
+                    horaVisita.disabled = false;
+                }
+            }
+        });
+    });
+    </script>
+                    
+                    <script type="module">
+                        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+                        import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+                        
+                        const auth = getAuth(app);
+                      
+                        // Verifica se o usuário está autenticado
+                        onAuthStateChanged(auth, (user) => {
+                          if (!user) {
+                            console.log("Usuário não autenticado, redirecionando...");
+                            window.location.href = "/login.html"; // Redireciona para a página de login
+                          } else {
+                            console.log("Usuário autenticado!", user);
+                            // Exibe o conteúdo após a verificação
+                            document.getElementById("main-content").style.display = "block";
+                          }
+                        });
+                      
+                        // Adiciona o evento de logout
+                        document.getElementById('logoutButton').addEventListener('click', () => {
+                          signOut(auth).then(() => {
+                            console.log("Usuário deslogado com sucesso!");
+                            window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+                          }).catch((error) => {
+                            console.error("Erro ao deslogar: ", error);
+                          });
+                        });
+                      
+                        onAuthStateChanged(auth, (user) => {
+                              const emailSpan = document.getElementById("userEmail");
+                              if (user) {
+                                emailSpan.innerText = `Logado como: ${user.email}`;
+                              } else {
+                                emailSpan.innerText = `Usuário não autenticado`;
+                              }
+                            });
+                      
+                      </script>
+                      <script type="module" src="../js/firebase-init.js"></script>
+        
+
+</body>
+</html>

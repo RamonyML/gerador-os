@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Rápidas</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <!-- Carregamento / resolução de sessão -->
+    <div id="screenLoading" class="screen screen-active">
+        <div class="loading-inner">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>Conectando…</p>
+        </div>
+    </div>
+
+    <!-- Login -->
+    <div id="screenLogin" class="screen">
+        <img src="logo/logo.png" alt="Logo" class="login-logo-above">
+        <div class="login-card">
+            <h1>Meus Registros</h1>
+            <p class="login-sub">Entre com o mesmo e-mail e senha do Gerador de O.S.</p>
+            <label class="sr-only" for="loginEmail">E-mail</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="E-mail" autocomplete="email">
+            <label class="sr-only" for="loginPassword">Senha</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Senha" autocomplete="current-password">
+            <button type="button" id="loginButton" class="btn btn-primary btn-block">Entrar</button>
+            <p id="loginError" class="form-error" role="alert" hidden></p>
+        </div>
+    </div>
+
+    <!-- App principal -->
+    <div id="screenApp" class="screen">
+        <div class="container">
+            <header>
+                <img src="logo/logo.png" alt="Logo" class="logo-img">
+                <h1>Meus Registros</h1>
+                <p>Atendimento · nuvem</p>
+                <div class="user-bar">
+                    <span id="userEmail" class="user-email"></span>
+                    <button type="button" id="logoutButton" class="btn btn-outline btn-sm">Sair</button>
+                </div>
+            </header>
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Pesquisar mensagens…" class="search-input" autocomplete="off">
+            </div>
+
+            <div class="main-content">
+                <div class="left-column">
+                    <div class="add-form">
+                        <h3>Nova mensagem</h3>
+                        <input type="text" id="titleInput" placeholder="Título" class="form-input">
+                        <textarea id="messageInput" placeholder="Texto da mensagem…" class="form-textarea"></textarea>
+                        <button type="button" id="addButton" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="exportTxtButton" class="btn btn-secondary btn-block-gap">Exportar TXT</button>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="messages-container">
+                        <h3>Mensagens</h3>
+                        <div id="messagesList" class="messages-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="syncBanner" class="sync-banner" hidden>
+                <span id="syncBannerText"></span>
+            </div>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" role="button" tabindex="0" aria-label="Fechar">&times;</span>
+                <h3>Editar mensagem</h3>
+                <input type="text" id="editTitleInput" placeholder="Título" class="form-input">
+                <textarea id="editMessageInput" placeholder="Texto…" class="form-textarea"></textarea>
+                <button type="button" id="saveEditButton" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="vendor/firebase-app-compat.js"></script>
+    <script src="vendor/firebase-auth-compat.js"></script>
+    <script src="vendor/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

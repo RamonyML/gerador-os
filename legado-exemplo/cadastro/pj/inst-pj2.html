@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalação Padrão</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">
+        <a class="navbar-brand d-flex align-items-center text-white" href="#" style="font-weight: bold; font-size: 1.2rem;">
+        <img src="/logo/mzlogo-zverde.png" width="65" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+        Gerador de O.S
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="/index.html">Início <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color: rgb(255, 255, 255);" href="#">Textos Padrão</a>
+      </li>
+    </ul>
+    <div class="d-flex align-items-center">
+        <span id="userEmail" class="text-white mr-3">Usuário não autenticado</span>
+        <button id="logoutButton" class="btn btn-outline-light btn-sm rounded-pill px-3">Sair</button>
+      </div>
+    
+  </div>
+</nav>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/cadastro/dashboard.html" class="text-success">Cadastro</a></li>
+      <li class="breadcrumb-item"><a href="#" class="text-success">Instalação</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Padrão</li>
+    </ol>
+  </nav>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 1600px;
+    height:auto;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 1%;
+    background-color: #ffffffcf;
+    border: 0.8px solid rgba(0, 0, 0, 0);
+}
+
+
+h1 {
+    text-align: left;
+    color: #111111;
+    font-size: 26px;
+}
+h3 {
+    text-align: left;
+    color: #db0000;
+    font-size: 15px;
+}
+
+h5 {
+    text-align: left;
+    color: #196e2e;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+a h5 {
+    text-align: left;
+    color: #2c2c2c;
+    font-size: 14px;
+    margin: 0 auto;
+}
+a h5:hover{
+    color: #20c436;
+    text-decoration: none;
+}
+
+
+
+.form {
+    margin-top: 10px;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #38af47;
+    color: #fff;
+    border: none;
+    border-radius: 1px;
+    cursor: pointer;
+}
+
+.buttons button:hover {
+    background-color: #2b8637;
+}
+
+.output {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.output-group {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+    width: 60%;
+    height: 200px;
+    border: 1px solid #38af47;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.form-header h1::after{
+    content: '';
+    display: block;
+    width: 5rem;
+    height: 0.3rem;
+    background-color: #38af47;
+    margin: 0 auto;
+    position: absolute;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #23532a; /* Adicione a cor desejada para seus links */
+    margin-bottom: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+}
+
+a:hover {
+    color: #38af47;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+
+/*configura a imagem do fundo*/
+body {
+    background-image: url('/fundos/fundo001.jpg');
+    background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+    background-repeat: no-repeat; /* Evita a repetição da imagem */
+    background-position: center;
+}
+
+/*daqui pra baixo configura a logo*/
+.logo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-header {
+    position:relative;
+}
+
+span {
+    text-align: left;
+    color: #db0000;
+    font-size: 12px;
+}
+
+::selection {
+    background-color: green;
+    color: white; /* Este é o texto dentro da seleção, pode ser ajustado conforme necessário */
+}
+
+#textoProtocolo {
+    height: 220px; /* Defina a altura desejada */
+    font-size: 12px;
+    text-align: left;
+}
+
+#textoIndic {
+    height: 320px; /* Defina a altura desejada */
+    font-size: 12px;
+    text-align: left;
+}
+
+.danger {
+    border: 1px solid red;
+    border-width: 2px;
+}
+
+.primary {
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.success {
+    border: 1px solid rgb(10, 141, 10);
+}
+h4 {
+    text-align: center;
+    font-weight: bold;
+    color: #ff0000;
+    font-size: 16px;
+}
+</style>
+  
+<div class="container">
+    <div class="form-header">
+        <a href="/index.html">
+            <img class="logo" src="/mznet-logo.png" alt="MzNet Logo" width="90" height="40" style="margin-left: 1px;">
+        </a>
+        <div class="title">
+            <h1 class="mb-4 font-weight-bold">INSTALAÇÃO EMPRESARIAL</h1>
+        </div>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/cadastro/inst-padrao.html">Pessoa Física
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active font-weight-bold text-success" href="/cadastro/inst-padrao-pj.html">Pessoa Jurídica</a>
+        </li>
+    </ul>
+    <div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary" data-placement="bottom" data-toggle="tooltip" title="Assinante solicitando e confirmando presença na visita.">
+            <a href="/cadastro/pj/inst-pj1.html" class="text-white">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> SOLICITAÇÃO PADRÃO
+            </a>
+        </label>
+        <label class="btn btn-success" data-placement="bottom" data-toggle="tooltip" title="Assinante solicitando e autorizando um terceiro a acompanhar o técnico">
+            <a href="#" class="text-white">
+                <input type="radio" name="options" id="option1" autocomplete="off" checked> SOLICITADO POR ASSINANTE
+            </a>
+        </label>
+        <label class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Terceiro solicitando e assinante autorizando. Porém, assinante ausente.">
+            <a href="/cadastro/pj/inst-pj3.html" class="text-white">
+                <input type="radio" name="options" id="option2" autocomplete="off"> SOLICITADO POR TERCEIRO - 1
+            </a>
+        </label>
+        <label class="btn btn-secondary" data-toggle="tooltip" title="Terceiro solicitando, assinante autorizando e confirmando que estará presente.">
+            <a href="/cadastro/pj/inst-pj4.html" class="text-white">
+                <input type="radio" name="options" id="option3" autocomplete="off"> SOLICITADO POR TERCEIRO - 2
+            </a>
+        </label>
+    </div><br><br>
+    <h4>
+        Proprietário solicitou a instalação e autorizou um terceiro a acompanhar a visita técnica.
+    </h4><hr>
+    <div class="row col-md-12">
+        <!-- Coluna da Esquerda: Formulário e Botões -->
+        <div class="col-md-7">
+            <form class="needs-validation" novalidate>
+                <div class="form">
+                    <div class="input-group"></div><br>
+                    <!-- Identificação do Cliente -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>IDENTIFICAÇÃO DO CLIENTE</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cliente">Nome do proprietário:</label>
+                                <input type="text" class="form-control" id="cliente" placeholder="Nome do titular" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="canal">Canal:</label>
+                                <select class="form-control" id="canal" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="PRESENCIALMENTE">Presencial</option>
+                                    <option value="VIA LIGAÇÃO ">Ligação</option>
+                                    <option value="VIA WHATSAPP ">WhatsApp</option>
+                                    <option value="VIA FACEBOOK">Facebook</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contato">Contato:</label>
+                                <input type="text" class="form-control" id="contato" placeholder="Somente os números">
+                            </div>
+                        </div> 
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="solicitante">Terceiro autorizado:</label>
+                                <input type="text" class="form-control" id="solicitante" placeholder="Nome completo do autorizado" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="parente">Cargo/Função:</label>
+                                <input type="text" class="form-control" id="parente" placeholder="Sócio, Gerente, Técnico..." required>
+                            </div>
+                        </div>
+
+                    </div><hr>
+                    <!-- Detalhes da Solicitação -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>DETALHES DO PLANO E AGENDAMENTO</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="plano">Escolha o Plano de Internet:</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="planoInternet" id="plano150" value="150Mega">
+                                    <label class="form-check-label" for="plano150">150Mb</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="planoInternet" id="plano300" value="300Mega">
+                                    <label class="form-check-label" for="plano300">300Mb</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="planoInternet" id="plano600" value="600Mega">
+                                    <label class="form-check-label" for="plano600">600Mb</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="planoInternet" id="plano1000" value="1Giga">
+                                    <label class="form-check-label" for="plano1000">1Gb</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="planoInternet" id="planoittv" value="ittv">
+                                    <label class="form-check-label" for="planoittv">Outros</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group" id="selectContainer">
+                                <label for="planoEscolhido">Novo Plano:</label>
+                                <select class="form-control" id="planoEscolhido" required>
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="vencimento">Vencimento:</label>
+                                <select class="form-control" id="vencimento" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="25">25</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="dataVisita">Data da Visita:</label>
+                                <input type="text" class="form-control" id="dataVisita" placeholder="dd/mm/aaaa" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="horaVisita">Hora:</label>
+                                <select class="form-control" id="horaVisita" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="">Primeiro escolha uma data</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div><hr>
+                    <div class="buttons d-flex">
+                        <button class="btn btn-success flex-fill mr-2" onclick="gerarTextos()">Gerar textos</button>
+                        <button class="btn btn-secondary flex-fill" onclick="limparCampos()">Limpar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Coluna da Direita: Saída de Texto -->
+
+        <div class="col-md-5">
+            <div class="output-group">
+                <textarea class="form-control" id="textoProtocolo" readonly rows="12" cols="50"></textarea>
+                <button class="btn btn-success btn-block font-weight-bold" onclick="copiarTexto('textoProtocolo')">COPIAR O.S</button>
+            </div>
+<div class="output-group">
+<textarea class="form-control" id="textoIndic" readonly rows="12" cols="50">
+INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.
+</textarea>
+<button class="btn btn-success btn-block font-weight-bold" onclick="copiarTexto('textoIndic')">COPIAR INDICAÇÃO TÉCNICA</button>
+            </div>
+        </div>  
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.querySelectorAll('input[name="planoInternet"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const plano = this.value;
+        const selectContainer = document.getElementById('selectContainer');
+        let selectHtml = '';
+
+        switch(plano) {
+            case '150Mega':
+                selectHtml = `
+                    <label for="select150Mega">Escolha o tipo do plano de 150Mega:</label>
+                        <select class="form-control selectPlano" required>
+                        <option value="">Selecione...</option>
+                        <option value="150 MEGA; MENSALIDADE: R$59,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT">150 MEGA/59,90 + MZTV (CDNTV+)</option>
+                        <option value="150 MEGA; MENSALIDADE: R$80,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP FORA CGNAT">150 MEGA/80,00 + MZTV (CDNTV+) + IP DIN</option>
+                        <option value="150 MEGA; MENSALIDADE: R$259,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP ATRIBUÍDO FORA CGNAT">150 MEGA/259,90 + MZTV (CDNTV+) + IP FIXO</option>
+                        </select>`;
+                break;
+            case '300Mega':
+                selectHtml = `
+                    <label for="select300Mega">Escolha o tipo do plano de 300Mega:</label>
+                    <select class="form-control" id="select300Mega" required>
+                        <option value="">Selecione...</option>
+                        <option value="300 MEGA; MENSALIDADE: R$69,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT">300 MEGA/69,90 + MZTV (CDNTV+)</option>
+                        <option value="300 MEGA; MENSALIDADE: R$90,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP FORA CGNAT">300 MEGA/90,00 + MZTV (CDNTV+) + IP DIN</option>
+                        <option value="300 MEGA; MENSALIDADE: R$269,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP ATRIBUÍDO FORA CGNAT">300 MEGA/269,90 + MZTV (CDNTV+) + IP FIXO</option>
+                        <option class="font-weight-bold text-success" value="300 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$104,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT e inclui um roteador adicional">1 Extend - 300 MEGA/104,90 + MZTV (CDNTV+)</option>
+                    </select>`;
+                break;
+            case '600Mega':
+                selectHtml = `
+                    <label for="select600Mega">Escolha o tipo do plano de 600Mega:</label>
+                    <select class="form-control" id="select600Mega" required>
+                        <option value="">Selecione...</option>
+                        <option value="600 MEGA; MENSALIDADE: R$79,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT">600 MEGA/79,90 + MZTV (CDNTV+)</option>
+                        <option value="600 MEGA; MENSALIDADE: R$100,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP FORA CGNAT">600 MEGA/100,00 + MZTV (CDNTV+) + IP DIN</option>
+                        <option value="600 MEGA; MENSALIDADE: R$279,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP ATRIBUÍDO FORA CGNAT">600 MEGA/279,90 + MZTV (CDNTV+) + IP FIXO</option>
+                        <option class="font-weight-bold text-success" value="600 MEGA + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$114,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT e inclui um roteador adicional">1 Extend - 600 MEGA/114,90 + MZTV (CDNTV+)</option>
+                        <option class="font-weight-bold text-success" value="600 MEGA + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$144,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT e inclui dois roteadores adicionais">2 Extend - 600 MEGA/144,90 + MZTV (CDNTV+)</option>
+                        <option class="font-weight-bold text-success" value="600 MEGA + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$174,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV)" title="Plano com IP CGNAT e inclui três roteadores adicionais">3 Extend - 600 MEGA/174,90 + MZTV (CDNTV+)</option>
+                    </select>`;
+                break;
+            case '1Giga':
+                selectHtml = `
+                    <label for="select1Giga">Escolha o tipo do plano de 1Giga:</label>
+                    <select class="form-control" id="select1Giga" required>
+                        <option value="">Selecione...</option>
+                        <option value="1 GIGA (1.000 MEGA); MENSALIDADE: R$99,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP CGNAT">1000 MEGA/99,90 + MZTV (CDNTV+) + VOD</option>
+                        <option value="1 GIGA (1.000 MEGA); MENSALIDADE: R$120,00; + IP PÚBLICO DINAMICO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP FORA CGNAT">1000 MEGA/120,00 + MZTV (CDNTV+) + VOD + IP DIN</option>
+                        <option value="1 GIGA (1.000 MEGA); MENSALIDADE: R$299,90; + IP FIXO; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP ATRIBUÍDO FORA CGNAT">1000 MEGA/299,90 + MZTV (CDNTV+) + VOD + IP FIXO</option>
+                        <option class="font-weight-bold text-success" value="1 GIGA (1.000 MEGA) + 01 WI-FI EXTEND (ROTEADOR ADICIONAL), MENSALIDADE: R$134,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP CGNAT e inclui um roteador adicional">1 Extend - 1000 MEGA/134,90 + MZTV (CDNTV+) + VOD</option>
+                        <option class="font-weight-bold text-success" value="1 GIGA (1.000 MEGA) + 02 WI-FI EXTEND (02 ROTEADORES ADICIONAIS), MENSALIDADE: R$164,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP CGNAT e inclui dois roteadores adicionais">2 Extend - 1000 MEGA/164,90 + MZTV (CDNTV+) + VOD</option>
+                        <option class="font-weight-bold text-success" value="1 GIGA (1.000 MEGA) + 03 WI-FI EXTEND (03 ROTEADORES ADICIONAIS), MENSALIDADE: R$194,90; BENEFÍCIOS: EQUIPAMENTOS EMPRESTADOS EM REGIME DE COMODATO + INSTALAÇÃO/ATIVAÇÃO GRÁTIS + ACESSO AO APP MZ TV (CDNTV) COM MZ CINE-PLAY (VOD)" title="Plano com IP CGNAT e inclui três roteadores adicionais">3 Extend - 1000 MEGA/194,90 + MZTV (CDNTV+) + VOD</option>
+                    </select>`;
+                break;
+            case 'ittv':
+                selectHtml = `
+                    <label for="selectIttv">Escolha o tipo do plano:</label>
+                    <select class="form-control" id="selectIttv" required>
+                        <option value="">Selecione...</option>
+                        <option value="Reservado para pranos comparticularidades" class="font-weight-bold text-danger" title="Plano com IP CGNAT">Reservado para planos com particularidades</option>
+                        <option value="Reservado para pranos comparticularidades" class="font-weight-bold text-danger" title="Plano com IP CGNAT">Reservado para planos com particularidades</option>
+                    </select>`;
+                break;
+            default:
+                selectHtml = '';
+        }
+
+        selectContainer.innerHTML = selectHtml;
+    });
+});
+
+
+document.title = "Instalação";
+
+// VALIDAÇÃO DOS CAMPOS EM BRANCO
+document.addEventListener("DOMContentLoaded", function() {
+    var form = document.querySelector('form');
+    var inputs = form.querySelectorAll('input, select');
+    var submitButton = form.querySelector('button[type="submit"]');
+
+    // Função para validar e aplicar classes
+    function validateFields() {
+        var allFilled = true;
+        inputs.forEach(function(input) {
+            if (input.value.trim() === "") {
+                input.classList.remove('primary', 'success');
+                input.classList.add('danger');
+                allFilled = false;
+            } else {
+                input.classList.remove('danger', 'success');
+                input.classList.add('primary');
+            }
+        });
+        return allFilled;
+    }
+
+    // Valida e aplica classes ao modificar os campos
+    inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            validateFields();
+        });
+    });
+
+    // Altera classes ao enviar o formulário
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        if (validateFields()) {
+            inputs.forEach(function(input) {
+                input.classList.remove('danger', 'primary');
+                input.classList.add('success');
+            });
+            // Aqui você pode adicionar a lógica para gerar os textos
+            gerarTextos();
+        } else {
+            // Continua validando campos individuais
+            validateFields();
+        }
+    });
+});
+
+function gerarTextos() {
+    // Sua lógica para gerar textos
+    console.log("Textos gerados");
+}
+
+function limparCampos() {
+    var form = document.querySelector('form');
+    var inputs = form.querySelectorAll('input, select');
+    inputs.forEach(function(input) {
+        input.value = "";
+        input.classList.remove('danger', 'primary', 'success');
+    });
+}
+
+//FIM DA VALIDAÇÃO ACIMA
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#dataVisita", {
+        dateFormat: "d/m/Y",
+        locale: "pt"
+    });
+});
+
+var menuContainer = document.querySelector('.menu ul');
+
+    menuContainer.addEventListener('click', function (event) {
+        var clickedItem = event.target.closest('.has-submenu');
+
+        // Feche todos os submenus
+        document.querySelectorAll('.has-submenu .submenu').forEach(function (submenu) {
+            if (submenu !== clickedItem.querySelector('.submenu')) {
+                submenu.classList.remove('active');
+            }
+        });
+
+        // Toggle class 'active' apenas no submenu clicado
+        if (clickedItem) {
+            clickedItem.querySelector('.submenu').classList.toggle('active');
+        }
+    });
+
+    // Adicione um ouvinte de eventos para fechar o submenu ao clicar fora
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.has-submenu')) {
+            // Feche todos os submenus
+            document.querySelectorAll('.has-submenu .submenu').forEach(function (submenu) {
+                submenu.classList.remove('active');
+            });
+        }
+    });
+
+    function gerarTextos() {
+    let cliente = document.getElementById('cliente').value.toUpperCase();
+    let solicitante = document.getElementById('solicitante').value.toUpperCase();
+    let parente = document.getElementById('parente').value.toUpperCase();
+    let canal = document.getElementById('canal').value;
+    let contato = document.getElementById('contato').value.replace(/\D/g, '');
+    let planoEscolhido = document.querySelector('input[name="planoInternet"]:checked');
+    let planoDetalhes = '';
+    
+    if (planoEscolhido) {
+        let selectPlano = document.querySelector(`#selectContainer select`);
+        planoDetalhes = selectPlano ? selectPlano.value : '';
+    }
+    
+    let vencimento = document.getElementById('vencimento').value;
+    let dataVisita = document.getElementById('dataVisita').value;
+    let horaVisita = document.getElementById('horaVisita').value;
+    
+    // Verificação se todos os campos estão preenchidos
+    if (!cliente || !canal || !planoEscolhido || !parente || !solicitante || !planoDetalhes || !vencimento || !dataVisita || !horaVisita) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
+    
+    // Geração do texto, agora usando planoDetalhes
+    let texto = `${cliente.split(' ')[0]} (PROPRIETÁRIO DA EMPRESA) SOLICITOU ${canal}${contato} A INSTALAÇÃO DE INTERNET PARA O ENDEREÇO CITADO NA O.S, PLANO DE ACESSO: ${planoDetalhes}; VENCIMENTO: DIA ${vencimento} DO MÊS; VIGÊNCIA DO CONTRATO: 12 MESES. INSTALAÇÃO AGENDADA PARA ${dataVisita} ${horaVisita}. ${cliente.split(' ')[0]} ASSINOU CONTRATO DIGITALMENTE E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR INSTALAÇÃO.`;
+
+    // Exibindo o texto gerado no textarea
+    document.getElementById('textoProtocolo').value = texto;
+}
+
+function copiarTexto(elementId) {
+    // Obtenha o elemento de texto a ser copiado
+    const texto = document.getElementById(elementId);
+
+    // Selecione o texto no campo de texto
+    texto.select();
+    document.execCommand('copy');
+}
+
+function limparCampos() {
+    // Limpe os campos de entrada
+    const camposEntrada = document.querySelectorAll('input, select');
+    camposEntrada.forEach(campo => {
+        campo.value = '';
+    });
+
+    // Limpe os campos de saída
+    const textos = document.querySelectorAll('.output textarea');
+    textos.forEach(texto => {
+        texto.value = '';
+    });
+}
+
+</script>
+<script>
+
+document.getElementById('canal').addEventListener('change', function() {
+    var contatoInput = document.getElementById('contato');
+    var selectedOption = this.value;
+
+    if (selectedOption === 'PRESENCIALMENTE' || selectedOption === 'VIA FACEBOOK') {
+        contatoInput.disabled = true;
+        contatoInput.value = '';
+    } else {
+        contatoInput.disabled = false;
+    }
+});
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#dataVisita", {
+            dateFormat: "d/m/Y",
+            locale: "pt",
+            onChange: function(selectedDates, dateStr, instance) {
+                const date = new Date(dateStr.split('/').reverse().join('-'));
+                const day = date.getDay();
+                const horaVisita = document.getElementById('horaVisita');
+    
+                if (day === 5) { // Sábado
+                    horaVisita.innerHTML = `
+                        <option value="ÀS 08:30 HORAS">08:30</option>
+                        <option value="ÀS 10:30 HORAS">10:30</option>
+                        <option value="ÀS 11:30 HORAS">11:30</option>
+                        <option value="ÀS 12:30 HORAS">Após 12:30</option>
+                        <option value="NO PERÍODO DA MANHÃ">No período da manhã</option>
+                        <option value="NO PERÍODO DA TARDE">No período da tarde</option>
+
+                    `;
+                    horaVisita.disabled = false;
+                } else if (day === 6) { // Domingo
+                    horaVisita.innerHTML = '';
+                    horaVisita.disabled = true;
+                } else {
+                    horaVisita.innerHTML = `
+                        <option value="ÀS 08:30 HORAS">08:30</option>
+                        <option value="ÀS 10:30 HORAS">10:30</option>
+                        <option value="ÀS 13:30 HORAS">13:30</option>
+                        <option value="ÀS 15:30 HORAS">15:30</option>
+                        <option value="ÀS 16:30 HORAS">16:30</option>
+                        <option value="NO PERÍODO DA MANHÃ">No período da manhã</option>
+                        <option value="NO PERÍODO DA TARDE">No período da tarde</option>
+
+                    `;
+                    horaVisita.disabled = false;
+                }
+            }
+        });
+    });
+</script>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';  // Importa o app para inicializar o auth
+    
+    const auth = getAuth(app);
+  
+    // Verifica se o usuário está autenticado
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html"; // Redireciona para a página de login
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Exibe o conteúdo após a verificação
+        document.getElementById("main-content").style.display = "block";
+      }
+    });
+  
+    // Adiciona o evento de logout
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html"; // Redireciona para a página de login após o logout
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        const emailSpan = document.getElementById("userEmail");
+        if (user) {
+          emailSpan.innerText = `Logado como: ${user.email}`;
+        } else {
+          emailSpan.innerText = `Usuário não autenticado`;
+        }
+      });
+
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+  
+
+</body>
+</html>

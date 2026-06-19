@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro MZNET</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-image: url('/fundos/fundo007.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(.4,2,.3,1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-7px) scale(1.03);
+    }
+    
+    .card-hover.hover-green:hover {
+      box-shadow: 0 10px 24px 0 rgba(56, 175, 71, 0.13);
+      background: #f6fff9;
+    }
+    
+    .card-hover.hover-blue:hover {
+      box-shadow: 0 10px 24px 0 rgba(59, 130, 246, 0.13);
+      background: #f6faff;
+    }
+    
+    .card-hover.hover-orange:hover {
+      box-shadow: 0 10px 24px 0 rgba(249, 115, 22, 0.13);
+      background: #fffaf6;
+    }
+    
+    .nav-gradient {
+      background: linear-gradient(to right, #000000, #0f7939);
+    }
+    
+    .icon-container {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    
+    ::selection {
+      background-color: rgba(56, 175, 71, 0.2);
+      color: #28a746;
+    }
+    
+    .title-underline::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background-color: #38af47;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 bg-opacity-90">
+  <!-- Adicionar o e-mail no canto inferior esquerdo -->
+  <div style="position: fixed; bottom: 10px; left: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; font-size: 12px; z-index: 1000;">
+    <span id="userEmailFooter" class="text-green-800"></span>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="fixed w-full z-50 shadow-lg bg-gradient-to-r from-black to-green-600">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo e Links -->
+        <div class="flex items-center space-x-10">
+          <div class="flex-shrink-0 flex items-center">
+            <img src="/logo/mzlogo-zverde.png" alt="Logo" class="h-8 w-auto mr-3">
+            <span class="text-white font-bold text-lg">Gerador de O.S</span>
+          </div>
+
+          <div class="hidden md:flex items-center space-x-6">
+            <a href="/index.html" class="text-white text-sm font-medium">Home</a>
+          </div>
+        </div>
+
+        <!-- Usuário e Logout -->
+        <div class="hidden md:flex items-center space-x-4">
+          <span id="userEmail" class="text-white text-sm">Usuário não autenticado</span>
+          <button id="logoutButton" class="px-4 py-1.5 border border-white text-white text-sm rounded-full hover:bg-white hover:text-green-800 transition duration-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sair
+          </button>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="-mr-2 flex md:hidden">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-green-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Abrir menu</span>
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Menu Mobile -->
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 bg-gray-900 bg-opacity-90">
+      <a href="/index.html" class="text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+      <div class="pt-4 pb-3 border-t border-gray-700">
+        <div class="flex items-center px-5">
+          <div class="text-sm">
+            <span id="mobileUserEmail" class="text-white">Usuário não autenticado</span>
+          </div>
+        </div>
+        <div class="mt-3 px-2">
+          <button id="mobileLogoutButton" class="block w-full px-3 py-2 rounded-md text-base font-medium text-white hover:bg-green-700">Sair</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-800 title-underline inline-block">CADASTRO</h1>
+      <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Selecione o tipo de instalação para gerar a ordem de serviço</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <!-- Card 1 - INSTALAÇÃO GRÁTIS -->
+      <a href="/cadastro/inst-padrao.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-green">
+        <div class="p-6">
+          <div class="icon-container bg-green-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38af47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 21a8 8 0 0 1 13.292-6"/>
+              <circle cx="10" cy="8" r="5"/>
+              <path d="M19 16v6"/>
+              <path d="M22 19h-6"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">INSTALAÇÃO GRÁTIS</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para instalações sem custo, ideal para novos clientes sem particularidades de aprovação</p>
+        </div>
+      </a>
+
+      <!-- Card 2 - INSTALAÇÃO COM TAXA -->
+      <a href="/cadastro/taxa/inst-padrao.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-blue">
+        <div class="p-6">
+          <div class="icon-container bg-blue-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+              <path d="M12 18V6"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">INSTALAÇÃO COM TAXA</h3>
+          <p class="text-gray-500 text-sm">Gere ordens de serviço para instalações que requerem taxa, aplicável em casos com particularidades de aprovação. </p>
+        </div>
+      </a>
+
+      <!-- Card 3 - PESQUISA DE ENDEREÇOS -->
+      <a href="/cadastro/pesquisa-end.html" class="bg-white rounded-xl shadow-md overflow-hidden card-hover hover-orange">
+        <div class="p-6">
+          <div class="icon-container bg-orange-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19.43 12.935c.357-.967.57-1.955.57-2.935a8 8 0 0 0-16 0c0 4.993 5.539 10.193 7.399 11.799a1 1 0 0 0 1.202 0 32.197 32.197 0 0 0 .813-.728"/>
+              <circle cx="12" cy="10" r="3"/>
+              <path d="m16 18 2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">PESQUISA DE ENDEREÇOS</h3>
+          <p class="text-gray-500 text-sm">Consulte endereços por logradouro ou CEP em Uberlândia-MG, com dados atualizados do ViaCEP e Correios.</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <!-- Report Button -->
+  <div class="fixed bottom-8 right-8 flex space-x-4">
+    <a href="/sobre.html" class="bg-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors duration-200" title="Sobre o Gerador de O.S">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 16v-4"/>
+        <path d="M12 8h.01"/>
+      </svg>
+    </a>
+    <a href="/report.html" class="bg-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors duration-200" title="Reportar problemas ou sugestões" target="_blank">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fixed bottom-0 right-0 w-full py-2 bg-transparent">
+    <div class="w-full px-4">
+      <p class="text-gray-600 text-sm text-right pr-2">Versão 3.1.1</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+  <!-- Firebase Auth -->
+  <script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+    
+    const auth = getAuth(app);
+
+    // Função para buscar o nome do operador
+    async function getOperadorName(email) {
+      try {
+        const response = await fetch('/js/operadores.json');
+        const data = await response.json();
+        return data.operadores[email] || email;
+      } catch (error) {
+        console.error("Erro ao buscar nome do operador:", error);
+        return email;
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log("Usuário não autenticado, redirecionando...");
+        window.location.href = "/login.html";
+      } else {
+        console.log("Usuário autenticado!", user);
+        // Busca o nome do operador e atualiza os elementos
+        const operadorName = await getOperadorName(user.email);
+        document.getElementById("userEmail").textContent = `Olá, ${operadorName}!`;
+        document.getElementById("mobileUserEmail").textContent = `Olá, ${operadorName}!`;
+        document.getElementById("userEmailFooter").textContent = `Logado como: ${user.email}`;
+      }
+    });
+
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+
+    document.getElementById('mobileLogoutButton')?.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        console.log("Usuário deslogado com sucesso!");
+        window.location.href = "/login.html";
+      }).catch((error) => {
+        console.error("Erro ao deslogar: ", error);
+      });
+    });
+  </script>
+  <script type="module" src="../js/firebase-init.js"></script>
+</body>
+</html>

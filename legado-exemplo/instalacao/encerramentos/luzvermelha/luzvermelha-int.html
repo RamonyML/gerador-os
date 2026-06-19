@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Encerramento</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+
+}
+
+    /* Estilo personalizado */
+    body {
+      background-image: url('/fundos/funto-vertical3.jpg');
+      background-size: cover; /* Isso faz com que a imagem cubra toda a área do elemento */
+      background-repeat: no-repeat; /* Evita a repetição da imagem */
+      background-position: center;
+    }
+    .navbar {
+      background-color: #28a745; /* Verde */
+    }
+    .navbar-brand, .navbar-nav .nav-link {
+      color: #ffffff; /* Texto branco */
+    }
+    .container {
+      margin-top: 50px;
+      
+    }
+    .btn-success {
+      background-color: #28a745; /* Verde */
+      border-color: #28a745; /* Verde */
+    }
+    a {
+    text-decoration: none;
+    color: #1a1a1a; /* Adicione a cor desejada para seus links */
+    }
+
+    a:hover {
+    color: #0fbd2c;
+    text-decoration: none; /* Adicione sublinhado ao passar o mouse se desejar */
+}
+
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/suporte/dashboard.html">
+      <img src="/logo/mzlogo-mbranco.png" alt="Logo" width="90" height="40" class="d-inline-block align-middle mr-2">
+      Encerramento de O.S
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Luz vermelha</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Mud Ponto Interno</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Alteração de Plano</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Wi-Fi Extend</a>
+          </li>  
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Luz Vermelha</h2><br>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="/suporte/encerramentos/luzvermelha/luzvermelha-ext.html">Externo</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active font-weight-bold text-success" href="#">Interno</a>
+    </li>
+  </ul><br>                    <!-- Identificação do Cliente -->
+  <form>
+    <div class="form-group">
+      <label for="problema">Resumo do problema</label>
+      <input type="text" class="form-control" id="problema" placeholder="Digite aqui">
+    </div>
+    <div class="form-group">
+      <label for="solucao">Resumo da solução</label>
+      <input type="text" class="form-control" id="solucao" placeholder="Digite aqui">
+    </div>
+    <div class="form-group">
+      <label for="sinal">Sinal restabelecido?</label>
+      <select class="form-control" id="sinal">
+        <option value="SINAL RESTABECEU">Sim</option>
+        <option value="SINAL NÃO RESTABECEU">Não</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="sinalCTO">Sinal CTO</label>
+        <input type="text" class="form-control" id="sinalCTO" placeholder="Digite aqui">
+      </div>
+      <div class="form-group col-md-2">
+        <label for="sinalCliente">Sinal cliente</label>
+        <input type="text" class="form-control" id="sinalCliente" placeholder="Digite aqui">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="custos">O.S com custos?</label>
+      <select class="form-control" id="custos" onchange="toggleFormaPagamento()">
+        <option value="NÃO TEVE CUSTO">Não</option>
+        <option value="TEVE CUSTO">Sim</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="formaPag">Forma de pagamento</label>
+      <select class="form-control" id="formaPag" disabled>
+        <option value="DINHEIRO">Dinheiro</option>
+        <option value="CARTÃO">Cartão</option>
+        <option value="PIX">PIX</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success btn-block">GERAR ENCERRAMENTO</button>
+  </form>
+  
+  <div class="mt-3">
+    <textarea class="form-control" rows="5" readonly></textarea>
+  </div>
+</div>
+
+<!-- jQuery e Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  function toggleFormaPagamento() {
+    var custosSelect = document.getElementById("custos");
+    var formaPagSelect = document.getElementById("formaPag");
+    if (custosSelect.value === "NÃO TEVE CUSTO") {
+      formaPagSelect.disabled = true;
+    } else {
+      formaPagSelect.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>

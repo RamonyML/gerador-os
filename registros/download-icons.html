@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Baixar Ícones</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 30px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+        .icon-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .icon-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px 15px;
+        }
+        .icon-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .icon-preview img {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .download-btn:hover {
+            background: #764ba2;
+        }
+        .download-all {
+            display: block;
+            width: 100%;
+            margin: 25px 0 0 0;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Baixar Ícones - Mensagens Rápidas</h1>
+        <div class="icon-list">
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <img src="icons/icon16.png" alt="icon16">
+                    <span>icon16.png</span>
+                </div>
+                <a href="icons/icon16.png" download class="download-btn">Baixar</a>
+            </div>
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <img src="icons/icon32.png" alt="icon32">
+                    <span>icon32.png</span>
+                </div>
+                <a href="icons/icon32.png" download class="download-btn">Baixar</a>
+            </div>
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <img src="icons/icon48.png" alt="icon48">
+                    <span>icon48.png</span>
+                </div>
+                <a href="icons/icon48.png" download class="download-btn">Baixar</a>
+            </div>
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <img src="icons/icon128.png" alt="icon128">
+                    <span>icon128.png</span>
+                </div>
+                <a href="icons/icon128.png" download class="download-btn">Baixar</a>
+            </div>
+            <div class="icon-item">
+                <div class="icon-preview">
+                    <img src="icons/icon.svg" alt="icon.svg">
+                    <span>icon.svg</span>
+                </div>
+                <a href="icons/icon.svg" download class="download-btn">Baixar</a>
+            </div>
+        </div>
+        <button class="download-btn download-all" onclick="baixarTodos()">Baixar Todos (ZIP)</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+    async function baixarTodos() {
+        const zip = new JSZip();
+        const files = [
+            {name: 'icon16.png', path: 'icons/icon16.png'},
+            {name: 'icon32.png', path: 'icons/icon32.png'},
+            {name: 'icon48.png', path: 'icons/icon48.png'},
+            {name: 'icon128.png', path: 'icons/icon128.png'},
+            {name: 'icon.svg', path: 'icons/icon.svg'}
+        ];
+        for (const file of files) {
+            const response = await fetch(file.path);
+            const blob = await response.blob();
+            zip.file(file.name, blob);
+        }
+        const content = await zip.generateAsync({type: 'blob'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(content);
+        a.download = 'icones.zip';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+    </script>
+</body>
+</html> 

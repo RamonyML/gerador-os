@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Ícones - Mensagens Rápidas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 30px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+        .icon-item h3 {
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        canvas {
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: white;
+        }
+        .download-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .download-btn:hover {
+            background: #1d4ed8;
+        }
+        .download-all {
+            background: #059669;
+            font-size: 16px;
+            padding: 12px 24px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .download-all:hover {
+            background: #047857;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Gerador de Ícones - Mensagens Rápidas</h1>
+        
+        <div class="icon-grid">
+            <div class="icon-item">
+                <h3>16x16</h3>
+                <canvas id="canvas16" width="16" height="16"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(16)">Baixar icon16.png</button>
+            </div>
+            
+            <div class="icon-item">
+                <h3>32x32</h3>
+                <canvas id="canvas32" width="32" height="32"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(32)">Baixar icon32.png</button>
+            </div>
+            
+            <div class="icon-item">
+                <h3>48x48</h3>
+                <canvas id="canvas48" width="48" height="48"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(48)">Baixar icon48.png</button>
+            </div>
+            
+            <div class="icon-item">
+                <h3>128x128</h3>
+                <canvas id="canvas128" width="128" height="128"></canvas>
+                <br>
+                <button class="download-btn" onclick="downloadIcon(128)">Baixar icon128.png</button>
+            </div>
+        </div>
+        
+        <button class="download-btn download-all" onclick="downloadAll()">📦 Baixar Todos os Ícones</button>
+    </div>
+
+    <script>
+        // Função para desenhar o ícone de mensagem
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const scale = size / 128; // Baseado no tamanho 128x128
+            
+            // Limpar canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Cores
+            const primaryBlue = '#2563eb';
+            const lightBlue = '#3b82f6';
+            const darkBlue = '#1d4ed8';
+            const white = '#ffffff';
+            
+            // Desenhar fundo circular
+            ctx.fillStyle = primaryBlue;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Desenhar borda
+            ctx.strokeStyle = darkBlue;
+            ctx.lineWidth = Math.max(1, scale * 2);
+            ctx.stroke();
+            
+            // Desenhar balão de mensagem
+            const bubbleWidth = size * 0.6;
+            const bubbleHeight = size * 0.5;
+            const bubbleX = (size - bubbleWidth) / 2;
+            const bubbleY = size * 0.2;
+            
+            // Balão principal
+            ctx.fillStyle = white;
+            ctx.beginPath();
+            ctx.roundRect(bubbleX, bubbleY, bubbleWidth, bubbleHeight, scale * 8);
+            ctx.fill();
+            
+            // Borda do balão
+            ctx.strokeStyle = lightBlue;
+            ctx.lineWidth = Math.max(1, scale * 1.5);
+            ctx.stroke();
+            
+            // Cauda do balão
+            ctx.beginPath();
+            ctx.moveTo(bubbleX + bubbleWidth * 0.3, bubbleY + bubbleHeight);
+            ctx.lineTo(bubbleX + bubbleWidth * 0.3 - scale * 8, bubbleY + bubbleHeight + scale * 8);
+            ctx.lineTo(bubbleX + bubbleWidth * 0.3 + scale * 8, bubbleY + bubbleHeight + scale * 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            // Desenhar linhas de texto
+            ctx.fillStyle = lightBlue;
+            ctx.lineWidth = Math.max(1, scale * 2);
+            
+            const lineY1 = bubbleY + bubbleHeight * 0.3;
+            const lineY2 = bubbleY + bubbleHeight * 0.6;
+            const lineStart = bubbleX + scale * 8;
+            const lineEnd = bubbleX + bubbleWidth - scale * 8;
+            
+            // Primeira linha
+            ctx.beginPath();
+            ctx.moveTo(lineStart, lineY1);
+            ctx.lineTo(lineEnd, lineY1);
+            ctx.stroke();
+            
+            // Segunda linha (mais curta)
+            ctx.beginPath();
+            ctx.moveTo(lineStart, lineY2);
+            ctx.lineTo(lineEnd * 0.7, lineY2);
+            ctx.stroke();
+            
+            // Adicionar pequeno ícone de "+" no canto
+            const plusSize = scale * 12;
+            const plusX = size - plusSize - scale * 4;
+            const plusY = scale * 4;
+            
+            ctx.fillStyle = white;
+            ctx.fillRect(plusX, plusY, plusSize, plusSize);
+            
+            ctx.fillStyle = primaryBlue;
+            ctx.fillRect(plusX + plusSize * 0.4, plusY + plusSize * 0.2, plusSize * 0.2, plusSize * 0.6);
+            ctx.fillRect(plusX + plusSize * 0.2, plusY + plusSize * 0.4, plusSize * 0.6, plusSize * 0.2);
+        }
+        
+        // Função para criar retângulos arredondados
+        CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+            this.beginPath();
+            this.moveTo(x + radius, y);
+            this.lineTo(x + width - radius, y);
+            this.quadraticCurveTo(x + width, y, x + width, y + radius);
+            this.lineTo(x + width, y + height - radius);
+            this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            this.lineTo(x + radius, y + height);
+            this.quadraticCurveTo(x, y + height, x, y + height - radius);
+            this.lineTo(x, y + radius);
+            this.quadraticCurveTo(x, y, x + radius, y);
+            this.closePath();
+        };
+        
+        // Gerar todos os ícones
+        function generateIcons() {
+            drawIcon(document.getElementById('canvas16'), 16);
+            drawIcon(document.getElementById('canvas32'), 32);
+            drawIcon(document.getElementById('canvas48'), 48);
+            drawIcon(document.getElementById('canvas128'), 128);
+        }
+        
+        // Função para baixar ícone individual
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Função para baixar todos os ícones
+        function downloadAll() {
+            const sizes = [16, 32, 48, 128];
+            sizes.forEach(size => {
+                setTimeout(() => downloadIcon(size), size * 10);
+            });
+        }
+        
+        // Gerar ícones quando a página carregar
+        window.onload = generateIcons;
+    </script>
+</body>
+</html> 

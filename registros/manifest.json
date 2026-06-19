@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Mensagens Rápidas - Atendimento",
+  "version": "2.0.0",
+  "description": "Mensagens rápidas sincronizadas na nuvem (Firebase) para atendimento.",
+  "permissions": ["clipboardWrite"],
+  "host_permissions": [
+    "https://firestore.googleapis.com/*",
+    "https://identitytoolkit.googleapis.com/*",
+    "https://securetoken.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Mensagens Rápidas"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

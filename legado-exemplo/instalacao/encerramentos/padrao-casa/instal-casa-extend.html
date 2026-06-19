@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Encerramento de O.S</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+}
+::selection {
+    background-color: #28a746;
+    color: white;
+}
+
+body {
+  background-color: #f5f5f5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding-bottom: 20px;
+}
+
+h5 {
+  color: #357544;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: #1a1a1a;
+}
+
+a:hover {
+  color: #0fbd2c;
+  text-decoration: none;
+}
+
+.navbar {
+  background-color: #28a746;
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.container {
+  margin-top: 20px;
+  padding: 15px;
+  max-width: 100%;
+}
+
+.btn-success, .btn-secondary {
+  background-color: #28a745;
+  border-color: #28a745;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  min-height: 48px;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.form-control {
+  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 5px;
+  min-height: 44px;
+}
+
+.form-control:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+select.form-control {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3e%3cpath fill='none' stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 4l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 35px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-check {
+  margin-bottom: 0.75rem;
+}
+
+.form-check-input {
+  width: 20px;
+  height: 20px;
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+.form-check-label {
+  margin-left: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding-top: 2px;
+}
+
+/* Radio buttons mobile - desktop mantém inline */
+.form-check-mobile {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.alerta-energia {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 5px;
+  padding: 15px;
+  margin: 15px 0;
+  color: #856404;
+  font-size: 0.95rem;
+}
+
+textarea {
+  min-height: 150px;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h5 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+
+  .navbar-brand img {
+    width: 70px;
+    height: 30px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-control {
+    font-size: 16px; /* Evita zoom no iOS */
+    padding: 12px;
+  }
+
+  .btn-success, .btn-secondary {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .form-check-mobile {
+    display: block !important;
+    margin-right: 0 !important;
+    margin-bottom: 0.75rem;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+    transition: background-color 0.2s;
+  }
+
+  .form-check-mobile:hover {
+    background-color: #e9ecef;
+  }
+
+  .form-check-mobile .form-check-input {
+    margin-right: 0.75rem;
+    width: 22px;
+    height: 22px;
+    margin-top: 0;
+  }
+
+  .form-check-mobile .form-check-label {
+    font-size: 1rem;
+    margin-left: 0;
+    padding-top: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .row > [class*="col-"] {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  textarea {
+    font-size: 0.9rem;
+    min-height: 120px;
+  }
+
+  .alerta-energia {
+    padding: 12px;
+    font-size: 0.9rem;
+    margin: 10px 0;
+  }
+
+  small.form-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 8px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h5 {
+    font-size: 0.95rem;
+  }
+
+  .form-control {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .btn-success, .btn-secondary {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .navbar-brand img {
+    width: 60px;
+    height: 28px;
+  }
+
+  .navbar {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .navbar-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Melhorias para touch */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .form-control, .form-check-input, select {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+/* Estilos para equipamentos adicionais */
+.equipamento-adicional {
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+}
+
+.equipamento-adicional h5 {
+  color: #28a745;
+  margin-bottom: 15px;
+}
+
+.equipamento-adicional .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+}
+
+@media (max-width: 768px) {
+  .equipamento-adicional {
+    padding: 12px;
+  }
+  
+  .equipamento-adicional h5 {
+    font-size: 1rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(to right, #000000, #0f7939); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 0px; padding: 0.5rem 1rem;">
+  <div class="container">
+    <a class="navbar-brand" href="/instalacao/dashboard.html">
+      <img src="/logo/mzlogo-zverde.png" alt="Logo" width="90" height="40" class="d-inline-block align-middle mr-2">
+      Encerramento de O.S
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/instalacao/dashboard.html">VOLTAR</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/instalacao/encerramentos/padrao-casa/instal-casa.html">PADRÃO CASA</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/instalacao/encerramentos/padrao-casa/instal-emp.html">PADRÃO EMPRESA</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/instalacao/encerramentos/padrao-casa/instal-casa-extend.html">WI-FI EXTEND</a>
+          </li>  
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2><strong>Padrão Casa - Extend</strong></h2>
+  <form id="formulario">
+    
+    <div class="form-group">
+      <h5>INFORMAÇÕES BÁSICAS</h5>
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <label for="cto">CTO:</label>
+          <input type="text" class="form-control" id="cto" placeholder="0000-X" maxlength="6" required>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="sem_identificacao_cto">
+            <label class="form-check-label" for="sem_identificacao_cto">
+              Sem identificação
+            </label>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <label for="sinal">SINAL:</label>
+          <input type="text" class="form-control" id="sinal" placeholder="-XX.XXdBm" maxlength="10" required>
+        </div>
+        <div class="col-md-4 col-sm-12">
+          <label for="porta">PORTA:</label>
+          <input type="text" class="form-control" id="porta" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="passagem_cabo">PASSAGEM DO CABO DROP:</label>
+      <input type="text" class="form-control" id="passagem_cabo" required placeholder="Descreva a passagem do cabo">
+    </div>
+
+    <div class="form-group">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="possui_passante">
+        <label class="form-check-label" for="possui_passante">
+          <strong>POSSUI PASSANTE</strong>
+        </label>
+      </div>
+    </div>
+
+    <div id="info_passante" style="display:none;">
+      <div class="form-group">
+        <label for="motivo_passante">MOTIVO DO PASSANTE:</label>
+        <input type="text" class="form-control" id="motivo_passante" placeholder="Descreva o motivo do passante">
+      </div>
+      <div class="form-group">
+        <label for="local_passante">LOCAL DO PASSANTE:</label>
+        <input type="text" class="form-control" id="local_passante" placeholder="Descreva o local do passante">
+      </div>
+      <div class="form-group">
+        <label for="autorizado_por">AUTORIZADO POR:</label>
+        <input type="text" class="form-control" id="autorizado_por" placeholder="Nome de quem autorizou">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>EQUIPAMENTO</h5>
+      <label>SELECIONE O TIPO DE EQUIPAMENTO INSTALADO:</label><br>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="tipo_equipamento" id="onu_roteador" value="ONU + Roteador" required>
+        <label class="form-check-label" for="onu_roteador">ONU + Roteador</label>
+      </div>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="tipo_equipamento" id="ont" value="ONT" required>
+        <label class="form-check-label" for="ont">ONT</label>
+      </div>
+    </div>
+
+    <!-- ONU + Roteador -->
+    <div id="equipamento_onu_roteador" style="display:none;">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label for="onu">ONU:</label>
+            <select class="form-control" id="onu">
+              <option value="">Selecione...</option>
+              <option value="C-DATA">ONU C-DATA</option>
+              <option value="TENDA">ONU TENDA</option>
+              <option value="SHORELINE">ONU SHORELINE</option>
+              <option value="FIBERHOME">ONU FIBERHOME</option>
+              <option value="ZTE">ONU ZTE</option>
+            </select>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label for="mac_onu">MAC ONU:</label>
+            <input type="text" class="form-control" id="mac_onu" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label for="roteador">ROTEADOR:</label>
+            <select class="form-control" id="roteador">
+              <option value="">Selecione...</option>
+              <option value="TP LINK EX511">TP LINK EX511</option>
+              <option value="HUAWEI AX2">HUAWEI AX2</option>
+              <option value="ZTE H196-MESH">ZTE H196</option>
+              <option value="ZTE H199-A">ZTE H199-A</option>
+              <option value="PARTICULAR DO CLIENTE" class="font-weight-bold text-primary">ROTEADOR PARTICULAR</option>
+            </select>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label for="mac_roteador">MAC ROTEADOR:</label>
+            <input type="text" class="form-control" id="mac_roteador" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONT -->
+    <div id="equipamento_ont" style="display:none;">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label for="ont_select">ONT:</label>
+            <select class="form-control" id="ont_select">
+              <option value="">Selecione...</option>
+              <option value="ONT ZTE F 670-L">ONT ZTE F 670-L</option>
+              <option value="ONT TP-LINK XC220">ONT TP-LINK XC220</option>
+              <option value="ONT TP-LINK XC230">ONT TP-LINK XC230</option>
+              <option value="ONT TP-LINK X530v1">ONT TP-LINK X530v1</option>
+              <option value="ONT TP-LINK X530v2">ONT TP-LINK X530v2</option>
+            </select>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label for="mac_ont_select">MAC ONT:</label>
+            <input type="text" class="form-control" id="mac_ont_select" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>LOCALIZAÇÃO DA INSTALAÇÃO</h5>
+      <label>ONDE O EQUIPAMENTO FICOU INSTALADO:</label><br>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="local_instalacao" id="solto_movel" value="SOLTO EM CIMA DO MÓVEL" required>
+        <label class="form-check-label" for="solto_movel">Solto em cima do móvel</label>
+      </div>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="local_instalacao" id="fixado_parede" value="FIXADO NA PAREDE" required>
+        <label class="form-check-label" for="fixado_parede">Fixado na parede</label>
+      </div>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="local_instalacao" id="fixado_movel" value="FIXADO NO MÓVEL" required>
+        <label class="form-check-label" for="fixado_movel">Fixado no móvel</label>
+      </div>
+    </div>
+
+    <!-- Campos para Solto em cima do móvel -->
+    <div id="info_solto_movel" style="display:none;">
+      <div class="form-group">
+        <label for="descricao_movel">DESCREVA O MÓVEL:</label>
+        <input type="text" class="form-control" id="descricao_movel" placeholder="Ex: Mesa de centro, estante, etc.">
+      </div>
+      <div class="form-group">
+        <label for="motivo_nao_fixado">MOTIVO DE NÃO FIXAR:</label>
+        <textarea class="form-control" id="motivo_nao_fixado" placeholder="Descreva o motivo pelo qual o equipamento não foi fixado" rows="3"></textarea>
+      </div>
+      <div class="alerta-energia">
+        <strong>⚠️ ATENÇÃO:</strong> O cliente está ciente dos riscos caso o equipamento sofra dano por queda.
+      </div>
+    </div>
+
+    <!-- Campos para Fixado no móvel -->
+    <div id="info_fixado_movel" style="display:none;">
+      <div class="form-group">
+        <label for="tipo_fixacao_movel">TIPO DE FIXAÇÃO:</label>
+        <select class="form-control" id="tipo_fixacao_movel">
+          <option value="">Selecione...</option>
+          <option value="BUCHA E PARAFUSO">Fixado com bucha e parafuso</option>
+          <option value="PARAFUSO">Fixado com parafuso</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>DESCRIÇÃO DO PONTO PRIMÁRIO</h5>
+      <label for="descricao_ponto_primario">DESCRIÇÃO DO PONTO PRIMÁRIO:</label>
+      <input type="text" class="form-control" id="descricao_ponto_primario" placeholder="Ex: PONTO PRIMÁRIO QUE FICARAM NA CASA FRENTE FIXADOS NA PAREDE COM AUTORIZAÇÃO DO CLIENTE" required>
+    </div>
+
+    <div class="form-group">
+      <h5>EQUIPAMENTOS ADICIONAIS (WI-FI EXTEND)</h5>
+      <div id="equipamentos_adicionais"></div>
+      <button type="button" class="btn btn-success" onclick="adicionarEquipamento()" style="margin-top: 10px;">
+        + ADICIONAR EQUIPAMENTO ADICIONAL
+      </button>
+    </div>
+
+    <div class="form-group">
+      <h5>TESTES DE VELOCIDADE - PONTO PRIMÁRIO</h5>
+      <div class="form-group">
+        <label for="teste_notebook">TESTE REALIZADO NO NOTEBOOK DO TÉCNICO, VIA CABO, AFERIU:</label>
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <input type="number" class="form-control" id="teste_notebook" required placeholder="Velocidade em MEGA">
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <input type="text" class="form-control" id="local_teste_notebook" placeholder="Local do teste (ex: NA SALA PONTO PRINCIPAL)" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dispositivo_teste">TESTE APARELHO CLIENTE:</label>
+        <div class="row">
+          <div class="col-md-3 col-sm-12">
+            <select class="form-control" id="dispositivo_teste" required>
+              <option value="">Selecione...</option>
+              <option value="CELULAR">Celular</option>
+              <option value="NOTEBOOK">Notebook</option>
+              <option value="TABLET">Tablet</option>
+              <option value="COMPUTADOR">Computador</option>
+              <option value="SMART TV">Smart TV</option>
+            </select>
+          </div>
+          <div class="col-md-3 col-sm-12">
+            <input type="text" class="form-control" id="marca_modelo_teste" placeholder="Marca/Modelo" required>
+          </div>
+          <div class="col-md-3 col-sm-12">
+            <input type="number" class="form-control" id="velocidade_teste" placeholder="Velocidade em MEGA" required>
+          </div>
+          <div class="col-md-3 col-sm-12">
+            <input type="text" class="form-control" id="local_teste_cliente" placeholder="Local do teste (ex: NO PONTO PRIMARIO CASA FRENTE)" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="teste_cobertura">TESTE DE COBERTURA WI-FI FOI REALIZADO NA PRESENÇA DO CLIENTE:</label>
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <input type="text" class="form-control" id="teste_cobertura" required placeholder="Nome do cliente">
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" id="eh_assinante" checked>
+            <label class="form-check-label" for="eh_assinante">
+              É O TITULAR?
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="info_parentesco_cobertura" style="display:none;">
+        <div class="form-group mt-2">
+          <label for="parentesco_cobertura">GRAU DE PARENTESCO:</label>
+          <input type="text" class="form-control" id="parentesco_cobertura" placeholder="Ex: Filho, esposa, etc.">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>APLICATIVOS</h5>
+      <label for="app_mznet_celular">APP MZNET: CELULAR:</label>
+      <input type="text" class="form-control" id="app_mznet_celular" placeholder="Marca/Modelo do celular">
+      <small class="form-text text-muted">Este app concede acesso aos boletos e contrato.</small>
+    </div>
+
+    <div class="form-group">
+      <label>INSTALOU APP MZTV OU CNDTV?</label><br>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="app_mztv" id="app_mztv_sim" value="SIM">
+        <label class="form-check-label" for="app_mztv_sim">Sim</label>
+      </div>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="app_mztv" id="app_mztv_nao" value="NÃO" checked>
+        <label class="form-check-label" for="app_mztv_nao">Não</label>
+      </div>
+    </div>
+
+    <div id="dispositivo_app_mztv" style="display:none;">
+      <div class="form-group">
+        <label for="dispositivo_mztv">DISPOSITIVO:</label>
+        <select class="form-control" id="dispositivo_mztv">
+          <option value="">Selecione...</option>
+          <option value="CELULAR">Celular</option>
+          <option value="SMART TV">Smart TV</option>
+          <option value="TABLET">Tablet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>INSTALAÇÃO ELÉTRICA - PONTO PRIMÁRIO</h5>
+      <label for="ligacao_eletrica">LIGAÇÕES ELÉTRICAS PONTO PRIMÁRIO:</label>
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <select class="form-control" id="ligacao_eletrica" required>
+            <option value="">Selecione...</option>
+            <option value="Tomada Individual">Tomada Individual</option>
+            <option value="Régua de Energia">Régua de Energia</option>
+            <option value="T de Energia">T de Energia</option>
+            <option value="Extensão Elétrica">Extensão Elétrica</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <input type="text" class="form-control" id="local_ligacao_primario" placeholder="Local (ex: NA SALA)" required>
+        </div>
+      </div>
+    </div>
+
+    <div id="observacao_ligacao" style="display:none;">
+      <div class="form-group">
+        <label for="observacao_ligacao_outros">OBSERVAÇÃO:</label>
+        <input type="text" class="form-control" id="observacao_ligacao_outros" placeholder="Descreva a ligação elétrica">
+      </div>
+    </div>
+
+    <div id="alerta_energia" style="display:none;">
+      <div class="alerta-energia">
+        <strong>⚠️ ATENÇÃO:</strong> O cliente será orientado sobre os riscos de usar T de energia ou extensão elétrica.
+      </div>
+    </div>
+
+    <div id="mensagem_cliente_energia" style="display:none;">
+      <div class="form-group">
+        <label for="nome_cliente_energia">CLIENTE:</label>
+        <input type="text" class="form-control" id="nome_cliente_energia" placeholder="Nome do cliente que acompanhou">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <h5>DISPOSITIVOS E PAGAMENTO</h5>
+      <label for="dispositivos_conectados">DISPOSITIVOS CONECTADOS NA REDE:</label>
+      <input type="text" class="form-control" id="dispositivos_conectados" placeholder="Quantidade de dispositivos" required>
+    </div>
+
+    <div class="form-group">
+      <label>PAGAMENTO:</label><br>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="pagamento" id="pagamento_sim" value="SIM">
+        <label class="form-check-label" for="pagamento_sim">Sim</label>
+      </div>
+      <div class="form-check form-check-inline form-check-mobile">
+        <input class="form-check-input" type="radio" name="pagamento" id="pagamento_nao" value="NÃO" checked>
+        <label class="form-check-label" for="pagamento_nao">Não</label>
+      </div>
+    </div>
+
+    <div id="info_pagamento" style="display:none;">
+      <div class="form-group">
+        <label for="valor_pagamento">VALOR R$:</label>
+        <input type="text" class="form-control" id="valor_pagamento" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label for="forma_pagamento">FORMA PAGAMENTO:</label>
+        <select class="form-control" id="forma_pagamento">
+          <option value="">Selecione...</option>
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="PIX">PIX</option>
+          <option value="Cartão">Cartão</option>
+          <option value="Mensalidade">Mensalidade</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="observacoes" style="color: #357544; font-weight: 600;">OBSERVAÇÕES:</label>
+      <textarea class="form-control" id="observacoes" placeholder="Digite observações adicionais (opcional)" rows="3"></textarea>
+    </div>
+
+    <button type="button" class="btn btn-success btn-block" onclick="gerarTexto()">GERAR TEXTO</button>
+  </form>
+
+  <div class="mt-4">
+    <textarea id="texto_gerado" class="form-control" rows="10" readonly></textarea><br>
+    <button class="btn btn-secondary btn-block" onclick="copiarTexto('texto_gerado')">COPIAR</button>
+  </div><br><br><br>
+</div>
+
+<!-- jQuery e Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  // Máscara para CTO (0000-X)
+  document.getElementById("cto").addEventListener("input", function(e) {
+    let value = e.target.value.replace(/[^0-9A-Za-z]/g, '');
+    let formattedValue = '';
+    
+    if (value.length === 0) {
+      e.target.value = '';
+      return;
+    }
+    
+    // Extrai apenas números e letras
+    let numbers = '';
+    let letter = '';
+    
+    for (let i = 0; i < value.length; i++) {
+      let char = value[i];
+      if (/[0-9]/.test(char) && numbers.length < 4) {
+        numbers += char;
+      } else if (/[A-Za-z]/.test(char) && letter.length === 0) {
+        letter = char.toUpperCase();
+      }
+    }
+    
+    // Monta o valor formatado
+    formattedValue = numbers;
+    
+    // Se já tem 4 números, adiciona hífen e letra (se houver)
+    if (numbers.length === 4) {
+      formattedValue += '-';
+      if (letter) {
+        formattedValue += letter;
+      }
+    }
+    
+    e.target.value = formattedValue;
+  });
+
+  // Condicional para checkbox "Sem identificação" do CTO
+  document.getElementById("sem_identificacao_cto").addEventListener("change", function() {
+    const campoCto = document.getElementById("cto");
+    if (this.checked) {
+      campoCto.disabled = true;
+      campoCto.required = false;
+      campoCto.value = '';
+    } else {
+      campoCto.disabled = false;
+      campoCto.required = true;
+    }
+  });
+
+  // Condicional para checkbox "POSSUI PASSANTE"
+  document.getElementById("possui_passante").addEventListener("change", function() {
+    const infoPassante = document.getElementById("info_passante");
+    if (this.checked) {
+      infoPassante.style.display = "block";
+      document.getElementById("motivo_passante").required = true;
+      document.getElementById("local_passante").required = true;
+      document.getElementById("autorizado_por").required = true;
+    } else {
+      infoPassante.style.display = "none";
+      document.getElementById("motivo_passante").required = false;
+      document.getElementById("local_passante").required = false;
+      document.getElementById("autorizado_por").required = false;
+      document.getElementById("motivo_passante").value = '';
+      document.getElementById("local_passante").value = '';
+      document.getElementById("autorizado_por").value = '';
+    }
+  });
+
+  // Máscara para Sinal (-XX.XXdBm)
+  document.getElementById("sinal").addEventListener("input", function(e) {
+    let value = e.target.value.replace(/[^0-9]/g, '');
+    let formattedValue = '-';
+    
+    if (value.length === 0) {
+      e.target.value = '';
+      return;
+    }
+    
+    // Limita a 4 dígitos (2 antes e 2 depois do ponto)
+    if (value.length > 4) {
+      value = value.substring(0, 4);
+    }
+    
+    // Primeiros dois dígitos (antes do ponto)
+    if (value.length <= 2) {
+      formattedValue += value;
+    } else {
+      formattedValue += value.substring(0, 2);
+      formattedValue += '.';
+      // Dois dígitos depois do ponto
+      formattedValue += value.substring(2, 4);
+      formattedValue += 'dBm';
+    }
+    
+    e.target.value = formattedValue;
+  });
+
+  // Função genérica para máscara de MAC Address
+  function aplicarMascaraMAC(elementId) {
+    const elemento = document.getElementById(elementId);
+    if (elemento) {
+      elemento.addEventListener("input", function(e) {
+        let value = e.target.value.replace(/[^0-9A-Fa-f]/g, '');
+        let formattedValue = '';
+        for (let i = 0; i < value.length && i < 12; i++) {
+          if (i > 0 && i % 2 === 0) {
+            formattedValue += ':';
+          }
+          formattedValue += value[i];
+        }
+        e.target.value = formattedValue.toUpperCase();
+      });
+    }
+  }
+
+  // Aplicar máscara MAC em todos os campos
+  aplicarMascaraMAC("mac_onu");
+  aplicarMascaraMAC("mac_roteador");
+  aplicarMascaraMAC("mac_ont_select");
+
+  // Condicional para tipo de equipamento
+  document.querySelectorAll('input[name="tipo_equipamento"]').forEach(function(radio) {
+    radio.addEventListener("change", function() {
+      const tipo = this.value;
+      const divOnuRoteador = document.getElementById("equipamento_onu_roteador");
+      const divOnt = document.getElementById("equipamento_ont");
+
+      // Oculta todos os campos
+      divOnuRoteador.style.display = "none";
+      divOnt.style.display = "none";
+
+      // Remove required de todos os campos
+      document.getElementById("onu").required = false;
+      document.getElementById("mac_onu").required = false;
+      document.getElementById("roteador").required = false;
+      document.getElementById("mac_roteador").required = false;
+      document.getElementById("ont_select").required = false;
+      document.getElementById("mac_ont_select").required = false;
+
+      // Mostra e torna required os campos correspondentes
+      if (tipo === "ONU + Roteador") {
+        divOnuRoteador.style.display = "block";
+        document.getElementById("onu").required = true;
+        document.getElementById("mac_onu").required = true;
+        document.getElementById("roteador").required = true;
+        document.getElementById("mac_roteador").required = true;
+      } else if (tipo === "ONT") {
+        divOnt.style.display = "block";
+        document.getElementById("ont_select").required = true;
+        document.getElementById("mac_ont_select").required = true;
+      }
+    });
+  });
+
+  // Máscara para valor monetário
+  document.getElementById("valor_pagamento").addEventListener("input", function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 0) {
+      value = (parseInt(value) / 100).toFixed(2) + '';
+      value = value.replace(".", ",");
+      value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      e.target.value = value;
+    }
+  });
+
+  // Função para formatar valor monetário para número
+  function formatarValorParaNumero(valor) {
+    return valor.replace(/\./g, '').replace(',', '.');
+  }
+
+  // Condicionais para ligação elétrica
+  document.getElementById("ligacao_eletrica").addEventListener("change", function() {
+    const valor = this.value;
+    const observacaoDiv = document.getElementById("observacao_ligacao");
+    const alertaDiv = document.getElementById("alerta_energia");
+    const mensagemClienteDiv = document.getElementById("mensagem_cliente_energia");
+
+    if (valor === "Outro") {
+      observacaoDiv.style.display = "block";
+      document.getElementById("observacao_ligacao_outros").required = true;
+    } else {
+      observacaoDiv.style.display = "none";
+      document.getElementById("observacao_ligacao_outros").required = false;
+    }
+
+    if (valor === "T de Energia" || valor === "Extensão Elétrica") {
+      alertaDiv.style.display = "block";
+      mensagemClienteDiv.style.display = "block";
+      document.getElementById("nome_cliente_energia").required = true;
+    } else {
+      alertaDiv.style.display = "none";
+      mensagemClienteDiv.style.display = "none";
+      document.getElementById("nome_cliente_energia").required = false;
+    }
+  });
+
+  // Condicional para pagamento
+  document.querySelectorAll('input[name="pagamento"]').forEach(function(radio) {
+    radio.addEventListener("change", function() {
+      const infoPagamento = document.getElementById("info_pagamento");
+      if (this.value === "SIM") {
+        infoPagamento.style.display = "block";
+        document.getElementById("valor_pagamento").required = true;
+        document.getElementById("forma_pagamento").required = true;
+      } else {
+        infoPagamento.style.display = "none";
+        document.getElementById("valor_pagamento").required = false;
+        document.getElementById("forma_pagamento").required = false;
+      }
+    });
+  });
+
+  // Condicional para APP MZTV OU CNDTV
+  document.querySelectorAll('input[name="app_mztv"]').forEach(function(radio) {
+    radio.addEventListener("change", function() {
+      const dispositivoDiv = document.getElementById("dispositivo_app_mztv");
+      if (this.value === "SIM") {
+        dispositivoDiv.style.display = "block";
+        document.getElementById("dispositivo_mztv").required = true;
+      } else {
+        dispositivoDiv.style.display = "none";
+        document.getElementById("dispositivo_mztv").required = false;
+        document.getElementById("dispositivo_mztv").value = "";
+      }
+    });
+  });
+
+  // Condicional para localização da instalação
+  document.querySelectorAll('input[name="local_instalacao"]').forEach(function(radio) {
+    radio.addEventListener("change", function() {
+      const infoSoltoMovel = document.getElementById("info_solto_movel");
+      const infoFixadoMovel = document.getElementById("info_fixado_movel");
+      
+      // Oculta todos os campos
+      infoSoltoMovel.style.display = "none";
+      infoFixadoMovel.style.display = "none";
+      
+      // Remove required de todos os campos
+      document.getElementById("descricao_movel").required = false;
+      document.getElementById("motivo_nao_fixado").required = false;
+      document.getElementById("tipo_fixacao_movel").required = false;
+      
+      // Limpa os valores
+      document.getElementById("descricao_movel").value = "";
+      document.getElementById("motivo_nao_fixado").value = "";
+      document.getElementById("tipo_fixacao_movel").value = "";
+      
+      // Mostra e torna required os campos correspondentes
+      if (this.value === "SOLTO EM CIMA DO MÓVEL") {
+        infoSoltoMovel.style.display = "block";
+        document.getElementById("descricao_movel").required = true;
+        document.getElementById("motivo_nao_fixado").required = true;
+      } else if (this.value === "FIXADO NO MÓVEL") {
+        infoFixadoMovel.style.display = "block";
+        document.getElementById("tipo_fixacao_movel").required = true;
+      }
+      // FIXADO NA PAREDE não precisa de campos adicionais (gera automaticamente "BUCHA E PARAFUSO")
+    });
+  });
+
+  // Condicional para checkbox "É o assinante" no teste de cobertura
+  document.getElementById("eh_assinante").addEventListener("change", function() {
+    const infoParentesco = document.getElementById("info_parentesco_cobertura");
+    if (!this.checked) {
+      infoParentesco.style.display = "block";
+      document.getElementById("parentesco_cobertura").required = true;
+    } else {
+      infoParentesco.style.display = "none";
+      document.getElementById("parentesco_cobertura").required = false;
+      document.getElementById("parentesco_cobertura").value = "";
+    }
+  });
+
+  // Contador para equipamentos adicionais
+  let contadorEquipamentos = 0;
+  const nomesPontos = ['SECUNDÁRIO', 'TERCEIRO', 'QUARTO', 'QUINTO', 'SEXTO', 'SÉTIMO', 'OITAVO', 'NONO', 'DÉCIMO'];
+
+  // Função para adicionar equipamento adicional
+  function adicionarEquipamento() {
+    contadorEquipamentos++;
+    const nomePonto = nomesPontos[contadorEquipamentos - 1] || `${contadorEquipamentos}º`;
+    const equipamentoId = `equipamento_${contadorEquipamentos}`;
+    
+    const divEquipamento = document.createElement('div');
+    divEquipamento.id = equipamentoId;
+    divEquipamento.className = 'equipamento-adicional';
+    divEquipamento.style.border = '2px solid #28a745';
+    divEquipamento.style.borderRadius = '8px';
+    divEquipamento.style.padding = '15px';
+    divEquipamento.style.marginBottom = '20px';
+    divEquipamento.style.backgroundColor = '#f8f9fa';
+    
+    divEquipamento.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h5 style="color: #28a745; margin: 0;">EQUIPAMENTO PONTO ${nomePonto}</h5>
+        <button type="button" class="btn btn-sm btn-danger" onclick="removerEquipamento('${equipamentoId}')">REMOVER</button>
+      </div>
+      
+      <div class="form-group">
+        <label>DESCRIÇÃO DO PONTO ${nomePonto}:</label>
+        <input type="text" class="form-control" id="descricao_ponto_${contadorEquipamentos}" placeholder="Ex: INSTALADO NO ESCRITÓRIO" required>
+      </div>
+      
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <label>EQUIPAMENTO:</label>
+            <select class="form-control" id="equip_${contadorEquipamentos}" required>
+              <option value="">Selecione...</option>
+              <option value="ROTEADOR TP-LINK EX511">ROTEADOR TP LINK EX511</option>
+              <option value="ROTEADOR ZTE H196-MESH">ROTEADOR ZTE H196</option>
+              <option value="ROTEADOR ZTE H199-A">ROTEADOR ZTE H199-A</option>
+              <option class="font-weight-bold text-primary" value="EQUIPAMENTO PARTICULAR DO CLIENTE">EQUIPAMENTO PARTICULAR</option>
+            </select>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <label>MAC EQUIPAMENTO:</label>
+            <input type="text" class="form-control mac-adicional" id="mac_equip_${contadorEquipamentos}" placeholder="XX:XX:XX:XX:XX:XX" maxlength="17" required>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>LOCALIZAÇÃO/FIXAÇÃO:</label>
+        <input type="text" class="form-control" id="localizacao_equip_${contadorEquipamentos}" placeholder="Ex: FIXADO NA PAREDE" required>
+      </div>
+      
+      <div class="form-group">
+        <label>TESTE NOTEBOOK TÉCNICO (MEGA):</label>
+        <input type="number" class="form-control" id="teste_notebook_${contadorEquipamentos}" placeholder="Velocidade em MEGA" required>
+      </div>
+      
+      <div class="form-group">
+        <label>TESTE CLIENTE:</label>
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <select class="form-control" id="dispositivo_teste_${contadorEquipamentos}" required>
+              <option value="">Selecione...</option>
+              <option value="CELULAR">Celular</option>
+              <option value="NOTEBOOK">Notebook</option>
+              <option value="TABLET">Tablet</option>
+              <option value="COMPUTADOR">Computador</option>
+              <option value="SMART TV">Smart TV</option>
+            </select>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <input type="text" class="form-control" id="marca_modelo_teste_${contadorEquipamentos}" placeholder="Marca/Modelo" required>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <input type="number" class="form-control" id="velocidade_teste_${contadorEquipamentos}" placeholder="Velocidade MEGA" required>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>LIGAÇÃO ELÉTRICA PONTO ${nomePonto}:</label>
+        <select class="form-control" id="ligacao_eletrica_${contadorEquipamentos}" required>
+          <option value="">Selecione...</option>
+          <option value="Tomada Individual">Tomada Individual</option>
+          <option value="Régua de Energia">Régua de Energia</option>
+          <option value="T de Energia">T de Energia</option>
+          <option value="Extensão Elétrica">Extensão Elétrica</option>
+          <option value="Outro">Outro</option>
+        </select>
+        <div id="observacao_ligacao_${contadorEquipamentos}" style="display:none; margin-top: 10px;">
+          <input type="text" class="form-control" id="observacao_ligacao_outros_${contadorEquipamentos}" placeholder="Descreva a ligação elétrica">
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('equipamentos_adicionais').appendChild(divEquipamento);
+    
+    // Aplicar máscara MAC
+    aplicarMascaraMAC(`mac_equip_${contadorEquipamentos}`);
+    
+    // Condicional para ligação elétrica "Outro"
+    const selectLigacao = document.getElementById(`ligacao_eletrica_${contadorEquipamentos}`);
+    if (selectLigacao) {
+      selectLigacao.addEventListener('change', function() {
+        const observacaoDiv = document.getElementById(`observacao_ligacao_${contadorEquipamentos}`);
+        const observacaoInput = document.getElementById(`observacao_ligacao_outros_${contadorEquipamentos}`);
+        if (observacaoDiv && observacaoInput) {
+          if (this.value === 'Outro') {
+            observacaoDiv.style.display = 'block';
+            observacaoInput.required = true;
+          } else {
+            observacaoDiv.style.display = 'none';
+            observacaoInput.required = false;
+            observacaoInput.value = '';
+          }
+        }
+      });
+    }
+  }
+
+  // Função para remover equipamento adicional
+  function removerEquipamento(equipamentoId) {
+    const equipamento = document.getElementById(equipamentoId);
+    if (equipamento) {
+      equipamento.remove();
+      // Reorganizar contadores se necessário
+    }
+  }
+
+  function gerarTexto() {
+    // Validação básica
+    if (!document.getElementById("formulario").checkValidity()) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      document.getElementById("formulario").reportValidity();
+      return;
+    }
+
+    let texto = "PADRAO CASA - EXTEND\n\n";
+    
+    // Verifica se CTO tem identificação
+    const semIdentificacaoCto = document.getElementById("sem_identificacao_cto").checked;
+    if (semIdentificacaoCto) {
+      texto += `CTO: XXXX\n`;
+    } else {
+      texto += `CTO: ${document.getElementById("cto").value.toUpperCase()}\n`;
+    }
+    texto += `SINAL: ${document.getElementById("sinal").value.toUpperCase()}\n`;
+    texto += `PORTA: ${document.getElementById("porta").value.toUpperCase()}\n\n`;
+    
+    texto += `PASSAGEM DO CABO DROP: ${document.getElementById("passagem_cabo").value.toUpperCase()}.\n\n`;
+    
+    // Informações do passante
+    const possuiPassante = document.getElementById("possui_passante").checked;
+    if (possuiPassante) {
+      texto += `POSSUI PASSANTE: SIM\n`;
+      texto += `MOTIVO DO PASSANTE: ${document.getElementById("motivo_passante").value.toUpperCase()}\n`;
+      texto += `LOCAL DO PASSANTE: ${document.getElementById("local_passante").value.toUpperCase()}\n`;
+      texto += `AUTORIZADO POR: ${document.getElementById("autorizado_por").value.toUpperCase()}\n\n`;
+    }
+    
+    // PONTO PRIMÁRIO
+    texto += `>>> EQUIPAMENTO ${document.getElementById("descricao_ponto_primario").value.toUpperCase()}.\n\n`;
+    
+    // Equipamento conforme tipo selecionado
+    const tipoEquipamento = document.querySelector('input[name="tipo_equipamento"]:checked').value;
+    const localInstalacao = document.querySelector('input[name="local_instalacao"]:checked').value;
+    
+    // Monta o texto de localização
+    let textoLocalizacao = "";
+    if (localInstalacao === "SOLTO EM CIMA DO MÓVEL") {
+      const descricaoMovelEl = document.getElementById("descricao_movel");
+      const motivoNaoFixadoEl = document.getElementById("motivo_nao_fixado");
+      if (descricaoMovelEl && motivoNaoFixadoEl) {
+        const descricaoMovel = descricaoMovelEl.value.toUpperCase();
+        const motivoNaoFixado = motivoNaoFixadoEl.value.toUpperCase();
+        textoLocalizacao = `SOLTO EM CIMA DO MÓVEL: ${descricaoMovel}. MOTIVO DE NÃO FIXAR: ${motivoNaoFixado}. O CLIENTE ESTÁ CIENTE DOS RISCOS CASO O EQUIPAMENTO SOFRA DANO POR QUEDA.`;
+      }
+    } else if (localInstalacao === "FIXADO NA PAREDE") {
+      textoLocalizacao = `EQUIPAMENTO FIXADO NA PAREDE COM AUTORIZAÇÃO DO CLIENTE.`;
+    } else if (localInstalacao === "FIXADO NO MÓVEL") {
+      const tipoFixacaoMovelEl = document.getElementById("tipo_fixacao_movel");
+      if (tipoFixacaoMovelEl) {
+        const tipoFixacaoMovel = tipoFixacaoMovelEl.value.toUpperCase();
+        textoLocalizacao = `EQUIPAMENTO FIXADO NO MÓVEL COM ${tipoFixacaoMovel} A PEDIDO DO CLIENTE.`;
+      }
+    }
+    
+    if (tipoEquipamento === "ONU + Roteador") {
+      const macOnu = document.getElementById("mac_onu").value.toUpperCase().replace(/:/g, '-');
+      const macRoteador = document.getElementById("mac_roteador").value.toUpperCase().replace(/:/g, '-');
+      texto += `ONU ${document.getElementById("onu").value.toUpperCase()} MAC:${macOnu} ${textoLocalizacao}\n`;
+      texto += `ROTEADOR ${document.getElementById("roteador").value.toUpperCase()} MAC:${macRoteador} ${textoLocalizacao}\n\n`;
+    } else if (tipoEquipamento === "ONT") {
+      const macOnt = document.getElementById("mac_ont_select").value.toUpperCase().replace(/:/g, '-');
+      const ontValue = document.getElementById("ont_select").value.toUpperCase();
+      // Extrair apenas o número do modelo se for ONT 530
+      const ontModelo = ontValue.includes('530') ? '530' : ontValue;
+      texto += `ONT ${ontModelo} MAC:${macOnt} ${textoLocalizacao}\n\n`;
+    }
+    
+    const localTesteNotebook = document.getElementById("local_teste_notebook").value.toUpperCase();
+    texto += `TESTE REALIZADO NO NOTEBOOK DO TÉCNICO, VIA CABO, AFERIU ${document.getElementById("teste_notebook").value} MEGA DE DOWNLOAD ${localTesteNotebook}\n\n`;
+    
+    const dispositivoTeste = document.getElementById("dispositivo_teste").value.toUpperCase();
+    const marcaModeloTeste = document.getElementById("marca_modelo_teste").value.toUpperCase();
+    const velocidadeTeste = document.getElementById("velocidade_teste").value;
+    const localTesteCliente = document.getElementById("local_teste_cliente").value.toUpperCase();
+    texto += `TESTE FEITO NO ${dispositivoTeste} ${marcaModeloTeste} DO CLIENTE AFERIU ${velocidadeTeste} MEGA DE DOWNLOAD ${localTesteCliente}.\n\n`;
+    
+    // EQUIPAMENTOS ADICIONAIS
+    const equipamentosAdicionais = document.querySelectorAll('.equipamento-adicional');
+    equipamentosAdicionais.forEach((equipamento, index) => {
+      const nomePonto = nomesPontos[index] || `${index + 2}º`;
+      
+      // Buscar elementos dentro do equipamento atual
+      const descricaoPonto = equipamento.querySelector(`[id^="descricao_ponto_"]`);
+      const equip = equipamento.querySelector(`[id^="equip_"]`);
+      const macEquip = equipamento.querySelector(`[id^="mac_equip_"]`);
+      const localizacaoEquip = equipamento.querySelector(`[id^="localizacao_equip_"]`);
+      const testeNotebook = equipamento.querySelector(`[id^="teste_notebook_"]`);
+      const dispositivoTesteAdd = equipamento.querySelector(`[id^="dispositivo_teste_"]`);
+      const marcaModeloTesteAdd = equipamento.querySelector(`[id^="marca_modelo_teste_"]`);
+      const velocidadeTesteAdd = equipamento.querySelector(`[id^="velocidade_teste_"]`);
+      
+      // Verificar se todos os elementos existem
+      if (!descricaoPonto || !equip || !macEquip || !localizacaoEquip || 
+          !testeNotebook || !dispositivoTesteAdd || 
+          !marcaModeloTesteAdd || !velocidadeTesteAdd) {
+        console.error('Elemento não encontrado no equipamento adicional', index);
+        return; // Pula este equipamento se algum campo estiver faltando
+      }
+      
+      texto += `----------\n\n`;
+      texto += `>>> EQUIPAMENTO PONTO ${nomePonto} ${descricaoPonto.value.toUpperCase()}.\n\n`;
+      
+      let equipNome = equip.value.toUpperCase();
+      // Simplificar nome do equipamento se for TP LINK
+      if (equipNome.includes('TP LINK') || equipNome.includes('TP-LINK')) {
+        equipNome = equipNome.replace(/TP[- ]?LINK[ -]?/gi, 'TP LINK ');
+      }
+      const macEquipFormatado = macEquip.value.toUpperCase().replace(/:/g, '-');
+      
+      texto += `${equipNome} MAC:${macEquipFormatado} ${localizacaoEquip.value.toUpperCase()}.\n\n`;
+      
+      texto += `TESTE REALIZADO NO NOTEBOOK DO TÉCNICO, VIA CABO, AFERIU ${testeNotebook.value} MEGA DE DOWNLOAD.\n\n`;
+      
+      texto += `TESTE FEITO NO ${dispositivoTesteAdd.value.toUpperCase()} ${marcaModeloTesteAdd.value.toUpperCase()} DO CLIENTE AFERIU ${velocidadeTesteAdd.value} MEGA DE DOWNLOAD\n\n`;
+    });
+    
+    // Teste de cobertura Wi-Fi
+    const nomeClienteCobertura = document.getElementById("teste_cobertura").value.toUpperCase();
+    const ehAssinante = document.getElementById("eh_assinante").checked;
+    let textoCobertura = `TESTE DE COBERTURA WI-FI FOI REALIZADO NA PRESENÇA DO CLIENTE ${nomeClienteCobertura}`;
+    if (!ehAssinante) {
+      const parentescoCobertura = document.getElementById("parentesco_cobertura").value.toUpperCase();
+      textoCobertura += ` (${parentescoCobertura})`;
+    }
+    
+    // Verificar se há mais clientes (adicionar outros se houver)
+    const outrosClientes = document.getElementById("nome_cliente_energia").value;
+    if (outrosClientes && outrosClientes.trim()) {
+      textoCobertura += ` E ${outrosClientes.toUpperCase()}`;
+    }
+    textoCobertura += `.\n`;
+    texto += textoCobertura;
+    
+    // APP MZNET
+    const appMznetCelular = document.getElementById("app_mznet_celular").value;
+    if (appMznetCelular) {
+      let textoAppMznet = `APP MZNET: CELULAR ${appMznetCelular.toUpperCase()}`;
+      if (!ehAssinante) {
+        const parentescoCobertura = document.getElementById("parentesco_cobertura").value.toUpperCase();
+        textoAppMznet += ` DO CLIENTE ${nomeClienteCobertura} (${parentescoCobertura})`;
+      } else {
+        textoAppMznet += ` TITULAR ${nomeClienteCobertura}`;
+      }
+      textoAppMznet += `, ESTE APP CONCEDE ACESSO AOS BOLETOS E CONTRATO.\n`;
+      texto += textoAppMznet;
+    }
+    
+    const appMztv = document.querySelector('input[name="app_mztv"]:checked').value;
+    if (appMztv === "SIM") {
+      const dispositivoMztv = document.getElementById("dispositivo_mztv").value;
+      texto += `APP MZTV OU CNDTV: ${dispositivoMztv.toUpperCase()}\n`;
+    } else {
+      texto += `APP MZTV OU CNDTV: ${appMztv}\n`;
+    }
+    
+    // LIGAÇÕES ELÉTRICAS - PONTO PRIMÁRIO
+    const ligacaoEletrica = document.getElementById("ligacao_eletrica").value;
+    const localLigacaoPrimario = document.getElementById("local_ligacao_primario").value.toUpperCase();
+    let textoLigacaoPrimario = `LIGAÇÕES ELÉTRICAS PONTO PRIMARIO ${localLigacaoPrimario} A FONTE FICOU LIGADA EM `;
+    
+    if (ligacaoEletrica === "Outro") {
+      textoLigacaoPrimario += document.getElementById("observacao_ligacao_outros").value.toUpperCase();
+    } else {
+      textoLigacaoPrimario += ligacaoEletrica.toUpperCase();
+    }
+    textoLigacaoPrimario += `\n`;
+    texto += textoLigacaoPrimario;
+    
+    // LIGAÇÕES ELÉTRICAS - EQUIPAMENTOS ADICIONAIS
+    equipamentosAdicionais.forEach((equipamento, index) => {
+      const nomePonto = nomesPontos[index] || `${index + 2}º`;
+      
+      // Buscar elementos de ligação elétrica dentro do equipamento atual
+      const ligacaoEletricaAdd = equipamento.querySelector(`[id^="ligacao_eletrica_"]`);
+      const observacaoLigacaoOutros = equipamento.querySelector(`[id^="observacao_ligacao_outros_"]`);
+      
+      if (!ligacaoEletricaAdd) {
+        console.error('Elementos de ligação elétrica não encontrados no equipamento adicional', index);
+        return;
+      }
+      
+      let textoLigacaoAdd = `LIGAÇÕES ELÉTRICAS PONTO ${nomePonto} A FONTE FICOU LIGADA EM `;
+      
+      if (ligacaoEletricaAdd.value === "Outro" && observacaoLigacaoOutros) {
+        textoLigacaoAdd += observacaoLigacaoOutros.value.toUpperCase();
+      } else {
+        textoLigacaoAdd += ligacaoEletricaAdd.value.toUpperCase();
+      }
+      textoLigacaoAdd += `.\n`;
+      texto += textoLigacaoAdd;
+    });
+    
+    // Alerta sobre T de Energia ou Extensão
+    const temTEnergia = ligacaoEletrica === "T de Energia" || ligacaoEletrica === "Extensão Elétrica" ||
+      Array.from(equipamentosAdicionais).some((equip) => {
+        const lig = equip.querySelector(`[id^="ligacao_eletrica_"]`);
+        if (!lig) return false;
+        return lig.value === "T de Energia" || lig.value === "Extensão Elétrica";
+      });
+    
+    if (temTEnergia) {
+      let nomesClientes = [];
+      if (nomeClienteCobertura) nomesClientes.push(nomeClienteCobertura);
+      const nomeClienteEnergiaEl = document.getElementById("nome_cliente_energia");
+      if (nomeClienteEnergiaEl && nomeClienteEnergiaEl.value && nomeClienteEnergiaEl.value.trim()) {
+        nomesClientes.push(nomeClienteEnergiaEl.value.toUpperCase());
+      }
+      if (nomesClientes.length > 0) {
+        texto += `\n${nomesClientes.join(' E ')} ACOMPANHOU A ORDEM DE SERVIÇO E ESTÁ CIENTE DE QUE O ADAPTADOR PODE DESLIGAR OU ATÉ MESMO QUEIMAR OS EQUIPAMENTOS EMPRESTADOS EM COMODATO. `;
+      }
+    }
+    
+    texto += `DISPOSITIVOS CONECTADOS NA REDE: ${document.getElementById("dispositivos_conectados").value.toUpperCase()}\n`;
+    
+    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+    if (pagamento === "SIM") {
+      const valor = document.getElementById("valor_pagamento").value;
+      texto += `VALOR R$: ${valor} PAGAMENTO (X)SIM ( )NAO\n`;
+      const formaPagamento = document.getElementById("forma_pagamento").value;
+      texto += `FORMA PAGAMENTO ${formaPagamento.toUpperCase()}\n`;
+    } else {
+      texto += `PAGAMENTO ( )SIM (X)NAO\n`;
+    }
+
+    // Observações (opcional)
+    const observacoes = document.getElementById("observacoes").value.trim();
+    if (observacoes) {
+      texto += `\nOBS.: ${observacoes.toUpperCase()}\n`;
+    }
+
+    document.getElementById("texto_gerado").value = texto;
+  }
+
+  function copiarTexto(elementId) {
+    const texto = document.getElementById(elementId);
+    texto.select();
+    texto.setSelectionRange(0, 99999); // Para mobile
+    document.execCommand('copy');
+    alert("Texto copiado!");
+  }
+</script>
+
+  <!-- Firebase Auth: só exibe o conteúdo para usuários logados -->
+  <script type="module">
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { app } from '/js/firebase-init.js';
+
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "/login.html";
+      }
+    });
+  </script>
+
+</body>
+</html>
