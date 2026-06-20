@@ -31,6 +31,7 @@ import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
+import { ProfileWeekSchedule } from '../components/ProfileWeekSchedule'
 import { contarMudancasPorStatus } from '../lib/validacaoFirestore'
 import {
   BarChart,
@@ -557,7 +558,7 @@ export function HomePage() {
                   >
                     {initialsFrom(greetingName)}
                   </Avatar>
-                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                  <Box sx={{ minWidth: 0 }}>
                     <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
                       {profile.displayName || greetingName}
                     </Typography>
@@ -592,6 +593,11 @@ export function HomePage() {
                       ) : null}
                     </Box>
                   </Box>
+                  {user?.email ? (
+                    <Box sx={{ flex: 1, minWidth: 0, display: { xs: 'none', lg: 'block' }, px: 1 }}>
+                      <ProfileWeekSchedule userEmail={user.email} sector={profile.sector} />
+                    </Box>
+                  ) : null}
                   <Button
                     component={RouterLink}
                     to="/perfil"
