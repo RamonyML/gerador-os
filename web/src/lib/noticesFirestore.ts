@@ -63,6 +63,7 @@ function parseNotice(id: string, data: Record<string, unknown>): Notice | null {
   const endsAt = parseDateOrNull(data.endsAt)
   const stats = data.stats && typeof data.stats === 'object' ? (data.stats as Record<string, unknown>) : null
   const readCount = stats && typeof stats.readCount === 'number' ? stats.readCount : undefined
+  const title = typeof data.title === 'string' && data.title.trim().length > 0 ? data.title.trim() : undefined
 
   if (typeof message !== 'string' || message.trim().length === 0) return null
   if (typeof authorUid !== 'string' || authorUid.length === 0) return null
@@ -73,6 +74,7 @@ function parseNotice(id: string, data: Record<string, unknown>): Notice | null {
 
   return {
     id,
+    title,
     message,
     authorUid,
     authorName,
@@ -240,6 +242,7 @@ export async function updateNotice(
   db: Firestore,
   noticeId: string,
   patch: Partial<{
+    title: string
     message: string
     target: NoticeTarget
     status: NoticeStatus
@@ -252,6 +255,7 @@ export async function updateNotice(
 ) {
   const ref = doc(db, NOTICES_COLLECTION, noticeId)
   const out: Record<string, unknown> = {}
+  if (patch.title !== undefined) out.title = patch.title.trim() || null
   if (patch.message !== undefined) out.message = patch.message.trim()
   if (patch.target !== undefined) out.target = patch.target
   if (patch.status !== undefined) out.status = patch.status
@@ -275,6 +279,7 @@ export async function createNotice(
 ) {
   await addDoc(collection(db, NOTICES_COLLECTION), {
     active: true,
+    ...(draft.title ? { title: draft.title.trim() } : {}),
     message: draft.message.trim(),
     authorUid: author.uid,
     authorName: author.name.trim(),

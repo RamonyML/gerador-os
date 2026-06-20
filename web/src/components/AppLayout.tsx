@@ -42,6 +42,8 @@ import { useSidebarTexture } from '../contexts/SidebarTextureContext'
 import { SECTOR_LABELS } from '../types/profile'
 import { buildNavItems } from '../config/navItems'
 import { NoticeDialog } from './NoticeDialog'
+import { NotificationsToast } from './NotificationsToast'
+import { useNotificationToasts } from '../hooks/useNotificationToasts'
 import { TemplateSearchDialog } from './TemplateSearchDialog'
 import { GlobalMeshBackground } from './GlobalMeshBackground'
 import { GlobalCircuitBackground } from './GlobalCircuitBackground'
@@ -100,6 +102,20 @@ export function AppLayout() {
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null)
   const notices = useNotices({ uid: user?.uid ?? null, profile })
   const helpdesk = useHelpdeskNotifications({ uid: user?.uid ?? null, profile })
+
+  const { queue: toastQueue, dismissCurrent: dismissToast } = useNotificationToasts(
+    notices.state.notices,
+    notices.state.status === 'ready',
+  )
+
+  // Solicita permissão de notificação do browser uma vez após o login
+  useEffect(() => {
+    if (!user) return
+    if (typeof Notification === 'undefined') return
+    if (Notification.permission !== 'default') return
+    const t = setTimeout(() => void Notification.requestPermission(), 4000)
+    return () => clearTimeout(t)
+  }, [user?.uid])
   const { texture } = useSidebarTexture()
 
   useEffect(() => {
@@ -836,6 +852,15 @@ export function AppLayout() {
           </Box>
         </Box>
       </Box>
+
+      {toastQueue[0] ? (
+        <NotificationsToast
+          key={toastQueue[0].id}
+          toast={toastQueue[0]}
+          onDismiss={dismissToast}
+          onNavigate={() => navigate('/avisos')}
+        />
+      ) : null}
     </Box>
   )
 }

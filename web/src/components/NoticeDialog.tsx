@@ -36,7 +36,7 @@ export function NoticeDialog(props: {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 800 }}>
-        Aviso
+        {n.title ?? 'Aviso'}
       </DialogTitle>
       <DialogContent dividers>
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>

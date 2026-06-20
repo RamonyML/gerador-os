@@ -54,6 +54,7 @@ export function AvisosPage() {
 
   const [scope, setScope] = useState<'all' | 'sector'>('sector')
   const [sector, setSector] = useState<Sector>(profile?.sector ?? 'suporte')
+  const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<NoticeStatus>('published')
   const [priority, setPriority] = useState<NoticePriority>('normal')
@@ -87,7 +88,8 @@ export function AvisosPage() {
 
     setSaving(true)
     try {
-      await createNotice(db, { uid: user.uid, name: authorName }, { message: trimmed, target, status, pinned, priority, startsAt: null, endsAt: null })
+      await createNotice(db, { uid: user.uid, name: authorName }, { title: title.trim() || undefined, message: trimmed, target, status, pinned, priority, startsAt: null, endsAt: null })
+      setTitle('')
       setMessage('')
       setScope('sector')
       setSector(profile?.sector ?? 'suporte')
@@ -216,6 +218,13 @@ export function AvisosPage() {
                   </Box>
                 ) : null}
 
+                <TextField
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Título do aviso (opcional)"
+                  fullWidth
+                  slotProps={{ htmlInput: { maxLength: 100 } }}
+                />
                 <TextField
                   multiline
                   minRows={3}
@@ -367,7 +376,12 @@ export function AvisosPage() {
                           </Button>
                         ) : null}
                       </Box>
-                      <Typography variant="body2" sx={{ mt: 1, whiteSpace: 'pre-wrap' }}>
+                      {n.title ? (
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.9rem', mt: 1 }}>
+                          {n.title}
+                        </Typography>
+                      ) : null}
+                      <Typography variant="body2" sx={{ mt: n.title ? 0.5 : 1, whiteSpace: 'pre-wrap' }}>
                         {n.message}
                       </Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>

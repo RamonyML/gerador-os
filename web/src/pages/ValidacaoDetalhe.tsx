@@ -245,7 +245,7 @@ export function ValidacaoDetalhe() {
               Dados da Mudança
             </Typography>
             <Stack spacing={1.5}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} flexWrap="wrap">
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ flexWrap: 'wrap' }}>
                 <CampoInfo label="Telefone" value={mudanca.telefoneCliente} />
                 <CampoInfo label="Atendente" value={mudanca.atendente} />
                 <CampoInfo label="Forma de Pagamento" value={mudanca.formaPagamento} />

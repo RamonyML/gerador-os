@@ -94,20 +94,19 @@ export function canManageModelosOs(profile: UserProfile | null): boolean {
 
 /**
  * Ambiente de validação de mudanças de endereço.
- * Liberado para isValidacao, gerentes (qualquer setor) e dev/admin.
+ * Em desenvolvimento — restrito a isDev até o lançamento oficial.
+ * Ao lançar, descomentar: isAdmin, isValidacao, hierarchy === 'gerente'
  */
 export function canAccessValidacao(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
-  if (profile.isDev === true || profile.isAdmin === true) return true
-  if (profile.isValidacao === true) return true
-  return profile.hierarchy === 'gerente'
+  return profile.isDev === true
 }
 
-/** Cadastrar nova mudança de endereço para validação (atendentes do suporte + acesso validação). */
+/**
+ * Cadastrar nova mudança de endereço para validação.
+ * Em desenvolvimento — restrito a isDev até o lançamento oficial.
+ */
 export function canCreateMudancaEndereco(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
-  if (profile.isDev === true || profile.isAdmin === true) return true
-  if (profile.isValidacao === true) return true
-  if (profile.hierarchy === 'gerente') return true
-  return profile.sector === 'suporte'
+  return profile.isDev === true
 }

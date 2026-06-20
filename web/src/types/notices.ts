@@ -9,6 +9,7 @@ export type NoticePriority = 'normal' | 'important' | 'critical'
 
 export type Notice = {
   id: string
+  title?: string
   message: string
   authorUid: string
   authorName: string
@@ -26,6 +27,7 @@ export type Notice = {
 }
 
 export type NoticeDraft = {
+  title?: string
   message: string
   target: NoticeTarget
   status: NoticeStatus
