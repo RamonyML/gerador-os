@@ -49,6 +49,7 @@ import { ValidacaoDetalhe } from './pages/ValidacaoDetalhe'
 import { ValidacaoNovaPage } from './pages/ValidacaoNovaPage'
 import { RequireValidacao } from './components/RequireValidacao'
 import { SeedValidacaoPage } from './pages/SeedValidacaoPage'
+import { NotesPage } from './pages/NotesPage'
 
 export default function App() {
   return (
@@ -230,6 +231,7 @@ export default function App() {
         />
         <Route path="/historico" element={<HistoricoPage />} />
         <Route path="/avisos" element={<AvisosPage />} />
+        <Route path="/anotacoes" element={<NotesPage />} />
         <Route
           path="/upgrades/comissoes"
           element={

@@ -110,3 +110,9 @@ export function canCreateMudancaEndereco(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
   return profile.isDev === true
 }
+
+/** Ambiente de anotações pessoais — disponível para todos os usuários ativos. */
+export function canAccessNotes(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  return true
+}

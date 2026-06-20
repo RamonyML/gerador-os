@@ -14,6 +14,7 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded'
 
 export type NavItem = {
   label: string
@@ -32,6 +33,7 @@ type NavFlags = {
   showAgenda: boolean
   showUpgrades: boolean
   showValidacao: boolean
+  showNotes: boolean
 }
 
 const exact = (to: string) => (pathname: string) => pathname === to
@@ -51,6 +53,7 @@ export function buildNavItems({
   showAgenda,
   showUpgrades,
   showValidacao,
+  showNotes,
 }: NavFlags): NavItem[] {
   const items: Array<NavItem | null> = [
     { label: 'Início', to: '/', icon: HomeOutlinedIcon, isActive: exact('/') },
@@ -148,6 +151,14 @@ export function buildNavItems({
       icon: CampaignOutlinedIcon,
       isActive: startsWith('/avisos'),
     },
+    showNotes
+      ? {
+          label: 'Anotações',
+          to: '/anotacoes',
+          icon: EditNoteRoundedIcon,
+          isActive: startsWith('/anotacoes'),
+        }
+      : null,
     {
       label: 'Sobre',
       to: '/sobre',

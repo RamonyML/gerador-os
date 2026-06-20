@@ -492,6 +492,22 @@ service cloud.firestore {
       allow delete: if isActiveUser() && userData().isDev == true;
     }
 
+    /**
+     * Anotações pessoais (OneNote-like).
+     * Cada usuário acessa apenas os próprios cadernos, seções e páginas.
+     */
+    match /users/{userId}/notebooks/{notebookId} {
+      allow read, create, update, delete: if request.auth != null && request.auth.uid == userId && isActiveUser();
+
+      match /sections/{sectionId} {
+        allow read, create, update, delete: if request.auth != null && request.auth.uid == userId && isActiveUser();
+
+        match /pages/{pageId} {
+          allow read, create, update, delete: if request.auth != null && request.auth.uid == userId && isActiveUser();
+        }
+      }
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
