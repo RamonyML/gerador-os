@@ -13,6 +13,7 @@ import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
 
 export type NavItem = {
   label: string
@@ -30,6 +31,7 @@ type NavFlags = {
   showCondominios: boolean
   showAgenda: boolean
   showUpgrades: boolean
+  showValidacao: boolean
 }
 
 const exact = (to: string) => (pathname: string) => pathname === to
@@ -48,6 +50,7 @@ export function buildNavItems({
   showCondominios,
   showAgenda,
   showUpgrades,
+  showValidacao,
 }: NavFlags): NavItem[] {
   const items: Array<NavItem | null> = [
     { label: 'Início', to: '/', icon: HomeOutlinedIcon, isActive: exact('/') },
@@ -115,6 +118,14 @@ export function buildNavItems({
           to: '/agenda',
           icon: EventNoteOutlinedIcon,
           isActive: startsWith('/agenda'),
+        }
+      : null,
+    showValidacao
+      ? {
+          label: 'Validação Mud. End.',
+          to: '/validacao',
+          icon: FactCheckOutlinedIcon,
+          isActive: startsWith('/validacao'),
         }
       : null,
     showUsers

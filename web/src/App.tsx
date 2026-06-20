@@ -44,6 +44,10 @@ import { RequireInstalacao } from './components/RequireInstalacao'
 import { HistoricoPage } from './pages/HistoricoPage'
 import { MkTestesPage } from './pages/MkTestesPage'
 import { RequireDev } from './components/RequireDev'
+import { ValidacaoPage } from './pages/ValidacaoPage'
+import { ValidacaoDetalhe } from './pages/ValidacaoDetalhe'
+import { ValidacaoNovaPage } from './pages/ValidacaoNovaPage'
+import { RequireValidacao } from './components/RequireValidacao'
 
 export default function App() {
   return (
@@ -234,6 +238,30 @@ export default function App() {
           }
         />
         <Route path="/sobre" element={<SobrePage />} />
+        <Route
+          path="/validacao"
+          element={
+            <RequireValidacao>
+              <ValidacaoPage />
+            </RequireValidacao>
+          }
+        />
+        <Route
+          path="/validacao/nova"
+          element={
+            <RequireValidacao>
+              <ValidacaoNovaPage />
+            </RequireValidacao>
+          }
+        />
+        <Route
+          path="/validacao/:id"
+          element={
+            <RequireValidacao>
+              <ValidacaoDetalhe />
+            </RequireValidacao>
+          }
+        />
         <Route
           path="/dev/mk"
           element={

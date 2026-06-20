@@ -30,7 +30,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
-import { canAccessAgenda, canAccessUpgrades, canManageUsers } from '../lib/permissions'
+import { canAccessAgenda, canAccessUpgrades, canManageUsers, canAccessValidacao } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
@@ -73,6 +73,7 @@ export function AppLayout() {
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showAgenda = profile != null && canAccessAgenda(profile)
   const showUpgrades = profile != null && canAccessUpgrades(profile)
+  const showValidacao = profile != null && canAccessValidacao(profile)
   const { mode, toggle } = useColorMode()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -124,8 +125,8 @@ export function AppLayout() {
   }
 
   const navItems = useMemo(
-    () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades }),
-    [showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades],
+    () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao }),
+    [showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao],
   )
 
   const openNoticeMenu = (el: HTMLElement) => setNoticeAnchor(el)

@@ -446,6 +446,52 @@ service cloud.firestore {
         && request.resource.data.lastNumber is int;
     }
 
+    /**
+     * Validação de Mudanças de Endereço.
+     *
+     * Leitura: gerente (qualquer setor), isValidacao, isDev/isAdmin.
+     * Criação: setor suporte (operadores também podem cadastrar), gerente, isValidacao, dev/admin.
+     * Atualização: apenas quem pode validar (gerente, isValidacao, dev/admin).
+     * Exclusão: apenas dev.
+     */
+    function canReadValidacao() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().isValidacao == true
+          || userData().hierarchy == 'gerente'
+        );
+    }
+
+    function canWriteValidacao() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().isValidacao == true
+          || userData().hierarchy == 'gerente'
+        );
+    }
+
+    function canCreateMudancaEndereco() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().isValidacao == true
+          || userData().hierarchy == 'gerente'
+          || userData().sector == 'suporte'
+        );
+    }
+
+    match /mudancasEndereco/{docId} {
+      allow read: if canReadValidacao();
+      allow create: if canCreateMudancaEndereco();
+      allow update: if canWriteValidacao();
+      allow delete: if isActiveUser() && userData().isDev == true;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
