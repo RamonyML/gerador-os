@@ -109,3 +109,17 @@ export const CHECKLIST_LABELS: Record<keyof ChecklistValidacao, string> = {
   conferirTipoCliente: 'Verificar se mudança é de residencial → comercial ou vice-versa (exige autorização)',
   conferirTipoOS: 'Conferir se o tipo de O.S está correto',
 }
+
+export const CHECKLIST_KEYS = Object.keys(CHECKLIST_LABELS) as (keyof ChecklistValidacao)[]
+
+export function getChecklistProgress(
+  tipoMudanca: TipoMudanca,
+  checklist?: Partial<ChecklistValidacao>
+): { marcados: number; total: number; pct: number } {
+  const keys = CHECKLIST_KEYS.filter(
+    (k) => k !== 'conferirPlanoRoteador' || tipoMudanca === 'MUD END + ALT PLAN'
+  )
+  const total = keys.length
+  const marcados = checklist ? keys.filter((k) => checklist[k]).length : 0
+  return { marcados, total, pct: total > 0 ? Math.round((marcados / total) * 100) : 0 }
+}

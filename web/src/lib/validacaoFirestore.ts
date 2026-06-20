@@ -85,6 +85,26 @@ export async function marcarRetornar(
   })
 }
 
+export async function salvarObservacoes(id: string, observacoes: string): Promise<void> {
+  await updateDoc(doc(db, COL, id), { observacoes, atualizadoEm: serverTimestamp() })
+}
+
+export async function contarMudancasPorStatus(): Promise<{
+  PENDENTE: number
+  VALIDADO: number
+  RETORNAR: number
+}> {
+  const snap = await getDocs(collection(db, COL))
+  const result = { PENDENTE: 0, VALIDADO: 0, RETORNAR: 0 }
+  for (const d of snap.docs) {
+    const s = (d.data() as { status?: string }).status
+    if (s === 'PENDENTE') result.PENDENTE++
+    else if (s === 'VALIDADO') result.VALIDADO++
+    else if (s === 'RETORNAR') result.RETORNAR++
+  }
+  return result
+}
+
 export function gerarTextoContatoFeito(params: {
   atendente: string
   nomeCliente: string

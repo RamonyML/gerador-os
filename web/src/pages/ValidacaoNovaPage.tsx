@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
+  Container,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -19,11 +21,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import { Timestamp } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { criarMudancaEndereco } from '../lib/validacaoFirestore'
-import type {
-  TipoMudanca,
-  FormaPagamento,
-  ValorMudanca,
-} from '../types/validacao'
+import type { TipoMudanca, FormaPagamento, ValorMudanca } from '../types/validacao'
 
 const TIPOS: TipoMudanca[] = ['MUD END', 'MUD END + ALT PLAN']
 const FORMAS: FormaPagamento[] = ['PIX', 'CARTÃO', 'DINHEIRO', 'ISENTO']
@@ -57,7 +55,15 @@ export function ValidacaoNovaPage() {
   const [equipamentoPlano, setEquipamentoPlano] = useState('')
 
   async function handleSalvar() {
-    if (!nomeCliente || !telefoneCliente || !dataMudanca || !horaMudanca || !novoEndereco || !equipamento || !atendente) {
+    if (
+      !nomeCliente ||
+      !telefoneCliente ||
+      !dataMudanca ||
+      !horaMudanca ||
+      !novoEndereco ||
+      !equipamento ||
+      !atendente
+    ) {
       setError('Preencha todos os campos obrigatórios.')
       return
     }
@@ -87,7 +93,11 @@ export function ValidacaoNovaPage() {
         titularAcompanha,
         acompanhante: titularAcompanha
           ? undefined
-          : { nome: nomeAcomp.toUpperCase(), grauParentesco: grauAcomp, telefone: telefoneAcomp },
+          : {
+              nome: nomeAcomp.toUpperCase(),
+              grauParentesco: grauAcomp,
+              telefone: telefoneAcomp,
+            },
         formaPagamento,
         valorMudanca,
         mensalidadeVincenda,
@@ -102,7 +112,7 @@ export function ValidacaoNovaPage() {
       })
 
       navigate('/validacao')
-    } catch (e) {
+    } catch {
       setError('Erro ao salvar. Tente novamente.')
     } finally {
       setSaving(false)
@@ -110,12 +120,8 @@ export function ValidacaoNovaPage() {
   }
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 }, maxWidth: 720, mx: 'auto' }}>
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate('/validacao')}
-        sx={{ mb: 2 }}
-      >
+    <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
+      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/validacao')} sx={{ mb: 2 }}>
         Voltar
       </Button>
 
@@ -123,180 +129,232 @@ export function ValidacaoNovaPage() {
         Nova Mudança de Endereço
       </Typography>
 
-      <Stack spacing={3}>
-        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-            Dados do Cliente
-          </Typography>
-          <Stack spacing={2}>
-            <TextField
-              label="Nome do cliente *"
-              value={nomeCliente}
-              onChange={(e) => setNomeCliente(e.target.value)}
-              fullWidth
-              slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
-            />
-            <TextField
-              label="Telefone do cliente *"
-              value={telefoneCliente}
-              onChange={(e) => setTelefoneCliente(e.target.value)}
-              fullWidth
-              placeholder="(34) 99999-9999"
-            />
-          </Stack>
-        </Paper>
-
-        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-            Tipo e Agendamento
-          </Typography>
-          <Stack spacing={2}>
-            <FormControl fullWidth>
-              <InputLabel>Tipo de Mudança *</InputLabel>
-              <Select
-                value={tipoMudanca}
-                label="Tipo de Mudança *"
-                onChange={(e) => setTipoMudanca(e.target.value as TipoMudanca)}
-              >
-                {TIPOS.map((t) => (
-                  <MenuItem key={t} value={t}>{t}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+      {/* Layout 2 colunas no desktop */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+          gap: 3,
+          alignItems: 'start',
+          mb: 3,
+        }}
+      >
+        {/* Coluna esquerda */}
+        <Stack spacing={3}>
+          <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+              Dados do Cliente
+            </Typography>
+            <Stack spacing={2}>
               <TextField
-                label="Data da mudança *"
-                type="date"
-                value={dataMudanca}
-                onChange={(e) => setDataMudanca(e.target.value)}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-              <TextField
-                label="Horário *"
-                type="time"
-                value={horaMudanca}
-                onChange={(e) => setHoraMudanca(e.target.value)}
-                fullWidth
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-            </Stack>
-            <TextField
-              label="Novo endereço *"
-              value={novoEndereco}
-              onChange={(e) => setNovoEndereco(e.target.value)}
-              fullWidth
-              multiline
-              rows={2}
-              slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
-              placeholder="RUA EXEMPLO, 123 — BAIRRO — CEP"
-            />
-            <TextField
-              label="Equipamento *"
-              value={equipamento}
-              onChange={(e) => setEquipamento(e.target.value)}
-              fullWidth
-              placeholder="ONT TP-LINK 530 // CONECTOR VERDE"
-              slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
-            />
-          </Stack>
-        </Paper>
-
-        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-            Acompanhante
-          </Typography>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={titularAcompanha}
-                onChange={(e) => setTitularAcompanha(e.target.checked)}
-              />
-            }
-            label="Titular acompanha a visita"
-          />
-          {!titularAcompanha && (
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <TextField
-                label="Nome do acompanhante *"
-                value={nomeAcomp}
-                onChange={(e) => setNomeAcomp(e.target.value)}
+                label="Nome do cliente *"
+                value={nomeCliente}
+                onChange={(e) => setNomeCliente(e.target.value)}
                 fullWidth
                 slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
               />
               <TextField
-                label="Grau de parentesco *"
-                value={grauAcomp}
-                onChange={(e) => setGrauAcomp(e.target.value)}
+                label="Telefone do cliente *"
+                value={telefoneCliente}
+                onChange={(e) => setTelefoneCliente(e.target.value)}
                 fullWidth
-                placeholder="Esposo(a), filho(a), etc."
+                placeholder="(34) 99999-9999"
               />
               <TextField
-                label="Telefone do acompanhante *"
-                value={telefoneAcomp}
-                onChange={(e) => setTelefoneAcomp(e.target.value)}
+                label="Atendente *"
+                value={atendente}
+                onChange={(e) => setAtendente(e.target.value)}
                 fullWidth
+                slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
               />
             </Stack>
-          )}
-        </Paper>
+          </Paper>
 
-        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-            Financeiro
-          </Typography>
-          <Stack spacing={2}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+              Tipo e Agendamento
+            </Typography>
+            <Stack spacing={2}>
               <FormControl fullWidth>
-                <InputLabel>Forma de Pagamento *</InputLabel>
+                <InputLabel>Tipo de Mudança *</InputLabel>
                 <Select
-                  value={formaPagamento}
-                  label="Forma de Pagamento *"
-                  onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
+                  value={tipoMudanca}
+                  label="Tipo de Mudança *"
+                  onChange={(e) => setTipoMudanca(e.target.value as TipoMudanca)}
                 >
-                  {FORMAS.map((f) => (
-                    <MenuItem key={f} value={f}>{f}</MenuItem>
+                  {TIPOS.map((t) => (
+                    <MenuItem key={t} value={t}>
+                      {t}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-              <FormControl fullWidth>
-                <InputLabel>Valor da Mudança *</InputLabel>
-                <Select
-                  value={valorMudanca}
-                  label="Valor da Mudança *"
-                  onChange={(e) => setValorMudanca(e.target.value as ValorMudanca)}
-                >
-                  {VALORES.map((v) => (
-                    <MenuItem key={v} value={v}>{v}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Data da mudança *"
+                  type="date"
+                  value={dataMudanca}
+                  onChange={(e) => setDataMudanca(e.target.value)}
+                  fullWidth
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
+                <TextField
+                  label="Horário *"
+                  type="time"
+                  value={horaMudanca}
+                  onChange={(e) => setHoraMudanca(e.target.value)}
+                  fullWidth
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
+              </Stack>
+              <TextField
+                label="Novo endereço *"
+                value={novoEndereco}
+                onChange={(e) => setNovoEndereco(e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
+                placeholder="RUA EXEMPLO, 123 — BAIRRO — CEP"
+              />
+              <TextField
+                label="Equipamento *"
+                value={equipamento}
+                onChange={(e) => setEquipamento(e.target.value)}
+                fullWidth
+                placeholder="ONT TP-LINK 530 // CONECTOR VERDE"
+                slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
+              />
             </Stack>
+          </Paper>
+        </Stack>
+
+        {/* Coluna direita */}
+        <Stack spacing={3}>
+          <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+              Acompanhante
+            </Typography>
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={mensalidadeVincenda}
-                  onChange={(e) => setMensalidadeVincenda(e.target.checked)}
+                  checked={titularAcompanha}
+                  onChange={(e) => setTitularAcompanha(e.target.checked)}
                 />
               }
-              label="Mensalidade vincenda"
+              label="Titular acompanha a visita"
             />
-          </Stack>
-        </Paper>
+            {!titularAcompanha && (
+              <Stack spacing={2} sx={{ mt: 2 }}>
+                <TextField
+                  label="Nome do acompanhante *"
+                  value={nomeAcomp}
+                  onChange={(e) => setNomeAcomp(e.target.value)}
+                  fullWidth
+                  slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
+                />
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    label="Grau de parentesco *"
+                    value={grauAcomp}
+                    onChange={(e) => setGrauAcomp(e.target.value)}
+                    fullWidth
+                    placeholder="Esposo(a), filho(a)..."
+                  />
+                  <TextField
+                    label="Telefone *"
+                    value={telefoneAcomp}
+                    onChange={(e) => setTelefoneAcomp(e.target.value)}
+                    fullWidth
+                  />
+                </Stack>
+              </Stack>
+            )}
+          </Paper>
 
-        {tipoMudanca === 'MUD END + ALT PLAN' && (
           <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-              Alteração de Plano
+              Financeiro
             </Typography>
             <Stack spacing={2}>
-              <TextField
-                label="Plano escolhido *"
-                value={planoEscolhido}
-                onChange={(e) => setPlanoEscolhido(e.target.value)}
-                fullWidth
-                placeholder="Ex: 1 GIGA — R$99,90"
+              <Stack direction="row" spacing={2}>
+                <FormControl fullWidth>
+                  <InputLabel>Forma de Pagamento *</InputLabel>
+                  <Select
+                    value={formaPagamento}
+                    label="Forma de Pagamento *"
+                    onChange={(e) => setFormaPagamento(e.target.value as FormaPagamento)}
+                  >
+                    {FORMAS.map((f) => (
+                      <MenuItem key={f} value={f}>
+                        {f}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel>Valor *</InputLabel>
+                  <Select
+                    value={valorMudanca}
+                    label="Valor *"
+                    onChange={(e) => setValorMudanca(e.target.value as ValorMudanca)}
+                  >
+                    {VALORES.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {v}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={mensalidadeVincenda}
+                    onChange={(e) => setMensalidadeVincenda(e.target.checked)}
+                  />
+                }
+                label="Mensalidade vincenda"
               />
+            </Stack>
+          </Paper>
+
+          <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+              Comprovante
+            </Typography>
+            <TextField
+              label="Texto comprovante de endereço"
+              value={textoComprovante}
+              onChange={(e) => setTextoComprovante(e.target.value)}
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Cole aqui o texto do comprovante de endereço (opcional)"
+            />
+          </Paper>
+        </Stack>
+      </Box>
+
+      {/* Alteração de plano — full width */}
+      {tipoMudanca === 'MUD END + ALT PLAN' && (
+        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2, mb: 3 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+            Alteração de Plano
+          </Typography>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            sx={{ alignItems: 'flex-start' }}
+          >
+            <TextField
+              label="Plano escolhido *"
+              value={planoEscolhido}
+              onChange={(e) => setPlanoEscolhido(e.target.value)}
+              fullWidth
+              placeholder="Ex: 1 GIGA — R$99,90"
+            />
+            <Box sx={{ flexShrink: 0 }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -304,61 +362,39 @@ export function ValidacaoNovaPage() {
                     onChange={(e) => setTrocaRoteador(e.target.checked)}
                   />
                 }
-                label="Troca de roteador/equipamento necessária"
+                label="Troca de roteador"
               />
-              {trocaRoteador && (
-                <TextField
-                  label="Equipamento novo"
-                  value={equipamentoPlano}
-                  onChange={(e) => setEquipamentoPlano(e.target.value)}
-                  fullWidth
-                />
-              )}
-            </Stack>
-          </Paper>
-        )}
-
-        <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-            Complemento
-          </Typography>
-          <Stack spacing={2}>
-            <TextField
-              label="Atendente *"
-              value={atendente}
-              onChange={(e) => setAtendente(e.target.value)}
-              fullWidth
-              slotProps={{ htmlInput: { style: { textTransform: 'uppercase' } } }}
-            />
-            <TextField
-              label="Texto comprovante de endereço"
-              value={textoComprovante}
-              onChange={(e) => setTextoComprovante(e.target.value)}
-              fullWidth
-              multiline
-              rows={3}
-              placeholder="Cole aqui o texto do comprovante de endereço (opcional)"
-            />
+            </Box>
+            {trocaRoteador && (
+              <TextField
+                label="Equipamento novo"
+                value={equipamentoPlano}
+                onChange={(e) => setEquipamentoPlano(e.target.value)}
+                fullWidth
+              />
+            )}
           </Stack>
         </Paper>
+      )}
 
-        {error && (
-          <Typography color="error" variant="body2">
-            {error}
-          </Typography>
-        )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           variant="contained"
           size="large"
           startIcon={<SaveIcon />}
           onClick={handleSalvar}
           disabled={saving}
-          sx={{ alignSelf: 'flex-end' }}
+          sx={{ minWidth: 160 }}
         >
           {saving ? 'Salvando...' : 'Salvar'}
         </Button>
-      </Stack>
-    </Box>
+      </Box>
+    </Container>
   )
 }

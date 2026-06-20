@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { Alert, Avatar, Box, Button, Chip, Container, Fade, Paper, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Chip, Container, Fade, Paper, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -24,13 +24,23 @@ import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined'
-import { canManageUsers, canAccessUpgrades } from '../lib/permissions'
+import { canManageUsers, canAccessUpgrades, canAccessValidacao } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
+import { contarMudancasPorStatus } from '../lib/validacaoFirestore'
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
   gerente: 'Gestor',
@@ -75,6 +85,18 @@ export function HomePage() {
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showMkTestes = profile?.isDev === true
+  const showValidacaoStats = profile != null && canAccessValidacao(profile)
+
+  const [validacaoStats, setValidacaoStats] = useState<{
+    PENDENTE: number
+    VALIDADO: number
+    RETORNAR: number
+  } | null>(null)
+
+  useEffect(() => {
+    if (!showValidacaoStats) return
+    contarMudancasPorStatus().then(setValidacaoStats).catch(() => undefined)
+  }, [showValidacaoStats])
 
   const greetingName =
     profile?.displayName?.trim() || user?.email?.split('@')[0] || 'usuário'
@@ -228,7 +250,7 @@ export function HomePage() {
 
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
+      <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 3, md: 3.5 } }}>
           {/* Hero */}
           <Reveal>
@@ -324,6 +346,128 @@ export function HomePage() {
           </Paper>
           </Reveal>
 
+          {/* Widget de Validações */}
+          {showValidacaoStats && validacaoStats && (
+            <Reveal delay={60}>
+              <Paper
+                elevation={0}
+                sx={{
+                  borderRadius: 4,
+                  border: 1,
+                  borderColor: 'divider',
+                  p: { xs: 2.5, sm: 3 },
+                  bgcolor: 'background.paper',
+                }}
+              >
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  spacing={3}
+                  sx={{ alignItems: { md: 'center' } }}
+                >
+                  {/* Lado esquerdo: título + stat cards */}
+                  <Box sx={{ flex: '1 1 auto' }}>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: '0.08em', fontWeight: 700 }}
+                    >
+                      Validações — Resumo geral
+                    </Typography>
+                    <Stack direction="row" spacing={2} sx={{ mt: 1.5, flexWrap: 'wrap', gap: 2 }}>
+                      {[
+                        {
+                          label: 'Pendente',
+                          value: validacaoStats.PENDENTE,
+                          color: theme.palette.warning.main,
+                          bg: alpha(theme.palette.warning.main, isDark ? 0.18 : 0.1),
+                        },
+                        {
+                          label: 'Validado',
+                          value: validacaoStats.VALIDADO,
+                          color: theme.palette.success.main,
+                          bg: alpha(theme.palette.success.main, isDark ? 0.18 : 0.1),
+                        },
+                        {
+                          label: 'Retornar',
+                          value: validacaoStats.RETORNAR,
+                          color: theme.palette.error.main,
+                          bg: alpha(theme.palette.error.main, isDark ? 0.18 : 0.1),
+                        },
+                      ].map((s) => (
+                        <Box
+                          key={s.label}
+                          sx={{
+                            px: 2,
+                            py: 1.25,
+                            borderRadius: 2,
+                            bgcolor: s.bg,
+                            minWidth: 90,
+                            textAlign: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="h4"
+                            sx={{ fontWeight: 800, color: s.color, lineHeight: 1 }}
+                          >
+                            {s.value}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                            {s.label}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                    <Typography variant="caption" color="text.disabled" sx={{ mt: 1.5, display: 'block' }}>
+                      Total: {validacaoStats.PENDENTE + validacaoStats.VALIDADO + validacaoStats.RETORNAR} mudanças registradas
+                    </Typography>
+                  </Box>
+
+                  {/* Lado direito: gráfico */}
+                  <Box sx={{ width: { xs: '100%', md: 280 }, height: 120, flexShrink: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={[
+                          { name: 'Pendente', value: validacaoStats.PENDENTE },
+                          { name: 'Validado', value: validacaoStats.VALIDADO },
+                          { name: 'Retornar', value: validacaoStats.RETORNAR },
+                        ]}
+                        margin={{ top: 4, right: 4, left: -24, bottom: 0 }}
+                        barCategoryGap="30%"
+                      >
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fontSize: 11, fill: theme.palette.text.secondary }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 11, fill: theme.palette.text.secondary }}
+                          axisLine={false}
+                          tickLine={false}
+                          allowDecimals={false}
+                        />
+                        <Tooltip
+                          cursor={{ fill: alpha(primary, 0.08) }}
+                          contentStyle={{
+                            fontSize: 12,
+                            borderRadius: 8,
+                            border: `1px solid ${theme.palette.divider}`,
+                            background: theme.palette.background.paper,
+                          }}
+                        />
+                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                          <Cell fill={theme.palette.warning.main} />
+                          <Cell fill={theme.palette.success.main} />
+                          <Cell fill={theme.palette.error.main} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Box>
+                </Stack>
+              </Paper>
+            </Reveal>
+          )}
+
           {profileMissing ? (
             <Alert severity="warning" sx={{ borderRadius: 2 }}>
               Não existe documento <code>users/{user?.uid}</code> no Firestore ou faltam os campos{' '}
@@ -343,7 +487,8 @@ export function HomePage() {
                 gridTemplateColumns: {
                   xs: '1fr',
                   sm: 'repeat(2, 1fr)',
-                  md: 'repeat(auto-fill, minmax(280px, 1fr))',
+                  md: 'repeat(auto-fill, minmax(260px, 1fr))',
+                  xl: 'repeat(auto-fill, minmax(240px, 1fr))',
                 },
                 gap: 2,
                 alignItems: 'stretch',

@@ -48,6 +48,7 @@ import { ValidacaoPage } from './pages/ValidacaoPage'
 import { ValidacaoDetalhe } from './pages/ValidacaoDetalhe'
 import { ValidacaoNovaPage } from './pages/ValidacaoNovaPage'
 import { RequireValidacao } from './components/RequireValidacao'
+import { SeedValidacaoPage } from './pages/SeedValidacaoPage'
 
 export default function App() {
   return (
@@ -260,6 +261,14 @@ export default function App() {
             <RequireValidacao>
               <ValidacaoDetalhe />
             </RequireValidacao>
+          }
+        />
+        <Route
+          path="/dev/seed-validacao"
+          element={
+            <RequireDev>
+              <SeedValidacaoPage />
+            </RequireDev>
           }
         />
         <Route
