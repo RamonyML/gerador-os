@@ -145,12 +145,6 @@ export function buildNavItems({
       icon: HistoryRoundedIcon,
       isActive: startsWith('/historico'),
     },
-    {
-      label: 'Avisos',
-      to: '/avisos',
-      icon: CampaignOutlinedIcon,
-      isActive: startsWith('/avisos'),
-    },
     showNotes
       ? {
           label: 'Anotações',
@@ -159,6 +153,12 @@ export function buildNavItems({
           isActive: startsWith('/anotacoes'),
         }
       : null,
+    {
+      label: 'Avisos',
+      to: '/avisos',
+      icon: CampaignOutlinedIcon,
+      isActive: startsWith('/avisos'),
+    },
     {
       label: 'Sobre',
       to: '/sobre',

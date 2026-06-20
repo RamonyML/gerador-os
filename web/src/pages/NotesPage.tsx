@@ -17,6 +17,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
+import DriveFileRenameOutlineRoundedIcon from '@mui/icons-material/DriveFileRenameOutlineRounded'
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded'
 import { useAuth } from '../contexts/AuthContext'
 import {
@@ -29,7 +30,9 @@ import {
   subscribeNotebooks,
   subscribePages,
   subscribeSections,
+  updateNotebook,
   updatePage,
+  updateSection,
 } from '../lib/notesFirestore'
 import type { Notebook, NotePage, NoteSection } from '../types/notes'
 import { NOTEBOOK_COLORS } from '../types/notes'
@@ -57,6 +60,7 @@ export function NotesPage() {
 
   const [midView, setMidView] = useState<MidView>('sections')
 
+  // Creation states
   const [creatingNb, setCreatingNb] = useState(false)
   const [newNbTitle, setNewNbTitle] = useState('')
   const [creatingSect, setCreatingSect] = useState(false)
@@ -64,6 +68,15 @@ export function NotesPage() {
   const [creatingPage, setCreatingPage] = useState(false)
   const [newPageTitle, setNewPageTitle] = useState('')
 
+  // Rename states
+  const [renamingNbId, setRenamingNbId] = useState<string | null>(null)
+  const [renamingNbTitle, setRenamingNbTitle] = useState('')
+  const [renamingSectId, setRenamingSectId] = useState<string | null>(null)
+  const [renamingSectTitle, setRenamingSectTitle] = useState('')
+  const [renamingPageId, setRenamingPageId] = useState<string | null>(null)
+  const [renamingPageTitle, setRenamingPageTitle] = useState('')
+
+  // Auto-save
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingRef = useRef<Partial<{ title: string; content: string }>>({})
   const idsRef = useRef({ uid, selectedNotebookId, selectedSectionId, selectedPageId })
@@ -118,14 +131,16 @@ export function NotesPage() {
     return subscribePages(uid, selectedNotebookId, selectedSectionId, setPages)
   }, [uid, selectedNotebookId, selectedSectionId])
 
-  // Sync local state when selected page changes
+  // Load page content only when the selected page ID changes (not on every pages update)
   useEffect(() => {
     if (!selectedPageId) { setLocalTitle(''); setLocalContent(''); return }
     const pg = pages.find((p) => p.id === selectedPageId)
     if (pg) { setLocalTitle(pg.title); setLocalContent(pg.content) }
-  }, [selectedPageId, pages])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPageId])
 
-  // Handlers — notebooks
+  // ─── Notebook handlers ────────────────────────────────────────────────────
+
   const handleSelectNotebook = (id: string) => {
     flushSave()
     setSelectedNotebookId(id)
@@ -146,6 +161,13 @@ export function NotesPage() {
     setMidView('pages')
   }
 
+  const handleRenameNotebook = async () => {
+    if (!uid || !renamingNbId) { setRenamingNbId(null); return }
+    const trimmed = renamingNbTitle.trim()
+    if (trimmed) await updateNotebook(uid, renamingNbId, { title: trimmed })
+    setRenamingNbId(null)
+  }
+
   const handleDeleteNotebook = async (id: string) => {
     if (!uid) return
     if (!window.confirm('Excluir este caderno e todo seu conteúdo?')) return
@@ -157,7 +179,8 @@ export function NotesPage() {
     }
   }
 
-  // Handlers — sections
+  // ─── Section handlers ─────────────────────────────────────────────────────
+
   const handleSelectSection = (id: string) => {
     flushSave()
     setSelectedSectionId(id)
@@ -174,6 +197,13 @@ export function NotesPage() {
     setMidView('pages')
   }
 
+  const handleRenameSection = async () => {
+    if (!uid || !selectedNotebookId || !renamingSectId) { setRenamingSectId(null); return }
+    const trimmed = renamingSectTitle.trim()
+    if (trimmed) await updateSection(uid, selectedNotebookId, renamingSectId, { title: trimmed })
+    setRenamingSectId(null)
+  }
+
   const handleDeleteSection = async (id: string) => {
     if (!uid || !selectedNotebookId) return
     if (!window.confirm('Excluir esta seção e suas páginas?')) return
@@ -182,7 +212,8 @@ export function NotesPage() {
     setMidView('sections')
   }
 
-  // Handlers — pages
+  // ─── Page handlers ────────────────────────────────────────────────────────
+
   const handleSelectPage = (pg: NotePage) => {
     flushSave()
     setSelectedPageId(pg.id)
@@ -201,6 +232,18 @@ export function NotesPage() {
     setLocalContent('')
   }
 
+  const handleRenamePage = async () => {
+    if (!uid || !selectedNotebookId || !selectedSectionId || !renamingPageId) {
+      setRenamingPageId(null); return
+    }
+    const trimmed = renamingPageTitle.trim()
+    if (trimmed) {
+      await updatePage(uid, selectedNotebookId, selectedSectionId, renamingPageId, { title: trimmed })
+      if (renamingPageId === selectedPageId) setLocalTitle(trimmed)
+    }
+    setRenamingPageId(null)
+  }
+
   const handleDeletePage = async (id: string) => {
     if (!uid || !selectedNotebookId || !selectedSectionId) return
     if (!window.confirm('Excluir esta página?')) return
@@ -208,13 +251,19 @@ export function NotesPage() {
     if (selectedPageId === id) { setSelectedPageId(null); setLocalTitle(''); setLocalContent('') }
   }
 
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+
   const selectedNotebook = notebooks.find((n) => n.id === selectedNotebookId)
   const selectedSection = sections.find((s) => s.id === selectedSectionId)
   const isDark = theme.palette.mode === 'dark'
 
   const columnHeader = (label: string, onAdd?: () => void) => (
     <Box sx={{ px: 1.5, py: 1.25, display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
-      <Typography variant="caption" sx={{ flex: 1, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'text.secondary' }}>
+      <Typography
+        variant="caption"
+        sx={{ flex: 1, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'text.secondary' }}
+        noWrap
+      >
         {label}
       </Typography>
       {onAdd ? (
@@ -234,7 +283,7 @@ export function NotesPage() {
     onCancel: () => void,
     placeholder: string
   ) => (
-    <Box sx={{ px: 1, py: 0.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+    <Box sx={{ px: 1, py: 0.5, display: 'flex', alignItems: 'center', gap: 0.25 }}>
       <InputBase
         autoFocus
         value={value}
@@ -246,8 +295,12 @@ export function NotesPage() {
         }}
         sx={{ flex: 1, fontSize: 13, px: 1, py: 0.5, borderRadius: 1, bgcolor: alpha(theme.palette.primary.main, 0.06) }}
       />
-      <IconButton size="small" onClick={() => void onConfirm()} color="primary"><CheckRoundedIcon sx={{ fontSize: 16 }} /></IconButton>
-      <IconButton size="small" onClick={onCancel}><CloseRoundedIcon sx={{ fontSize: 16 }} /></IconButton>
+      <IconButton size="small" onClick={() => void onConfirm()} color="primary">
+        <CheckRoundedIcon sx={{ fontSize: 14 }} />
+      </IconButton>
+      <IconButton size="small" onClick={onCancel}>
+        <CloseRoundedIcon sx={{ fontSize: 14 }} />
+      </IconButton>
     </Box>
   )
 
@@ -257,12 +310,62 @@ export function NotesPage() {
     </Box>
   )
 
+  // Inline rename input shared by notebook/section/page items
+  const inlineRename = (
+    value: string,
+    onChange: (v: string) => void,
+    onConfirm: () => void,
+    onCancel: () => void
+  ) => (
+    <Box
+      sx={{ display: 'flex', alignItems: 'center', flex: 1, gap: 0.25, minWidth: 0 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <InputBase
+        autoFocus
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') void onConfirm()
+          if (e.key === 'Escape') onCancel()
+        }}
+        sx={{ flex: 1, fontSize: 13, px: 0.5, minWidth: 0 }}
+      />
+      <IconButton size="small" onClick={(e) => { e.stopPropagation(); void onConfirm() }} color="primary">
+        <CheckRoundedIcon sx={{ fontSize: 13 }} />
+      </IconButton>
+      <IconButton size="small" onClick={(e) => { e.stopPropagation(); onCancel() }}>
+        <CloseRoundedIcon sx={{ fontSize: 13 }} />
+      </IconButton>
+    </Box>
+  )
+
+  const actionBtns = (
+    onRename: () => void,
+    onDelete: () => void
+  ) => (
+    <Box
+      className="item-actions"
+      sx={{ display: 'flex', flexShrink: 0, opacity: 0, 'li:hover &': { opacity: 1 } }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <IconButton size="small" onClick={onRename} sx={{ color: 'text.secondary', p: 0.25 }}>
+        <DriveFileRenameOutlineRoundedIcon sx={{ fontSize: 14 }} />
+      </IconButton>
+      <IconButton size="small" onClick={onDelete} sx={{ color: 'error.main', p: 0.25 }}>
+        <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
+      </IconButton>
+    </Box>
+  )
+
+  // ─── Render ───────────────────────────────────────────────────────────────
+
   return (
     <Box sx={{ display: 'flex', flex: 1, height: 0, overflow: 'hidden' }}>
 
       {/* ── Column 1: Notebooks ── */}
       <Box sx={{
-        width: { xs: 180, sm: 200, md: 220 }, flexShrink: 0,
+        width: { xs: 176, sm: 200, md: 220 }, flexShrink: 0,
         borderRight: 1, borderColor: 'divider',
         display: 'flex', flexDirection: 'column', overflow: 'hidden',
         bgcolor: 'background.paper',
@@ -272,33 +375,43 @@ export function NotesPage() {
         {creatingNb && inlineCreate(newNbTitle, setNewNbTitle, handleCreateNotebook, () => setCreatingNb(false), 'Nome do caderno…')}
         <Box sx={{ flex: 1, overflowY: 'auto' }}>
           {notebooks.length === 0 && !creatingNb && emptyHint('Nenhum caderno')}
-          <List disablePadding dense>
+          <List disablePadding dense component="ul">
             {notebooks.map((nb) => {
               const active = nb.id === selectedNotebookId
+              const isRenaming = renamingNbId === nb.id
               return (
                 <ListItemButton
                   key={nb.id}
+                  component="li"
                   selected={active}
-                  onClick={() => handleSelectNotebook(nb.id)}
+                  onClick={() => !isRenaming && handleSelectNotebook(nb.id)}
                   sx={{
                     px: 1.5, py: 0.75,
                     '&.Mui-selected': { bgcolor: alpha(nb.color, isDark ? 0.2 : 0.12) },
-                    '&.Mui-selected:hover': { bgcolor: alpha(nb.color, isDark ? 0.25 : 0.18) },
+                    '&.Mui-selected:hover': { bgcolor: alpha(nb.color, isDark ? 0.28 : 0.18) },
                   }}
                 >
                   <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: nb.color, flexShrink: 0, mr: 1.25 }} />
-                  <ListItemText
-                    primary={nb.title}
-                    slotProps={{ primary: { sx: { fontSize: 13, fontWeight: active ? 700 : 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
-                    sx={{ my: 0 }}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={(e) => { e.stopPropagation(); void handleDeleteNotebook(nb.id) }}
-                    sx={{ opacity: 0, flexShrink: 0, 'li:hover &': { opacity: 1 }, color: 'error.main', ml: 0.5 }}
-                  >
-                    <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
-                  </IconButton>
+                  {isRenaming ? (
+                    inlineRename(
+                      renamingNbTitle,
+                      setRenamingNbTitle,
+                      handleRenameNotebook,
+                      () => setRenamingNbId(null)
+                    )
+                  ) : (
+                    <>
+                      <ListItemText
+                        primary={nb.title}
+                        slotProps={{ primary: { sx: { fontSize: 13, fontWeight: active ? 700 : 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
+                        sx={{ my: 0 }}
+                      />
+                      {actionBtns(
+                        () => { setRenamingNbId(nb.id); setRenamingNbTitle(nb.title) },
+                        () => void handleDeleteNotebook(nb.id)
+                      )}
+                    </>
+                  )}
                 </ListItemButton>
               )
             })}
@@ -308,7 +421,7 @@ export function NotesPage() {
 
       {/* ── Column 2: Sections + Pages ── */}
       <Box sx={{
-        width: { xs: 180, sm: 200, md: 240 }, flexShrink: 0,
+        width: { xs: 176, sm: 200, md: 240 }, flexShrink: 0,
         borderRight: 1, borderColor: 'divider',
         display: 'flex', flexDirection: 'column', overflow: 'hidden',
         bgcolor: isDark ? alpha('#fff', 0.015) : alpha('#000', 0.012),
@@ -317,28 +430,47 @@ export function NotesPage() {
           emptyHint('Selecione um caderno')
         ) : midView === 'sections' ? (
           <>
-            {columnHeader(`Seções · ${selectedNotebook?.title ?? ''}`, () => { setCreatingSect(true); setNewSectTitle('') })}
+            {columnHeader(
+              `Seções · ${selectedNotebook?.title ?? ''}`,
+              () => { setCreatingSect(true); setNewSectTitle('') }
+            )}
             <Divider />
             {creatingSect && inlineCreate(newSectTitle, setNewSectTitle, handleCreateSection, () => setCreatingSect(false), 'Nome da seção…')}
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
               {sections.length === 0 && !creatingSect && emptyHint('Nenhuma seção')}
-              <List disablePadding dense>
-                {sections.map((s) => (
-                  <ListItemButton key={s.id} onClick={() => handleSelectSection(s.id)} sx={{ px: 1.5, py: 0.75 }}>
-                    <ListItemText
-                      primary={s.title}
-                      slotProps={{ primary: { sx: { fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
-                      sx={{ my: 0 }}
-                    />
-                    <IconButton
-                      size="small"
-                      onClick={(e) => { e.stopPropagation(); void handleDeleteSection(s.id) }}
-                      sx={{ opacity: 0, flexShrink: 0, 'li:hover &': { opacity: 1 }, color: 'error.main' }}
+              <List disablePadding dense component="ul">
+                {sections.map((s) => {
+                  const isRenaming = renamingSectId === s.id
+                  return (
+                    <ListItemButton
+                      key={s.id}
+                      component="li"
+                      onClick={() => !isRenaming && handleSelectSection(s.id)}
+                      sx={{ px: 1.5, py: 0.75 }}
                     >
-                      <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
-                    </IconButton>
-                  </ListItemButton>
-                ))}
+                      {isRenaming ? (
+                        inlineRename(
+                          renamingSectTitle,
+                          setRenamingSectTitle,
+                          handleRenameSection,
+                          () => setRenamingSectId(null)
+                        )
+                      ) : (
+                        <>
+                          <ListItemText
+                            primary={s.title}
+                            slotProps={{ primary: { sx: { fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
+                            sx={{ my: 0 }}
+                          />
+                          {actionBtns(
+                            () => { setRenamingSectId(s.id); setRenamingSectTitle(s.title) },
+                            () => void handleDeleteSection(s.id)
+                          )}
+                        </>
+                      )}
+                    </ListItemButton>
+                  )
+                })}
               </List>
             </Box>
           </>
@@ -348,7 +480,11 @@ export function NotesPage() {
               <IconButton size="small" onClick={() => setMidView('sections')} sx={{ mr: 0.5 }}>
                 <ArrowBackRoundedIcon sx={{ fontSize: 16 }} />
               </IconButton>
-              <Typography variant="caption" sx={{ flex: 1, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'text.secondary' }} noWrap>
+              <Typography
+                variant="caption"
+                sx={{ flex: 1, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'text.secondary' }}
+                noWrap
+              >
                 {selectedSection?.title ?? 'Páginas'}
               </Typography>
               <Tooltip title="Adicionar página">
@@ -361,31 +497,41 @@ export function NotesPage() {
             {creatingPage && inlineCreate(newPageTitle, setNewPageTitle, handleCreatePage, () => setCreatingPage(false), 'Título da página…')}
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
               {pages.length === 0 && !creatingPage && emptyHint('Nenhuma página')}
-              <List disablePadding dense>
+              <List disablePadding dense component="ul">
                 {pages.map((pg) => {
                   const active = pg.id === selectedPageId
+                  const isRenaming = renamingPageId === pg.id
                   return (
                     <ListItemButton
                       key={pg.id}
+                      component="li"
                       selected={active}
-                      onClick={() => handleSelectPage(pg)}
+                      onClick={() => !isRenaming && handleSelectPage(pg)}
                       sx={{
                         px: 1.5, py: 0.75,
                         '&.Mui-selected': { bgcolor: alpha(theme.palette.primary.main, isDark ? 0.18 : 0.1) },
                       }}
                     >
-                      <ListItemText
-                        primary={pg.title}
-                        slotProps={{ primary: { sx: { fontSize: 13, fontWeight: active ? 700 : 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
-                        sx={{ my: 0 }}
-                      />
-                      <IconButton
-                        size="small"
-                        onClick={(e) => { e.stopPropagation(); void handleDeletePage(pg.id) }}
-                        sx={{ opacity: 0, flexShrink: 0, 'li:hover &': { opacity: 1 }, color: 'error.main' }}
-                      >
-                        <DeleteOutlineRoundedIcon sx={{ fontSize: 14 }} />
-                      </IconButton>
+                      {isRenaming ? (
+                        inlineRename(
+                          renamingPageTitle,
+                          setRenamingPageTitle,
+                          handleRenamePage,
+                          () => setRenamingPageId(null)
+                        )
+                      ) : (
+                        <>
+                          <ListItemText
+                            primary={pg.title}
+                            slotProps={{ primary: { sx: { fontSize: 13, fontWeight: active ? 700 : 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } }}
+                            sx={{ my: 0 }}
+                          />
+                          {actionBtns(
+                            () => { setRenamingPageId(pg.id); setRenamingPageTitle(pg.title) },
+                            () => void handleDeletePage(pg.id)
+                          )}
+                        </>
+                      )}
                     </ListItemButton>
                   )
                 })}
@@ -404,7 +550,6 @@ export function NotesPage() {
           </Box>
         ) : (
           <>
-            {/* Page title + save badge */}
             <Box sx={{ px: { xs: 2.5, sm: 5, md: 8 }, pt: 3, pb: 0.5, flexShrink: 0 }}>
               <InputBase
                 value={localTitle}
@@ -423,9 +568,7 @@ export function NotesPage() {
                 }}
               />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.75 }}>
-                {saveState === 'saving' ? (
-                  <CircularProgress size={10} />
-                ) : null}
+                {saveState === 'saving' ? <CircularProgress size={10} /> : null}
                 <Typography variant="caption" color="text.disabled" sx={{ fontSize: 11 }}>
                   {saveState === 'saved' ? 'Salvo' : saveState === 'saving' ? 'Salvando…' : 'Não salvo'}
                 </Typography>
