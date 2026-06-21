@@ -442,7 +442,7 @@ export function AppLayout() {
   )
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Box
         component="nav"
         sx={{
@@ -829,6 +829,7 @@ export function AppLayout() {
             flexDirection: 'column',
             position: 'relative',
             backgroundColor: 'background.default',
+            overflow: 'auto',
           }}
         >
           {/* Fundo global discreto (fade à esquerda), condicionado à textura

@@ -87,10 +87,13 @@ async function mkGet<T>(path: string, params: Record<string, string | number>): 
     Object.entries(params).map(([k, v]) => [k, String(v)])
   ).toString()
   const url = `${MK_BASE_URL}${path}?${qs}`
+  console.log(`[MK] GET ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
   const res = await fetch(url, { signal: AbortSignal.timeout(15_000) })
   if (!res.ok) {
     const body = await res.text().catch(() => '')
-    throw new Error(`MK GET ${path} → HTTP ${res.status}${body ? ` — ${body.slice(0, 300)}` : ''}`)
+    // Log completo para depuração — leia o terminal do emulador
+    console.error(`[MK] ERRO ${res.status} em ${path}:`, body.slice(0, 2000))
+    throw new Error(`MK GET ${path} → HTTP ${res.status} — verifique o terminal do emulador para detalhes`)
   }
   return res.json() as Promise<T>
 }
@@ -128,7 +131,7 @@ async function mkBuscarClientePorCpf(sessionToken: string, cpf: string): Promise
   }
 }
 
-async function mkCriarAtendimento(payload: MkAtendimentoPayload): Promise<number> {
+async function mkCriarAtendimento(payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
     token: payload.token,
@@ -144,7 +147,21 @@ async function mkCriarAtendimento(payload: MkAtendimentoPayload): Promise<number
   const data = await mkGet<MkAtendimentoResponse>('/mk/WSMKNovoAtendimento.rule', params)
   const id = data.CodigoAtendimento ?? data.cd_atendimento ?? data.codigo ?? data.id
   if (!id) throw new Error(`MK não retornou ID do atendimento: ${data.Mensagem ?? data.mensagem ?? JSON.stringify(data)}`)
-  return id
+  return { id, protocolo: data.Protocolo ?? '' }
+}
+
+async function mkInserirComentario(
+  sessionToken: string,
+  atendimentoId: number,
+  comentario: string,
+): Promise<void> {
+  await mkGet<Record<string, unknown>>('/mk/WSMKAtendimentoComentario.rule', {
+    sys: 'MK0',
+    token: sessionToken,
+    cd_atendimento: atendimentoId,
+    comentario,
+    // `tipo` (1=privado, 2=público) requer release >= 64.9 — omitido para compatibilidade
+  })
 }
 
 async function mkCriarOS(payload: MkOsPayload): Promise<number> {
@@ -162,16 +179,21 @@ async function mkCriarOS(payload: MkOsPayload): Promise<number> {
 
 async function salvarLog(entry: {
   uid: string
-  slug: string
-  cpf: string
+  slug?: string
+  cpf?: string
   shadow: boolean
   payload: unknown
   resultado?: unknown
   erro?: string
 }): Promise<void> {
-  await getFirestore()
-    .collection('mk_integration_log')
-    .add({ ...entry, criadoEm: FieldValue.serverTimestamp() })
+  try {
+    await getFirestore()
+      .collection('mk_integration_log')
+      .add({ ...entry, criadoEm: FieldValue.serverTimestamp() })
+  } catch (e) {
+    // Log não é crítico — não derruba o fluxo principal (ex: Firestore emulador não rodando)
+    console.warn('[salvarLog] falha ao registrar:', e instanceof Error ? e.message : String(e))
+  }
 }
 
 // ---- Tipos do callable ----
@@ -183,6 +205,22 @@ export type MkSuporteRequest =
   | { action: 'listar_grupos' }
   | { action: 'listar_processos' }
   | { action: 'listar_classificacoes'; processoId?: number }
+  | {
+      action: 'criar_protocolo'
+      slug: string
+      cpf: string
+      processoId: number
+      classificacaoId: number
+      info: string
+      comentarios?: string[]  // blocos adicionais inseridos como comentários separados
+      origemContato?: number  // 6=Telefone, 9=WhatsApp (default)
+    }
+  | {
+      action: 'inserir_comentario'
+      atendimentoId: number
+      comentario: string
+      sessionToken: string  // token da mesma sessão que criou o atendimento
+    }
   | {
       action: 'criar_os'
       slug: string
@@ -201,6 +239,7 @@ export type MkSuporteResponse = {
   clienteCodigo?: number
   clienteNome?: string
   atendimentoId?: number
+  protocolo?: string
   osNumero?: number
   // respostas raw para testes
   raw?: unknown
@@ -270,6 +309,82 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       return { shadow: false, raw }
     }
 
+    // ---- criar_protocolo: Padrão B — auth → cliente → atendimento (sem OS) ----
+    if (action === 'criar_protocolo') {
+      const { slug, cpf, processoId, classificacaoId, info, comentarios, origemContato } = req.data
+
+      if (!info?.trim()) throw new HttpsError('invalid-argument', 'Campo "info" é obrigatório.')
+      if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
+
+      const payload = { slug, cpf, processoId, classificacaoId, info, comentarios }
+
+      if (SHADOW_MODE) {
+        console.log('[MK shadow] criar_protocolo payload:', JSON.stringify(payload))
+        await salvarLog({ uid, slug, cpf, shadow: true, payload })
+        return { shadow: true }
+      }
+
+      let sessionToken: string
+      let cliente: MkCliente
+      let resultado: { id: number; protocolo: string }
+
+      try {
+        sessionToken = await mkAuth()
+        cliente = await mkBuscarClientePorCpf(sessionToken, cpf)
+        resultado = await mkCriarAtendimento({
+          token: sessionToken,
+          cd_cliente: cliente.codigo,
+          cd_processo: processoId,
+          cd_classificacao_ate: classificacaoId,
+          origem_contato: origemContato ?? 9,
+          info,
+        })
+        // Insere cada bloco adicional como comentário público separado
+        for (const bloco of comentarios ?? []) {
+          if (bloco.trim()) {
+            await mkInserirComentario(sessionToken, resultado.id, bloco.trim())
+          }
+        }
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e)
+        await salvarLog({ uid, slug, cpf, shadow: false, payload, erro: msg })
+        throw new HttpsError('internal', `Falha na integração MK: ${msg}`)
+      }
+
+      await salvarLog({ uid, slug, cpf, shadow: false, payload, resultado: { atendimentoId: resultado.id, protocolo: resultado.protocolo } })
+      return {
+        shadow: false,
+        clienteCodigo: cliente.codigo,
+        clienteNome: cliente.nome,
+        atendimentoId: resultado.id,
+        protocolo: resultado.protocolo,
+        sessionToken,  // reutilizado pelos cards de comentário subsequentes
+      }
+    }
+
+    // ---- inserir_comentario: adiciona comentário a atendimento já aberto ----
+    if (action === 'inserir_comentario') {
+      const { atendimentoId, comentario, sessionToken: providedToken } = req.data
+      if (!comentario?.trim()) throw new HttpsError('invalid-argument', '"comentario" é obrigatório.')
+      if (!atendimentoId) throw new HttpsError('invalid-argument', '"atendimentoId" é obrigatório.')
+      if (!providedToken) throw new HttpsError('invalid-argument', '"sessionToken" é obrigatório.')
+
+      if (SHADOW_MODE) {
+        console.log('[MK shadow] inserir_comentario:', JSON.stringify({ atendimentoId, comentario }))
+        return { shadow: true }
+      }
+
+      try {
+        // Usa o mesmo token da sessão que criou o atendimento — não re-autentica
+        await mkInserirComentario(providedToken, atendimentoId, comentario.trim())
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e)
+        throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)
+      }
+
+      return { shadow: false, atendimentoId }
+    }
+
     // ---- criar_os: fluxo completo auth → cliente → atendimento → OS ----
     if (action === 'criar_os') {
       const { slug, cpf, descricaoProblema, tipoOS, processoId, classificacaoId, grupoServico, tecnicoId } = req.data
@@ -288,18 +403,18 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       let sessionToken: string
       let cliente: MkCliente
-      let atendimentoId: number
+      let atendimento: { id: number; protocolo: string }
       let osNumero: number
 
       try {
         sessionToken = await mkAuth()
         cliente = await mkBuscarClientePorCpf(sessionToken, cpf)
-        atendimentoId = await mkCriarAtendimento({
+        atendimento = await mkCriarAtendimento({
           token: sessionToken,
           cd_cliente: cliente.codigo,
           cd_processo: processoId,
           cd_classificacao_ate: classificacaoId,
-          origem_contato: 9,  // WhatsApp
+          origem_contato: 9,
           info: descricaoProblema,
         })
         osNumero = await mkCriarOS({
@@ -309,7 +424,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           CodigoTipoOS: tipoOS,
           CodigoGrupoServico: grupoServico,
           CodigoTecnico: tecnicoId,
-          CodigoAtendimento: atendimentoId,
+          CodigoAtendimento: atendimento.id,
         })
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
@@ -317,12 +432,13 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         throw new HttpsError('internal', `Falha na integração MK: ${msg}`)
       }
 
-      await salvarLog({ uid, slug, cpf, shadow: false, payload, resultado: { atendimentoId, osNumero } })
+      await salvarLog({ uid, slug, cpf, shadow: false, payload, resultado: { atendimentoId: atendimento.id, osNumero } })
       return {
         shadow: false,
         clienteCodigo: cliente.codigo,
         clienteNome: cliente.nome,
-        atendimentoId,
+        atendimentoId: atendimento.id,
+        protocolo: atendimento.protocolo,
         osNumero,
       }
     }

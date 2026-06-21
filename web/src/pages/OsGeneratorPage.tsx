@@ -77,7 +77,8 @@ import { buildOnuQueimadaTextos } from '../data/manutencao/onuQueimada'
 import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
 import { buildRokuPadraoTextos } from '../data/midiaTv/rokuPadrao'
 import { buildRokuPresencialTextos } from '../data/midiaTv/rokuPresencial'
-import { buildAlteraSenhaTextos } from '../data/senhaRede/alteraSenha'
+import { buildAlteraSenhaTextos, buildAlteraSenhaSegmentos } from '../data/senhaRede/alteraSenha'
+import { MkProtocolCards } from '../components/MkProtocolCards'
 import { buildWifiExtendZteTextos } from '../data/wifiExtend/extendZte'
 import { buildWifiExtendTplinkTextos } from '../data/wifiExtend/extendTplink'
 import { buildPontoAdicionalTextos } from '../data/wifiExtend/pontoAdicional'
@@ -607,6 +608,11 @@ export function OsGeneratorPage() {
     return base
   }, [values, profile, user, selected?.slug])
 
+  const alteraSenhaSegmentos = useMemo(() => {
+    if (selected?.slug !== 'senha-altera-senha') return null
+    return buildAlteraSenhaSegmentos(values)
+  }, [selected?.slug, values])
+
   const modalTextoAgenda = useMemo(() => {
     if (!selected) return ''
     const key = AGENDA_CONTEXT_KEY[selected.slug]
@@ -1075,31 +1081,42 @@ export function OsGeneratorPage() {
               </Tabs>
             ) : null}
 
-            <Box
-              sx={{
-                flex: 1,
-                overflow: 'auto',
-                minHeight: { xs: 220, md: 280 },
-                pr: 0.5,
-              }}
-            >
+            {selected?.slug === 'senha-altera-senha' && alteraSenhaSegmentos ? (
+              <MkProtocolCards
+                slug={selected.slug}
+                cpf={String(values.cpf ?? '')}
+                processoId={14}
+                classificacaoId={3}
+                segmentos={alteraSenhaSegmentos}
+                disabled={emptyFields.length > 0}
+              />
+            ) : (
               <Box
-                component="pre"
                 sx={{
-                  m: 0,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  fontFamily: theme.typography.fontFamily,
-                  fontSize: { xs: 13, sm: 14 },
-                  lineHeight: 1.55,
-                  color: 'text.primary',
-                  textAlign: 'left',
+                  flex: 1,
+                  overflow: 'auto',
+                  minHeight: { xs: 220, md: 280 },
+                  pr: 0.5,
                 }}
               >
-                {(multiPreviewTabs ? activePreviewBody : preview) ||
-                  'Preencha os campos ao lado para gerar o texto.'}
+                <Box
+                  component="pre"
+                  sx={{
+                    m: 0,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    fontFamily: theme.typography.fontFamily,
+                    fontSize: { xs: 13, sm: 14 },
+                    lineHeight: 1.55,
+                    color: 'text.primary',
+                    textAlign: 'left',
+                  }}
+                >
+                  {(multiPreviewTabs ? activePreviewBody : preview) ||
+                    'Preencha os campos ao lado para gerar o texto.'}
+                </Box>
               </Box>
-            </Box>
+            )}
           </Paper>
         </Box>
       ) : null}

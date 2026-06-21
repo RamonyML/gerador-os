@@ -95,7 +95,7 @@ export function NoteEditor({ content, onChange }: Props) {
   )
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
       {/* Toolbar */}
       <Box
         sx={{
@@ -210,10 +210,10 @@ export function NoteEditor({ content, onChange }: Props) {
         </Btn>
       </Box>
 
-      {/* Content area */}
+      {/* Content area — altura fixa baseada no viewport para evitar scroll da página */}
       <Box
         sx={{
-          flex: 1,
+          height: 'calc(100vh - 190px)',
           overflow: 'auto',
           px: { xs: 2.5, sm: 5, md: 8 },
           py: 3,

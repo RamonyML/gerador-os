@@ -139,6 +139,10 @@ export function MkTestesPage() {
 
   const [cpfCliente, setCpfCliente] = useState('')
   const [processoId, setProcessoId] = useState('')
+  const [cpfProt, setCpfProt] = useState('')
+  const [processoProt, setProcessoProt] = useState('')
+  const [classificacaoProt, setClassificacaoProt] = useState('')
+  const [infoProt, setInfoProt] = useState('')
   const [cpfOs, setCpfOs] = useState('')
   const [descOs, setDescOs] = useState('')
   const [tipoOs, setTipoOs] = useState('')
@@ -254,9 +258,41 @@ export function MkTestesPage() {
           />
         </TestCard>
 
-        {/* 7. Criar OS — fluxo completo */}
+        {/* 7. Criar Protocolo — Padrão B (sem OS) */}
         <TestCard
-          title="7. Criar OS — fluxo completo"
+          title="7. Criar Protocolo (Padrão B — sem OS)"
+          description="auth → buscar cliente → criar atendimento. Retorna o número do protocolo MK. Para abertura, sempre use classificação 3 (NORMAL) — classificações com encerramento='Sim' (ex: 8=ONU-SEM-LUZ) são para fechar, não abrir."
+          onRun={async () => {
+            const res = await call({
+              action: 'criar_protocolo',
+              slug: 'mk-teste-protocolo',
+              cpf: cpfProt,
+              processoId: Number(processoProt),
+              classificacaoId: Number(classificacaoProt),
+              info: infoProt,
+            })
+            return res.data
+          }}
+        >
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
+            <TextField size="small" label="CPF do cliente" placeholder="Somente números" value={cpfProt} onChange={(e) => setCpfProt(e.target.value)} sx={{ width: 180 }} />
+            <TextField size="small" label="Cód. processo" placeholder="Ex: 12" value={processoProt} onChange={(e) => setProcessoProt(e.target.value)} sx={{ width: 140 }} />
+            <TextField size="small" label="Cód. classificação" placeholder="Ex: 8" value={classificacaoProt} onChange={(e) => setClassificacaoProt(e.target.value)} sx={{ width: 150 }} />
+            <TextField
+              size="small"
+              label="Descrição (info)"
+              placeholder="Ex: CLIENTE SEM CONEXÃO, ONU SEM LUZ..."
+              value={infoProt}
+              onChange={(e) => setInfoProt(e.target.value)}
+              multiline
+              minRows={2}
+              fullWidth
+            />
+          </Box>
+        </TestCard>
+
+        <TestCard
+          title="8. Criar OS — fluxo completo (bloqueado ⚠️)"
           description="Executa a sequência: auth → buscar cliente → criar atendimento → criar OS. Use os códigos obtidos nos testes anteriores."
           onRun={async () => {
             const res = await call({

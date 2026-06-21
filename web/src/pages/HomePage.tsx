@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { Alert, Avatar, Box, Button, Chip, Container, Fade, Paper, Stack, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Chip, Container, Divider, Fade, Paper, Skeleton, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -9,13 +9,13 @@ import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import HomeRepairServiceOutlinedIcon from '@mui/icons-material/HomeRepairServiceOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined'
 import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
-import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
 import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined'
-import { app } from '../lib/firebase'
+import { app, db } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { NavCard } from '../components/NavCard'
@@ -24,7 +24,10 @@ import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined'
-import { canManageUsers, canAccessUpgrades, canAccessValidacao } from '../lib/permissions'
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import { canManageUsers, canAccessUpgrades } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
@@ -32,16 +35,18 @@ import { canManageHelpdesk } from '../lib/helpdeskAccess'
 import { canAccessCondominios } from '../lib/condominiosAccess'
 import { SECTOR_LABELS, type Hierarchy } from '../types/profile'
 import { ProfileWeekSchedule } from '../components/ProfileWeekSchedule'
-import { contarMudancasPorStatus } from '../lib/validacaoFirestore'
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import { subscribeMyTickets, subscribeAllTickets } from '../lib/ticketsFirestore'
+import { TICKET_STATUS_LABELS, type Ticket } from '../types/ticket'
+import { NotesWidget } from '../components/NotesWidget'
+
+function formatRelative(date: Date): string {
+  const mins = Math.floor((Date.now() - date.getTime()) / 60_000)
+  if (mins < 1) return 'agora'
+  if (mins < 60) return `há ${mins}min`
+  const h = Math.floor(mins / 60)
+  if (h < 24) return `há ${h}h`
+  return `há ${Math.floor(h / 24)}d`
+}
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
   gerente: 'Gestor',
@@ -56,6 +61,7 @@ type QuickAction = {
   to: string
   icon: ReactNode
 }
+
 
 function initialsFrom(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -86,18 +92,33 @@ export function HomePage() {
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showMkTestes = profile?.isDev === true
-  const showValidacaoStats = profile != null && canAccessValidacao(profile)
+  const isTi = profile?.isTi === true
 
-  const [validacaoStats, setValidacaoStats] = useState<{
-    PENDENTE: number
-    VALIDADO: number
-    RETORNAR: number
-  } | null>(null)
+  const [activeTickets, setActiveTickets] = useState<Ticket[]>([])
+  const [ticketsReady, setTicketsReady] = useState(false)
 
   useEffect(() => {
-    if (!showValidacaoStats) return
-    contarMudancasPorStatus().then(setValidacaoStats).catch(() => undefined)
-  }, [showValidacaoStats])
+    if (!user) return
+    if (isTi) {
+      return subscribeAllTickets(
+        db,
+        { status: 'aberto' },
+        (tickets) => { setActiveTickets(tickets.slice(0, 5)); setTicketsReady(true) },
+        () => setTicketsReady(true),
+      )
+    }
+    return subscribeMyTickets(
+      db,
+      user.uid,
+      (tickets) => {
+        setActiveTickets(
+          tickets.filter((t) => !t.archiveTag && t.status !== 'resolvido').slice(0, 5),
+        )
+        setTicketsReady(true)
+      },
+      () => setTicketsReady(true),
+    )
+  }, [user?.uid, isTi])  // eslint-disable-line react-hooks/exhaustive-deps
 
   const greetingName =
     profile?.displayName?.trim() || user?.email?.split('@')[0] || 'usuário'
@@ -347,127 +368,6 @@ export function HomePage() {
           </Paper>
           </Reveal>
 
-          {/* Widget de Validações */}
-          {showValidacaoStats && validacaoStats && (
-            <Reveal delay={60}>
-              <Paper
-                elevation={0}
-                sx={{
-                  borderRadius: 4,
-                  border: 1,
-                  borderColor: 'divider',
-                  p: { xs: 2.5, sm: 3 },
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Stack
-                  direction={{ xs: 'column', md: 'row' }}
-                  spacing={3}
-                  sx={{ alignItems: { md: 'center' } }}
-                >
-                  {/* Lado esquerdo: título + stat cards */}
-                  <Box sx={{ flex: '1 1 auto' }}>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: '0.08em', fontWeight: 700 }}
-                    >
-                      Validações — Resumo geral
-                    </Typography>
-                    <Stack direction="row" spacing={2} sx={{ mt: 1.5, flexWrap: 'wrap', gap: 2 }}>
-                      {[
-                        {
-                          label: 'Pendente',
-                          value: validacaoStats.PENDENTE,
-                          color: theme.palette.warning.main,
-                          bg: alpha(theme.palette.warning.main, isDark ? 0.18 : 0.1),
-                        },
-                        {
-                          label: 'Validado',
-                          value: validacaoStats.VALIDADO,
-                          color: theme.palette.success.main,
-                          bg: alpha(theme.palette.success.main, isDark ? 0.18 : 0.1),
-                        },
-                        {
-                          label: 'Retornar',
-                          value: validacaoStats.RETORNAR,
-                          color: theme.palette.error.main,
-                          bg: alpha(theme.palette.error.main, isDark ? 0.18 : 0.1),
-                        },
-                      ].map((s) => (
-                        <Box
-                          key={s.label}
-                          sx={{
-                            px: 2,
-                            py: 1.25,
-                            borderRadius: 2,
-                            bgcolor: s.bg,
-                            minWidth: 90,
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography
-                            variant="h4"
-                            sx={{ fontWeight: 800, color: s.color, lineHeight: 1 }}
-                          >
-                            {s.value}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                            {s.label}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Stack>
-                    <Typography variant="caption" color="text.disabled" sx={{ mt: 1.5, display: 'block' }}>
-                      Total: {validacaoStats.PENDENTE + validacaoStats.VALIDADO + validacaoStats.RETORNAR} mudanças registradas
-                    </Typography>
-                  </Box>
-
-                  {/* Lado direito: gráfico */}
-                  <Box sx={{ width: { xs: '100%', md: 280 }, height: 120, flexShrink: 0 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={[
-                          { name: 'Pendente', value: validacaoStats.PENDENTE },
-                          { name: 'Validado', value: validacaoStats.VALIDADO },
-                          { name: 'Retornar', value: validacaoStats.RETORNAR },
-                        ]}
-                        margin={{ top: 4, right: 4, left: -24, bottom: 0 }}
-                        barCategoryGap="30%"
-                      >
-                        <XAxis
-                          dataKey="name"
-                          tick={{ fontSize: 11, fill: theme.palette.text.secondary }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 11, fill: theme.palette.text.secondary }}
-                          axisLine={false}
-                          tickLine={false}
-                          allowDecimals={false}
-                        />
-                        <Tooltip
-                          cursor={{ fill: alpha(primary, 0.08) }}
-                          contentStyle={{
-                            fontSize: 12,
-                            borderRadius: 8,
-                            border: `1px solid ${theme.palette.divider}`,
-                            background: theme.palette.background.paper,
-                          }}
-                        />
-                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                          <Cell fill={theme.palette.warning.main} />
-                          <Cell fill={theme.palette.success.main} />
-                          <Cell fill={theme.palette.error.main} />
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </Box>
-                </Stack>
-              </Paper>
-            </Reveal>
-          )}
 
           {profileMissing ? (
             <Alert severity="warning" sx={{ borderRadius: 2 }}>
@@ -519,6 +419,156 @@ export function HomePage() {
               })}
             </Box>
           </Box>
+
+          {/* Widgets — Anotações + Chamados (T.I) */}
+          {profile && (
+            <Reveal delay={90}>
+              <Box sx={{ display: 'flex', gap: 2.5, flexWrap: 'wrap', alignItems: 'stretch' }}>
+
+                <NotesWidget sx={{ flex: '0 0 calc(50% - 10px)', minWidth: 280 }} />
+
+                {/* Chamados — apenas T.I, como painel de controle */}
+                {isTi && <Paper
+                  elevation={0}
+                  sx={{
+                    flex: '1 1 260px',
+                    minWidth: 0,
+                    borderRadius: 4,
+                    border: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      px: { xs: 2, sm: 2.5 },
+                      pt: { xs: 2, sm: 2.5 },
+                      pb: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <ConfirmationNumberOutlinedIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Fila de chamados</Typography>
+                    </Box>
+                    <Button
+                      component={RouterLink}
+                      to="/chamados"
+                      size="small"
+                      endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: 14 }} />}
+                      sx={{ fontSize: 12, color: 'text.secondary' }}
+                    >
+                      Ver
+                    </Button>
+                  </Box>
+
+                  <Divider />
+
+                  <Box sx={{ px: { xs: 2, sm: 2.5 }, py: 1.75, flex: 1 }}>
+                    {!ticketsReady ? (
+                      <Stack spacing={1}>
+                        {[0, 1].map((i) => (
+                          <Skeleton key={i} variant="rounded" height={50} sx={{ borderRadius: 1.5 }} />
+                        ))}
+                      </Stack>
+                    ) : activeTickets.length === 0 ? (
+                      <Box sx={{ py: 3.5, textAlign: 'center' }}>
+                        <CheckCircleOutlineRoundedIcon
+                          sx={{ color: 'success.main', fontSize: 34, mb: 0.75, opacity: 0.7 }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                          Nenhum chamado na fila
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Stack spacing={0} sx={{ height: '100%' }}>
+                        <Box
+                          sx={{
+                            mb: 1.5,
+                            p: 1.25,
+                            borderRadius: 2,
+                            bgcolor: alpha(primary, isDark ? 0.12 : 0.07),
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            gap: 0.75,
+                          }}
+                        >
+                          <Typography
+                            variant="h4"
+                            sx={{ fontWeight: 800, color: 'primary.main', lineHeight: 1 }}
+                          >
+                            {activeTickets.length}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            aguardando atendimento
+                          </Typography>
+                        </Box>
+                        <Stack spacing={0.625}>
+                          {activeTickets.slice(0, 3).map((ticket) => {
+                            const dotColor =
+                              ticket.status === 'aberto'
+                                ? theme.palette.error.main
+                                : ticket.status === 'em_atendimento'
+                                  ? theme.palette.warning.main
+                                  : theme.palette.info.main
+                            return (
+                              <Box
+                                key={ticket.id}
+                                component={RouterLink}
+                                to={`/chamados/${ticket.id}`}
+                                sx={{
+                                  display: 'block',
+                                  p: 1,
+                                  borderRadius: 1.5,
+                                  bgcolor: isDark ? alpha('#fff', 0.04) : alpha('#000', 0.025),
+                                  textDecoration: 'none',
+                                  transition: 'background 0.15s',
+                                  '&:hover': {
+                                    bgcolor: isDark ? alpha('#fff', 0.08) : alpha('#000', 0.05),
+                                  },
+                                }}
+                              >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875, mb: 0.2 }}>
+                                  <Box
+                                    sx={{
+                                      width: 6,
+                                      height: 6,
+                                      borderRadius: '50%',
+                                      bgcolor: dotColor,
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ fontWeight: 600, lineHeight: 1.3 }}
+                                    noWrap
+                                  >
+                                    {ticket.title}
+                                  </Typography>
+                                </Box>
+                                <Typography
+                                  variant="caption"
+                                  color="text.disabled"
+                                  sx={{ pl: 1.75 }}
+                                >
+                                  {TICKET_STATUS_LABELS[ticket.status]} · {formatRelative(ticket.createdAt)}
+                                </Typography>
+                              </Box>
+                            )
+                          })}
+                        </Stack>
+                      </Stack>
+                    )}
+                  </Box>
+                </Paper>}
+
+              </Box>
+            </Reveal>
+          )}
 
           {/* Seu perfil */}
           {!profileMissing && profile ? (

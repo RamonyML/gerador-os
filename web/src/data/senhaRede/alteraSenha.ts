@@ -100,12 +100,20 @@ export function buildAlteraSenhaTextos(
 
 export const ALTERA_SENHA_FIELDS: OsTemplateField[] = [
   {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 5 },
+  },
+  {
     id: 'cliente',
     label: 'Nome Completo',
     control: 'text',
     placeholder: 'Nome completo',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 7 },
   },
   {
     id: 'canal',
@@ -184,6 +192,25 @@ export const ALTERA_SENHA_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'solicitacao', equals: [SOL_SENHA, SOL_AMBOS] },
   },
 ]
+
+/**
+ * Divide o texto do protocolo nos blocos separados por `***` para envio ao MK:
+ * - `info`: primeiro bloco (usado na criação do atendimento)
+ * - `comentarios`: blocos seguintes (cada um vira um comentário separado)
+ */
+export function buildAlteraSenhaSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const { alteraSenhaTextoProtocolo } = buildAlteraSenhaTextos(rawValues)
+  const segments = alteraSenhaTextoProtocolo
+    .split(SEP)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return {
+    info: segments[0] ?? '',
+    comentarios: segments.slice(1),
+  }
+}
 
 export function getAlteraSenhaDefaults(): OsTemplatePresetPayload {
   return {
