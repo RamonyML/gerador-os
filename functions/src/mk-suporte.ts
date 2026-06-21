@@ -1,12 +1,26 @@
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { HttpsError, onCall } from 'firebase-functions/v2/https'
+import { defineSecret, defineString } from 'firebase-functions/params'
 
-// ---- Configuração ----
+// ---- Parâmetros de configuração ----
+// defineSecret → armazenado no Google Cloud Secret Manager (não exposto em logs/env)
+// defineString → variável de ambiente comum (não-sensível)
 
-const MK_BASE_URL = (process.env.MK_BASE_URL ?? '').replace(/\/$/, '')
-const MK_TOKEN    = process.env.MK_TOKEN ?? ''
-const MK_PASSWORD = process.env.MK_WEBSERVICE_PASSWORD ?? ''
-const SHADOW_MODE = process.env.MK_MODE !== 'real'
+const _mkBaseUrl = defineString('MK_BASE_URL', { default: '' })
+const _mkMode    = defineString('MK_MODE',     { default: 'shadow' })
+const _mkToken   = defineSecret('MK_TOKEN')
+const _mkPass    = defineSecret('MK_WEBSERVICE_PASSWORD')
+
+// Lido dentro do handler (defineSecret.value() só funciona durante a execução)
+type MkConfig = { baseUrl: string; token: string; password: string; shadow: boolean }
+function getMkConfig(): MkConfig {
+  return {
+    baseUrl:  _mkBaseUrl.value().replace(/\/$/, ''),
+    token:    _mkToken.value(),
+    password: _mkPass.value(),
+    shadow:   _mkMode.value() !== 'real',
+  }
+}
 
 // ---- Tipos de resposta da API MK ----
 
@@ -82,29 +96,28 @@ type MkOsResponse = {
 
 // ---- Cliente HTTP MK ----
 
-async function mkGet<T>(path: string, params: Record<string, string | number>): Promise<T> {
+async function mkGet<T>(baseUrl: string, path: string, params: Record<string, string | number>): Promise<T> {
   const qs = new URLSearchParams(
     Object.entries(params).map(([k, v]) => [k, String(v)])
   ).toString()
-  const url = `${MK_BASE_URL}${path}?${qs}`
+  const url = `${baseUrl}${path}?${qs}`
   console.log(`[MK] GET ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
   const res = await fetch(url, { signal: AbortSignal.timeout(15_000) })
   if (!res.ok) {
     const body = await res.text().catch(() => '')
-    // Log completo para depuração — leia o terminal do emulador
     console.error(`[MK] ERRO ${res.status} em ${path}:`, body.slice(0, 2000))
-    throw new Error(`MK GET ${path} → HTTP ${res.status} — verifique o terminal do emulador para detalhes`)
+    throw new Error(`MK GET ${path} → HTTP ${res.status}`)
   }
   return res.json() as Promise<T>
 }
 
 // ---- Operações MK ----
 
-async function mkAuth(): Promise<string> {
-  const data = await mkGet<MkAuthResponse>('/mk/WSAutenticacao.rule', {
+async function mkAuth(cfg: MkConfig): Promise<string> {
+  const data = await mkGet<MkAuthResponse>(cfg.baseUrl, '/mk/WSAutenticacao.rule', {
     sys: 'MK0',
-    token: MK_TOKEN,
-    password: MK_PASSWORD,
+    token: cfg.token,
+    password: cfg.password,
     cd_servico: 9999,
   })
   const token = data.Token ?? data.tokenRetornoAutenticacao
@@ -114,8 +127,8 @@ async function mkAuth(): Promise<string> {
   return token
 }
 
-async function mkBuscarClientePorCpf(sessionToken: string, cpf: string): Promise<MkCliente> {
-  const data = await mkGet<MkConsultaDocResponse>('/mk/WSMKConsultaDoc.rule', {
+async function mkBuscarClientePorCpf(cfg: MkConfig, sessionToken: string, cpf: string): Promise<MkCliente> {
+  const data = await mkGet<MkConsultaDocResponse>(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', {
     sys: 'MK0',
     token: sessionToken,
     doc: cpf.replace(/\D/g, ''),
@@ -131,7 +144,7 @@ async function mkBuscarClientePorCpf(sessionToken: string, cpf: string): Promise
   }
 }
 
-async function mkCriarAtendimento(payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
+async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
     token: payload.token,
@@ -144,32 +157,32 @@ async function mkCriarAtendimento(payload: MkAtendimentoPayload): Promise<{ id: 
   if (payload.cd_contrato) params.cd_contrato = payload.cd_contrato
   if (payload.conexao_associada) params.conexao_associada = payload.conexao_associada
 
-  const data = await mkGet<MkAtendimentoResponse>('/mk/WSMKNovoAtendimento.rule', params)
+  const data = await mkGet<MkAtendimentoResponse>(cfg.baseUrl, '/mk/WSMKNovoAtendimento.rule', params)
   const id = data.CodigoAtendimento ?? data.cd_atendimento ?? data.codigo ?? data.id
   if (!id) throw new Error(`MK não retornou ID do atendimento: ${data.Mensagem ?? data.mensagem ?? JSON.stringify(data)}`)
   return { id, protocolo: data.Protocolo ?? '' }
 }
 
 async function mkInserirComentario(
+  cfg: MkConfig,
   sessionToken: string,
   atendimentoId: number,
   comentario: string,
 ): Promise<void> {
-  await mkGet<Record<string, unknown>>('/mk/WSMKAtendimentoComentario.rule', {
+  await mkGet<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', {
     sys: 'MK0',
     token: sessionToken,
     cd_atendimento: atendimentoId,
     comentario,
-    // `tipo` (1=privado, 2=público) requer release >= 64.9 — omitido para compatibilidade
   })
 }
 
-async function mkCriarOS(payload: MkOsPayload): Promise<number> {
+async function mkCriarOS(cfg: MkConfig, payload: MkOsPayload): Promise<number> {
   const params: Record<string, string | number> = { sys: 'MK0' }
   for (const [k, v] of Object.entries(payload)) {
     if (v !== undefined && v !== null) params[k] = v as string | number
   }
-  const data = await mkGet<MkOsResponse>('/mk/WSMKCriarOrdemServico.rule', params)
+  const data = await mkGet<MkOsResponse>(cfg.baseUrl, '/mk/WSMKCriarOrdemServico.rule', params)
   const codigoOs = data.codigo_os ?? (data as Record<string, unknown>).CodigoOS ?? (data as Record<string, unknown>).Codigo
   if (!codigoOs) throw new Error(`MK não retornou código da OS: ${data.erro ?? data.mensagem ?? JSON.stringify(data)}`)
   return codigoOs as number
@@ -248,64 +261,65 @@ export type MkSuporteResponse = {
 // ---- Cloud Function callable ----
 
 export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
-  { cors: true, region: 'southamerica-east1', invoker: 'public' },
+  { cors: true, region: 'southamerica-east1', invoker: 'public', secrets: [_mkToken, _mkPass] },
   async (req) => {
     const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true'
     const uid = req.auth?.uid ?? (isEmulator ? 'emulator-test' : null)
     if (!uid) throw new HttpsError('unauthenticated', 'Autenticação necessária.')
 
+    const cfg = getMkConfig()
     const { action } = req.data
 
     // ---- testar_auth: valida se as credenciais funcionam ----
     if (action === 'testar_auth') {
-      if (SHADOW_MODE) {
+      if (cfg.shadow) {
         console.log('[MK shadow] testar_auth — credenciais não enviadas ao MK')
         return { shadow: true }
       }
-      const sessionToken = await mkAuth()
+      const sessionToken = await mkAuth(cfg)
       return { shadow: false, sessionToken: sessionToken.slice(0, 8) + '...' }
     }
 
     // ---- buscar_cliente: auth + busca por CPF ----
     if (action === 'buscar_cliente') {
       const { cpf } = req.data
-      if (SHADOW_MODE) return { shadow: true, raw: { simulado: true, cpf } }
-      const sessionToken = await mkAuth()
-      const raw = await mkGet('/mk/WSMKConsultaDoc.rule', { sys: 'MK0', token: sessionToken, doc: cpf.replace(/\D/g, '') })
+      if (cfg.shadow) return { shadow: true, raw: { simulado: true, cpf } }
+      const sessionToken = await mkAuth(cfg)
+      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', { sys: 'MK0', token: sessionToken, doc: cpf.replace(/\D/g, '') })
       return { shadow: false, raw }
     }
 
     // ---- listar_tipos_os ----
     if (action === 'listar_tipos_os') {
-      if (SHADOW_MODE) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth()
-      const raw = await mkGet('/mk/WSMKOSListaTiposOS.rule', { sys: 'MK0', token: sessionToken })
+      if (cfg.shadow) return { shadow: true, raw: [] }
+      const sessionToken = await mkAuth(cfg)
+      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKOSListaTiposOS.rule', { sys: 'MK0', token: sessionToken })
       return { shadow: false, raw }
     }
 
     // ---- listar_grupos ----
     if (action === 'listar_grupos') {
-      if (SHADOW_MODE) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth()
-      const raw = await mkGet('/mk/WSMKConsultaEquipes.rule', { sys: 'MK0', token: sessionToken })
+      if (cfg.shadow) return { shadow: true, raw: [] }
+      const sessionToken = await mkAuth(cfg)
+      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKConsultaEquipes.rule', { sys: 'MK0', token: sessionToken })
       return { shadow: false, raw }
     }
 
     // ---- listar_processos ----
     if (action === 'listar_processos') {
-      if (SHADOW_MODE) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth()
-      const raw = await mkGet('/mk/WSMKListaProcessos.rule', { sys: 'MK0', token: sessionToken })
+      if (cfg.shadow) return { shadow: true, raw: [] }
+      const sessionToken = await mkAuth(cfg)
+      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKListaProcessos.rule', { sys: 'MK0', token: sessionToken })
       return { shadow: false, raw }
     }
 
     // ---- listar_classificacoes ----
     if (action === 'listar_classificacoes') {
-      if (SHADOW_MODE) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth()
+      if (cfg.shadow) return { shadow: true, raw: [] }
+      const sessionToken = await mkAuth(cfg)
       const params: Record<string, string | number> = { sys: 'MK0', token: sessionToken }
       if (req.data.processoId) params.cd_processo = req.data.processoId
-      const raw = await mkGet('/mk/WSMKListaClassificacoesAte.rule', params)
+      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKListaClassificacoesAte.rule', params)
       return { shadow: false, raw }
     }
 
@@ -318,7 +332,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       const payload = { slug, cpf, processoId, classificacaoId, info, comentarios }
 
-      if (SHADOW_MODE) {
+      if (cfg.shadow) {
         console.log('[MK shadow] criar_protocolo payload:', JSON.stringify(payload))
         await salvarLog({ uid, slug, cpf, shadow: true, payload })
         return { shadow: true }
@@ -329,9 +343,9 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       let resultado: { id: number; protocolo: string }
 
       try {
-        sessionToken = await mkAuth()
-        cliente = await mkBuscarClientePorCpf(sessionToken, cpf)
-        resultado = await mkCriarAtendimento({
+        sessionToken = await mkAuth(cfg)
+        cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+        resultado = await mkCriarAtendimento(cfg, {
           token: sessionToken,
           cd_cliente: cliente.codigo,
           cd_processo: processoId,
@@ -339,10 +353,9 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           origem_contato: origemContato ?? 9,
           info,
         })
-        // Insere cada bloco adicional como comentário público separado
         for (const bloco of comentarios ?? []) {
           if (bloco.trim()) {
-            await mkInserirComentario(sessionToken, resultado.id, bloco.trim())
+            await mkInserirComentario(cfg, sessionToken, resultado.id, bloco.trim())
           }
         }
       } catch (e) {
@@ -358,7 +371,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         clienteNome: cliente.nome,
         atendimentoId: resultado.id,
         protocolo: resultado.protocolo,
-        sessionToken,  // reutilizado pelos cards de comentário subsequentes
+        sessionToken,
       }
     }
 
@@ -369,14 +382,13 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       if (!atendimentoId) throw new HttpsError('invalid-argument', '"atendimentoId" é obrigatório.')
       if (!providedToken) throw new HttpsError('invalid-argument', '"sessionToken" é obrigatório.')
 
-      if (SHADOW_MODE) {
+      if (cfg.shadow) {
         console.log('[MK shadow] inserir_comentario:', JSON.stringify({ atendimentoId, comentario }))
         return { shadow: true }
       }
 
       try {
-        // Usa o mesmo token da sessão que criou o atendimento — não re-autentica
-        await mkInserirComentario(providedToken, atendimentoId, comentario.trim())
+        await mkInserirComentario(cfg, providedToken, atendimentoId, comentario.trim())
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)
@@ -395,7 +407,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       const payload = { slug, cpf, descricaoProblema, tipoOS, processoId, classificacaoId, grupoServico }
 
-      if (SHADOW_MODE) {
+      if (cfg.shadow) {
         console.log('[MK shadow] criar_os payload:', JSON.stringify(payload))
         await salvarLog({ uid, slug, cpf, shadow: true, payload })
         return { shadow: true }
@@ -407,9 +419,9 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       let osNumero: number
 
       try {
-        sessionToken = await mkAuth()
-        cliente = await mkBuscarClientePorCpf(sessionToken, cpf)
-        atendimento = await mkCriarAtendimento({
+        sessionToken = await mkAuth(cfg)
+        cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+        atendimento = await mkCriarAtendimento(cfg, {
           token: sessionToken,
           cd_cliente: cliente.codigo,
           cd_processo: processoId,
@@ -417,7 +429,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           origem_contato: 9,
           info: descricaoProblema,
         })
-        osNumero = await mkCriarOS({
+        osNumero = await mkCriarOS(cfg, {
           token: sessionToken,
           CodigoCliente: cliente.codigo,
           DescricaoProblema: descricaoProblema,

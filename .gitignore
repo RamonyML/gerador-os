@@ -5,6 +5,9 @@ node_modules
 .env.local
 web/.env
 web/.env.local
+# functions/.env contém apenas variáveis não-sensíveis (MK_BASE_URL, MK_MODE)
+# Os secrets reais (MK_TOKEN, MK_WEBSERVICE_PASSWORD) ficam no Secret Manager
+!functions/.env
 web/dist
 dist
 !ceps/dist
