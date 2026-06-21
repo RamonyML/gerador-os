@@ -54,6 +54,8 @@ import { SidebarBubbles } from './SidebarBubbles'
 import { SidebarDots } from './SidebarDots'
 import { SidebarHexagons } from './SidebarHexagons'
 import { SidebarMesh } from './SidebarMesh'
+import { ChatProvider } from '../contexts/ChatContext'
+import { ChatWidget } from './chat/ChatWidget'
 
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
@@ -442,6 +444,7 @@ export function AppLayout() {
   )
 
   return (
+    <ChatProvider>
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Box
         component="nav"
@@ -863,6 +866,9 @@ export function AppLayout() {
           onNavigate={() => navigate('/avisos')}
         />
       ) : null}
+
+      <ChatWidget />
     </Box>
+    </ChatProvider>
   )
 }
