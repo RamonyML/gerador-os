@@ -1,5 +1,8 @@
-import { Avatar, Box, Chip, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Avatar, Box, Chip, IconButton, InputBase, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG, type UserPresence } from '../../types/chat'
 import { SECTOR_LABELS, type Sector } from '../../types/profile'
@@ -108,46 +111,113 @@ type Props = {
 
 export function ChatUserList({ onSelectUser }: Props) {
   const { presence } = useChat()
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+  const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
 
-  const online = presence.filter((u) => u.status !== 'offline')
-  const offline = presence.filter((u) => u.status === 'offline')
+  const normalized = query.trim().toLowerCase()
+  const filtered = normalized
+    ? presence.filter((u) => u.displayName.toLowerCase().includes(normalized))
+    : presence
 
-  if (presence.length === 0) {
-    return (
-      <Box sx={{ py: 4, textAlign: 'center' }}>
-        <Typography variant="body2" color="text.secondary">
-          Nenhum usuário encontrado ainda
-        </Typography>
-      </Box>
-    )
+  const online = filtered.filter((u) => u.status !== 'offline')
+  const offline = filtered.filter((u) => u.status === 'offline')
+
+  const handleOpenSearch = () => setSearchOpen(true)
+  const handleCloseSearch = () => {
+    setQuery('')
+    setSearchOpen(false)
   }
 
   return (
-    <Box sx={{ py: 0.5 }}>
-      {online.length > 0 && (
-        <>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ px: 2.25, py: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
-          >
-            Ativos — {online.length}
-          </Typography>
-          {online.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
-        </>
-      )}
-      {offline.length > 0 && (
-        <>
-          <Typography
-            variant="caption"
-            color="text.disabled"
-            sx={{ px: 2.25, pt: 1.25, pb: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
-          >
-            Offline — {offline.length}
-          </Typography>
-          {offline.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
-        </>
-      )}
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Barra de busca */}
+      <Box
+        sx={{
+          px: 1.25,
+          py: 0.75,
+          borderBottom: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+          minHeight: 40,
+        }}
+      >
+        {searchOpen ? (
+          <>
+            <SearchRoundedIcon sx={{ fontSize: 16, color: 'text.disabled', flexShrink: 0 }} />
+            <InputBase
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar colega..."
+              sx={{
+                flex: 1,
+                fontSize: 13,
+                '& input': { p: 0 },
+              }}
+            />
+            <IconButton size="small" onClick={handleCloseSearch} sx={{ p: 0.25 }}>
+              <CloseRoundedIcon sx={{ fontSize: 15 }} />
+            </IconButton>
+          </>
+        ) : (
+          <>
+            <Typography variant="caption" color="text.secondary" sx={{ flex: 1, fontWeight: 600, letterSpacing: '0.04em' }}>
+              {presence.length} {presence.length === 1 ? 'colega' : 'colegas'}
+            </Typography>
+            <IconButton size="small" onClick={handleOpenSearch} sx={{ p: 0.25 }}>
+              <SearchRoundedIcon sx={{ fontSize: 17, color: 'text.secondary' }} />
+            </IconButton>
+          </>
+        )}
+      </Box>
+
+      {/* Lista */}
+      <Box sx={{ flex: 1, overflowY: 'auto', py: 0.5 }}>
+        {presence.length === 0 ? (
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Nenhum usuário encontrado ainda
+            </Typography>
+          </Box>
+        ) : filtered.length === 0 ? (
+          <Box sx={{ py: 3, textAlign: 'center' }}>
+            <Typography variant="body2" color="text.disabled">
+              Nenhum resultado para "{query}"
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            {online.length > 0 && (
+              <>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ px: 2.25, py: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+                >
+                  Ativos — {online.length}
+                </Typography>
+                {online.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+              </>
+            )}
+            {offline.length > 0 && (
+              <>
+                <Typography
+                  variant="caption"
+                  color={isDark ? 'text.disabled' : 'text.disabled'}
+                  sx={{ px: 2.25, pt: 1.25, pb: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+                >
+                  Offline — {offline.length}
+                </Typography>
+                {offline.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+              </>
+            )}
+          </>
+        )}
+      </Box>
     </Box>
   )
 }
