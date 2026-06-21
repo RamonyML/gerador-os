@@ -392,7 +392,7 @@ export function HomePage() {
                   xl: 'repeat(auto-fill, minmax(240px, 1fr))',
                 },
                 gap: 2,
-                alignItems: 'stretch',
+                alignItems: 'start',
               }}
             >
               {actions.map((a, index) => {
@@ -417,30 +417,27 @@ export function HomePage() {
                   </Fade>
                 )
               })}
-            </Box>
-          </Box>
 
-          {/* Widgets — Anotações + Chamados (T.I) */}
-          {profile && (
-            <Reveal delay={90}>
-              <Box sx={{ display: 'flex', gap: 2.5, flexWrap: 'wrap', alignItems: 'stretch' }}>
+              {/* NotesWidget — 2 colunas, flui junto com os cards */}
+              {profile && (
+                <Box sx={{ gridColumn: { xs: '1 / -1', sm: 'span 2', md: 'span 2' } }}>
+                  <NotesWidget />
+                </Box>
+              )}
 
-                <NotesWidget sx={{ flex: '0 0 calc(50% - 10px)', minWidth: 280 }} />
-
-                {/* Chamados — apenas T.I, como painel de controle */}
-                {isTi && <Paper
-                  elevation={0}
-                  sx={{
-                    flex: '1 1 260px',
-                    minWidth: 0,
-                    borderRadius: 4,
-                    border: 1,
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
+              {/* Chamados — apenas T.I, 2 colunas */}
+              {profile && isTi && <Paper
+                elevation={0}
+                sx={{
+                  gridColumn: { xs: '1 / -1', sm: 'span 2', md: 'span 2' },
+                  borderRadius: 4,
+                  border: 1,
+                  borderColor: 'divider',
+                  bgcolor: 'background.paper',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
                   <Box
                     sx={{
                       px: { xs: 2, sm: 2.5 },
@@ -566,9 +563,8 @@ export function HomePage() {
                   </Box>
                 </Paper>}
 
-              </Box>
-            </Reveal>
-          )}
+            </Box>
+          </Box>
 
           {/* Seu perfil */}
           {!profileMissing && profile ? (
