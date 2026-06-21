@@ -15,10 +15,10 @@ const _mkPass    = defineSecret('MK_WEBSERVICE_PASSWORD')
 type MkConfig = { baseUrl: string; token: string; password: string; shadow: boolean }
 function getMkConfig(): MkConfig {
   return {
-    baseUrl:  _mkBaseUrl.value().replace(/\/$/, ''),
-    token:    _mkToken.value(),
-    password: _mkPass.value(),
-    shadow:   _mkMode.value() !== 'real',
+    baseUrl:  _mkBaseUrl.value().replace(/\/$/, '').trim(),
+    token:    _mkToken.value().trim(),
+    password: _mkPass.value().trim(),
+    shadow:   _mkMode.value().trim() !== 'real',
   }
 }
 
@@ -122,6 +122,7 @@ async function mkAuth(cfg: MkConfig): Promise<string> {
   })
   const token = data.Token ?? data.tokenRetornoAutenticacao
   if (!token || data.status === 'ERRO') {
+    console.error('[MK] auth falhou — resposta completa:', JSON.stringify(data))
     throw new Error(`MK auth falhou — status: ${data.status ?? 'sem resposta'}`)
   }
   return token
