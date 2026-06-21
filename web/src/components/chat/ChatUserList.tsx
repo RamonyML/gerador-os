@@ -1,7 +1,8 @@
-import { Avatar, Box, Typography } from '@mui/material'
+import { Avatar, Box, Chip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG, type UserPresence } from '../../types/chat'
+import { SECTOR_LABELS, type Sector } from '../../types/profile'
 
 function StatusDot({ color }: { color: string }) {
   return (
@@ -63,9 +64,26 @@ function UserRow({ user, onSelect }: { user: UserPresence; onSelect: (uid: strin
       </Box>
 
       <Box sx={{ minWidth: 0, flex: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }} noWrap>
-          {user.displayName}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3, flex: 1 }} noWrap>
+            {user.displayName}
+          </Typography>
+          {user.sector && (
+            <Chip
+              label={SECTOR_LABELS[user.sector as Sector] ?? user.sector}
+              size="small"
+              sx={{
+                height: 16,
+                fontSize: 9,
+                fontWeight: 700,
+                flexShrink: 0,
+                bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.2 : 0.1),
+                color: 'primary.main',
+                '& .MuiChip-label': { px: 0.75 },
+              }}
+            />
+          )}
+        </Box>
         <Typography variant="caption" sx={{ color: cfg.color, fontWeight: 500 }}>
           {cfg.label}
         </Typography>

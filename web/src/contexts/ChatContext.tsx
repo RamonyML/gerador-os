@@ -42,7 +42,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     (status: UserStatus) => {
       if (!user || !profile) return
       const displayName = profile.displayName?.trim() || user.email || ''
-      void setPresence(user.uid, status, displayName, photoURL)
+      void setPresence(user.uid, status, displayName, photoURL, profile.sector)
     },
     [user, profile, photoURL],
   )

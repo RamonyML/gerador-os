@@ -67,7 +67,7 @@ export function ChatMessages({ messages, myUid }: Props) {
                 color: isMine ? '#fff' : 'text.primary',
               }}
             >
-              <Typography variant="body2" sx={{ lineHeight: 1.45, wordBreak: 'break-word' }}>
+              <Typography variant="body2" sx={{ lineHeight: 1.45, wordBreak: 'break-word', color: 'inherit' }}>
                 {msg.text}
               </Typography>
             </Box>

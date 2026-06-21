@@ -5,6 +5,7 @@ export type UserPresence = {
   displayName: string
   photoURL: string | null
   status: UserStatus
+  sector: string
   updatedAt: Date
 }
 

@@ -7,10 +7,11 @@ export async function setPresence(
   status: UserStatus,
   displayName: string,
   photoURL: string | null,
+  sector: string,
 ): Promise<void> {
   await setDoc(
     doc(db, 'presence', uid),
-    { uid, displayName, photoURL: photoURL ?? null, status, updatedAt: serverTimestamp() },
+    { uid, displayName, photoURL: photoURL ?? null, status, sector, updatedAt: serverTimestamp() },
     { merge: true },
   )
 }
@@ -24,6 +25,7 @@ export function subscribePresence(callback: (users: UserPresence[]) => void): ()
         displayName: data.displayName ?? '',
         photoURL: data.photoURL ?? null,
         status: (data.status ?? 'offline') as UserStatus,
+        sector: data.sector ?? '',
         updatedAt: data.updatedAt?.toDate() ?? new Date(),
       }
     })

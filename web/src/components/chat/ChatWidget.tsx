@@ -33,6 +33,7 @@ export function ChatWidget() {
         displayName: '…',
         photoURL: null,
         status: 'offline' as const,
+        sector: '',
         updatedAt: new Date(),
       })
     : null
@@ -67,7 +68,7 @@ export function ChatWidget() {
           sx={{
             width: 320,
             height: 460,
-            borderRadius: 3,
+            borderRadius: 1.5,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
