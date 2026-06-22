@@ -23,8 +23,9 @@ import {
 import {
   elapsedMs,
   formatElapsed,
+  getPausaDurationMs,
+  getPausaDurationLabel,
   getPausaStatus,
-  PAUSA_DURATION_MS,
   todayISO,
   type PausaEntry,
 } from '../types/pausa'
@@ -39,7 +40,7 @@ function useNow(interval = 1000): Date {
 }
 
 export function PausaWidget() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const theme = useTheme()
   const [entry, setEntry] = useState<PausaEntry | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -47,6 +48,8 @@ export function PausaWidget() {
   const today = todayISO()
   const now = useNow()
   const autoEndedRef = useRef(false)
+  const pausaDurationMs = getPausaDurationMs(profile?.sector)
+  const pausaDurationLabel = getPausaDurationLabel(profile?.sector)
 
   useEffect(() => {
     if (!user) return
@@ -57,11 +60,11 @@ export function PausaWidget() {
   const elapsed = status === 'em_pausa'
     ? now.getTime() - (entry?.inicioEfetivo?.getTime() ?? now.getTime())
     : entry ? elapsedMs(entry) : 0
-  const overdue = status === 'em_pausa' && elapsed > PAUSA_DURATION_MS
+  const overdue = status === 'em_pausa' && elapsed > pausaDurationMs
 
   useEffect(() => {
     if (!user || status !== 'em_pausa' || autoEndedRef.current) return
-    if (elapsed >= PAUSA_DURATION_MS) {
+    if (elapsed >= pausaDurationMs) {
       autoEndedRef.current = true
       void encerrarPausa(user.uid, today)
     }
@@ -213,7 +216,7 @@ export function PausaWidget() {
                   {formatElapsed(elapsed)}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {overdue ? '⚠️ Pausa ultrapassou 1 hora' : 'de 1h00m'}
+                  {overdue ? `⚠️ Pausa ultrapassou ${pausaDurationLabel}` : `de ${pausaDurationLabel}`}
                 </Typography>
               </Box>
               <Divider sx={{ mb: 1.5 }} />
@@ -237,7 +240,7 @@ export function PausaWidget() {
               <strong style={{ color: theme.palette.success.main }}>
                 {formatElapsed(elapsedMs(entry!))}
               </strong>{' '}
-              de 1h00m.
+              de {pausaDurationLabel}.
             </Typography>
           )}
         </Box>

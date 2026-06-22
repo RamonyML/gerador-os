@@ -141,9 +141,10 @@ function ReadOnlyNote({ content }: { content: string }) {
 
 type Props = {
   sx?: object
+  fixedHeight?: boolean
 }
 
-export function NotesWidget({ sx }: Props) {
+export function NotesWidget({ sx, fixedHeight = false }: Props) {
   const { user } = useAuth()
   const theme = useTheme()
   const { isDark } = useColorMode()
@@ -325,8 +326,10 @@ export function NotesWidget({ sx }: Props) {
 
       <Divider sx={{ flexShrink: 0 }} />
 
-      {/* Pages list — maxHeight fixo para não empurrar conteúdo abaixo */}
-      <Box sx={{ maxHeight: 420, overflowY: 'auto' }}>
+      <Box sx={fixedHeight
+        ? { flex: 1, minHeight: 0, overflowY: 'auto' }
+        : { maxHeight: 420, overflowY: 'auto' }
+      }>
         {!nbReady ? (
           <Box sx={{ p: 2 }}>
             <Stack spacing={1}>

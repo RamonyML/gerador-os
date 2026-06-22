@@ -10,6 +10,17 @@ export interface PausaEntry {
 export type PausaStatus = 'sem_pausa' | 'agendada' | 'em_pausa' | 'concluida'
 
 export const PAUSA_DURATION_MS = 60 * 60 * 1000
+export const PAUSA_DURATION_2H_MS = 2 * 60 * 60 * 1000
+
+const SETORES_2H = ['financeiro', 'comercial']
+
+export function getPausaDurationMs(sector?: string): number {
+  return sector && SETORES_2H.includes(sector) ? PAUSA_DURATION_2H_MS : PAUSA_DURATION_MS
+}
+
+export function getPausaDurationLabel(sector?: string): string {
+  return sector && SETORES_2H.includes(sector) ? '2h00m' : '1h00m'
+}
 
 export function getPausaStatus(entry: PausaEntry | null | undefined): PausaStatus {
   if (!entry || !entry.horarioAgendado) return 'sem_pausa'

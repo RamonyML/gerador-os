@@ -1,5 +1,6 @@
 import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
+import { HORARIOS_SABADO, HORARIOS_SEMANA } from './horarios'
 
 const T_TITULAR = 'titular'
 const T_TITULAR_TERCEIRO = 'titular_terceiro'
@@ -214,16 +215,11 @@ export const INST_GRATIS_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     control: 'select',
     section: S_PLANO,
     layout: { md: 3 },
-    options: [
-      { value: '08:30', label: '08:30' },
-      { value: '09:30', label: '09:30' },
-      { value: '10:30', label: '10:30' },
-      { value: '11:30', label: '11:30' },
-      { value: '14:30', label: '14:30' },
-      { value: '15:30', label: '15:30' },
-      { value: '16:30', label: '16:30' },
-      { value: '17:30', label: '17:30' },
-    ],
+    optionsFromWeekday: {
+      sourceField: 'dataVisita',
+      byWeekday: { 6: HORARIOS_SABADO, 0: 'disabled' },
+      defaultOptions: HORARIOS_SEMANA,
+    },
   },
 ]
 

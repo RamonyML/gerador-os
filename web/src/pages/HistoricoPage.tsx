@@ -22,6 +22,7 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsHistory } from '../hooks/useOsHistory'
 import { db } from '../lib/firebase'
@@ -77,6 +78,12 @@ export function HistoricoPage() {
   const [copyOk, setCopyOk] = useState<string | null>(null)
 
   const hubRoute = profile ? (SECTOR_HUB[profile.sector] ?? '/gerar-os') : '/gerar-os'
+
+  const handleEdit = (entry: OsHistoryEntry) => {
+    navigate(`/gerar-os?slug=${entry.slug}`, {
+      state: { historyValues: entry.values ?? null, historySlug: entry.slug },
+    })
+  }
 
   const grouped = useMemo(() => {
     if (histState.status !== 'ready') return []
@@ -243,6 +250,15 @@ export function HistoricoPage() {
                             sx={{ color: copyOk === entry.id ? 'success.main' : 'text.secondary' }}
                           >
                             <ContentCopyRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title={entry.values ? 'Abrir para edição (formulário pré-preenchido)' : 'Abrir formulário (campos em branco — registro antigo)'}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEdit(entry)}
+                            sx={{ color: entry.values ? 'primary.main' : 'text.disabled' }}
+                          >
+                            <EditNoteRoundedIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Ver texto completo">

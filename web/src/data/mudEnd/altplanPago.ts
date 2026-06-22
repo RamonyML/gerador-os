@@ -511,6 +511,7 @@ export const MUD_END_ALTPLAN_PAGO_FIELDS: OsTemplateField[] = [
     layout: { md: 3 },
   },
   { id: 'protocolo', label: 'Nº Protocolo', control: 'text', placeholder: '123.456', section: S_AGE, layout: { md: 3 } },
+  { id: 'obs', label: 'Observações', control: 'text', placeholder: 'Observações adicionais (opcional)', section: S_AGE, layout: { md: 12 } },
 ]
 
 export function getMudEndAltplanPagoDefaults() {

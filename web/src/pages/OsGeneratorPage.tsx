@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link as RouterLink, useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link as RouterLink, useLocation, useSearchParams } from 'react-router-dom'
 import {
   Accordion,
   AccordionDetails,
@@ -172,7 +172,11 @@ export function OsGeneratorPage() {
   const theme = useTheme()
   const { user, profile, profileMissing } = useAuth()
   const state = useOsTemplates(profile)
+  const location = useLocation()
   const [searchParams] = useSearchParams()
+  const historyStateRef = useRef(
+    (location.state as { historyValues?: Record<string, string>; historySlug?: string } | null) ?? null,
+  )
   const [selectedId, setSelectedId] = useState<string>('')
   const [values, setValues] = useState<Record<string, string>>({})
   const [copyOk, setCopyOk] = useState(false)
@@ -251,9 +255,20 @@ export function OsGeneratorPage() {
       ? vis.find((t) => t.id === preferId)!
       : vis[0]
     setSelectedId(next.id)
-    setValues(buildInitialValues(next))
     setPreviewTab(0)
     setAttempted(false)
+
+    const pending = historyStateRef.current
+    if (pending?.historyValues && pending.historySlug === next.slug) {
+      historyStateRef.current = null
+      const merged = buildInitialValues(next)
+      for (const [k, v] of Object.entries(pending.historyValues)) {
+        merged[k] = String(v ?? '')
+      }
+      setValues(merged)
+    } else {
+      setValues(buildInitialValues(next))
+    }
   }, [state.status, visibleTemplates, tplParam, slugParam, demandParam])
 
   useEffect(() => {
@@ -640,6 +655,29 @@ export function OsGeneratorPage() {
   const activePreviewBody =
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
 
+  const isMudEndComAnalise =
+    selected?.slug?.startsWith('mud-end-') && selected.slug !== 'mud-end-inviabilidade'
+
+  const handleCopyAnalise = useCallback(async () => {
+    const cliente = (values.cliente ?? '').trim().toUpperCase()
+    const dataVisita = values.dataVisita ?? ''
+    const adress = (values.adress ?? '').trim().toUpperCase()
+    const num = (values.num ?? '').replace(/\D/g, '')
+    const complemento = (values.complemento ?? '').trim().toUpperCase()
+    const cep = values.cep ?? ''
+    const bairro = (values.bairro ?? '').trim().toUpperCase()
+    const protocolo = values.protocolo ?? ''
+    const obs = (values.obs ?? '').trim().toUpperCase()
+    const texto =
+      `*ANÁLISE*\n\n*${cliente}*\n\n> Mudança de endereço \n> Dentro do prazo de 90 dias.\n> Agendado para dia ${dataVisita}.\n> Novo endereço: ${adress}, ${num} (${complemento})\n> CEP: ${cep} / Bairro: ${bairro}\n> Protocolo: ${protocolo}\n\nENDEREÇO AINDA NÃO ALTERADO EM SISTEMA\n\nOBS.: ${obs}`
+    try {
+      await navigator.clipboard.writeText(texto)
+      setCopyOk(true)
+    } catch {
+      /* ignore */
+    }
+  }, [values])
+
   const handleCopyEncerramento = useCallback(async () => {
     const roteador = (values.roteador ?? '').trim()
     const agora = new Date()
@@ -694,6 +732,7 @@ export function OsGeneratorPage() {
         preview,
         clientName: (values.cliente ?? values.nome ?? '').trim(),
         obs: saveObs.trim(),
+        values,
       })
       setSaveDialogOpen(false)
       setSaveObs('')
@@ -1009,6 +1048,17 @@ export function OsGeneratorPage() {
                     disabled={!values.roteador}
                   >
                     Encerrar O.S
+                  </Button>
+                ) : null}
+                {isMudEndComAnalise ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="warning"
+                    startIcon={<ContentCopy />}
+                    onClick={() => void handleCopyAnalise()}
+                  >
+                    Análise 90 dias
                   </Button>
                 ) : null}
                 <Button

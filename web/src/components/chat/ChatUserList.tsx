@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Avatar, Box, Chip, IconButton, InputBase, Typography } from '@mui/material'
+import { Avatar, Badge, Box, Chip, IconButton, InputBase, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG, type UserPresence } from '../../types/chat'
 import { SECTOR_LABELS, type Sector } from '../../types/profile'
@@ -32,15 +33,28 @@ function initialsFrom(name: string): string {
   return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
 }
 
-function UserRow({ user, onSelect }: { user: UserPresence; onSelect: (uid: string) => void }) {
+function formatLastTime(date: Date): string {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const mins = Math.floor(diff / 60_000)
+  if (mins < 1) return 'agora'
+  if (mins < 60) return `${mins}m`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h`
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+}
+
+function UserRow({ user: otherUser, onSelect }: { user: UserPresence; onSelect: (uid: string) => void }) {
   const { chats } = useChat()
+  const { user } = useAuth()
   const theme = useTheme()
-  const cfg = STATUS_CONFIG[user.status]
-  const chat = chats.find((c) => c.participants.includes(user.uid))
+  const cfg = STATUS_CONFIG[otherUser.status]
+  const chat = chats.find((c) => c.participants.includes(otherUser.uid))
+  const unread = user ? (chat?.unreadCount[user.uid] ?? 0) : 0
 
   return (
     <Box
-      onClick={() => onSelect(user.uid)}
+      onClick={() => onSelect(otherUser.uid)}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -51,29 +65,42 @@ function UserRow({ user, onSelect }: { user: UserPresence; onSelect: (uid: strin
         borderRadius: 2,
         mx: 0.75,
         transition: 'background 0.15s',
+        bgcolor: unread > 0 ? alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.08 : 0.05) : 'transparent',
         '&:hover': {
-          bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.1 : 0.06),
+          bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.12 : 0.08),
         },
       }}
     >
       <Box sx={{ position: 'relative', flexShrink: 0 }}>
-        <Avatar
-          src={user.photoURL ?? undefined}
-          sx={{ width: 36, height: 36, fontSize: 13, fontWeight: 700, bgcolor: 'primary.main' }}
+        <Badge
+          badgeContent={unread || undefined}
+          color="error"
+          overlap="circular"
+          max={9}
+          sx={{ '& .MuiBadge-badge': { fontSize: 9, height: 15, minWidth: 15, p: 0 } }}
         >
-          {initialsFrom(user.displayName)}
-        </Avatar>
+          <Avatar
+            src={otherUser.photoURL ?? undefined}
+            sx={{ width: 36, height: 36, fontSize: 13, fontWeight: 700, bgcolor: 'primary.main' }}
+          >
+            {initialsFrom(otherUser.displayName)}
+          </Avatar>
+        </Badge>
         <StatusDot color={cfg.color} />
       </Box>
 
       <Box sx={{ minWidth: 0, flex: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3, flex: 1 }} noWrap>
-            {user.displayName}
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: unread > 0 ? 700 : 600, lineHeight: 1.3, flex: 1 }}
+            noWrap
+          >
+            {otherUser.displayName}
           </Typography>
-          {user.sector && (
+          {otherUser.sector && (
             <Chip
-              label={SECTOR_LABELS[user.sector as Sector] ?? user.sector}
+              label={SECTOR_LABELS[otherUser.sector as Sector] ?? otherUser.sector}
               size="small"
               sx={{
                 height: 16,
@@ -86,6 +113,11 @@ function UserRow({ user, onSelect }: { user: UserPresence; onSelect: (uid: strin
               }}
             />
           )}
+          {chat?.lastMessageAt && (
+            <Typography variant="caption" sx={{ fontSize: 10, color: unread > 0 ? 'primary.main' : 'text.disabled', flexShrink: 0 }}>
+              {formatLastTime(chat.lastMessageAt)}
+            </Typography>
+          )}
         </Box>
         <Typography variant="caption" sx={{ color: cfg.color, fontWeight: 500 }}>
           {cfg.label}
@@ -93,8 +125,8 @@ function UserRow({ user, onSelect }: { user: UserPresence; onSelect: (uid: strin
         {chat?.lastMessage ? (
           <Typography
             variant="caption"
-            color="text.disabled"
-            sx={{ display: 'block', lineHeight: 1.2 }}
+            sx={{ display: 'block', lineHeight: 1.2, fontWeight: unread > 0 ? 600 : 400 }}
+            color={unread > 0 ? 'text.primary' : 'text.disabled'}
             noWrap
           >
             {chat.lastMessage}
@@ -110,7 +142,8 @@ type Props = {
 }
 
 export function ChatUserList({ onSelectUser }: Props) {
-  const { presence } = useChat()
+  const { presence, chats } = useChat()
+  const { user } = useAuth()
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const [query, setQuery] = useState('')
@@ -121,8 +154,21 @@ export function ChatUserList({ onSelectUser }: Props) {
     ? presence.filter((u) => u.displayName.toLowerCase().includes(normalized))
     : presence
 
-  const online = filtered.filter((u) => u.status !== 'offline')
-  const offline = filtered.filter((u) => u.status === 'offline')
+  // Ordena dentro de cada grupo pelo tempo da última mensagem (mais recente primeiro)
+  const sortByRecent = (a: UserPresence, b: UserPresence) => {
+    const chatA = chats.find((c) => c.participants.includes(a.uid))
+    const chatB = chats.find((c) => c.participants.includes(b.uid))
+    // Conversas com não-lidas sempre primeiro
+    const unreadA = user ? (chatA?.unreadCount[user.uid] ?? 0) : 0
+    const unreadB = user ? (chatB?.unreadCount[user.uid] ?? 0) : 0
+    if (unreadA !== unreadB) return unreadB - unreadA
+    const timeA = chatA?.lastMessageAt?.getTime() ?? 0
+    const timeB = chatB?.lastMessageAt?.getTime() ?? 0
+    return timeB - timeA
+  }
+
+  const online = filtered.filter((u) => u.status !== 'offline').sort(sortByRecent)
+  const offline = filtered.filter((u) => u.status === 'offline').sort(sortByRecent)
 
   const handleOpenSearch = () => setSearchOpen(true)
   const handleCloseSearch = () => {
@@ -153,11 +199,7 @@ export function ChatUserList({ onSelectUser }: Props) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar usuário..."
-              sx={{
-                flex: 1,
-                fontSize: 13,
-                '& input': { p: 0 },
-              }}
+              sx={{ flex: 1, fontSize: 13, '& input': { p: 0 } }}
             />
             <IconButton size="small" onClick={handleCloseSearch} sx={{ p: 0.25 }}>
               <CloseRoundedIcon sx={{ fontSize: 15 }} />

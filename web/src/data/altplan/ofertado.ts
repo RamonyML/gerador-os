@@ -27,7 +27,7 @@ export function isOfertado(rawValues: Record<string, unknown>): boolean {
 export function aplicarOfertadoProtocolo(texto: string): string {
   return texto
     .replace(
-      /^(.+?) ENTROU EM CONTATO VIA (.+?) SOLICITANDO ALTERAÇÃO DE PLANO\./m,
+      /^(.+?) ENTROU EM CONTATO (?:VIA|POR) (.+?) SOLICITANDO ALTERAÇÃO DE PLANO\./m,
       'OFERTEI A $1 VIA $2 ALTERAÇÃO DE PLANO.',
     )
     .replace(/QUESTIONADO, CLIENTE DISSE QUE "[^\n]*"\.\n/, '')

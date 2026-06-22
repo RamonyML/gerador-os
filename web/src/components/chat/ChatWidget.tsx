@@ -13,14 +13,12 @@ import { ChatConversation } from './ChatConversation'
 
 export function ChatWidget() {
   const { user, profile } = useAuth()
-  const { isWidgetOpen, setWidgetOpen, totalUnread, myStatus, presence, openChat, closeChat } = useChat()
+  const { isWidgetOpen, setWidgetOpen, totalUnread, myStatus, presence, openChat, closeChat, activeConvUid, setActiveConvUid } = useChat()
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
 
   const [statusAnchor, setStatusAnchor] = useState<HTMLElement | null>(null)
-  // Qual conversa está visível no painel (null = lista de usuários)
-  const [activeConvUid, setActiveConvUid] = useState<string | null>(null)
 
   // Se o usuário não está autenticado, não renderiza
   if (!user || !profile) return null

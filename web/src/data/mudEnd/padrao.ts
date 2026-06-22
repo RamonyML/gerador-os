@@ -652,6 +652,14 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     section: S_AGE,
     layout: { md: 3 },
   },
+  {
+    id: 'obs',
+    label: 'Observações',
+    control: 'text',
+    placeholder: 'Observações adicionais (opcional)',
+    section: S_AGE,
+    layout: { md: 12 },
+  },
 ]
 
 export function getMudEndPadraoDefaults() {

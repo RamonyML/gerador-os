@@ -26,10 +26,12 @@ export interface OsHistoryEntry {
   clientName: string
   obs: string
   createdAt: Date
+  /** Valores individuais dos campos do formulário — presentes apenas em registros novos. */
+  values?: Record<string, string>
 }
 
 function parseEntry(id: string, data: Record<string, unknown>): OsHistoryEntry | null {
-  const { uid, slug, title, demandCategory, preview, createdAt, clientName, obs } = data
+  const { uid, slug, title, demandCategory, preview, createdAt, clientName, obs, values } = data
   if (
     typeof uid !== 'string' ||
     typeof slug !== 'string' ||
@@ -39,6 +41,12 @@ function parseEntry(id: string, data: Record<string, unknown>): OsHistoryEntry |
     !(createdAt instanceof Timestamp)
   )
     return null
+  const parsedValues: Record<string, string> | undefined =
+    values && typeof values === 'object' && !Array.isArray(values)
+      ? Object.fromEntries(
+          Object.entries(values as Record<string, unknown>).map(([k, v]) => [k, String(v ?? '')]),
+        )
+      : undefined
   return {
     id,
     uid,
@@ -49,6 +57,7 @@ function parseEntry(id: string, data: Record<string, unknown>): OsHistoryEntry |
     clientName: typeof clientName === 'string' ? clientName : '',
     obs: typeof obs === 'string' ? obs : '',
     createdAt: createdAt.toDate(),
+    values: parsedValues,
   }
 }
 
@@ -64,6 +73,7 @@ export async function saveOsHistory(
     preview: entry.preview,
     clientName: entry.clientName,
     obs: entry.obs,
+    ...(entry.values ? { values: entry.values } : {}),
     createdAt: serverTimestamp(),
   })
 }

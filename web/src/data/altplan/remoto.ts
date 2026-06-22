@@ -1,5 +1,12 @@
 import type { OsTemplateField } from '../../types/osTemplate'
 import { formatSinalFibraSaida } from '../../lib/sinalFibraMask'
+import {
+  ORIGEM_OPTS,
+  ORIGEM_PADRAO,
+  isOfertado,
+  aplicarOfertadoProtocolo,
+  aplicarOfertadoOS,
+} from './ofertado'
 
 /**
  * ALTERAÇÃO DE PLANO — REMOTO (fluxo único com variações de solicitação).
@@ -92,6 +99,13 @@ export function buildAltplanRemotoTextos(
   const [dataLigacao, horaLigacao] = splitDataHora(v.dataLigacao)
   const [dataProtocolo, horaProtocolo] = splitDataHora(v.dataProtocolo)
 
+  const ofertado = isOfertado(rawValues)
+
+  const finaliza = (proto: string, os: string) => ({
+    altplanRemotoTextoProtocolo: ofertado ? aplicarOfertadoProtocolo(proto) : proto,
+    altplanRemotoTextoOS: ofertado ? aplicarOfertadoOS(os) : os,
+  })
+
   const planoBloco = [
     `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}`,
     '',
@@ -137,7 +151,7 @@ export function buildAltplanRemotoTextos(
     ].join('\n')
 
     const os = `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro}) SOLICITOU POR ${canal} (${contatoSol}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${planoAtual}. PLANO ESCOLHIDO: ${planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. NÃO É NECESSÁRIA VISITA TÉCNICA, O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${solicitantePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, EQUIPAMENTO PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO COM ${clientePrimeiro} (ASSINANTE) POR ${canal} QUE CONFIRMOU E AUTORIZOU O UPGRADE, ACORDO FIRMADO POR ${canal} (${contato}) SOB PROTOCOLO Nº${protocolo} EM ${dataLigacao} ÀS ${horaLigacao} HRS.`
-    return { altplanRemotoTextoProtocolo: protocoloTexto, altplanRemotoTextoOS: os }
+    return finaliza(protocoloTexto, os)
   }
 
   if (tipo === R_PJ) {
@@ -164,7 +178,7 @@ export function buildAltplanRemotoTextos(
     ].join('\n')
 
     const os = `${solicitantePrimeiro} (${cargo}) SOLICITOU POR ${canal} (${contato}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${planoAtual}. PLANO ESCOLHIDO: ${planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. NÃO É NECESSÁRIA VISITA TÉCNICA, O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${solicitantePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, EQUIPAMENTO PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. PROTOCOLO Nº${protocolo} EM ${dataProtocolo} ÀS ${horaProtocolo} HRS.`
-    return { altplanRemotoTextoProtocolo: protocoloTexto, altplanRemotoTextoOS: os }
+    return finaliza(protocoloTexto, os)
   }
 
   // R_TITULAR (padrão)
@@ -195,7 +209,7 @@ export function buildAltplanRemotoTextos(
   ].join('\n')
 
   const os = `${clientePrimeiro} SOLICITOU POR ${canal} (${contato}) ALTERAÇÃO DO PLANO DE INTERNET: PLANO ATUAL: ${planoAtual}. PLANO ESCOLHIDO: ${planoEscolhido}. RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. NÃO É NECESSÁRIA VISITA TÉCNICA, O ROTEADOR INSTALADO ANTERIORMENTE É COMPATÍVEL COM O NOVO PLANO ESCOLHIDO E ${clientePrimeiro} DISSE QUE A INSTALAÇÃO DESTE PERMANECE COMO FOI EXECUTADA, EQUIPAMENTO PERMANECERÁ EMPRESTADO EM REGIME DE COMODATO. PROTOCOLO Nº${protocolo} EM ${dataProtocolo} ÀS ${horaProtocolo} HRS.`
-  return { altplanRemotoTextoProtocolo: protocoloTexto, altplanRemotoTextoOS: os }
+  return finaliza(protocoloTexto, os)
 }
 
 /** Opções de plano/roteador — espelham os <select> do legado (reusadas no presencial). */
@@ -344,6 +358,14 @@ export const ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     layout: { md: 12 },
   },
   {
+    id: 'origem',
+    label: 'Origem da alteração',
+    control: 'radio',
+    defaultValue: ORIGEM_PADRAO,
+    options: ORIGEM_OPTS,
+    layout: { md: 12 },
+  },
+  {
     id: 'solicitante',
     label: 'Nome do solicitante',
     control: 'text',
@@ -436,6 +458,7 @@ export const ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     control: 'text',
     placeholder: "Ex.: 'deseja cortar gastos'",
     section: S_PLANO,
+    showWhen: { field: 'origem', equals: ORIGEM_PADRAO },
     layout: { md: 12 },
   },
   {

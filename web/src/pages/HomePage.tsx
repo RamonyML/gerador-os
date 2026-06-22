@@ -475,7 +475,6 @@ export function HomePage() {
                     xl: 'repeat(auto-fill, minmax(240px, 1fr))',
                   },
                   gap: 2,
-                  alignItems: 'start',
                 }}
               >
                 {actions.map((a, index) => {
@@ -615,17 +614,28 @@ export function HomePage() {
 
             </Box>{/* fim área animada */}
 
-              {/* Chamados — apenas T.I, 2 colunas */}
+              {/* Chamados + Anotações: lado a lado para T.I., empilhado para os demais */}
+              <Box
+                sx={isTi ? {
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                  gap: 2,
+                  alignItems: 'stretch',
+                  height: { md: 420 },
+                } : undefined}
+              >
+
+              {/* Chamados — apenas T.I. */}
               {profile && isTi && <Paper
                 elevation={0}
                 sx={{
-                  gridColumn: { xs: '1 / -1', sm: 'span 2', md: 'span 2' },
                   borderRadius: 4,
                   border: 1,
                   borderColor: 'divider',
                   bgcolor: 'background.paper',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflow: 'hidden',
                 }}
               >
                   <Box
@@ -655,7 +665,7 @@ export function HomePage() {
 
                   <Divider />
 
-                  <Box sx={{ px: { xs: 2, sm: 2.5 }, py: 1.75, flex: 1 }}>
+                  <Box sx={{ px: { xs: 2, sm: 2.5 }, py: 1.75, flex: 1, overflowY: 'auto', minHeight: 0 }}>
                     {!ticketsReady ? (
                       <Stack spacing={1}>
                         {[0, 1].map((i) => (
@@ -753,8 +763,9 @@ export function HomePage() {
                   </Box>
                 </Paper>}
 
-            {/* NotesWidget — fora do grid, sem interferir nos NavCards */}
-            {profile && <NotesWidget />}
+              {profile && <NotesWidget fixedHeight={isTi} />}
+
+              </Box>{/* fim wrapper chamados+anotações */}
 
             </Box>{/* fim coluna principal */}
 

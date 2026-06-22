@@ -52,6 +52,16 @@ export interface OsTemplateField {
     field: string
     equals: string | string[]
   }
+  /**
+   * Opções dinâmicas baseadas no dia da semana de um campo de data.
+   * byWeekday: mapa de getDay() (0=Dom, 6=Sáb) para opções ou 'disabled'.
+   * defaultOptions: usado quando a data não está preenchida ou o dia não está no mapa.
+   */
+  optionsFromWeekday?: {
+    sourceField: string
+    byWeekday: Partial<Record<number, FieldOption[] | 'disabled'>>
+    defaultOptions: FieldOption[]
+  }
 }
 
 /**

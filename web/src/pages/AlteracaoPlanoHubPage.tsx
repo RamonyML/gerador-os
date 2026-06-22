@@ -1,21 +1,16 @@
 import { Typography } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
 import SettingsRemoteOutlinedIcon from '@mui/icons-material/SettingsRemoteOutlined'
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
 import RouterOutlinedIcon from '@mui/icons-material/RouterOutlined'
 import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined'
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined'
 import { HubCatalog, type HubSection } from '../components/HubCatalog'
 
 const ICON_SX = { fontSize: 26 } as const
 
 export function AlteracaoPlanoHubPage() {
-  const theme = useTheme()
-  const success = theme.palette.success.main
-
   const sections: HubSection[] = [
     {
-      title: 'Padrão',
+      title: 'Ativo / Receptivo',
       items: [
         {
           label: 'Remoto (titular / terceiro / PJ)',
@@ -55,42 +50,6 @@ export function AlteracaoPlanoHubPage() {
         },
       ],
     },
-    {
-      title: 'Ofertado',
-      accent: success,
-      items: [
-        {
-          label: 'Remoto',
-          to: '/suporte/demanda/alteracao-plano',
-          description: 'Lista de modelos ofertados desta categoria.',
-          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
-        },
-        {
-          label: 'Sem troca: isento',
-          to: '/suporte/demanda/alteracao-plano',
-          description: 'Lista de modelos ofertados desta categoria.',
-          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
-        },
-        {
-          label: 'Sem troca: pago',
-          to: '/suporte/demanda/alteracao-plano',
-          description: 'Lista de modelos ofertados desta categoria.',
-          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
-        },
-        {
-          label: 'Com troca: isento',
-          to: '/suporte/demanda/alteracao-plano',
-          description: 'Lista de modelos ofertados desta categoria.',
-          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
-        },
-        {
-          label: 'Com troca: pago',
-          to: '/suporte/demanda/alteracao-plano',
-          description: 'Lista de modelos ofertados desta categoria.',
-          icon: <LocalOfferOutlinedIcon sx={ICON_SX} />,
-        },
-      ],
-    },
   ]
 
   return (
@@ -100,9 +59,9 @@ export function AlteracaoPlanoHubPage() {
       subtitle={
         <Typography variant="body1" color="text.secondary">
           Escolha o tipo de alteração. Os fluxos <strong>Remoto</strong> e{' '}
-          <strong>Presencial</strong> abrem o gerador já no formulário (variações de titular,
-          terceiro e PJ no próprio modelo); o modo <strong>ofertado</strong> está disponível como
-          alternância dentro de cada fluxo padrão.
+          <strong>Presencial</strong> abrem o gerador já no formulário — variações de titular,
+          terceiro e PJ no próprio modelo. O modo <strong>ofertado</strong> está disponível como
+          alternância dentro de cada formulário.
         </Typography>
       }
       backTo="/suporte"

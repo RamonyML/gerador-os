@@ -27,7 +27,7 @@ import {
 import { BAIRROS_UDI } from '../data/bairros'
 import { GRAU_RELACIONAMENTO } from '../data/grauRelacionamento'
 import { CARGO_FUNCAO } from '../data/cargoFuncao'
-import type { OsTemplateField } from '../types/osTemplate'
+import type { FieldOption, OsTemplateField } from '../types/osTemplate'
 import { getFieldControl, resolveFieldGridSize } from '../types/osTemplate'
 import {
   CepLookupError,
@@ -128,12 +128,38 @@ function isFieldVisible(
     : current === expected
 }
 
+function weekdayFromBrDate(dateStr: string): number | null {
+  const parts = dateStr.split('/')
+  if (parts.length !== 3) return null
+  const [dd, mm, yyyy] = parts
+  const d = new Date(Number(yyyy), Number(mm) - 1, Number(dd))
+  return isNaN(d.getTime()) ? null : d.getDay()
+}
+
+function resolveWeekdayOptions(
+  field: OsTemplateField,
+  allValues: Record<string, string>,
+): { options: FieldOption[]; disabled: boolean } | null {
+  const conf = field.optionsFromWeekday
+  if (!conf) return null
+  const dateStr = allValues[conf.sourceField] ?? ''
+  const weekday = weekdayFromBrDate(dateStr)
+  if (weekday === null) return { options: conf.defaultOptions, disabled: false }
+  const entry = conf.byWeekday[weekday]
+  if (entry === 'disabled') return { options: [], disabled: true }
+  return { options: entry ?? conf.defaultOptions, disabled: false }
+}
+
 export function isFieldDisabled(
   field: OsTemplateField,
   values: Record<string, string>,
 ): boolean {
   // CTOI não tem identificação própria; o campo CTO só faz sentido para CTOE
   if (field.id === 'cto') return (values['ctoType'] ?? '') === 'CTOI'
+  if (field.optionsFromWeekday) {
+    const resolved = resolveWeekdayOptions(field, values)
+    if (resolved?.disabled) return true
+  }
   return false
 }
 
@@ -245,6 +271,13 @@ export function OsTemplateFieldsForm({
                       onChange(id, v)
                       if (v === 'CTOI') onChange('cto', '')
                     }
+                  : fields.some((ff) => ff.optionsFromWeekday?.sourceField === f.id)
+                  ? (id: string, v: string) => {
+                      onChange(id, v)
+                      for (const ff of fields) {
+                        if (ff.optionsFromWeekday?.sourceField === f.id) onChange(ff.id, '')
+                      }
+                    }
                   : onChange
               return (
                 <Grid key={f.id} size={{ xs: g.xs, sm: g.sm, md: g.md }}>
@@ -271,6 +304,7 @@ export function OsTemplateFieldsForm({
                       onChange={fieldOnChange}
                       disabled={disabled}
                       hasError={errorFieldIds?.has(f.id) ?? false}
+                      allValues={values}
                     />
                   )}
                 </Grid>
@@ -663,12 +697,14 @@ function FieldInput({
   onChange,
   disabled = false,
   hasError = false,
+  allValues = {},
 }: {
   field: OsTemplateField
   value: string
   onChange: (id: string, value: string) => void
   disabled?: boolean
   hasError?: boolean
+  allValues?: Record<string, string>
 }) {
   const kind = getFieldControl(f)
 
@@ -766,29 +802,38 @@ function FieldInput({
     )
   }
 
-  if (kind === 'select' && f.options && f.options.length > 0) {
-    return (
-      <FormControl fullWidth size="small" disabled={disabled}>
-        <InputLabel id={`${f.id}-lbl`}>{f.label}</InputLabel>
-        <Select
-          labelId={`${f.id}-lbl`}
-          label={f.label}
-          value={value}
-          onChange={(e) => onChange(f.id, e.target.value)}
-        >
-          {f.options.map((opt, i) => (
-            <MenuItem key={`${f.id}-opt-${i}`} value={opt.value}>
-              {opt.label}
-            </MenuItem>
-          ))}
-        </Select>
-        {f.placeholder ? (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-            {f.placeholder}
-          </Typography>
-        ) : null}
-      </FormControl>
-    )
+  if (kind === 'select') {
+    const weekdayResolved = resolveWeekdayOptions(f, allValues)
+    const selectOptions = weekdayResolved?.options ?? f.options ?? []
+    const isDisabled = disabled || (weekdayResolved?.disabled === true)
+    const helperText = weekdayResolved?.disabled
+      ? 'Não atendemos aos domingos'
+      : f.placeholder ?? null
+
+    if (selectOptions.length > 0 || isDisabled) {
+      return (
+        <FormControl fullWidth size="small" disabled={isDisabled}>
+          <InputLabel id={`${f.id}-lbl`}>{f.label}</InputLabel>
+          <Select
+            labelId={`${f.id}-lbl`}
+            label={f.label}
+            value={isDisabled ? '' : value}
+            onChange={(e) => onChange(f.id, e.target.value)}
+          >
+            {selectOptions.map((opt, i) => (
+              <MenuItem key={`${f.id}-opt-${i}`} value={opt.value}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+          {helperText ? (
+            <Typography variant="caption" color={weekdayResolved?.disabled ? 'error' : 'text.secondary'} sx={{ mt: 0.5 }}>
+              {helperText}
+            </Typography>
+          ) : null}
+        </FormControl>
+      )
+    }
   }
 
   if (kind === 'radio' && f.options && f.options.length > 0) {

@@ -28,6 +28,8 @@ type ChatContextValue = {
   totalUnread: number
   isWidgetOpen: boolean
   setWidgetOpen: (v: boolean) => void
+  activeConvUid: string | null
+  setActiveConvUid: (uid: string | null) => void
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null)
@@ -40,7 +42,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [openConversations, setOpenConversations] = useState<OpenConv[]>([])
   const [chats, setChats] = useState<Chat[]>([])
   const [isWidgetOpen, setWidgetOpen] = useState(false)
+  const [activeConvUid, setActiveConvUid] = useState<string | null>(null)
   const statusRef = useRef<UserStatus>('online')
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const prevChatsRef = useRef<Chat[]>([])
+  const chatInitializedRef = useRef(false)
+  const isWidgetOpenRef = useRef(false)
+  const activeConvUidRef = useRef<string | null>(null)
 
   const pushPresence = useCallback(
     (status: UserStatus) => {
@@ -66,15 +74,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     pushPresence('online')
 
     const handleBeforeUnload = () => pushPresence('offline')
-    const handleVisibility = () => {
-      pushPresence(document.hidden ? 'offline' : statusRef.current)
-    }
-
     window.addEventListener('beforeunload', handleBeforeUnload)
-    document.addEventListener('visibilitychange', handleVisibility)
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
-      document.removeEventListener('visibilitychange', handleVisibility)
       pushPresence('offline')
     }
   }, [user?.uid, profile?.displayName])  // eslint-disable-line react-hooks/exhaustive-deps
@@ -114,11 +116,57 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       })
   }, [directory, presenceRaw, user?.uid])
 
+  // Mantém refs sincronizadas para leitura dentro de efeitos sem re-disparar
+  useEffect(() => { isWidgetOpenRef.current = isWidgetOpen }, [isWidgetOpen])
+  useEffect(() => { activeConvUidRef.current = activeConvUid }, [activeConvUid])
+
+  // Inicializa áudio de notificação
+  useEffect(() => {
+    audioRef.current = new Audio('/sound/notification.mp3')
+    audioRef.current.volume = 0.6
+  }, [])
+
   // Assinar chats do usuário
   useEffect(() => {
     if (!user) return
     return subscribeMyChats(user.uid, setChats)
   }, [user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Detecta novas mensagens e toca som
+  useEffect(() => {
+    if (!user) return
+
+    // Ignora o snapshot inicial para não tocar som em mensagens antigas
+    if (!chatInitializedRef.current) {
+      chatInitializedRef.current = true
+      prevChatsRef.current = chats
+      return
+    }
+
+    let shouldPlay = false
+    for (const chat of chats) {
+      const myUnread = chat.unreadCount[user.uid] ?? 0
+      const prev = prevChatsRef.current.find((c) => c.id === chat.id)
+      const prevUnread = prev ? (prev.unreadCount[user.uid] ?? 0) : 0
+
+      if (myUnread > prevUnread) {
+        const otherUid = chat.participants.find((p) => p !== user.uid) ?? null
+        // Não toca se o usuário está olhando exatamente essa conversa
+        const isViewing = isWidgetOpenRef.current && activeConvUidRef.current === otherUid
+        if (!isViewing) {
+          shouldPlay = true
+          break
+        }
+      }
+    }
+
+    if (shouldPlay && audioRef.current) {
+      audioRef.current.currentTime = 0
+      void audioRef.current.play().catch(() => {})
+    }
+
+    prevChatsRef.current = chats
+  }, [chats]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const totalUnread = chats.reduce(
     (acc, c) => acc + (c.unreadCount[user?.uid ?? ''] ?? 0),
@@ -157,6 +205,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         totalUnread,
         isWidgetOpen,
         setWidgetOpen,
+        activeConvUid,
+        setActiveConvUid,
       }}
     >
       {children}

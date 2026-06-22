@@ -195,6 +195,7 @@ export function buildMudEndAltplanPropostaTextos(
   const parente = upper(v.parente)
   const contato = digits(v.contato)
   const contatoSol = digits(v.contatoSol)
+  const contatoAut = digits(v.contatoAut)
   const adress = upper(v.adress)
   const complemento = upper(v.complemento)
   const bairro = upper(v.bairro)
@@ -232,7 +233,7 @@ export function buildMudEndAltplanPropostaTextos(
 
   const autorizacaoProto =
     tipo === T_TITULAR_TERCEIRO
-      ? `\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO.`
+      ? `\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO.\n${clientePrimeiro} INFORMOU O NÚMERO DE CONTATO (${contatoAut}) PARA CASO SEJA NECESSÁRIO FALAR COM ${first(upper(v.autorizado))}.`
       : ''
 
   const protocolo = `${primeiroContato} ENTROU EM CONTATO POR ${v.canal ?? ''} (${contatoUsado}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.
@@ -292,7 +293,7 @@ NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})${protocoloExtra}`
       : `${clientePrimeiro} ENTROU EM CONTATO VIA ${v.canal ?? ''} (${contato})`
   const osPresenca =
     tipo === T_TITULAR_TERCEIRO
-      ? `${clientePrimeiro} AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO.`
+      ? `${clientePrimeiro} AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO. CONTATO DO AUTORIZADO: (${contatoAut}).`
       : `${clientePrimeiro} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E CONTRATO.`
 
   const os = `${osPrefix} E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". VALOR DO SERVIÇO: R$100,00. SOLICITOU TAMBÉM A RENOVAÇÃO DO SEU CONTRATO E UPGRADE DE PLANO, PLANO ATUAL: ${v.planoAtual ?? ''}. PLANO OFERTADO: ${v.planoEscolhido ?? ''}. COM A ALTERACAO DE PLANO O SERVICO DE MUDANÇA DE ENDEREÇO FOI ISENTO, E COM ESSE BENEFICIO RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. ${osPresenca} VISITA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.
@@ -348,6 +349,7 @@ export const MUD_END_ALTPLAN_PROPOSTA_FIELDS: OsTemplateField[] = [
   { id: 'contatoSol', label: 'Contato do terceiro', control: 'phone', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: [T_TERCEIRO_TITULAR, T_TERCEIRO_TERCEIRO] }, layout: { md: 3 } },
   { id: 'parente', label: 'Vínculo / parentesco', control: 'text', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: [T_TERCEIRO_TITULAR, T_TERCEIRO_TERCEIRO, T_TITULAR_TERCEIRO] }, layout: { md: 4 } },
   { id: 'autorizado', label: 'Terceiro autorizado', control: 'text', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: T_TITULAR_TERCEIRO }, layout: { md: 5 } },
+  { id: 'contatoAut', label: 'Contato do autorizado', control: 'phone', placeholder: 'Somente os números', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: T_TITULAR_TERCEIRO }, layout: { md: 3 } },
   { id: 'canalTit', label: 'Canal da confirmação com titular', control: 'select', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: T_TERCEIRO_TERCEIRO }, options: [{ value: 'LIGAÇÃO', label: 'Telefone' }, { value: 'WHATSAPP', label: 'WhatsApp' }], layout: { md: 4 } },
   { id: 'dataLigacao', label: 'Data/hora da confirmação', control: 'datetime', section: S_TERCEIRO, showWhen: { field: 'tipoSolicitacao', equals: T_TERCEIRO_TERCEIRO }, layout: { md: 4 } },
   { id: 'cep', label: 'CEP', control: 'text', placeholder: 'Insira o CEP da rua', section: S_END, layout: { md: 3 } },
@@ -417,6 +419,7 @@ export const MUD_END_ALTPLAN_PROPOSTA_FIELDS: OsTemplateField[] = [
   { id: 'dataVisita', label: 'Visita Técnica', control: 'date', placeholder: 'dd/mm/aaaa', section: S_AGE, layout: { md: 3 } },
   { id: 'horaVisita', label: 'Hora', control: 'select', section: S_AGE, options: HORA_OPTIONS, layout: { md: 3 } },
   { id: 'protocolo', label: 'Nº Protocolo', control: 'text', placeholder: '123.456', section: S_AGE, layout: { md: 3 } },
+  { id: 'obs', label: 'Observações', control: 'text', placeholder: 'Observações adicionais (opcional)', section: S_AGE, layout: { md: 12 } },
 ]
 
 export function getMudEndAltplanPropostaDefaults() {
