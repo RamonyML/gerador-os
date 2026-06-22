@@ -13,6 +13,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
   Popover,
   Toolbar,
   Tooltip,
@@ -27,6 +29,10 @@ import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumb
 import MarkChatReadOutlinedIcon from '@mui/icons-material/MarkChatReadOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
+import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded'
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
@@ -56,6 +62,7 @@ import { SidebarHexagons } from './SidebarHexagons'
 import { SidebarMesh } from './SidebarMesh'
 import { ChatProvider } from '../contexts/ChatContext'
 import { ChatWidget } from './chat/ChatWidget'
+import { PausaWidget } from './PausaWidget'
 
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
@@ -79,7 +86,8 @@ export function AppLayout() {
   const showUpgrades = profile != null && canAccessUpgrades(profile)
   const showValidacao = profile != null && canAccessValidacao(profile)
   const showNotes = profile != null && canAccessNotes(profile)
-  const { mode, toggle } = useColorMode()
+  const { mode, isDark, setMode } = useColorMode()
+  const [themeMenuAnchor, setThemeMenuAnchor] = useState<HTMLElement | null>(null)
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -558,6 +566,8 @@ export function AppLayout() {
               />
             </Box>
 
+            <PausaWidget />
+
             <Box sx={{ flexGrow: 1 }} />
 
             {user?.email ? (
@@ -816,11 +826,69 @@ export function AppLayout() {
               profile={profile}
             />
 
-            <Tooltip title={mode === 'dark' ? 'Tema claro' : 'Tema escuro'}>
-              <IconButton color="inherit" onClick={() => toggle()} aria-label="Alternar tema">
-                {mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+            {/* Seletor de tema */}
+            <Tooltip title="Tema">
+              <IconButton
+                color="inherit"
+                onClick={(e) => setThemeMenuAnchor(e.currentTarget)}
+                aria-label="Selecionar tema"
+              >
+                {mode === 'gelo'  ? <AcUnitRoundedIcon /> :
+                 mode === 'cinza' ? <CircleRoundedIcon sx={{ fontSize: 20 }} /> :
+                 isDark           ? <LightModeOutlinedIcon /> :
+                                    <DarkModeOutlinedIcon />}
               </IconButton>
             </Tooltip>
+
+            <Menu
+              anchorEl={themeMenuAnchor}
+              open={Boolean(themeMenuAnchor)}
+              onClose={() => setThemeMenuAnchor(null)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              slotProps={{
+                paper: {
+                  sx: {
+                    mt: 0.5,
+                    minWidth: 180,
+                    borderRadius: 2,
+                    border: 1,
+                    borderColor: 'divider',
+                    boxShadow: 4,
+                  },
+                },
+              }}
+            >
+              {([
+                { value: 'light', label: 'Dia',   icon: <WbSunnyOutlinedIcon   sx={{ fontSize: 17 }} /> },
+                { value: 'dark',  label: 'Noite',  icon: <DarkModeOutlinedIcon  sx={{ fontSize: 17 }} /> },
+                { value: 'gelo',  label: 'Gelo',   icon: <AcUnitRoundedIcon     sx={{ fontSize: 17 }} /> },
+                { value: 'cinza', label: 'Dark',   icon: <CircleRoundedIcon     sx={{ fontSize: 14 }} /> },
+              ] as const).map((opt) => (
+                <MenuItem
+                  key={opt.value}
+                  selected={mode === opt.value}
+                  onClick={() => { setMode(opt.value); setThemeMenuAnchor(null) }}
+                  sx={{
+                    gap: 1.25,
+                    fontSize: 14,
+                    fontWeight: mode === opt.value ? 700 : 400,
+                    borderRadius: 1,
+                    mx: 0.5,
+                    my: 0.125,
+                    px: 1.25,
+                  }}
+                >
+                  <Box sx={{ color: 'text.secondary', display: 'flex', flexShrink: 0 }}>
+                    {opt.icon}
+                  </Box>
+                  <Box sx={{ flex: 1 }}>{opt.label}</Box>
+                  {mode === opt.value && (
+                    <CheckRoundedIcon sx={{ fontSize: 14, color: 'primary.main' }} />
+                  )}
+                </MenuItem>
+              ))}
+            </Menu>
           </Toolbar>
         </AppBar>
 

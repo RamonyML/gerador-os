@@ -22,6 +22,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material'
 import { BAIRROS_UDI } from '../data/bairros'
 import { GRAU_RELACIONAMENTO } from '../data/grauRelacionamento'
@@ -581,18 +582,20 @@ function HighlightSelect({
   value: string
   onChange: (id: string, value: string) => void
 }) {
+  const theme = useTheme()
   const options = f.options ?? []
   const isRed = f.tone === 'red'
+  const p = theme.palette.primary
   const gradient = isRed
     ? 'linear-gradient(135deg, #a31515 0%, #e23b3b 100%)'
-    : 'linear-gradient(135deg, #157f3d 0%, #2fbf6a 100%)'
+    : `linear-gradient(135deg, ${p.dark} 0%, ${p.main} 100%)`
   const gradientHover = isRed
     ? 'linear-gradient(135deg, #8d1212cc 0%, #d23232 100%)'
-    : 'linear-gradient(135deg, #12713680 0%, #2bb463 100%)'
+    : `linear-gradient(135deg, ${p.dark} 0%, ${p.light} 100%)`
   const shadow = isRed
     ? '0 2px 10px rgba(163, 21, 21, 0.25)'
-    : '0 2px 10px rgba(21, 127, 61, 0.25)'
-  const itemColor = isRed ? 'error.main' : 'success.main'
+    : `0 2px 10px ${p.main}40`
+  const itemColor = isRed ? 'error.main' : 'primary.main'
   return (
     <FormControl fullWidth>
       <Select

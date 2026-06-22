@@ -64,6 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         void upsertMyPublicProfile(db, nextUser.uid, {
           displayName: publicName,
           photoURL: nextUser.photoURL ?? null,
+          sector: parsed?.sector ?? '',
+          hierarchy: parsed?.hierarchy ?? '',
         }).catch(() => {
           /* cartão público é best-effort; ignora falha */
         })

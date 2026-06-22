@@ -43,8 +43,7 @@ function parseContent(raw: string) {
 
 function ReadOnlyNote({ content }: { content: string }) {
   const theme = useTheme()
-  const { mode } = useColorMode()
-  const isDark = mode === 'dark'
+  const { isDark } = useColorMode()
   const accent = theme.palette.primary.main
 
   const editor = useEditor({
@@ -147,8 +146,7 @@ type Props = {
 export function NotesWidget({ sx }: Props) {
   const { user } = useAuth()
   const theme = useTheme()
-  const { mode } = useColorMode()
-  const isDark = mode === 'dark'
+  const { isDark } = useColorMode()
   const uid = user?.uid ?? null
 
   const [notebooks, setNotebooks] = useState<Notebook[]>([])
@@ -327,8 +325,8 @@ export function NotesWidget({ sx }: Props) {
 
       <Divider sx={{ flexShrink: 0 }} />
 
-      {/* Pages list */}
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
+      {/* Pages list — maxHeight fixo para não empurrar conteúdo abaixo */}
+      <Box sx={{ maxHeight: 420, overflowY: 'auto' }}>
         {!nbReady ? (
           <Box sx={{ p: 2 }}>
             <Stack spacing={1}>

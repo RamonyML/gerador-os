@@ -227,7 +227,7 @@ function TooltipName({ children, title }: { children: ReactNode; title: string }
 
 export function SobrePage() {
   const theme = useTheme()
-  const { mode } = useColorMode()
+  const { mode, isDark } = useColorMode()
   const primary = theme.palette.primary.main
   const [parallaxY, setParallaxY] = useState(0)
   const raf = useRef(0)
@@ -269,9 +269,9 @@ export function SobrePage() {
     width: 44,
     height: 44,
     borderRadius: 2,
-    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.12),
+    bgcolor: alpha(primary, isDark ? 0.18 : 0.12),
     border: 1,
-    borderColor: alpha(primary, mode === 'dark' ? 0.3 : 0.16),
+    borderColor: alpha(primary, isDark ? 0.3 : 0.16),
   } as const
 
   const SectionHeading = ({
@@ -352,7 +352,7 @@ export function SobrePage() {
             width: 280,
             height: 280,
             borderRadius: '50%',
-            background: alpha(primary, mode === 'dark' ? 0.12 : 0.08),
+            background: alpha(primary, isDark ? 0.12 : 0.08),
             filter: 'blur(60px)',
             transform: `translate(${parallaxY * -0.06}px, ${parallaxY * 0.12}px)`,
           }}
@@ -380,7 +380,7 @@ export function SobrePage() {
                     sx={{
                       fontWeight: 700,
                       color: 'primary.main',
-                      bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.1),
+                      bgcolor: alpha(primary, isDark ? 0.18 : 0.1),
                       border: 1,
                       borderColor: alpha(primary, 0.25),
                     }}
@@ -391,7 +391,7 @@ export function SobrePage() {
                     sx={{
                       fontWeight: 700,
                       color: 'text.secondary',
-                      bgcolor: alpha(theme.palette.grey[500], mode === 'dark' ? 0.18 : 0.1),
+                      bgcolor: alpha(theme.palette.grey[500], isDark ? 0.18 : 0.1),
                       border: 1,
                       borderColor: alpha(theme.palette.grey[500], 0.25),
                     }}
@@ -683,7 +683,7 @@ export function SobrePage() {
                   sx={{
                     fontWeight: 600,
                     borderRadius: 2,
-                    bgcolor: alpha(primary, mode === 'dark' ? 0.16 : 0.08),
+                    bgcolor: alpha(primary, isDark ? 0.16 : 0.08),
                     border: 1,
                     borderColor: alpha(primary, 0.2),
                     color: 'text.primary',

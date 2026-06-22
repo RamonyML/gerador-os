@@ -87,6 +87,15 @@ export const ROKU_AGENDAMENTO_FIELDS: OsTemplateField[] = [
     section: S_AGE,
     layout: { md: 3 },
   },
+  { id: 'dataVisita', label: 'Data da visita', control: 'date', placeholder: 'dd/mm/aaaa', section: S_AGE, layout: { md: 3 } },
+  {
+    id: 'horaVisita',
+    label: 'Horário',
+    control: 'select',
+    section: S_AGE,
+    layout: { md: 3 },
+    options: [...ROKU_HORA_VISITA_OPTS],
+  },
 ]
 
 type RokuValues = {

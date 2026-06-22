@@ -152,7 +152,7 @@ export function ChatUserList({ onSelectUser }: Props) {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar colega..."
+              placeholder="Buscar usuário..."
               sx={{
                 flex: 1,
                 fontSize: 13,
@@ -166,7 +166,7 @@ export function ChatUserList({ onSelectUser }: Props) {
         ) : (
           <>
             <Typography variant="caption" color="text.secondary" sx={{ flex: 1, fontWeight: 600, letterSpacing: '0.04em' }}>
-              {presence.length} {presence.length === 1 ? 'colega' : 'colegas'}
+              {presence.length} {presence.length === 1 ? 'usuário' : 'usuários'}
             </Typography>
             <IconButton size="small" onClick={handleOpenSearch} sx={{ p: 0.25 }}>
               <SearchRoundedIcon sx={{ fontSize: 17, color: 'text.secondary' }} />

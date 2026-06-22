@@ -116,3 +116,10 @@ export function canAccessNotes(profile: UserProfile | null): boolean {
   if (!profile || profile.active === false) return false
   return true
 }
+
+/** Gerenciar pausas da equipe (definir horários de pausa por operador). */
+export function canManagePausas(profile: UserProfile | null): boolean {
+  if (!profile || profile.active === false) return false
+  if (profile.isDev === true || profile.isAdmin === true) return true
+  return profile.hierarchy === 'gerente'
+}

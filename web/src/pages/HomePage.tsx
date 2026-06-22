@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { Alert, Avatar, Box, Button, Chip, Container, Divider, Fade, Paper, Skeleton, Stack, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Chip, Container, Divider, Fade, Paper, Skeleton, Stack, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import { alpha, useTheme } from '@mui/material/styles'
@@ -27,7 +27,10 @@ import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined'
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
-import { canManageUsers, canAccessUpgrades } from '../lib/permissions'
+import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded'
+import AppsRoundedIcon from '@mui/icons-material/AppsRounded'
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
+import { canManageUsers, canAccessUpgrades, canManagePausas } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
@@ -38,6 +41,7 @@ import { ProfileWeekSchedule } from '../components/ProfileWeekSchedule'
 import { subscribeMyTickets, subscribeAllTickets } from '../lib/ticketsFirestore'
 import { TICKET_STATUS_LABELS, type Ticket } from '../types/ticket'
 import { NotesWidget } from '../components/NotesWidget'
+import { PausaTeamCard } from '../components/PausaTeamCard'
 
 function formatRelative(date: Date): string {
   const mins = Math.floor((Date.now() - date.getTime()) / 60_000)
@@ -72,12 +76,27 @@ function initialsFrom(name: string): string {
 
 export function HomePage() {
   const theme = useTheme()
-  const { mode } = useColorMode()
-  const isDark = mode === 'dark'
+  const { isDark } = useColorMode()
   const { user, profile, profileMissing, photoURL } = useAuth()
   const primary = theme.palette.primary.main
   const success = theme.palette.success.main
   const [quickLinksVisible, setQuickLinksVisible] = useState(false)
+
+  type ViewMode = 'cards' | 'icons' | 'list'
+  const [viewMode, setViewModeState] = useState<ViewMode>(() => {
+    return (localStorage.getItem('home-view-mode') as ViewMode) ?? 'cards'
+  })
+  const [gridVisible, setGridVisible] = useState(true)
+
+  const handleViewMode = (_: unknown, val: ViewMode | null) => {
+    if (!val || val === viewMode) return
+    setGridVisible(false)
+    setTimeout(() => {
+      setViewModeState(val)
+      localStorage.setItem('home-view-mode', val)
+      setTimeout(() => setGridVisible(true), 30)
+    }, 200)
+  }
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setQuickLinksVisible(true))
@@ -93,6 +112,7 @@ export function HomePage() {
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showMkTestes = profile?.isDev === true
   const isTi = profile?.isTi === true
+  const showPausas = profile != null && canManagePausas(profile)
 
   const [activeTickets, setActiveTickets] = useState<Ticket[]>([])
   const [ticketsReady, setTicketsReady] = useState(false)
@@ -379,51 +399,221 @@ export function HomePage() {
 
           {/* Cards de navegação */}
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-              Acesso rápido
-            </Typography>
+            {/* Header: título + toggle de visão */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                Acesso rápido
+              </Typography>
+              <ToggleButtonGroup
+                value={viewMode}
+                exclusive
+                onChange={handleViewMode}
+                size="small"
+                sx={{
+                  bgcolor: isDark ? alpha('#fff', 0.06) : alpha('#000', 0.04),
+                  borderRadius: 2,
+                  p: 0.375,
+                  gap: 0.25,
+                  '& .MuiToggleButtonGroup-grouped': { border: 0 },
+                  '& .MuiToggleButton-root': {
+                    borderRadius: '7px !important',
+                    px: 1.125,
+                    py: 0.5,
+                    color: 'text.secondary',
+                    transition: 'all 0.15s',
+                    '&.Mui-selected': {
+                      bgcolor: isDark ? alpha('#fff', 0.14) : 'background.paper',
+                      color: 'primary.main',
+                      boxShadow: isDark ? 'none' : '0 1px 3px rgba(0,0,0,0.12)',
+                    },
+                    '&:hover:not(.Mui-selected)': { bgcolor: alpha(primary, 0.07) },
+                  },
+                }}
+              >
+                <Tooltip title="Cards" placement="top">
+                  <ToggleButton value="cards" aria-label="Visão cards">
+                    <ViewModuleRoundedIcon sx={{ fontSize: 16 }} />
+                  </ToggleButton>
+                </Tooltip>
+                <Tooltip title="Ícones" placement="top">
+                  <ToggleButton value="icons" aria-label="Visão ícones">
+                    <AppsRoundedIcon sx={{ fontSize: 16 }} />
+                  </ToggleButton>
+                </Tooltip>
+                <Tooltip title="Lista" placement="top">
+                  <ToggleButton value="list" aria-label="Visão lista">
+                    <ViewListRoundedIcon sx={{ fontSize: 16 }} />
+                  </ToggleButton>
+                </Tooltip>
+              </ToggleButtonGroup>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+            {/* Coluna principal: grid/ícones/lista + widgets abaixo */}
+            <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+
+            {/* Área animada de alternância de visão */}
             <Box
               sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(auto-fill, minmax(260px, 1fr))',
-                  xl: 'repeat(auto-fill, minmax(240px, 1fr))',
-                },
-                gap: 2,
-                alignItems: 'start',
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? 'scale(1) translateY(0px)' : 'scale(0.97) translateY(8px)',
+                filter: gridVisible ? 'blur(0px)' : 'blur(4px)',
+                transition: 'opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease',
+                willChange: 'opacity, transform, filter',
               }}
             >
-              {actions.map((a, index) => {
-                const isHubCard = a.key === 'suporte' || a.key === 'cadastro' || a.key === 'instalacao'
-                return (
-                  <Fade
-                    key={a.key}
-                    in={quickLinksVisible}
-                    timeout={420}
-                    style={{ transitionDelay: `${index * 70}ms` }}
-                  >
-                    <Box sx={{ height: '100%' }}>
-                      <NavCard
-                        to={a.to}
-                        icon={a.icon}
-                        title={a.title}
-                        description={a.description}
-                        accent={isHubCard ? success : primary}
-                        featured={isHubCard}
-                      />
-                    </Box>
-                  </Fade>
-                )
-              })}
 
-              {/* NotesWidget — 2 colunas, flui junto com os cards */}
-              {profile && (
-                <Box sx={{ gridColumn: { xs: '1 / -1', sm: 'span 2', md: 'span 2' } }}>
-                  <NotesWidget />
-                </Box>
-              )}
+            {/* ── VISÃO CARDS ── */}
+            {viewMode === 'cards' && (
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: '1fr',
+                    sm: 'repeat(2, 1fr)',
+                    md: 'repeat(auto-fill, minmax(260px, 1fr))',
+                    xl: 'repeat(auto-fill, minmax(240px, 1fr))',
+                  },
+                  gap: 2,
+                  alignItems: 'start',
+                }}
+              >
+                {actions.map((a, index) => {
+                  const isHubCard = a.key === 'suporte' || a.key === 'cadastro' || a.key === 'instalacao'
+                  return (
+                    <Fade
+                      key={a.key}
+                      in={quickLinksVisible}
+                      timeout={420}
+                      style={{ transitionDelay: `${index * 70}ms` }}
+                    >
+                      <Box>
+                        <NavCard
+                          to={a.to}
+                          icon={a.icon}
+                          title={a.title}
+                          description={a.description}
+                          accent={isHubCard ? success : primary}
+                          featured={isHubCard}
+                        />
+                      </Box>
+                    </Fade>
+                  )
+                })}
+              </Box>
+            )}
+
+            {/* ── VISÃO ÍCONES ── */}
+            {viewMode === 'icons' && (
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(82px, 1fr))',
+                  gap: 0.5,
+                }}
+              >
+                {actions.map((a) => {
+                  const isHubCard = a.key === 'suporte' || a.key === 'cadastro' || a.key === 'instalacao'
+                  const color = isHubCard ? success : primary
+                  return (
+                    <Box
+                      key={a.key}
+                      component={RouterLink}
+                      to={a.to}
+                      sx={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.875,
+                        p: 1.5, borderRadius: 3, textDecoration: 'none', color: 'inherit',
+                        transition: 'background 0.15s, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        '&:hover': {
+                          bgcolor: alpha(color, isDark ? 0.1 : 0.07),
+                          transform: 'translateY(-4px) scale(1.06)',
+                        },
+                        '&:active': { transform: 'scale(0.93)' },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 58, height: 58, borderRadius: '18px', flexShrink: 0,
+                          background: `linear-gradient(145deg, ${alpha(color, isDark ? 0.3 : 0.18)}, ${alpha(color, isDark ? 0.12 : 0.07)})`,
+                          border: `1px solid ${alpha(color, isDark ? 0.3 : 0.2)}`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', color,
+                          boxShadow: `0 3px 10px ${alpha(color, 0.2)}`,
+                          '& svg': { fontSize: '26px !important' },
+                        }}
+                      >
+                        {a.icon}
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontSize: 11, fontWeight: 700, textAlign: 'center',
+                          lineHeight: 1.25, color: 'text.primary',
+                          display: '-webkit-box', WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        }}
+                      >
+                        {a.title}
+                      </Typography>
+                    </Box>
+                  )
+                })}
+              </Box>
+            )}
+
+            {/* ── VISÃO LISTA ── */}
+            {viewMode === 'list' && (
+              <Paper
+                elevation={0}
+                sx={{ borderRadius: 3, border: 1, borderColor: 'divider', overflow: 'hidden' }}
+              >
+                {actions.map((a, idx) => {
+                  const isHubCard = a.key === 'suporte' || a.key === 'cadastro' || a.key === 'instalacao'
+                  const color = isHubCard ? success : primary
+                  return (
+                    <Box key={a.key}>
+                      {idx > 0 && <Divider />}
+                      <Box
+                        component={RouterLink}
+                        to={a.to}
+                        sx={{
+                          display: 'flex', alignItems: 'center', gap: 2,
+                          px: 2.5, py: 1.375,
+                          textDecoration: 'none', color: 'inherit',
+                          transition: 'background 0.12s',
+                          '&:hover': { bgcolor: alpha(color, isDark ? 0.07 : 0.05) },
+                          '&:hover .list-arrow': { transform: 'translateX(4px)', color },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 38, height: 38, borderRadius: '10px', flexShrink: 0,
+                            background: `linear-gradient(145deg, ${alpha(color, isDark ? 0.28 : 0.16)}, ${alpha(color, isDark ? 0.1 : 0.06)})`,
+                            border: `1px solid ${alpha(color, 0.2)}`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', color,
+                            '& svg': { fontSize: '18px !important' },
+                          }}
+                        >
+                          {a.icon}
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.3, color: isHubCard ? color : 'text.primary' }}>
+                            {a.title}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block', mt: 0.1 }}>
+                            {a.description}
+                          </Typography>
+                        </Box>
+                        <ArrowForwardRoundedIcon
+                          className="list-arrow"
+                          sx={{ fontSize: 15, color: 'text.disabled', flexShrink: 0, transition: 'transform 0.18s ease, color 0.18s ease' }}
+                        />
+                      </Box>
+                    </Box>
+                  )
+                })}
+              </Paper>
+            )}
+
+            </Box>{/* fim área animada */}
 
               {/* Chamados — apenas T.I, 2 colunas */}
               {profile && isTi && <Paper
@@ -563,6 +753,17 @@ export function HomePage() {
                   </Box>
                 </Paper>}
 
+            {/* NotesWidget — fora do grid, sem interferir nos NavCards */}
+            {profile && <NotesWidget />}
+
+            </Box>{/* fim coluna principal */}
+
+            {/* Pausa sidebar — fora do grid, não interfere no layout dos cards */}
+            {showPausas && profile && (
+              <Box sx={{ width: 280, flexShrink: 0, position: 'sticky', top: 16, display: { xs: 'none', lg: 'block' } }}>
+                <PausaTeamCard profile={profile} />
+              </Box>
+            )}
             </Box>
           </Box>
 

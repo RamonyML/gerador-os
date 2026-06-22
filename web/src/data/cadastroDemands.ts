@@ -1,6 +1,7 @@
 import type { SvgIconComponent } from '@mui/icons-material'
 import CardGiftcardOutlinedIcon from '@mui/icons-material/CardGiftcardOutlined'
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined'
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined'
 
 export type CadastroDemand = {
   id: string
@@ -21,6 +22,12 @@ export const CADASTRO_DEMANDS: CadastroDemand[] = [
     title: 'Instalação com taxa',
     description: 'Residencial e empresarial com taxa de instalação/ativação paga.',
     Icon: PaymentOutlinedIcon,
+  },
+  {
+    id: 'midia-tv-cadastro',
+    title: 'Mídia TV (Roku)',
+    description: 'Compra e instalação de Roku TV / conversores.',
+    Icon: TvOutlinedIcon,
   },
 ]
 

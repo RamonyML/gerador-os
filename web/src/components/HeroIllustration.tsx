@@ -13,7 +13,7 @@ type Props = {
  * adaptando o realce ao tema claro/escuro.
  */
 export function HeroIllustration({ src, alt = '', maxWidth = 420 }: Props) {
-  const { mode } = useColorMode()
+  const { isDark } = useColorMode()
   return (
     <Box
       component="img"
@@ -28,7 +28,7 @@ export function HeroIllustration({ src, alt = '', maxWidth = 420 }: Props) {
         mx: 'auto',
         userSelect: 'none',
         filter:
-          mode === 'dark'
+          isDark
             ? 'drop-shadow(0 16px 34px rgba(0,0,0,0.5))'
             : 'drop-shadow(0 16px 30px rgba(16,24,40,0.1))',
       }}

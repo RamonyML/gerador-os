@@ -50,6 +50,8 @@ import {
   type Sector,
 } from '../types/profile'
 import { isProtectedManagementAccount } from '../lib/protectedUserManagement'
+import { db } from '../lib/firebase'
+import { upsertMyPublicProfile } from '../lib/usersPublic'
 
 const HIERARCHY_LABELS: Record<Hierarchy, string> = {
   gerente: 'Gestor',
@@ -224,7 +226,7 @@ export function AdminUsersPage() {
         return
       }
       if (!editing) {
-        await manageUsersCreate({
+        const created = await manageUsersCreate({
           email: email.trim(),
           password,
           displayName: displayName.trim(),
@@ -236,6 +238,11 @@ export function AdminUsersPage() {
           ...(canEditAdminFlag ? { isTi: flagTi } : {}),
           isValidacao: flagValidacao,
         })
+        void upsertMyPublicProfile(db, created.uid, {
+          displayName: displayName.trim(),
+          sector,
+          hierarchy,
+        }).catch(() => {})
       } else {
         const payload: Parameters<typeof manageUsersUpdate>[0] = {
           uid: editing.uid,
@@ -251,6 +258,11 @@ export function AdminUsersPage() {
         if (canEditAdminFlag) payload.isTi = flagTi
         payload.isValidacao = flagValidacao
         await manageUsersUpdate(payload)
+        void upsertMyPublicProfile(db, editing.uid, {
+          displayName: displayName.trim(),
+          sector,
+          hierarchy,
+        }).catch(() => {})
       }
       setDialogOpen(false)
       await loadFirstPage()
@@ -268,12 +280,10 @@ export function AdminUsersPage() {
         title="Usuários"
         subtitle={
           <Typography variant="body1" color="text.secondary" component="div">
-            Crie e atualize contas no Authentication e o documento em{' '}
-            <code>users/&#123;uid&#125;</code> (setor, hierarquia, nome, flags). Somente{' '}
-            <strong>gestor</strong>, <strong>administrador</strong> e{' '}
-            <strong>dev</strong> acessam esta tela;
-            gestores só enxergam o próprio setor. A senha só trafega ao
-            salvar e exige Cloud Functions implantadas.
+            Gerencie os membros da equipe: cadastre novos colaboradores, ajuste
+            setor, cargo e permissões, ou redefina senhas quando necessário.
+            Gestores visualizam e administram apenas os colaboradores do seu
+            próprio setor.
           </Typography>
         }
         headerRight={

@@ -10,12 +10,19 @@ import {
 
 const STORAGE_KEY = 'gerador-os-color-mode'
 
-export type ColorMode = 'light' | 'dark'
+export type ColorMode = 'light' | 'dark' | 'gelo' | 'cinza'
+
+/** Verdadeiro para os modos que usam superfícies escuras. */
+export function isDarkMode(mode: ColorMode): boolean {
+  return mode === 'dark' || mode === 'cinza'
+}
 
 type ColorModeContextValue = {
   mode: ColorMode
-  toggle: () => void
+  isDark: boolean
   setMode: (m: ColorMode) => void
+  /** @deprecated use setMode — mantido para evitar quebras pontuais */
+  toggle: () => void
 }
 
 const ColorModeContext = createContext<ColorModeContextValue | null>(null)
@@ -23,7 +30,7 @@ const ColorModeContext = createContext<ColorModeContextValue | null>(null)
 function readStoredMode(): ColorMode {
   try {
     const s = localStorage.getItem(STORAGE_KEY)
-    if (s === 'dark' || s === 'light') return s
+    if (s === 'dark' || s === 'light' || s === 'gelo' || s === 'cinza') return s
   } catch {
     /* ignore */
   }
@@ -48,11 +55,11 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const toggle = useCallback(() => {
-    setModeState((m) => (m === 'light' ? 'dark' : 'light'))
+    setModeState((m) => (isDarkMode(m) ? 'light' : 'dark'))
   }, [])
 
   const value = useMemo(
-    () => ({ mode, toggle, setMode }),
+    () => ({ mode, isDark: isDarkMode(mode), toggle, setMode }),
     [mode, toggle, setMode],
   )
 

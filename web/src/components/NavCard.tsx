@@ -39,8 +39,7 @@ export function NavCard({
   dense = false,
 }: NavCardProps) {
   const theme = useTheme()
-  const { mode } = useColorMode()
-  const isDark = mode === 'dark'
+  const { isDark } = useColorMode()
   const accentMain = accent ?? theme.palette.primary.main
   const iconBg = alpha(accentMain, isDark ? 0.22 : 0.14)
 

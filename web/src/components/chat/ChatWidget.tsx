@@ -92,7 +92,7 @@ export function ChatWidget() {
           >
             <ChatRoundedIcon sx={{ fontSize: 18, color: 'primary.main' }} />
             <Typography variant="subtitle2" sx={{ fontWeight: 700, flex: 1 }}>
-              Chat
+              Chat Interno
             </Typography>
 
             {/* Indicador + seletor de status */}

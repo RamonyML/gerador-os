@@ -60,15 +60,17 @@ export function AvisosPage() {
   const [priority, setPriority] = useState<NoticePriority>('normal')
   const [pinned, setPinned] = useState(false)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
+  const [order, setOrder] = useState<'desc' | 'asc'>('desc')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
   const sorted = useMemo(() => {
     const base = notices.state.notices
-    if (filter === 'unread') return base.filter((n) => notices.state.unreadIds.has(n.id))
-    return base
-  }, [notices.state.notices, notices.state.unreadIds, filter])
+    const filtered = filter === 'unread' ? base.filter((n) => notices.state.unreadIds.has(n.id)) : base
+    if (order === 'asc') return [...filtered].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+    return filtered
+  }, [notices.state.notices, notices.state.unreadIds, filter, order])
   const unreadIds = notices.state.unreadIds
 
   const authorName = profile?.displayName?.trim() || user?.email?.split('@')[0] || 'Gerente'
@@ -278,6 +280,18 @@ export function AvisosPage() {
                     >
                       <MenuItem value="all">Todos</MenuItem>
                       <MenuItem value="unread">Não lidos</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                    <InputLabel id="avisos-order">Ordenar</InputLabel>
+                    <Select
+                      labelId="avisos-order"
+                      value={order}
+                      label="Ordenar"
+                      onChange={(e) => setOrder(e.target.value as 'desc' | 'asc')}
+                    >
+                      <MenuItem value="desc">Mais recentes</MenuItem>
+                      <MenuItem value="asc">Mais antigos</MenuItem>
                     </Select>
                   </FormControl>
                   <Button

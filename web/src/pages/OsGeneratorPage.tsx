@@ -106,6 +106,11 @@ import { saveOsHistory } from '../lib/osHistoryFirestore'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
+// Mapeia demandas de cadastro cujos templates usam uma demandCategory diferente na URL
+const DEMAND_CATEGORY_ALIAS: Record<string, string> = {
+  'midia-tv-cadastro': 'midia-tv',
+}
+
 const AGENDA_CONTEXT_KEY: Record<string, string> = {
   'manut-luz-vermelha': 'luzVmTextoAgenda',
   'manut-luz-vermelha-pj': 'luzVmPjTextoAgenda',
@@ -186,7 +191,8 @@ export function OsGeneratorPage() {
   const visibleTemplates = useMemo(() => {
     if (!demandParam) return templates
     if (isKnownDemandCategory(demandParam) || isKnownCadastroDemandCategory(demandParam) || isKnownInstalacaoDemandCategory(demandParam)) {
-      return templatesMatchingDemand(templates, demandParam)
+      const resolvedCategory = DEMAND_CATEGORY_ALIAS[demandParam] ?? demandParam
+      return templatesMatchingDemand(templates, resolvedCategory)
     }
     return templates
   }, [templates, demandParam])
@@ -934,6 +940,7 @@ export function OsGeneratorPage() {
                 errorFieldIds={errorFieldIds}
                 appendToLastSection={
                   (selected.slug in AGENDA_CONTEXT_KEY || selected.slug.startsWith('inst-')) &&
+                  !isCadastroDemand &&
                   !(selected.slug === 'manut-roteador-reset' && values.tipoSolicitacao === 'loja') ? (
                     <Grid size={{ xs: 12, md: 8 }} sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <Button

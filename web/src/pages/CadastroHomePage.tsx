@@ -14,7 +14,7 @@ const AMBER = '#d97706'
 const BLUE = '#3b82f6'
 
 export function CadastroHomePage() {
-  const { mode } = useColorMode()
+  const { isDark } = useColorMode()
 
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
@@ -88,7 +88,7 @@ export function CadastroHomePage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(GREEN, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(GREEN, isDark ? 0.2 : 0.1),
                       color: GREEN,
                       border: 'none',
                     }}
@@ -108,7 +108,7 @@ export function CadastroHomePage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(AMBER, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(AMBER, isDark ? 0.2 : 0.1),
                       color: AMBER,
                       border: 'none',
                     }}
@@ -128,7 +128,7 @@ export function CadastroHomePage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(BLUE, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(BLUE, isDark ? 0.2 : 0.1),
                       color: BLUE,
                       border: 'none',
                     }}

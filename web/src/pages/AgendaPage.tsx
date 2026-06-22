@@ -194,9 +194,8 @@ function is1830Slot(label: string): boolean {
 
 export function AgendaPage() {
   const theme = useTheme()
-  const { mode } = useColorMode()
+  const { isDark } = useColorMode()
   const { profile, user } = useAuth()
-  const isDark = mode === 'dark'
   const canManageTecnicos = canManageAgendaTecnicos(profile ?? null)
 
   const [area, setArea] = useState<AgendaArea>('manutencao')

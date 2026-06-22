@@ -19,6 +19,16 @@ html[data-theme='dark'] {
   --selection-fg: inherit;
 }
 
+html[data-theme='gelo'] {
+  --selection-bg: rgba(91, 123, 168, 0.28);
+  --selection-fg: inherit;
+}
+
+html[data-theme='cinza'] {
+  --selection-bg: rgba(158, 173, 192, 0.35);
+  --selection-fg: inherit;
+}
+
 ::selection {
   background-color: var(--selection-bg);
   color: var(--selection-fg);

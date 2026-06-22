@@ -16,7 +16,7 @@ const PURPLE = '#6a1b9a'
 const ORANGE = '#e65100'
 
 export function EncerramentosInstHubPage() {
-  const { mode } = useColorMode()
+  const { isDark } = useColorMode()
 
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
@@ -89,7 +89,7 @@ export function EncerramentosInstHubPage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(BLUE, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(BLUE, isDark ? 0.2 : 0.1),
                       color: BLUE,
                       border: 'none',
                     }}
@@ -109,7 +109,7 @@ export function EncerramentosInstHubPage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(TEAL, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(TEAL, isDark ? 0.2 : 0.1),
                       color: TEAL,
                       border: 'none',
                     }}
@@ -129,7 +129,7 @@ export function EncerramentosInstHubPage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(PURPLE, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(PURPLE, isDark ? 0.2 : 0.1),
                       color: PURPLE,
                       border: 'none',
                     }}
@@ -149,7 +149,7 @@ export function EncerramentosInstHubPage() {
                     sx={{
                       height: 24,
                       fontWeight: 600,
-                      bgcolor: alpha(ORANGE, mode === 'dark' ? 0.2 : 0.1),
+                      bgcolor: alpha(ORANGE, isDark ? 0.2 : 0.1),
                       color: ORANGE,
                       border: 'none',
                     }}

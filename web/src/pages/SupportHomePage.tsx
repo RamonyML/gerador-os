@@ -25,7 +25,7 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 
 export function SupportHomePage() {
   const theme = useTheme()
-  const { mode } = useColorMode()
+  const { isDark } = useColorMode()
   const { profile } = useAuth()
   const state = useOsTemplates(profile)
   const [categoriesEntered, setCategoriesEntered] = useState(false)
@@ -203,7 +203,7 @@ export function SupportHomePage() {
                         sx={{
                           height: 24,
                           fontWeight: 600,
-                          bgcolor: alpha(accentMain, mode === 'dark' ? 0.2 : 0.1),
+                          bgcolor: alpha(accentMain, isDark ? 0.2 : 0.1),
                           color: accentMain,
                           border: 'none',
                         }}
@@ -235,7 +235,7 @@ export function SupportHomePage() {
                   sx={{
                     height: 24,
                     fontWeight: 600,
-                    bgcolor: alpha('#8b5cf6', mode === 'dark' ? 0.2 : 0.1),
+                    bgcolor: alpha('#8b5cf6', isDark ? 0.2 : 0.1),
                     color: '#8b5cf6',
                     border: 'none',
                   }}

@@ -61,7 +61,7 @@ const PLANO_ITTV = [
 
 const INDICACAO_TECNICA = `INSTALAR OS EQUIPAMENTOS EM LOCAL DE CONCORDANCIA DO CLIENTE, HABILITAR/ATIVAR PLANO ESCOLHIDO. CONFIGURAR REDE WI-FI, PADRONIZAR COM "NOME DO CLIENTE_MZNET", SOLICITAR ESCOLHA DA SENHA. CONECTAR TODOS DISPOSITIVOS QUE APRESENTAREM, REALIZAR TESTES DA FUNCIONALIDADE DA INTERNET, AFERIR PLANO COM DISPOSITIVOS DO CLIENTE E OUTROS QUE ESTIVEREM NO LOCAL, FOTOGRAFAR, FILMAR, COMPARAR E EXPLICAR. TESTAR ABRANGÊNCIA DA WI-FI E EXPLICAR SOBRE COBERTURA. CONFERIR NAVEGAÇÃO IPv6, PADRONIZAR PORTA E SENHA DE ACESSO REMOTO, LIBERAR ACESSO EXTERNO PELA WAN. BAIXAR E INSTALAR OS APP S QUE FAZEM PARTE DO PLANO ESCOLHIDO, TANTO NOS TELEFONES E TV S QUE POSSUÍREM COMPATIBILIDADE PARA FUNCIONAMENTO E NÃO HAVENDO DAR EXPLICAÇÕES. COLHER ASSINATURAS, ENTREGAR VIA DO CONTRATO E CARNÊ DE PAGAMENTO.`
 
-export const INST_GRATIS_EMPRESARIAL_OUTPUT = '{{instTextoProtocolo}}\n\n{{instTextoOS}}\n\n=== Texto da Agenda ===\n{{instTextoAgenda}}'
+export const INST_GRATIS_EMPRESARIAL_OUTPUT = '{{instTextoProtocolo}}\n\n{{instTextoOS}}'
 
 function upper(v: unknown): string {
   return String(v ?? '').trim().toUpperCase()
@@ -206,6 +206,24 @@ export const INST_GRATIS_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     section: S_PLANO,
     layout: { md: 3 },
     options: VENCIMENTO_OPTIONS,
+  },
+  { id: 'dataVisita', label: 'Data da visita', control: 'date', placeholder: 'dd/mm/aaaa', section: S_PLANO, layout: { md: 3 } },
+  {
+    id: 'horaVisita',
+    label: 'Horário',
+    control: 'select',
+    section: S_PLANO,
+    layout: { md: 3 },
+    options: [
+      { value: '08:30', label: '08:30' },
+      { value: '09:30', label: '09:30' },
+      { value: '10:30', label: '10:30' },
+      { value: '11:30', label: '11:30' },
+      { value: '14:30', label: '14:30' },
+      { value: '15:30', label: '15:30' },
+      { value: '16:30', label: '16:30' },
+      { value: '17:30', label: '17:30' },
+    ],
   },
 ]
 

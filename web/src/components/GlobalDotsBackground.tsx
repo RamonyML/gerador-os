@@ -19,7 +19,7 @@ export function GlobalDotsBackground() {
     <Box
       aria-hidden
       sx={{
-        position: 'absolute',
+        position: 'fixed',
         inset: 0,
         zIndex: 0,
         pointerEvents: 'none',

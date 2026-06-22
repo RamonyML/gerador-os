@@ -89,7 +89,7 @@ function loginErrorMessage(err: unknown): string {
 export function LoginPage() {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
-  const { mode, toggle } = useColorMode()
+  const { mode, isDark, toggle } = useColorMode()
   const { user, initializing, signIn } = useAuth()
   const location = useLocation()
   const from = (location.state as { from?: string } | null)?.from ?? '/'
@@ -111,7 +111,7 @@ export function LoginPage() {
     mode === 'light'
       ? `radial-gradient(1200px 520px at 10% 6%, ${alpha(primary, 0.12)} 0%, transparent 58%), radial-gradient(900px 460px at 92% 16%, ${alpha(primary, 0.07)} 0%, transparent 55%), ${theme.palette.background.default}`
       : `radial-gradient(1100px 540px at 14% 8%, ${alpha(primary, 0.16)} 0%, transparent 55%), radial-gradient(800px 420px at 92% 18%, ${alpha(primary, 0.08)} 0%, transparent 55%), ${theme.palette.background.default}`
-  const dotPattern = `radial-gradient(${alpha(theme.palette.text.primary, mode === 'dark' ? 0.06 : 0.05)} 1px, transparent 1px)`
+  const dotPattern = `radial-gradient(${alpha(theme.palette.text.primary, isDark ? 0.06 : 0.05)} 1px, transparent 1px)`
 
   /** Fade-in escalonado: cada elemento entra um após o outro ao carregar. */
   const fadeUp = (delay: number) =>
@@ -129,17 +129,17 @@ export function LoginPage() {
     '& .MuiOutlinedInput-root': {
       borderRadius: 2.5,
       transition: 'background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease',
-      bgcolor: alpha(theme.palette.background.paper, mode === 'dark' ? 0.22 : 0.6),
+      bgcolor: alpha(theme.palette.background.paper, isDark ? 0.22 : 0.6),
       '& fieldset': {
-        borderColor: alpha(theme.palette.text.primary, mode === 'dark' ? 0.16 : 0.14),
+        borderColor: alpha(theme.palette.text.primary, isDark ? 0.16 : 0.14),
       },
       '&:hover': {
         '& fieldset': {
-          borderColor: alpha(theme.palette.text.primary, mode === 'dark' ? 0.26 : 0.22),
+          borderColor: alpha(theme.palette.text.primary, isDark ? 0.26 : 0.22),
         },
       },
       '&.Mui-focused': {
-        boxShadow: `0 0 0 4px ${alpha(primary, mode === 'dark' ? 0.22 : 0.14)}`,
+        boxShadow: `0 0 0 4px ${alpha(primary, isDark ? 0.22 : 0.14)}`,
         '& fieldset': {
           borderColor: primary,
           borderWidth: 1.5,
@@ -251,7 +251,7 @@ export function LoginPage() {
           position: 'absolute',
           inset: 0,
           pointerEvents: 'none',
-          opacity: mode === 'dark' ? 0.6 : 0.5,
+          opacity: isDark ? 0.6 : 0.5,
           '&::before, &::after': {
             content: '""',
             position: 'absolute',
@@ -259,7 +259,7 @@ export function LoginPage() {
             height: { xs: 320, sm: 460 },
             borderRadius: '50%',
             filter: 'blur(48px)',
-            background: `radial-gradient(circle at 30% 30%, ${alpha(primary, mode === 'dark' ? 0.3 : 0.2)} 0%, transparent 62%)`,
+            background: `radial-gradient(circle at 30% 30%, ${alpha(primary, isDark ? 0.3 : 0.2)} 0%, transparent 62%)`,
             animation: 'login-ambient-float 18s ease-in-out infinite',
           },
           '&::before': { top: { xs: -130, sm: -180 }, left: { xs: -120, sm: -160 } },
@@ -278,7 +278,7 @@ export function LoginPage() {
         }}
       />
 
-      <Tooltip title={mode === 'dark' ? 'Tema claro' : 'Tema escuro'} placement="left">
+      <Tooltip title={isDark ? 'Tema claro' : 'Tema escuro'} placement="left">
         <IconButton
           onClick={() => toggle()}
           aria-label="Alternar tema claro ou escuro"
@@ -292,7 +292,7 @@ export function LoginPage() {
             '&:hover': { bgcolor: alpha(theme.palette.text.primary, 0.1) },
           }}
         >
-          {mode === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </IconButton>
       </Tooltip>
 
@@ -354,9 +354,9 @@ export function LoginPage() {
                     display: 'grid',
                     placeItems: 'center',
                     color: 'primary.main',
-                    bgcolor: alpha(primary, mode === 'dark' ? 0.18 : 0.1),
+                    bgcolor: alpha(primary, isDark ? 0.18 : 0.1),
                     border: 1,
-                    borderColor: alpha(primary, mode === 'dark' ? 0.3 : 0.16),
+                    borderColor: alpha(primary, isDark ? 0.3 : 0.16),
                   }}
                 >
                   <Icon size={20} />
@@ -447,9 +447,9 @@ export function LoginPage() {
                     mb: 2,
                     borderRadius: 2,
                     py: 1,
-                    bgcolor: alpha(theme.palette.error.main, mode === 'dark' ? 0.12 : 0.08),
+                    bgcolor: alpha(theme.palette.error.main, isDark ? 0.12 : 0.08),
                     border: 1,
-                    borderColor: alpha(theme.palette.error.main, mode === 'dark' ? 0.24 : 0.18),
+                    borderColor: alpha(theme.palette.error.main, isDark ? 0.24 : 0.18),
                     color: 'text.primary',
                   }}
                 >
@@ -466,9 +466,9 @@ export function LoginPage() {
                     mb: 2,
                     borderRadius: 2,
                     py: 1,
-                    bgcolor: alpha(theme.palette.success.main, mode === 'dark' ? 0.12 : 0.08),
+                    bgcolor: alpha(theme.palette.success.main, isDark ? 0.12 : 0.08),
                     border: 1,
-                    borderColor: alpha(theme.palette.success.main, mode === 'dark' ? 0.24 : 0.18),
+                    borderColor: alpha(theme.palette.success.main, isDark ? 0.24 : 0.18),
                     color: 'text.primary',
                   }}
                   onClose={() => setResetHint(null)}

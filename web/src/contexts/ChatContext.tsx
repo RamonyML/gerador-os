@@ -3,13 +3,16 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react'
 import { useAuth } from './AuthContext'
+import { db } from '../lib/firebase'
 import { setPresence, subscribePresence } from '../lib/presenceFirestore'
 import { getChatId, markAsRead, subscribeMyChats } from '../lib/chatFirestore'
+import { subscribeUsersPublic, type PublicProfile } from '../lib/usersPublic'
 import type { Chat, UserPresence, UserStatus } from '../types/chat'
 
 type OpenConv = { uid: string; chatId: string }
@@ -32,7 +35,8 @@ const ChatContext = createContext<ChatContextValue | null>(null)
 export function ChatProvider({ children }: { children: ReactNode }) {
   const { user, profile, photoURL } = useAuth()
   const [myStatus, setMyStatusState] = useState<UserStatus>('online')
-  const [presence, setPresenceData] = useState<UserPresence[]>([])
+  const [presenceRaw, setPresenceRaw] = useState<UserPresence[]>([])
+  const [directory, setDirectory] = useState<Record<string, PublicProfile>>({})
   const [openConversations, setOpenConversations] = useState<OpenConv[]>([])
   const [chats, setChats] = useState<Chat[]>([])
   const [isWidgetOpen, setWidgetOpen] = useState(false)
@@ -75,13 +79,40 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }, [user?.uid, profile?.displayName])  // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Assinar presença de todos os usuários
+  // Assinar diretório público (todos os usuários, mesmo antes do 1º login)
+  useEffect(() => {
+    if (!user) return
+    return subscribeUsersPublic(db, setDirectory)
+  }, [user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Assinar presença em tempo real (status online/offline/ausente)
   useEffect(() => {
     if (!user) return
     return subscribePresence((all) => {
-      setPresenceData(all.filter((u) => u.uid !== user.uid))
+      setPresenceRaw(all.filter((u) => u.uid !== user.uid))
     })
   }, [user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Mescla diretório público com presença: todos aparecem, presença sobrescreve status e sector
+  const presence = useMemo<UserPresence[]>(() => {
+    const presenceMap = new Map(presenceRaw.map((p) => [p.uid, p]))
+    return Object.entries(directory)
+      .filter(([uid]) => uid !== user?.uid)
+      .map(([uid, pub]) => {
+        const pres = presenceMap.get(uid)
+        if (pres) {
+          return { ...pres, sector: pres.sector || pub.sector }
+        }
+        return {
+          uid,
+          displayName: pub.displayName ?? '',
+          photoURL: pub.photoURL,
+          status: 'offline' as UserStatus,
+          sector: pub.sector,
+          updatedAt: new Date(0),
+        }
+      })
+  }, [directory, presenceRaw, user?.uid])
 
   // Assinar chats do usuário
   useEffect(() => {

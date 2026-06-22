@@ -9,13 +9,16 @@ import {
 } from 'firebase/firestore'
 
 /**
- * Cartão público mínimo de um usuário (nome + foto), usado em telas
- * compartilhadas como a linha do tempo de chamados, onde é preciso exibir a
- * foto de outros usuários sem expor o documento de perfil completo.
+ * Cartão público de um usuário — usado no chat, lista de pausas e linha do
+ * tempo de chamados. Inclui campos de diretório (sector, hierarchy) além dos
+ * visuais (displayName, photoURL).
  */
 export type PublicProfile = {
+  uid?: string
   displayName: string | null
   photoURL: string | null
+  sector: string
+  hierarchy: string
 }
 
 const COLLECTION = 'usersPublic'
@@ -27,17 +30,21 @@ const COLLECTION = 'usersPublic'
 export async function upsertMyPublicProfile(
   db: Firestore,
   uid: string,
-  data: { displayName?: string | null; photoURL?: string | null },
+  data: {
+    displayName?: string | null
+    photoURL?: string | null
+    sector?: string
+    hierarchy?: string
+  },
 ): Promise<void> {
-  await setDoc(
-    doc(db, COLLECTION, uid),
-    {
-      displayName: data.displayName ?? null,
-      photoURL: data.photoURL ?? null,
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
+  const payload: Record<string, unknown> = {
+    displayName: data.displayName ?? null,
+    photoURL: data.photoURL ?? null,
+    updatedAt: serverTimestamp(),
+  }
+  if (data.sector !== undefined) payload.sector = data.sector
+  if (data.hierarchy !== undefined) payload.hierarchy = data.hierarchy
+  await setDoc(doc(db, COLLECTION, uid), payload, { merge: true })
 }
 
 /**
@@ -55,12 +62,39 @@ export function subscribeUsersPublic(
       snap.forEach((d) => {
         const data = d.data() as Record<string, unknown>
         map[d.id] = {
-          displayName:
-            typeof data.displayName === 'string' ? data.displayName : null,
+          uid: d.id,
+          displayName: typeof data.displayName === 'string' ? data.displayName : null,
           photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
+          sector: typeof data.sector === 'string' ? data.sector : '',
+          hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
         }
       })
       onNext(map)
+    },
+    (err) => onError?.(err),
+  )
+}
+
+/** Lista ordenada de todos os usuários do diretório público (para pausa, etc). */
+export function subscribeUsersDirectory(
+  db: Firestore,
+  onNext: (users: PublicProfile[]) => void,
+  onError?: (error: unknown) => void,
+): Unsubscribe {
+  return onSnapshot(
+    collection(db, COLLECTION),
+    (snap) => {
+      const users: PublicProfile[] = snap.docs.map((d) => {
+        const data = d.data() as Record<string, unknown>
+        return {
+          uid: d.id,
+          displayName: typeof data.displayName === 'string' ? data.displayName : null,
+          photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
+          sector: typeof data.sector === 'string' ? data.sector : '',
+          hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
+        }
+      })
+      onNext(users)
     },
     (err) => onError?.(err),
   )

@@ -95,8 +95,19 @@ service cloud.firestore {
      */
     match /usersPublic/{userId} {
       allow read: if isActiveUser();
+      // Próprio usuário ou gerente/admin/dev (AdminUsersPage cria perfis antes do 1º login)
       allow write: if request.auth != null
-        && request.auth.uid == userId
+        && (
+          request.auth.uid == userId
+          || (
+            isActiveUser()
+            && (
+              userData().isDev == true
+              || userData().isAdmin == true
+              || userData().hierarchy == 'gerente'
+            )
+          )
+        )
         && (
           !('displayName' in request.resource.data)
           || request.resource.data.displayName == null
@@ -106,6 +117,14 @@ service cloud.firestore {
           !('photoURL' in request.resource.data)
           || request.resource.data.photoURL == null
           || request.resource.data.photoURL is string
+        )
+        && (
+          !('sector' in request.resource.data)
+          || request.resource.data.sector is string
+        )
+        && (
+          !('hierarchy' in request.resource.data)
+          || request.resource.data.hierarchy is string
         );
     }
 
@@ -550,6 +569,49 @@ service cloud.firestore {
 
         allow update, delete: if false;
       }
+    }
+
+    /**
+     * Pausas diárias dos operadores. Doc ID: `{YYYY-MM-DD}_{uid}`.
+     * Campos: uid, displayName, date, horarioAgendado, inicioEfetivo, fimEfetivo.
+     *
+     * Leitura: qualquer usuário ativo (gerente precisa ver a equipe toda).
+     * Definir horário (create/update horarioAgendado): gerente ou dev/admin.
+     * Iniciar/encerrar própria pausa: o próprio usuário, desde que o doc já exista.
+     */
+    function isPausaManager() {
+      return isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+        );
+    }
+
+    match /pausas/{pausaId} {
+      allow read: if request.auth != null;
+
+      // Gerente/admin/dev criam o documento com horarioAgendado
+      allow create: if isPausaManager()
+        && request.resource.data.uid is string
+        && request.resource.data.date is string
+        && request.resource.data.displayName is string;
+
+      // Gerente/admin/dev atualizam qualquer campo;
+      // o operador só atualiza o próprio doc (inicioEfetivo / fimEfetivo)
+      allow update: if isActiveUser()
+        && (
+          isPausaManager()
+          || (
+            resource.data.uid == request.auth.uid
+            && request.resource.data.uid == resource.data.uid
+            && request.resource.data.date == resource.data.date
+            && request.resource.data.displayName == resource.data.displayName
+            && request.resource.data.horarioAgendado == resource.data.horarioAgendado
+          )
+        );
+
+      allow delete: if isActiveUser() && userData().isDev == true;
     }
 
     match /{document=**} {
