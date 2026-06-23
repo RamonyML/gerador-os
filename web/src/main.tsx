@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
 import { initAnalytics } from './lib/firebase'
 import { AuthProvider } from './contexts/AuthContext'
+import { ChatProvider } from './contexts/ChatContext'
 import { ColorModeProvider } from './contexts/ColorModeContext'
 import { SidebarTextureProvider } from './contexts/SidebarTextureContext'
 import { FontProvider } from './contexts/FontContext'
@@ -27,7 +28,9 @@ createRoot(document.getElementById('root')!).render(
             <AppThemeProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <AuthProvider>
-                  <App />
+                  <ChatProvider>
+                    <App />
+                  </ChatProvider>
                 </AuthProvider>
               </LocalizationProvider>
             </AppThemeProvider>

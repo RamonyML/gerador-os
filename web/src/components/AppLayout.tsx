@@ -1,5 +1,5 @@
 import { Outlet, Link as RouterLink, useLocation, useNavigate } from 'react-router-dom'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   AppBar,
   Avatar,
@@ -60,25 +60,9 @@ import { SidebarBubbles } from './SidebarBubbles'
 import { SidebarDots } from './SidebarDots'
 import { SidebarHexagons } from './SidebarHexagons'
 import { SidebarMesh } from './SidebarMesh'
-import { ChatProvider, useChat } from '../contexts/ChatContext'
+import { useChat } from '../contexts/ChatContext'
 import { ChatWidget } from './chat/ChatWidget'
 import { PausaWidget } from './PausaWidget'
-
-/** Badge de mensagens não lidas do chat — precisa estar dentro do ChatProvider */
-function ChatUnreadBadge({ children }: { children: React.ReactNode }) {
-  const { totalUnread } = useChat()
-  return (
-    <Badge
-      badgeContent={totalUnread || undefined}
-      color="error"
-      overlap="circular"
-      max={9}
-      sx={{ '& .MuiBadge-badge': { fontSize: 9, height: 15, minWidth: 15, p: 0 } }}
-    >
-      {children}
-    </Badge>
-  )
-}
 
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
@@ -103,6 +87,7 @@ export function AppLayout() {
   const showValidacao = profile != null && canAccessValidacao(profile)
   const showNotes = profile != null && canAccessNotes(profile)
   const { mode, isDark, setMode } = useColorMode()
+  const { totalUnread: chatUnread } = useChat()
   const [themeMenuAnchor, setThemeMenuAnchor] = useState<HTMLElement | null>(null)
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -410,7 +395,13 @@ export function AppLayout() {
             },
           }}
         >
-          <ChatUnreadBadge>
+          <Badge
+            badgeContent={chatUnread || undefined}
+            color="error"
+            overlap="circular"
+            max={9}
+            sx={{ '& .MuiBadge-badge': { fontSize: 9, height: 15, minWidth: 15, p: 0 } }}
+          >
             <Avatar
               src={photoURL ?? undefined}
               sx={{
@@ -424,7 +415,7 @@ export function AppLayout() {
             >
               {initialsFrom(displayName)}
             </Avatar>
-          </ChatUnreadBadge>
+          </Badge>
           <Box
             sx={{
               minWidth: 0,
@@ -470,7 +461,6 @@ export function AppLayout() {
   )
 
   return (
-    <ChatProvider>
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Box
         component="nav"
@@ -955,6 +945,5 @@ export function AppLayout() {
 
       <ChatWidget />
     </Box>
-    </ChatProvider>
   )
 }
