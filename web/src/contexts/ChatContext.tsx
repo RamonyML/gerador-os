@@ -120,10 +120,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   useEffect(() => { isWidgetOpenRef.current = isWidgetOpen }, [isWidgetOpen])
   useEffect(() => { activeConvUidRef.current = activeConvUid }, [activeConvUid])
 
-  // Inicializa áudio de notificação
+  // Inicializa áudio e desbloqueia o contexto de áudio no primeiro gesto do usuário
+  // (browsers bloqueiam audio.play() até haver uma interação na página)
   useEffect(() => {
-    audioRef.current = new Audio('/sound/notification.mp3')
-    audioRef.current.volume = 0.6
+    const audio = new Audio('/sound/notification.mp3')
+    audio.volume = 0.6
+    audioRef.current = audio
+
+    const unlock = () => {
+      void audio.play().then(() => { audio.pause(); audio.currentTime = 0 }).catch(() => {})
+      window.removeEventListener('click', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
+    window.addEventListener('click', unlock)
+    window.addEventListener('keydown', unlock)
+    return () => {
+      window.removeEventListener('click', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
   }, [])
 
   // Assinar chats do usuário

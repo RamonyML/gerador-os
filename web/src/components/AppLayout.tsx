@@ -1,5 +1,5 @@
 import { Outlet, Link as RouterLink, useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   AppBar,
   Avatar,
@@ -60,9 +60,25 @@ import { SidebarBubbles } from './SidebarBubbles'
 import { SidebarDots } from './SidebarDots'
 import { SidebarHexagons } from './SidebarHexagons'
 import { SidebarMesh } from './SidebarMesh'
-import { ChatProvider } from '../contexts/ChatContext'
+import { ChatProvider, useChat } from '../contexts/ChatContext'
 import { ChatWidget } from './chat/ChatWidget'
 import { PausaWidget } from './PausaWidget'
+
+/** Badge de mensagens não lidas do chat — precisa estar dentro do ChatProvider */
+function ChatUnreadBadge({ children }: { children: React.ReactNode }) {
+  const { totalUnread } = useChat()
+  return (
+    <Badge
+      badgeContent={totalUnread || undefined}
+      color="error"
+      overlap="circular"
+      max={9}
+      sx={{ '& .MuiBadge-badge': { fontSize: 9, height: 15, minWidth: 15, p: 0 } }}
+    >
+      {children}
+    </Badge>
+  )
+}
 
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
@@ -394,19 +410,21 @@ export function AppLayout() {
             },
           }}
         >
-          <Avatar
-            src={photoURL ?? undefined}
-            sx={{
-              width: 38,
-              height: 38,
-              bgcolor: 'primary.main',
-              fontSize: 14,
-              fontWeight: 700,
-              flexShrink: 0,
-            }}
-          >
-            {initialsFrom(displayName)}
-          </Avatar>
+          <ChatUnreadBadge>
+            <Avatar
+              src={photoURL ?? undefined}
+              sx={{
+                width: 38,
+                height: 38,
+                bgcolor: 'primary.main',
+                fontSize: 14,
+                fontWeight: 700,
+                flexShrink: 0,
+              }}
+            >
+              {initialsFrom(displayName)}
+            </Avatar>
+          </ChatUnreadBadge>
           <Box
             sx={{
               minWidth: 0,
