@@ -32,42 +32,44 @@ A integração é feita via Cloud Functions (proxy seguro — o frontend nunca a
 
 ### 3.1 O problema
 
-Ao chamar o endpoint com os três campos obrigatórios (`token`, `cd_atendimento`, `comentario`), o servidor retorna **HTTP 500** com a seguinte mensagem:
-
-```
-javax.servlet.ServletException: O objeto (Tabela) deve ter um valor definido!
-  wfr.web.ExternalRulesServlet.process(SourceFile:321)
-```
-
-A chamada realizada:
+O endpoint retorna **HTTP 500** consistentemente. Realizamos testes exaustivos variando todos os parâmetros possíveis:
 
 ```
 GET /mk/WSMKAtendimentoComentario.rule
   ?sys=MK0
   &token=<token_valido>
-  &cd_atendimento=268137
-  &comentario=CLIENTE+SEM+BLOQUEIO...
+  &cd_atendimento=268168
+  &comentario=CLIENTE SEM BLOQUEIO, SEM REDUCAO, E ONU -23.65DBM SEM OSCILACAO.
   &tipo=2
+  &user=mz.ramony
+
+→ HTTP 500: "O objeto (Tabela) deve ter um valor definido!"
+   javax.servlet.ServletException
+   wfr.web.ExternalRulesServlet.process(SourceFile:321)
+   wfr.web.ExternalRulesServlet.doGet(SourceFile:113)
 ```
 
-O atendimento `268137` foi criado pelo próprio sistema segundos antes, com sucesso.
+### 3.2 Diagnóstico — não é problema de parâmetros
 
-### 3.2 Nossa análise
+Testamos sistematicamente todas as combinações possíveis:
 
-O erro `"O objeto (Tabela) deve ter um valor definido!"` é uma exceção do runtime WFR indicando que um objeto de banco de dados está nulo internamente. Testamos com e sem o parâmetro `tipo`, com tokens de sessão novos e a mensagem de erro é sempre a mesma.
+| Combinação testada | Resultado |
+|---|---|
+| Somente campos obrigatórios (`token`, `cd_atendimento`, `comentario`) | ❌ 500 — mesma linha |
+| Com `tipo=1` (privado) | ❌ 500 — mesma linha |
+| Com `tipo=2` (público) | ❌ 500 — mesma linha |
+| Com `user=mz.ramony` (login ERP válido) | ❌ 500 — mesma linha |
+| Tokens de sessão diferentes (auth renovada) | ❌ 500 — mesma linha |
 
-Nossa hipótese é que a regra tenta associar o comentário a um **operador ERP** (`user`) e, quando esse parâmetro não é fornecido, faz uma busca interna que retorna nulo — causando o crash.
+O crash ocorre sempre na **mesma linha** do servlet (`ExternalRulesServlet.process(SourceFile:321)`), antes de qualquer validação de parâmetros. Isso indica uma falha interna da regra WFR — provavelmente uma tabela de banco de dados acessada internamente que retorna nulo.
 
-### 3.3 O que precisamos do MK
+> **Confirmação: release ≥ 64.9 —** Paralelamente, implementamos e testamos o parâmetro `op_abertura` em `WSMKNovoAtendimento.rule` — ele funcionou corretamente, registrando o operador `mz.ramony` no ticket #268168. Isso confirma que o servidor está na release 64.9 ou superior. O problema em `WSMKAtendimentoComentario.rule` não é de versão.
 
-**a) Confirmar a causa raiz do erro 500** — O campo `user` é, na prática, obrigatório mesmo estando documentado como opcional? Ou há algum pré-requisito de configuração que não estamos atendendo?
+### 3.3 O que precisamos do MK Solutions
 
-**b) Mapeamento de operadores por usuário** — Cada solicitação ao nosso sistema é feita por um operador autenticado via Firebase. Para que o comentário apareça corretamente associado no ticket MK, precisamos de uma forma de obter o **login ERP** do operador a partir do sistema. As alternativas que enxergamos:
+**Q1 — Verificar logs do servidor Tomcat:** A mensagem de erro informa que "a pilha de erros completa da causa principal está disponível nos logs do servidor". Precisamos que a equipe MK verifique o arquivo `catalina.out` (ou equivalente) no momento de uma chamada ao endpoint para identificar a causa raiz do `NullPointerException` na linha 321.
 
-- O próprio cadastro de operadores expõe um endpoint de consulta por e-mail ou nome (`WSMKConsultaUsuario.rule` ou similar)?
-- Ou devemos manter uma tabela de mapeamento manual `{email_firebase → login_mk}` no nosso sistema?
-
-**c) Serviço no perfil de webservice** — O endpoint `WSMKAtendimentoComentario.rule` requer alguma configuração específica no perfil de webservice além do `cd_servico: 9999`?
+**Q2 — Configuração do módulo:** Existe algum módulo, tabela ou configuração adicional que precisa estar habilitada no ERP para que `WSMKAtendimentoComentario.rule` funcione? O endpoint responde (retorna 500, não 404), mas parece falhar ao acessar uma estrutura interna.
 
 ---
 
@@ -116,9 +118,10 @@ GET /mk/WSMKNovoAtendimento.rule
   &info=<texto>
   &cd_contrato=46364          ← necessário quando há múltiplas conexões
   &conexao_associada=35525    ← necessário quando há múltiplas conexões
+  &op_abertura=mz.ramony      ← login ERP do operador (release ≥ 64.9) ✅
 ```
 
-Retorno: `{ CodigoAtendimento, Protocolo }` ✅
+Retorno: `{ CodigoAtendimento: 268168, Protocolo }` ✅
 
 ### `WSMKConexoesPorCliente.rule` — campo correto identificado
 

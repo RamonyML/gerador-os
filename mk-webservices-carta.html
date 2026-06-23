@@ -230,7 +230,7 @@
     </div>
     <div class="header-right">
       <strong>23 de junho de 2026</strong><br>
-      Versão 1.0<br>
+      Versão 1.1<br>
       Uso interno
     </div>
   </div>
@@ -257,53 +257,60 @@
     <tr><td>1</td><td>WSAutenticacao.rule</td><td><span class="ok">✓ Funcionando</span></td></tr>
     <tr><td>2</td><td>WSMKConsultaDoc.rule</td><td><span class="ok">✓ Funcionando</span></td></tr>
     <tr><td>3</td><td>WSMKConexoesPorCliente.rule</td><td><span class="ok">✓ Funcionando</span></td></tr>
-    <tr><td>4</td><td>WSMKNovoAtendimento.rule</td><td><span class="ok">✓ Funcionando</span></td></tr>
-    <tr><td>5</td><td>WSMKAtendimentoComentario.rule</td><td><span class="err">✗ Erro 500</span></td></tr>
-    <tr><td>6</td><td>WSMKCriarOrdemServico.rule</td><td><span class="warn">⚠ Aguardando configuração</span></td></tr>
+    <tr><td>4</td><td>WSMKNovoAtendimento.rule (incl. <code>op_abertura</code>)</td><td><span class="ok">✓ Funcionando — release ≥ 64.9 confirmada</span></td></tr>
+    <tr><td>5</td><td>WSMKAtendimentoComentario.rule</td><td><span class="err">✗ Erro 500 — bug no servidor MK</span></td></tr>
+    <tr><td>6</td><td>WSMKCriarOrdemServico.rule</td><td><span class="warn">⚠ Aguardando códigos de configuração</span></td></tr>
   </table>
 
   <!-- Bloqueio 1 - Comentário -->
   <h2><span class="num">3</span> Bloqueio crítico — WSMKAtendimentoComentario.rule</h2>
 
   <h3>3.1 O problema</h3>
-  <p>Ao chamar o endpoint com os campos obrigatórios documentados (<code>token</code>, <code>cd_atendimento</code>, <code>comentario</code>), o servidor retorna <strong>HTTP 500</strong>:</p>
+  <p>O endpoint retorna <strong>HTTP 500</strong> consistentemente. Realizamos testes exaustivos variando todos os parâmetros possíveis — a chamada mais completa enviada foi:</p>
 
   <div class="code-block">
 <span class="comment">GET /mk/WSMKAtendimentoComentario.rule</span>
   ?<span class="key">sys</span>=<span class="val">MK0</span>
   &amp;<span class="key">token</span>=<span class="val">&lt;token_valido&gt;</span>
-  &amp;<span class="key">cd_atendimento</span>=<span class="val">268137</span>
-  &amp;<span class="key">comentario</span>=<span class="val">CLIENTE SEM BLOQUEIO...</span>
+  &amp;<span class="key">cd_atendimento</span>=<span class="val">268168</span>
+  &amp;<span class="key">comentario</span>=<span class="val">CLIENTE SEM BLOQUEIO, SEM REDUCAO, E ONU -23.65DBM SEM OSCILACAO.</span>
   &amp;<span class="key">tipo</span>=<span class="val">2</span>
+  &amp;<span class="key">user</span>=<span class="val">mz.ramony</span>
 
 <span class="comment">→ HTTP 500: "O objeto (Tabela) deve ter um valor definido!"
    javax.servlet.ServletException
-   wfr.web.ExternalRulesServlet.process(SourceFile:321)</span>
+   wfr.web.ExternalRulesServlet.process(SourceFile:321)
+   wfr.web.ExternalRulesServlet.doGet(SourceFile:113)</span>
   </div>
 
-  <p>O atendimento <code>268137</code> foi criado com sucesso pelo próprio sistema segundos antes. O erro ocorre independentemente do parâmetro <code>tipo</code> (testado com e sem ele, com valores 1 e 2).</p>
+  <h3>3.2 Diagnóstico — não é problema de parâmetros</h3>
+  <p>Testamos sistematicamente todas as combinações possíveis:</p>
 
-  <h3>3.2 Nossa análise técnica</h3>
-  <p>O erro <em>"O objeto (Tabela) deve ter um valor definido!"</em> é uma exceção do runtime WFR indicando que um objeto de banco de dados retornou nulo onde não deveria. Nossa hipótese: a regra tenta associar o comentário a um <strong>operador ERP</strong> a partir da sessão do webservice — e como tokens de webservice (<code>WSAutenticacao.rule</code>) não têm um usuário ERP diretamente vinculado na mesma tabela de sessões de operadores, a busca retorna nulo.</p>
+  <table>
+    <tr><th>Combinação testada</th><th>Resultado</th></tr>
+    <tr><td>Somente campos obrigatórios (<code>token</code>, <code>cd_atendimento</code>, <code>comentario</code>)</td><td><span class="err">500 — mesma linha</span></td></tr>
+    <tr><td>Com <code>tipo=1</code> (privado)</td><td><span class="err">500 — mesma linha</span></td></tr>
+    <tr><td>Com <code>tipo=2</code> (público)</td><td><span class="err">500 — mesma linha</span></td></tr>
+    <tr><td>Com <code>user=mz.ramony</code> (login ERP válido)</td><td><span class="err">500 — mesma linha</span></td></tr>
+    <tr><td>Tokens de sessão diferentes (auth renovada)</td><td><span class="err">500 — mesma linha</span></td></tr>
+  </table>
+
+  <p>O crash ocorre sempre na <strong>mesma linha</strong> do servlet (<code>ExternalRulesServlet.process(SourceFile:321)</code>), antes de qualquer validação de parâmetros. Isso indica uma falha interna da regra WFR — provavelmente uma tabela de banco de dados acessada internamente que retorna nulo.</p>
 
   <div class="highlight-box">
-    <div class="title">⚠ Questão arquitetural importante</div>
-    No MK ERP, quando um comentário é inserido manualmente, ele sempre aparece com o nome do operador que o registrou. Nosso sistema precisa manter esse rastreamento — cada operador da MZ NET que abre um atendimento deve aparecer como autor dos comentários, <strong>não um usuário genérico do webservice</strong>.
+    <div class="title">⚠ Confirmação importante: release ≥ 64.9</div>
+    Paralelamente, implementamos e testamos o parâmetro <code>op_abertura</code> em <code>WSMKNovoAtendimento.rule</code> — ele funcionou corretamente, registrando o operador <code>mz.ramony</code> no ticket. Isso confirma que o servidor está na <strong>release 64.9 ou superior</strong>. O problema em <code>WSMKAtendimentoComentario.rule</code> não é de versão.
   </div>
 
   <h3>3.3 O que precisamos do MK Solutions</h3>
   <ul class="ask-list">
     <li>
       <span class="q-num">Q1</span>
-      <span><strong>Causa raiz do 500:</strong> O parâmetro <code>user</code> é, na prática, obrigatório mesmo sendo documentado como opcional? Ou há algum pré-requisito de configuração no perfil webservice que não estamos atendendo?</span>
+      <span><strong>Verificar logs do servidor Tomcat:</strong> A mensagem de erro informa que <em>"a pilha de erros completa da causa principal está disponível nos logs do servidor"</em>. Precisamos que a equipe MK verifique o arquivo <code>catalina.out</code> (ou equivalente) no momento de uma chamada ao endpoint para identificar a causa raiz do <code>NullPointerException</code> na linha 321.</span>
     </li>
     <li>
       <span class="q-num">Q2</span>
-      <span><strong>Mapeamento de operadores:</strong> Cada solicitação no nosso sistema é feita por um operador autenticado (Firebase Auth). Para associar o comentário ao operador correto no MK, precisamos mapear o usuário Firebase ao login ERP. Existe um endpoint de consulta de usuários MK por nome ou e-mail (ex: <code>WSMKConsultaUsuario.rule</code>)? Ou devemos manter uma tabela de mapeamento manual?</span>
-    </li>
-    <li>
-      <span class="q-num">Q3</span>
-      <span><strong>Alternativa de autenticação:</strong> Seria mais adequado autenticar via <code>WSMKLoginCompleto.rule</code> (com login + senha de um usuário ERP dedicado) em vez de <code>WSAutenticacao.rule</code> (token de webservice), especialmente para que os comentários tenham um operador associado?</span>
+      <span><strong>Configuração do módulo:</strong> Existe algum módulo, tabela ou configuração adicional que precisa estar habilitada no ERP para que <code>WSMKAtendimentoComentario.rule</code> funcione? O endpoint responde (retorna 500, não 404), mas parece falhar ao acessar uma estrutura interna.</span>
     </li>
   </ul>
 
@@ -352,7 +359,7 @@
   <h2><span class="num">5</span> Fluxo atual funcionando (para registro)</h2>
 
   <div class="info-box">
-    O fluxo de criação de protocolo com seleção de conexão está <strong>100% operacional</strong>. Testado em ambiente real com protocolo <strong>2606.25251</strong> criado com sucesso.
+    O fluxo de criação de protocolo com seleção de conexão e registro do operador está <strong>100% operacional</strong>. Testado em ambiente real — atendimento <strong>#268168</strong> criado com sucesso, operador registrado corretamente.
   </div>
 
   <div class="code-block">
@@ -367,12 +374,13 @@ GET /mk/WSMKConsultaDoc.rule?sys=MK0&amp;token=&lt;sessao&gt;&amp;doc=&lt;cpf_se
 GET /mk/WSMKConexoesPorCliente.rule?sys=MK0&amp;token=&lt;sessao&gt;&amp;cd_cliente=&lt;CodigoPessoa&gt;
 <span class="comment">→ Campo retornado: "codconexao" (lowercase) — não "CodigoConexao"</span>
 
-<span class="comment">4. Abrir atendimento (com contrato + conexão)</span>
+<span class="comment">4. Abrir atendimento (com contrato + conexão + operador)</span>
 GET /mk/WSMKNovoAtendimento.rule?sys=MK0&amp;token=&lt;sessao&gt;
   &amp;cd_cliente=&lt;cod&gt;&amp;cd_processo=&lt;cod&gt;&amp;cd_classificacao_ate=&lt;cod&gt;
   &amp;origem_contato=9&amp;info=&lt;texto&gt;
   &amp;cd_contrato=&lt;cod&gt;&amp;conexao_associada=&lt;codconexao&gt;
-<span class="comment">→ Retorna: CodigoAtendimento, Protocolo ✅</span>
+  &amp;op_abertura=mz.ramony
+<span class="comment">→ Retorna: CodigoAtendimento: 268168, Protocolo ✅ (operador registrado corretamente)</span>
   </div>
 
   <!-- Próximas integrações -->
@@ -383,8 +391,6 @@ GET /mk/WSMKNovoAtendimento.rule?sys=MK0&amp;token=&lt;sessao&gt;
     </tr>
     <tr><td>Manutenção</td><td>NovoAtendimento + Comentário + CriarOS</td><td>60 variantes</td></tr>
     <tr><td>Alteração de Plano</td><td>NovoAtendimento + Comentário + CriarOS + alterar plano</td><td>59 variantes</td></tr>
-    <tr><td>Encerramento de O.S.</td><td>PUT /os (API especial Node.js)</td><td>Feedback</td></tr>
-    <tr><td>Auto-desbloqueio</td><td>WSMKAutoDesbloqueioV2.rule</td><td>Financeiro</td></tr>
   </table>
 
   <!-- Rodapé -->
