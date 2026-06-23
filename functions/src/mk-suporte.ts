@@ -6,22 +6,49 @@ import { defineSecret, defineString } from 'firebase-functions/params'
 // defineSecret → armazenado no Google Cloud Secret Manager (não exposto em logs/env)
 // defineString → variável de ambiente comum (não-sensível)
 
-const _mkBaseUrl   = defineString('MK_BASE_URL',    { default: '' })
-const _mkMode      = defineString('MK_MODE',        { default: 'shadow' })
-const _mkUserLogin = defineString('MK_USER_LOGIN',  { default: '' })
-const _mkToken     = defineSecret('MK_TOKEN')
-const _mkPass      = defineSecret('MK_WEBSERVICE_PASSWORD')
+const _mkBaseUrl = defineString('MK_BASE_URL', { default: '' })
+const _mkMode    = defineString('MK_MODE',     { default: 'shadow' })
+const _mkToken   = defineSecret('MK_TOKEN')
+const _mkPass    = defineSecret('MK_WEBSERVICE_PASSWORD')
 
 // Lido dentro do handler (defineSecret.value() só funciona durante a execução)
-type MkConfig = { baseUrl: string; token: string; password: string; userLogin: string; shadow: boolean }
+type MkConfig = { baseUrl: string; token: string; password: string; shadow: boolean }
 function getMkConfig(): MkConfig {
   return {
-    baseUrl:   _mkBaseUrl.value().replace(/\/$/, '').trim(),
-    token:     _mkToken.value().trim(),
-    password:  _mkPass.value().trim(),
-    userLogin: _mkUserLogin.value().trim(),
-    shadow:    _mkMode.value().trim() !== 'real',
+    baseUrl:  _mkBaseUrl.value().replace(/\/$/, '').trim(),
+    token:    _mkToken.value().trim(),
+    password: _mkPass.value().trim(),
+    shadow:   _mkMode.value().trim() !== 'real',
   }
+}
+
+// Mapeamento Firebase UID → login MK ERP
+// Cada colaborador aparece com seu próprio nome nos tickets e comentários do MK
+const MK_USER_MAP: Record<string, string> = {
+  'daqWkAW8gNZjUZBX5O9iDYk7U9D3': 'mz.ramony',
+  '0UvfKTsWMWg51OfmhKe9jSjN7zq2': 'mz.victorhugo',
+  'esHXTraWEwQ4s0jdPFDJIY8cVRk2': 'mz.hiorranna',
+  'smlrMVGkeqZfKcHfsKwd8Kezb1h2': 'mz.halyson',
+  'qo9FJdO3hyUEInOdA6n0m1wICxk1': 'mz.izabela',
+  '14U120GV9IUnIkvGSHOgZG823Pj1': 'mz.brunacristina',
+  'kqLoVLuP1UhPxaPiZ26wKmd5Eul2': 'mz.jhonatan',
+  'Ff0IBg4gquX1Q7CQxW4fonjg2jy1': 'mz.joseramos',
+  'R4QXtKbIySNiLMKb9j0Lu6Q3pxB3': 'mz.lauren',
+  'pFgE8jEtsreUuxvywISFXdlOBxN2': 'mz.eduardohenrique',
+  'LraqF5iRVDM98MdS5StezC6kTzj2': 'mz.renatasaraiva',
+  'SVMua6jWatVt3wmPhSHJOuZVg5h1': 'mz.gabrielmartins',
+  'rTvjrujWRvUtJVw4LtTdkX7Ny4k2': 'mz.andreza',
+  'ecJLm1beorbfM51IApqwzRtE3wx2': 'mz.pedrohenrique',
+  'Iq67U4vLKpWY7HsLa8V2RVpuVz72': 'mz.vagner',
+  'bjO17WJAsJdsZ2hfKorEvaugxIP2': 'mz.hiagoalves',
+  'RAqfy5tThwQNzJzcbLnXHxzV81O2': 'mz.vitormanoel',
+  'cYldsb3BkogRPG9dQRbEcPjJKIc2': 'mz.vitorsilva',
+  'EzcVPkrbnKZqG1Xqfravbp26cEv1': 'mz.luis',
+  'dZGecnIydSbOSCDfkwH4bwJZilc2': 'mz.ronald',
+}
+
+function mkLoginByUid(uid: string): string | undefined {
+  return MK_USER_MAP[uid]
 }
 
 // ---- Tipos de resposta da API MK ----
@@ -64,6 +91,7 @@ type MkAtendimentoPayload = {
   info: string
   cd_contrato?: number
   conexao_associada?: number
+  op_abertura?: string   // login ERP do operador que abriu (release 64.9+)
 }
 
 type MkAtendimentoResponse = {
@@ -201,6 +229,7 @@ async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload):
   }
   if (payload.cd_contrato) params.cd_contrato = payload.cd_contrato
   if (payload.conexao_associada) params.conexao_associada = payload.conexao_associada
+  if (payload.op_abertura) params.op_abertura = payload.op_abertura
 
   const data = await mkGet<MkAtendimentoResponse>(cfg.baseUrl, '/mk/WSMKNovoAtendimento.rule', params)
   const id = data.CodigoAtendimento ?? data.cd_atendimento ?? data.codigo ?? data.id
@@ -213,6 +242,7 @@ async function mkInserirComentario(
   sessionToken: string,
   atendimentoId: number,
   comentario: string,
+  mkLogin?: string,
 ): Promise<void> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
@@ -221,7 +251,7 @@ async function mkInserirComentario(
     comentario,
     tipo: 2,
   }
-  if (cfg.userLogin) params.user = cfg.userLogin
+  if (mkLogin) params.user = mkLogin
   await mkGet<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params)
 }
 
@@ -419,6 +449,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       let sessionToken: string
       let cliente: MkCliente
       let resultado: { id: number; protocolo: string }
+      const mkLogin = mkLoginByUid(uid)
 
       try {
         sessionToken = await mkAuth(cfg)
@@ -442,10 +473,11 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           info,
           cd_contrato: contratoId || undefined,
           conexao_associada: conexao,
+          op_abertura: mkLogin,
         })
         for (const bloco of comentarios ?? []) {
           if (bloco.trim()) {
-            await mkInserirComentario(cfg, sessionToken, resultado.id, bloco.trim())
+            await mkInserirComentario(cfg, sessionToken, resultado.id, bloco.trim(), mkLogin)
           }
         }
       } catch (e) {
@@ -478,7 +510,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       try {
         const sessionToken = await mkAuth(cfg)
-        await mkInserirComentario(cfg, sessionToken, atendimentoId, comentario.trim())
+        await mkInserirComentario(cfg, sessionToken, atendimentoId, comentario.trim(), mkLoginByUid(uid))
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)
