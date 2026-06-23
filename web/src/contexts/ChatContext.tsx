@@ -143,7 +143,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // Assinar chats do usuário
   useEffect(() => {
     if (!user) return
-    return subscribeMyChats(user.uid, setChats)
+    return subscribeMyChats(user.uid, (incoming) => {
+      setChats(incoming)
+    })
   }, [user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // Detecta novas mensagens e toca som
@@ -165,7 +167,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       if (myUnread > prevUnread) {
         const otherUid = chat.participants.find((p) => p !== user.uid) ?? null
-        // Não toca se o usuário está olhando exatamente essa conversa
         const isViewing = isWidgetOpenRef.current && activeConvUidRef.current === otherUid
         if (!isViewing) {
           shouldPlay = true

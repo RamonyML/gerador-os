@@ -27,10 +27,9 @@ export function LoginPage() {
       <div className="login-card">
         <img src="/logo.png" alt="MZ NET" className="login-brand-logo" />
 
-        <h1 className="login-title">MZ Cobertura</h1>
+        <h1 className="login-title">MZ Tools</h1>
         <p className="login-sub">
-          Mapa de cobertura fibra óptica<br />
-          Uberlândia — MG
+          Ferramentas internas MZ NET
         </p>
 
         <form onSubmit={handleLogin} className="login-form">

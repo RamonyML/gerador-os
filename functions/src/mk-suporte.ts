@@ -145,25 +145,38 @@ type MkConexoesResponse = MkConexaoItem[] | {
 
 // ---- Cliente HTTP MK ----
 
-async function mkGet<T>(baseUrl: string, path: string, params: Record<string, string | number>): Promise<T> {
+type MkSession = { token: string; jsessionid?: string }
+
+async function mkRequest<T>(
+  baseUrl: string,
+  path: string,
+  params: Record<string, string | number>,
+  jsessionid?: string,
+): Promise<{ data: T; jsessionid?: string }> {
   const qs = new URLSearchParams(
     Object.entries(params).map(([k, v]) => [k, String(v)])
   ).toString()
   const url = `${baseUrl}${path}?${qs}`
-  console.log(`[MK] GET ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
-  const res = await fetch(url, { signal: AbortSignal.timeout(15_000) })
+  console.log(`[MK] POST ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
+  const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' }
+  if (jsessionid) headers['Cookie'] = `JSESSIONID=${jsessionid}`
+  const res = await fetch(url, { method: 'POST', body: '', headers, signal: AbortSignal.timeout(15_000) })
+  // Captura JSESSIONID retornado pelo Tomcat para manter a sessão Java
+  const setCookie = res.headers.get('set-cookie') ?? ''
+  const match = setCookie.match(/JSESSIONID=([^;]+)/)
+  const newJsessionid = match?.[1] ?? jsessionid
   if (!res.ok) {
     const body = await res.text().catch(() => '')
     console.error(`[MK] ERRO ${res.status} em ${path}:`, body.slice(0, 2000))
-    throw new Error(`MK GET ${path} → HTTP ${res.status}`)
+    throw new Error(`MK ${path} → HTTP ${res.status}`)
   }
-  return res.json() as Promise<T>
+  return { data: await res.json() as T, jsessionid: newJsessionid }
 }
 
 // ---- Operações MK ----
 
-async function mkAuth(cfg: MkConfig): Promise<string> {
-  const data = await mkGet<MkAuthResponse>(cfg.baseUrl, '/mk/WSAutenticacao.rule', {
+async function mkAuth(cfg: MkConfig): Promise<MkSession> {
+  const { data, jsessionid } = await mkRequest<MkAuthResponse>(cfg.baseUrl, '/mk/WSAutenticacao.rule', {
     sys: 'MK0',
     token: cfg.token,
     password: cfg.password,
@@ -174,15 +187,16 @@ async function mkAuth(cfg: MkConfig): Promise<string> {
     console.error('[MK] auth falhou — resposta completa:', JSON.stringify(data))
     throw new Error(`MK auth falhou — status: ${data.status ?? 'sem resposta'}`)
   }
-  return token
+  console.log('[MK] auth ok — JSESSIONID:', jsessionid ? jsessionid.slice(0, 8) + '...' : 'ausente')
+  return { token, jsessionid }
 }
 
-async function mkBuscarClientePorCpf(cfg: MkConfig, sessionToken: string, cpf: string): Promise<MkCliente> {
-  const data = await mkGet<MkConsultaDocResponse>(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', {
+async function mkBuscarClientePorCpf(cfg: MkConfig, session: MkSession, cpf: string): Promise<MkCliente> {
+  const { data } = await mkRequest<MkConsultaDocResponse>(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', {
     sys: 'MK0',
-    token: sessionToken,
+    token: session.token,
     doc: cpf.replace(/\D/g, ''),
-  })
+  }, session.jsessionid)
   if (data.status !== 'OK' || !data.CodigoPessoa) {
     throw new Error(`Cliente não encontrado no MK (CPF: ${cpf}) — ${data.mensagem ?? data.status ?? 'sem resposta'}`)
   }
@@ -194,12 +208,12 @@ async function mkBuscarClientePorCpf(cfg: MkConfig, sessionToken: string, cpf: s
   }
 }
 
-async function mkListarConexoes(cfg: MkConfig, sessionToken: string, codigoCliente: number): Promise<MkConexaoItem[]> {
-  const data = await mkGet<MkConexoesResponse>(cfg.baseUrl, '/mk/WSMKConexoesPorCliente.rule', {
+async function mkListarConexoes(cfg: MkConfig, session: MkSession, codigoCliente: number): Promise<MkConexaoItem[]> {
+  const { data } = await mkRequest<MkConexoesResponse>(cfg.baseUrl, '/mk/WSMKConexoesPorCliente.rule', {
     sys: 'MK0',
-    token: sessionToken,
+    token: session.token,
     cd_cliente: codigoCliente,
-  })
+  }, session.jsessionid)
   const lista: MkConexaoItem[] = Array.isArray(data)
     ? data
     : ((data as { conexoes?: MkConexaoItem[]; Conexoes?: MkConexaoItem[] }).conexoes
@@ -208,8 +222,8 @@ async function mkListarConexoes(cfg: MkConfig, sessionToken: string, codigoClien
   return lista
 }
 
-async function mkBuscarConexaoCliente(cfg: MkConfig, sessionToken: string, codigoCliente: number): Promise<number> {
-  const lista = await mkListarConexoes(cfg, sessionToken, codigoCliente)
+async function mkBuscarConexaoCliente(cfg: MkConfig, session: MkSession, codigoCliente: number): Promise<number> {
+  const lista = await mkListarConexoes(cfg, session, codigoCliente)
   if (lista.length === 0) throw new Error(`Nenhuma conexão encontrada para o cliente ${codigoCliente}`)
   const conexao = lista[0]
   const codigo = conexao.CodigoConexao ?? conexao.Codigo ?? conexao.codconexao
@@ -217,7 +231,7 @@ async function mkBuscarConexaoCliente(cfg: MkConfig, sessionToken: string, codig
   return codigo
 }
 
-async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
+async function mkCriarAtendimento(cfg: MkConfig, session: MkSession, payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
     token: payload.token,
@@ -231,7 +245,7 @@ async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload):
   if (payload.conexao_associada) params.conexao_associada = payload.conexao_associada
   if (payload.op_abertura) params.op_abertura = payload.op_abertura
 
-  const data = await mkGet<MkAtendimentoResponse>(cfg.baseUrl, '/mk/WSMKNovoAtendimento.rule', params)
+  const { data } = await mkRequest<MkAtendimentoResponse>(cfg.baseUrl, '/mk/WSMKNovoAtendimento.rule', params, session.jsessionid)
   const id = data.CodigoAtendimento ?? data.cd_atendimento ?? data.codigo ?? data.id
   if (!id) throw new Error(`MK não retornou ID do atendimento: ${data.Mensagem ?? data.mensagem ?? JSON.stringify(data)}`)
   return { id, protocolo: data.Protocolo ?? '' }
@@ -239,28 +253,28 @@ async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload):
 
 async function mkInserirComentario(
   cfg: MkConfig,
-  sessionToken: string,
+  session: MkSession,
   atendimentoId: number,
   comentario: string,
   mkLogin?: string,
 ): Promise<void> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
-    token: sessionToken,
+    token: session.token,
     cd_atendimento: atendimentoId,
     comentario,
-    tipo: 2,
+    tipo: 1,
   }
   if (mkLogin) params.user = mkLogin
-  await mkGet<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params)
+  await mkRequest<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params, session.jsessionid)
 }
 
-async function mkCriarOS(cfg: MkConfig, payload: MkOsPayload): Promise<number> {
+async function mkCriarOS(cfg: MkConfig, session: MkSession, payload: MkOsPayload): Promise<number> {
   const params: Record<string, string | number> = { sys: 'MK0' }
   for (const [k, v] of Object.entries(payload)) {
     if (v !== undefined && v !== null) params[k] = v as string | number
   }
-  const data = await mkGet<MkOsResponse>(cfg.baseUrl, '/mk/WSMKCriarOrdemServico.rule', params)
+  const { data } = await mkRequest<MkOsResponse>(cfg.baseUrl, '/mk/WSMKCriarOrdemServico.rule', params, session.jsessionid)
   const codigoOs = data.codigo_os ?? (data as Record<string, unknown>).CodigoOS ?? (data as Record<string, unknown>).Codigo
   if (!codigoOs) throw new Error(`MK não retornou código da OS: ${data.erro ?? data.mensagem ?? JSON.stringify(data)}`)
   return codigoOs as number
@@ -366,50 +380,50 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         console.log('[MK shadow] testar_auth — credenciais não enviadas ao MK')
         return { shadow: true }
       }
-      const sessionToken = await mkAuth(cfg)
-      return { shadow: false, sessionToken: sessionToken.slice(0, 8) + '...' }
+      const session = await mkAuth(cfg)
+      return { shadow: false, sessionToken: session.token.slice(0, 8) + '...' }
     }
 
     // ---- buscar_cliente: auth + busca por CPF ----
     if (action === 'buscar_cliente') {
       const { cpf } = req.data
       if (cfg.shadow) return { shadow: true, raw: { simulado: true, cpf } }
-      const sessionToken = await mkAuth(cfg)
-      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', { sys: 'MK0', token: sessionToken, doc: cpf.replace(/\D/g, '') })
+      const session = await mkAuth(cfg)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKConsultaDoc.rule', { sys: 'MK0', token: session.token, doc: cpf.replace(/\D/g, '') }, session.jsessionid)
       return { shadow: false, raw }
     }
 
     // ---- listar_tipos_os ----
     if (action === 'listar_tipos_os') {
       if (cfg.shadow) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth(cfg)
-      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKOSListaTiposOS.rule', { sys: 'MK0', token: sessionToken })
+      const session = await mkAuth(cfg)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKOSListaTiposOS.rule', { sys: 'MK0', token: session.token }, session.jsessionid)
       return { shadow: false, raw }
     }
 
     // ---- listar_grupos ----
     if (action === 'listar_grupos') {
       if (cfg.shadow) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth(cfg)
-      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKConsultaEquipes.rule', { sys: 'MK0', token: sessionToken })
+      const session = await mkAuth(cfg)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKConsultaEquipes.rule', { sys: 'MK0', token: session.token }, session.jsessionid)
       return { shadow: false, raw }
     }
 
     // ---- listar_processos ----
     if (action === 'listar_processos') {
       if (cfg.shadow) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth(cfg)
-      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKListaProcessos.rule', { sys: 'MK0', token: sessionToken })
+      const session = await mkAuth(cfg)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKListaProcessos.rule', { sys: 'MK0', token: session.token }, session.jsessionid)
       return { shadow: false, raw }
     }
 
     // ---- listar_classificacoes ----
     if (action === 'listar_classificacoes') {
       if (cfg.shadow) return { shadow: true, raw: [] }
-      const sessionToken = await mkAuth(cfg)
-      const params: Record<string, string | number> = { sys: 'MK0', token: sessionToken }
+      const session = await mkAuth(cfg)
+      const params: Record<string, string | number> = { sys: 'MK0', token: session.token }
       if (req.data.processoId) params.cd_processo = req.data.processoId
-      const raw = await mkGet(cfg.baseUrl, '/mk/WSMKListaClassificacoesAte.rule', params)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKListaClassificacoesAte.rule', params, session.jsessionid)
       return { shadow: false, raw }
     }
 
@@ -418,9 +432,9 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       const { cpf } = req.data
       if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
       if (cfg.shadow) return { shadow: true, conexoes: [], raw: { simulado: true, cpf } }
-      const sessionToken = await mkAuth(cfg)
-      const cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
-      const lista = await mkListarConexoes(cfg, sessionToken, cliente.codigo)
+      const session = await mkAuth(cfg)
+      const cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
+      const lista = await mkListarConexoes(cfg, session, cliente.codigo)
       const conexoes: MkConexaoPublic[] = lista.map((c) => ({
         codigo: (c.CodigoConexao ?? c.Codigo ?? c.codconexao) as number,
         contrato: (c.contrato ?? 0) as number,
@@ -446,26 +460,26 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         return { shadow: true }
       }
 
-      let sessionToken: string
+      let session: MkSession
       let cliente: MkCliente
       let resultado: { id: number; protocolo: string }
       const mkLogin = mkLoginByUid(uid)
 
       try {
-        sessionToken = await mkAuth(cfg)
-        cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+        session = await mkAuth(cfg)
+        cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
 
         let conexao = conexaoAssociada
         if (!conexao) {
           try {
-            conexao = await mkBuscarConexaoCliente(cfg, sessionToken, cliente.codigo)
+            conexao = await mkBuscarConexaoCliente(cfg, session, cliente.codigo)
           } catch {
             console.warn('[MK] criar_protocolo: não foi possível obter conexão — prosseguindo sem ela')
           }
         }
 
-        resultado = await mkCriarAtendimento(cfg, {
-          token: sessionToken,
+        resultado = await mkCriarAtendimento(cfg, session, {
+          token: session.token,
           cd_cliente: cliente.codigo,
           cd_processo: processoId,
           cd_classificacao_ate: classificacaoId,
@@ -477,7 +491,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         })
         for (const bloco of comentarios ?? []) {
           if (bloco.trim()) {
-            await mkInserirComentario(cfg, sessionToken, resultado.id, bloco.trim(), mkLogin)
+            await mkInserirComentario(cfg, session, resultado.id, bloco.trim(), mkLogin)
           }
         }
       } catch (e) {
@@ -493,7 +507,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         clienteNome: cliente.nome,
         atendimentoId: resultado.id,
         protocolo: resultado.protocolo,
-        sessionToken,
+        sessionToken: session.token,
       }
     }
 
@@ -509,8 +523,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       }
 
       try {
-        const sessionToken = await mkAuth(cfg)
-        await mkInserirComentario(cfg, sessionToken, atendimentoId, comentario.trim(), mkLoginByUid(uid))
+        const session = await mkAuth(cfg)
+        await mkInserirComentario(cfg, session, atendimentoId, comentario.trim(), mkLoginByUid(uid))
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)
@@ -535,26 +549,26 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         return { shadow: true }
       }
 
-      let sessionToken: string
+      let session: MkSession
       let cliente: MkCliente
       let atendimento: { id: number; protocolo: string }
       let osNumero: number
 
       try {
-        sessionToken = await mkAuth(cfg)
-        cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+        session = await mkAuth(cfg)
+        cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
 
         let conexao = conexaoFornecida
         if (!conexao) {
           try {
-            conexao = await mkBuscarConexaoCliente(cfg, sessionToken, cliente.codigo)
+            conexao = await mkBuscarConexaoCliente(cfg, session, cliente.codigo)
           } catch {
             console.warn('[MK] criar_os: não foi possível obter conexão — prosseguindo sem ela')
           }
         }
 
-        atendimento = await mkCriarAtendimento(cfg, {
-          token: sessionToken,
+        atendimento = await mkCriarAtendimento(cfg, session, {
+          token: session.token,
           cd_cliente: cliente.codigo,
           cd_processo: processoId,
           cd_classificacao_ate: classificacaoId,
@@ -562,8 +576,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           info: descricaoProblema,
           conexao_associada: conexao,
         })
-        osNumero = await mkCriarOS(cfg, {
-          token: sessionToken,
+        osNumero = await mkCriarOS(cfg, session, {
+          token: session.token,
           CodigoCliente: cliente.codigo,
           DescricaoProblema: descricaoProblema,
           CodigoTipoOS: tipoOS,

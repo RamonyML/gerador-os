@@ -1,5 +1,5 @@
 # MK Solutions — Progresso da Integração (Parte 3)
-> Documento de continuidade — última atualização: 2026-06-23
+> Documento de continuidade — última atualização: 2026-06-23 (revisão 2)
 > Leia a Parte 1 (`mk-integracao-progresso.md` na raiz) e a Parte 2 (`docs/mk/mk-integracao-progresso-parte2.md`) antes deste.
 
 ---
@@ -87,24 +87,27 @@ GET /mk/WSMKNovoAtendimento.rule
 
 ### 2.3 WSMKAtendimentoComentario.rule — bug server-side confirmado
 
-Este é o maior bloqueio identificado nesta sessão. O endpoint retorna HTTP 500 em **todas as combinações** de parâmetros testadas:
+Este é o maior bloqueio identificado nesta sessão. O endpoint retorna HTTP 500 em **todas as combinações** de parâmetros e métodos HTTP testados:
 
-| Combinação testada | Resultado |
-|---|---|
-| Somente campos obrigatórios (token, cd_atendimento, comentario) | ❌ 500 |
-| Com `tipo=1` | ❌ 500 |
-| Com `tipo=2` | ❌ 500 |
-| Com `user=mz.ramony` (login ERP válido, confirmado via op_abertura) | ❌ 500 |
-| Tokens de sessão diferentes | ❌ 500 |
+| Combinação testada | Método | JSESSIONID | Resultado |
+|---|---|---|---|
+| Somente campos obrigatórios (token, cd_atendimento, comentario) | GET | Não | ❌ 500 |
+| Com `tipo=1` | GET | Não | ❌ 500 |
+| Com `tipo=2` | GET | Não | ❌ 500 |
+| Com `user=mz.ramony` | GET | Não | ❌ 500 |
+| Tokens de sessão diferentes | GET | Não | ❌ 500 |
+| Seguindo exemplo do MK Solutions (`tipo=1`, POST, body vazio) | POST | Sim (`CE715CC5...`) | ❌ 500 |
 
-O crash sempre ocorre na mesma linha:
+O crash sempre ocorre na mesma linha interna, independente do método:
 ```
 javax.servlet.ServletException: O objeto (Tabela) deve ter um valor definido!
   wfr.web.ExternalRulesServlet.process(SourceFile:321)
-  wfr.web.ExternalRulesServlet.doGet(SourceFile:113)
+  wfr.web.ExternalRulesServlet.doPost(SourceFile:118)   ← doPost após ajuste
 ```
 
-**Conclusão:** A falha ocorre antes de qualquer validação de parâmetros, indicando que a regra WFR interna tenta acessar uma tabela de banco de dados que retorna nulo. Não é um problema de parâmetros — é um bug ou configuração ausente no servidor MK da MZ NET. O parâmetro `tipo_comentario` (nome errado na documentação antiga) também foi testado e descartado; o nome correto é `tipo`.
+**Conclusão:** A falha ocorre em `process:321`, antes de qualquer validação de parâmetros, indicando que a regra WFR interna tenta acessar uma tabela de banco de dados que retorna nulo. Não é um problema de parâmetros, método HTTP ou sessão — é um bug ou configuração ausente no servidor MK da MZ NET. O parâmetro `tipo_comentario` (nome errado na documentação antiga) também foi testado e descartado; o nome correto é `tipo`.
+
+**Estado atual do código:** a Cloud Function agora envia POST com `JSESSIONID` propagado da sessão de auth — implementado mas bloqueado pelo bug server-side.
 
 **Workaround em produção:** o botão "Inserir no MK" em `MkProtocolCards.tsx` permite que o operador copie o comentário para colar manualmente no ticket MK ERP. O campo `user` já está implementado no código e será ativado automaticamente quando o MK corrigir o servidor.
 
@@ -168,10 +171,38 @@ Foi aberto um chamado formal no suporte MK Solutions com:
 - **PDF impresso** gerado de `mk-webservices-carta.html` (v1.1)
 - **Descrição do chamado:** bloqueio em `WSMKAtendimentoComentario.rule` — 500 em todas as combinações, mesmo com `user=mz.ramony` (login ERP válido confirmado via op_abertura)
 
-### Perguntas enviadas ao MK (na carta):
+### 5.1 Resposta do MK Solutions (2026-06-23 — Analista Jardel Henrique)
+
+O analista Jardel respondeu com um curl de exemplo da base de teste deles:
+
+```bash
+curl --location 'https://comercial.mksolutions.com.br/mk/WSMKAtendimentoComentario.rule?
+  sys=MK0&token=33aa...&cd_atendimento=1214&comentario=%22teste%22&tipo=1&user=jardel' \
+  --header 'Cookie: JSESSIONID=27DE166D8F978AE0059BF5DC0F0C8590' \
+  --data ''
+```
+
+**Diferenças identificadas no exemplo deles vs nosso código anterior:**
+1. Método `POST` com body vazio (`--data ''`) — nós usávamos `GET`
+2. `Cookie: JSESSIONID=...` — sessão Java/Tomcat que deve ser propagada da autenticação
+3. `tipo=1` — nós usávamos `tipo=2`
+
+**Ajuste implementado na Cloud Function** (`functions/src/mk-suporte.ts`):
+- `mkGet` substituído por `mkRequest` que envia `POST` com body vazio
+- `mkAuth` agora captura o `JSESSIONID` do `Set-Cookie` da resposta de autenticação
+- Todas as funções subsequentes recebem e repassam `{ token, jsessionid }` via `MkSession`
+- `tipo` corrigido de `2` para `1`
+
+**Resultado após ajuste:** ainda retorna HTTP 500 na mesma linha (`process:321`). O JSESSIONID foi confirmado como sendo capturado nos logs (`CE715CC5...`). Isso elimina definitivamente qualquer hipótese de problema no lado da MZ NET.
+
+### 5.2 Segunda mensagem enviada ao MK Solutions
+
+Informamos que implementamos todos os ajustes do exemplo deles (POST, JSESSIONID, tipo=1) e o erro persiste na mesma linha interna. Solicitamos novamente verificação do `catalina.out` para identificar qual objeto/tabela está nulo em `process:321`.
+
+### 5.3 Perguntas enviadas ao MK (na carta original):
 
 **Q1 — WSMKAtendimentoComentario.rule:**
-Verificar arquivo `catalina.out` (logs Tomcat) no momento de uma chamada — o `NullPointerException` na linha 321 do servlet indica falha interna que só eles conseguem rastrear.
+Verificar arquivo `catalina.out` (logs Tomcat) no momento de uma chamada — o crash na linha 321 do servlet indica falha interna que só eles conseguem rastrear.
 
 **Q2 — WSMKAtendimentoComentario.rule:**
 Existe algum módulo, tabela ou configuração adicional que precisa estar habilitada no ERP para que o endpoint funcione?
@@ -209,8 +240,8 @@ Existe algum módulo, tabela ou configuração adicional que precisa estar habil
 ## 7. Pendências ao retomar
 
 ### Bloqueio externo (depende do MK Solutions)
-- Aguardar resposta do chamado aberto — eles precisam checar `catalina.out` para diagnosticar `WSMKAtendimentoComentario.rule`
-- Quando o comentário for corrigido: o código já está pronto em produção, basta o servidor MK parar de retornar 500
+- Aguardar retorno do analista Jardel sobre `catalina.out` — segunda mensagem enviada em 2026-06-23 após testes com POST + JSESSIONID + tipo=1
+- Quando o comentário for corrigido: o código já está pronto em produção (POST, JSESSIONID, tipo=1, user=login_operador), basta o servidor MK parar de retornar 500
 
 ### Bloqueio interno (depende de informações do admin MK da MZ NET)
 - Obter os códigos `CodigoTipoOS`, `CodigoGrupoServico` e `CodigoTecnico` para poder testar `WSMKCriarOrdemServico.rule`

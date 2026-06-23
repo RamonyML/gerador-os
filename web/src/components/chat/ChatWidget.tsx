@@ -46,6 +46,11 @@ export function ChatWidget() {
     setActiveConvUid(null)
   }
 
+  const handleClose = () => {
+    setWidgetOpen(false)
+    setActiveConvUid(null)
+  }
+
   return (
     <Box
       sx={{
@@ -119,7 +124,7 @@ export function ChatWidget() {
               </Box>
             </Tooltip>
 
-            <IconButton size="small" onClick={() => setWidgetOpen(false)} aria-label="Fechar chat">
+            <IconButton size="small" onClick={handleClose} aria-label="Fechar chat">
               <CloseRoundedIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Box>
@@ -143,7 +148,7 @@ export function ChatWidget() {
       {/* Botão FAB flutuante */}
       <Tooltip title={isWidgetOpen ? 'Fechar chat' : 'Abrir chat'} placement="left">
         <Box
-          onClick={() => setWidgetOpen(!isWidgetOpen)}
+          onClick={() => { if (isWidgetOpen) handleClose(); else setWidgetOpen(true) }}
           sx={{
             width: 52,
             height: 52,

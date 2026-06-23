@@ -26,16 +26,21 @@ export async function sendMessage(
   senderName: string,
   text: string,
 ): Promise<void> {
+  const chatRef = doc(db, 'chats', chatId)
+  // setDoc cria o documento se não existir (sem dot-notation)
   await setDoc(
-    doc(db, 'chats', chatId),
+    chatRef,
     {
       participants: [myUid, otherUid].sort(),
       lastMessage: text,
       lastMessageAt: serverTimestamp(),
-      [`unreadCount.${otherUid}`]: increment(1),
     },
     { merge: true },
   )
+  // updateDoc interpreta dot-notation como caminho aninhado — necessário para increment
+  await updateDoc(chatRef, {
+    [`unreadCount.${otherUid}`]: increment(1),
+  })
   await addDoc(collection(db, 'chats', chatId, 'messages'), {
     senderId: myUid,
     senderName,

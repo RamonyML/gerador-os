@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "MZ Cobertura",
-  "version": "2.0.0",
-  "description": "Mapa de cobertura fibra óptica e pesquisa de endereços — MZ NET",
+  "name": "MZ Tools",
+  "version": "3.0.0",
+  "description": "Ferramentas internas MZ NET — registros, mapa, condomínios e escala",
   "permissions": ["tabs"],
   "action": {
-    "default_title": "MZ Cobertura",
+    "default_title": "MZ Tools",
     "default_popup": "index.html",
     "default_icon": {
       "16": "icons/icon16.png",
