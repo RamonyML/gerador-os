@@ -6,19 +6,21 @@ import { defineSecret, defineString } from 'firebase-functions/params'
 // defineSecret → armazenado no Google Cloud Secret Manager (não exposto em logs/env)
 // defineString → variável de ambiente comum (não-sensível)
 
-const _mkBaseUrl = defineString('MK_BASE_URL', { default: '' })
-const _mkMode    = defineString('MK_MODE',     { default: 'shadow' })
-const _mkToken   = defineSecret('MK_TOKEN')
-const _mkPass    = defineSecret('MK_WEBSERVICE_PASSWORD')
+const _mkBaseUrl   = defineString('MK_BASE_URL',    { default: '' })
+const _mkMode      = defineString('MK_MODE',        { default: 'shadow' })
+const _mkUserLogin = defineString('MK_USER_LOGIN',  { default: '' })
+const _mkToken     = defineSecret('MK_TOKEN')
+const _mkPass      = defineSecret('MK_WEBSERVICE_PASSWORD')
 
 // Lido dentro do handler (defineSecret.value() só funciona durante a execução)
-type MkConfig = { baseUrl: string; token: string; password: string; shadow: boolean }
+type MkConfig = { baseUrl: string; token: string; password: string; userLogin: string; shadow: boolean }
 function getMkConfig(): MkConfig {
   return {
-    baseUrl:  _mkBaseUrl.value().replace(/\/$/, '').trim(),
-    token:    _mkToken.value().trim(),
-    password: _mkPass.value().trim(),
-    shadow:   _mkMode.value().trim() !== 'real',
+    baseUrl:   _mkBaseUrl.value().replace(/\/$/, '').trim(),
+    token:     _mkToken.value().trim(),
+    password:  _mkPass.value().trim(),
+    userLogin: _mkUserLogin.value().trim(),
+    shadow:    _mkMode.value().trim() !== 'real',
   }
 }
 
@@ -94,6 +96,25 @@ type MkOsResponse = {
   erro?: string
 }
 
+type MkConexaoItem = {
+  CodigoConexao?: number
+  Codigo?: number
+  codconexao?: number   // nome real retornado pela API MK
+  contrato?: number
+  username?: string
+  bloqueada?: string
+  motivo_bloqueio?: string | null
+  tecnologia?: string
+  [key: string]: unknown
+}
+
+type MkConexoesResponse = MkConexaoItem[] | {
+  conexoes?: MkConexaoItem[]
+  Conexoes?: MkConexaoItem[]
+  status?: string
+  mensagem?: string
+}
+
 // ---- Cliente HTTP MK ----
 
 async function mkGet<T>(baseUrl: string, path: string, params: Record<string, string | number>): Promise<T> {
@@ -145,6 +166,29 @@ async function mkBuscarClientePorCpf(cfg: MkConfig, sessionToken: string, cpf: s
   }
 }
 
+async function mkListarConexoes(cfg: MkConfig, sessionToken: string, codigoCliente: number): Promise<MkConexaoItem[]> {
+  const data = await mkGet<MkConexoesResponse>(cfg.baseUrl, '/mk/WSMKConexoesPorCliente.rule', {
+    sys: 'MK0',
+    token: sessionToken,
+    cd_cliente: codigoCliente,
+  })
+  const lista: MkConexaoItem[] = Array.isArray(data)
+    ? data
+    : ((data as { conexoes?: MkConexaoItem[]; Conexoes?: MkConexaoItem[] }).conexoes
+        ?? (data as { Conexoes?: MkConexaoItem[] }).Conexoes
+        ?? [])
+  return lista
+}
+
+async function mkBuscarConexaoCliente(cfg: MkConfig, sessionToken: string, codigoCliente: number): Promise<number> {
+  const lista = await mkListarConexoes(cfg, sessionToken, codigoCliente)
+  if (lista.length === 0) throw new Error(`Nenhuma conexão encontrada para o cliente ${codigoCliente}`)
+  const conexao = lista[0]
+  const codigo = conexao.CodigoConexao ?? conexao.Codigo ?? conexao.codconexao
+  if (!codigo) throw new Error(`CodigoConexao ausente na resposta: ${JSON.stringify(conexao)}`)
+  return codigo
+}
+
 async function mkCriarAtendimento(cfg: MkConfig, payload: MkAtendimentoPayload): Promise<{ id: number; protocolo: string }> {
   const params: Record<string, string | number> = {
     sys: 'MK0',
@@ -170,12 +214,15 @@ async function mkInserirComentario(
   atendimentoId: number,
   comentario: string,
 ): Promise<void> {
-  await mkGet<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', {
+  const params: Record<string, string | number> = {
     sys: 'MK0',
     token: sessionToken,
     cd_atendimento: atendimentoId,
     comentario,
-  })
+    tipo: 2,
+  }
+  if (cfg.userLogin) params.user = cfg.userLogin
+  await mkGet<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params)
 }
 
 async function mkCriarOS(cfg: MkConfig, payload: MkOsPayload): Promise<number> {
@@ -228,13 +275,15 @@ export type MkSuporteRequest =
       info: string
       comentarios?: string[]  // blocos adicionais inseridos como comentários separados
       origemContato?: number  // 6=Telefone, 9=WhatsApp (default)
+      conexaoAssociada?: number  // CodigoConexao — se omitido, buscado automaticamente
+      contratoId?: number       // contrato da conexão — passado junto com conexaoAssociada
     }
   | {
       action: 'inserir_comentario'
       atendimentoId: number
       comentario: string
-      sessionToken: string  // token da mesma sessão que criou o atendimento
     }
+  | { action: 'buscar_conexao'; cpf: string }
   | {
       action: 'criar_os'
       slug: string
@@ -245,7 +294,16 @@ export type MkSuporteRequest =
       classificacaoId: number
       grupoServico?: number
       tecnicoId?: number
+      codigoConexao?: number  // se omitido, buscado automaticamente via WSMKConexoesPorCliente
     }
+
+export type MkConexaoPublic = {
+  codigo: number
+  contrato: number
+  username: string
+  tecnologia: string
+  bloqueada: string
+}
 
 export type MkSuporteResponse = {
   shadow: boolean
@@ -255,6 +313,7 @@ export type MkSuporteResponse = {
   atendimentoId?: number
   protocolo?: string
   osNumero?: number
+  conexoes?: MkConexaoPublic[]
   // respostas raw para testes
   raw?: unknown
 }
@@ -324,14 +383,32 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       return { shadow: false, raw }
     }
 
+    // ---- buscar_conexao: auth → cliente → lista de conexões ativas ----
+    if (action === 'buscar_conexao') {
+      const { cpf } = req.data
+      if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
+      if (cfg.shadow) return { shadow: true, conexoes: [], raw: { simulado: true, cpf } }
+      const sessionToken = await mkAuth(cfg)
+      const cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+      const lista = await mkListarConexoes(cfg, sessionToken, cliente.codigo)
+      const conexoes: MkConexaoPublic[] = lista.map((c) => ({
+        codigo: (c.CodigoConexao ?? c.Codigo ?? c.codconexao) as number,
+        contrato: (c.contrato ?? 0) as number,
+        username: String(c.username ?? c.Login ?? ''),
+        tecnologia: String(c.tecnologia ?? ''),
+        bloqueada: String(c.bloqueada ?? 'Não'),
+      })).filter(c => c.codigo)
+      return { shadow: false, clienteCodigo: cliente.codigo, clienteNome: cliente.nome, conexoes }
+    }
+
     // ---- criar_protocolo: Padrão B — auth → cliente → atendimento (sem OS) ----
     if (action === 'criar_protocolo') {
-      const { slug, cpf, processoId, classificacaoId, info, comentarios, origemContato } = req.data
+      const { slug, cpf, processoId, classificacaoId, info, comentarios, origemContato, conexaoAssociada, contratoId } = req.data
 
       if (!info?.trim()) throw new HttpsError('invalid-argument', 'Campo "info" é obrigatório.')
       if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
 
-      const payload = { slug, cpf, processoId, classificacaoId, info, comentarios }
+      const payload = { slug, cpf, processoId, classificacaoId, info, ...(comentarios ? { comentarios } : {}) }
 
       if (cfg.shadow) {
         console.log('[MK shadow] criar_protocolo payload:', JSON.stringify(payload))
@@ -346,6 +423,16 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       try {
         sessionToken = await mkAuth(cfg)
         cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+
+        let conexao = conexaoAssociada
+        if (!conexao) {
+          try {
+            conexao = await mkBuscarConexaoCliente(cfg, sessionToken, cliente.codigo)
+          } catch {
+            console.warn('[MK] criar_protocolo: não foi possível obter conexão — prosseguindo sem ela')
+          }
+        }
+
         resultado = await mkCriarAtendimento(cfg, {
           token: sessionToken,
           cd_cliente: cliente.codigo,
@@ -353,6 +440,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           cd_classificacao_ate: classificacaoId,
           origem_contato: origemContato ?? 9,
           info,
+          cd_contrato: contratoId || undefined,
+          conexao_associada: conexao,
         })
         for (const bloco of comentarios ?? []) {
           if (bloco.trim()) {
@@ -376,12 +465,11 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       }
     }
 
-    // ---- inserir_comentario: adiciona comentário a atendimento já aberto ----
+    // ---- inserir_comentario: auth própria → insere comentário no atendimento ----
     if (action === 'inserir_comentario') {
-      const { atendimentoId, comentario, sessionToken: providedToken } = req.data
+      const { atendimentoId, comentario } = req.data
       if (!comentario?.trim()) throw new HttpsError('invalid-argument', '"comentario" é obrigatório.')
       if (!atendimentoId) throw new HttpsError('invalid-argument', '"atendimentoId" é obrigatório.')
-      if (!providedToken) throw new HttpsError('invalid-argument', '"sessionToken" é obrigatório.')
 
       if (cfg.shadow) {
         console.log('[MK shadow] inserir_comentario:', JSON.stringify({ atendimentoId, comentario }))
@@ -389,7 +477,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       }
 
       try {
-        await mkInserirComentario(cfg, providedToken, atendimentoId, comentario.trim())
+        const sessionToken = await mkAuth(cfg)
+        await mkInserirComentario(cfg, sessionToken, atendimentoId, comentario.trim())
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)
@@ -398,9 +487,9 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       return { shadow: false, atendimentoId }
     }
 
-    // ---- criar_os: fluxo completo auth → cliente → atendimento → OS ----
+    // ---- criar_os: fluxo completo auth → cliente → conexão → atendimento → OS ----
     if (action === 'criar_os') {
-      const { slug, cpf, descricaoProblema, tipoOS, processoId, classificacaoId, grupoServico, tecnicoId } = req.data
+      const { slug, cpf, descricaoProblema, tipoOS, processoId, classificacaoId, grupoServico, tecnicoId, codigoConexao: conexaoFornecida } = req.data
 
       if (!descricaoProblema?.trim()) {
         throw new HttpsError('invalid-argument', 'Descrição do problema é obrigatória.')
@@ -422,6 +511,16 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       try {
         sessionToken = await mkAuth(cfg)
         cliente = await mkBuscarClientePorCpf(cfg, sessionToken, cpf)
+
+        let conexao = conexaoFornecida
+        if (!conexao) {
+          try {
+            conexao = await mkBuscarConexaoCliente(cfg, sessionToken, cliente.codigo)
+          } catch {
+            console.warn('[MK] criar_os: não foi possível obter conexão — prosseguindo sem ela')
+          }
+        }
+
         atendimento = await mkCriarAtendimento(cfg, {
           token: sessionToken,
           cd_cliente: cliente.codigo,
@@ -429,6 +528,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           cd_classificacao_ate: classificacaoId,
           origem_contato: 9,
           info: descricaoProblema,
+          conexao_associada: conexao,
         })
         osNumero = await mkCriarOS(cfg, {
           token: sessionToken,

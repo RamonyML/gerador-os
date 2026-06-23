@@ -6,8 +6,9 @@ node_modules
 web/.env
 web/.env.local
 # functions/.env contém apenas variáveis não-sensíveis (MK_BASE_URL, MK_MODE)
-# Os secrets reais (MK_TOKEN, MK_WEBSERVICE_PASSWORD) ficam no Secret Manager
+# Os secrets reais (MK_TOKEN, MK_WEBSERVICE_PASSWORD) ficam no Secret Manager (prod) ou .secret.local (emulador)
 !functions/.env
+functions/.secret.local
 web/dist
 dist
 !ceps/dist

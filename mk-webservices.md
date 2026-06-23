@@ -1,161 +1,151 @@
-# MZ NET × MK Solutions — Webservices necessários
+# MZ NET × MK Solutions — Solicitação Técnica de Suporte à API
 
-> Documento gerado para o time do MK Solutions com todos os endpoints
-> utilizados pelo **Gerador de O.S. da MZ NET**, status de cada um e
-> o que está bloqueando a integração de Manutenção.
-
----
-
-## Fluxo de Manutenção (P1 — 60 variantes)
-
-```
-1. Auth            → WSAutenticacao.rule              ✅ funcionando
-2. Buscar cliente  → WSMKConsultaDoc.rule              ✅ funcionando
-3. Buscar conexão  → ??? (endpoint não identificado)  ❌ BLOQUEIO
-4. Criar atendimento → WSMKNovoAtendimento.rule        ✅ funcionando
-5. Criar OS técnica  → WSMKCriarOrdemServico.rule      ⚠️  retorna 500
-```
-
-O passo **3** é o bloqueio principal. Precisamos do endpoint que retorna
-o `CodigoConexao` da conexão ativa de um cliente — esse código é
-necessário nos passos 4 e 5.
+> **Para:** Equipe Técnica MK Solutions  
+> **De:** MZ NET Telecom — Setor de T.I.  
+> **Data:** 2026-06-23  
+> **Assunto:** Integração via Webservices — bloqueios e necessidades técnicas
 
 ---
 
-## Endpoints já implementados
+## 1. Contexto
 
-### 1. Autenticação
-```
-GET /mk/WSAutenticacao.rule
-```
-| Parâmetro  | Tipo   | Descrição                        |
-|-----------|--------|----------------------------------|
-| `sys`     | string | sempre `"MK0"`                   |
-| `token`   | string | token de usuário MK              |
-| `password`| string | contra-senha do perfil webservice|
-| `cd_servico` | int | ex: `9999`                      |
+A MZ NET está desenvolvendo um sistema interno chamado **Gerador de O.S.**, construído sobre Firebase (Cloud Functions + React). O objetivo é automatizar a abertura de protocolos, comentários e ordens de serviço no MK ERP a partir de formulários preenchidos pela equipe de suporte técnico, eliminando o processo de cópia manual de dados.
 
-**Retorno esperado:** `{ Token, Expire, ServicosAutorizados }`
+A integração é feita via Cloud Functions (proxy seguro — o frontend nunca acessa a API MK diretamente). A autenticação usa `WSAutenticacao.rule` com token de perfil webservice.
 
 ---
 
-### 2. Buscar cliente por CPF/CNPJ
-```
-GET /mk/WSMKConsultaDoc.rule
-```
-| Parâmetro | Tipo   | Descrição                         |
-|-----------|--------|-----------------------------------|
-| `sys`     | string | `"MK0"`                           |
-| `token`   | string | token de sessão (retornado pelo auth) |
-| `doc`     | string | CPF ou CNPJ **sem formatação**   |
+## 2. Status atual dos endpoints
 
-**Retorno esperado:** `{ CodigoPessoa, Nome, Email, Fone, Situacao, status }`
-
----
-
-### 3. Criar atendimento
-```
-GET /mk/WSMKNovoAtendimento.rule
-```
-| Parâmetro             | Tipo   | Obrigatório | Descrição                         |
-|-----------------------|--------|-------------|-----------------------------------|
-| `sys`                 | string | ✅          | `"MK0"`                           |
-| `token`               | string | ✅          | token de sessão                   |
-| `cd_cliente`          | int    | ✅          | `CodigoPessoa` retornado no passo 2|
-| `cd_processo`         | int    | ✅          | código do processo MK             |
-| `cd_classificacao_ate`| int    | ✅          | código da classificação           |
-| `origem_contato`      | int    | ✅          | `6`=Telefone, `9`=WhatsApp        |
-| `info`                | string | ✅          | texto de descrição do atendimento |
-| `cd_contrato`         | int    | ❌          | código do contrato (se disponível)|
-| `conexao_associada`   | int    | ❌          | **CodigoConexao** — ver passo 3   |
-
-**Retorno esperado:** `{ CodigoAtendimento, Protocolo }`
+| # | Endpoint                               | Status            |
+|---|----------------------------------------|-------------------|
+| 1 | `WSAutenticacao.rule`                  | ✅ Funcionando     |
+| 2 | `WSMKConsultaDoc.rule`                 | ✅ Funcionando     |
+| 3 | `WSMKConexoesPorCliente.rule`          | ✅ Funcionando     |
+| 4 | `WSMKNovoAtendimento.rule`             | ✅ Funcionando     |
+| 5 | `WSMKAtendimentoComentario.rule`       | ❌ Erro 500        |
+| 6 | `WSMKCriarOrdemServico.rule`           | ⚠️ Não testado — aguarda códigos obrigatórios |
 
 ---
 
-### 4. Criar Ordem de Serviço (técnica)
+## 3. Bloqueio crítico — `WSMKAtendimentoComentario.rule`
+
+### 3.1 O problema
+
+Ao chamar o endpoint com os três campos obrigatórios (`token`, `cd_atendimento`, `comentario`), o servidor retorna **HTTP 500** com a seguinte mensagem:
+
 ```
-GET /mk/WSMKCriarOrdemServico.rule
+javax.servlet.ServletException: O objeto (Tabela) deve ter um valor definido!
+  wfr.web.ExternalRulesServlet.process(SourceFile:321)
 ```
-| Parâmetro            | Tipo   | Obrigatório | Descrição                          |
-|----------------------|--------|-------------|------------------------------------|
-| `sys`                | string | ✅          | `"MK0"`                            |
-| `token`              | string | ✅          | token de sessão                    |
-| `CodigoCliente`      | int    | ✅          | `CodigoPessoa` do passo 2          |
-| `DescricaoProblema`  | string | ✅          | texto da O.S.                      |
-| `CodigoTipoOS`       | int    | ✅          | código do tipo de OS               |
-| `CodigoGrupoServico` | int    | ❌          | grupo de serviço / equipe          |
-| `CodigoTecnico`      | int    | ❌          | técnico pré-designado              |
-| `CodigoAtendimento`  | int    | ❌          | vínculo com o atendimento criado   |
 
-**Retorno esperado:** `{ codigo_os }` ou `{ CodigoOS }`
+A chamada realizada:
 
-> ⚠️ **Status atual:** retorna HTTP 500. Suspeita: falta `CodigoConexao`
-> como parâmetro obrigatório. Precisamos confirmar se este endpoint
-> exige esse campo e qual o nome correto do parâmetro.
-
----
-
-### 5. Inserir comentário em atendimento
 ```
 GET /mk/WSMKAtendimentoComentario.rule
+  ?sys=MK0
+  &token=<token_valido>
+  &cd_atendimento=268137
+  &comentario=CLIENTE+SEM+BLOQUEIO...
+  &tipo=2
 ```
-| Parâmetro       | Tipo   | Descrição                       |
-|-----------------|--------|---------------------------------|
-| `sys`           | string | `"MK0"`                         |
-| `token`         | string | token de sessão                 |
-| `cd_atendimento`| int    | ID do atendimento               |
-| `comentario`    | string | texto do comentário/encerramento|
+
+O atendimento `268137` foi criado pelo próprio sistema segundos antes, com sucesso.
+
+### 3.2 Nossa análise
+
+O erro `"O objeto (Tabela) deve ter um valor definido!"` é uma exceção do runtime WFR indicando que um objeto de banco de dados está nulo internamente. Testamos com e sem o parâmetro `tipo`, com tokens de sessão novos e a mensagem de erro é sempre a mesma.
+
+Nossa hipótese é que a regra tenta associar o comentário a um **operador ERP** (`user`) e, quando esse parâmetro não é fornecido, faz uma busca interna que retorna nulo — causando o crash.
+
+### 3.3 O que precisamos do MK
+
+**a) Confirmar a causa raiz do erro 500** — O campo `user` é, na prática, obrigatório mesmo estando documentado como opcional? Ou há algum pré-requisito de configuração que não estamos atendendo?
+
+**b) Mapeamento de operadores por usuário** — Cada solicitação ao nosso sistema é feita por um operador autenticado via Firebase. Para que o comentário apareça corretamente associado no ticket MK, precisamos de uma forma de obter o **login ERP** do operador a partir do sistema. As alternativas que enxergamos:
+
+- O próprio cadastro de operadores expõe um endpoint de consulta por e-mail ou nome (`WSMKConsultaUsuario.rule` ou similar)?
+- Ou devemos manter uma tabela de mapeamento manual `{email_firebase → login_mk}` no nosso sistema?
+
+**c) Serviço no perfil de webservice** — O endpoint `WSMKAtendimentoComentario.rule` requer alguma configuração específica no perfil de webservice além do `cd_servico: 9999`?
 
 ---
 
-### Endpoints de consulta de catálogo (funcionando)
+## 4. Necessidade — `WSMKCriarOrdemServico.rule`
 
-| Endpoint                              | Uso                               |
-|---------------------------------------|-----------------------------------|
-| `WSMKOSListaTiposOS.rule`             | listar tipos de OS disponíveis    |
-| `WSMKConsultaEquipes.rule`            | listar grupos de serviço/equipes  |
-| `WSMKListaProcessos.rule`             | listar processos de atendimento   |
-| `WSMKListaClassificacoesAte.rule`     | listar classificações (por processo) |
+### 4.1 Parâmetros obrigatórios ainda não configurados
 
----
+A documentação indica que os seguintes campos são **obrigatórios** a partir da release 74:
 
-## ❌ BLOQUEIO — Endpoint faltando
+| Parâmetro            | Obrigatoriedade       | Status na MZ NET            |
+|----------------------|-----------------------|-----------------------------|
+| `CodigoTipoOS`       | Obrigatório           | ❌ código não levantado      |
+| `CodigoTecnico`      | Obrigatório           | ❌ não usamos técnico fixo   |
+| `CodigoGrupoServico` | Obrigatório           | ❌ código não levantado      |
+| `categoria`          | Obrigatório (rel. 74) | Definiremos como `1` (cliente)|
 
-### Buscar conexão ativa do cliente
+### 4.2 O que precisamos do MK
 
-O campo `CodigoConexao` (ou `conexao_associada`) é necessário para:
-- Associar o atendimento à conexão correta do cliente
-- Possivelmente obrigatório em `WSMKCriarOrdemServico.rule` (causa do 500)
+**a) Códigos de referência** — Precisamos que a equipe do MK (ou o responsável pelo ERP na MZ NET) nos informe os seguintes códigos cadastrados no sistema:
 
-**Precisamos que o time do MK informe:**
+| Item                  | Descrição                                          | Código |
+|-----------------------|----------------------------------------------------|--------|
+| TipoOS — Manutenção   | O.S. de manutenção técnica em campo                | ?      |
+| TipoOS — Instalação   | O.S. de instalação de novo cliente                 | ?      |
+| GrupoServico          | Equipe de suporte técnico                          | ?      |
+| GrupoServico          | Equipe de instalação                               | ?      |
 
-1. **Nome do endpoint** para buscar a conexão ativa de um cliente
-   - Suspeita: `WSMKConexaoCliente.rule` ou `WSMKListaConexoes.rule` — mas não confirmado
-2. **Parâmetros de entrada** (provavelmente `CodigoPessoa` ou CPF)
-3. **Nome exato do campo** no retorno que representa o código da conexão
-4. **Se `WSMKCriarOrdemServico.rule` exige `CodigoConexao`** — e qual o nome do parâmetro
+**b) Técnico genérico** — Como a O.S. é aberta remotamente antes de escalonar, não temos um técnico definido no momento da abertura. Existe um "técnico genérico" ou "técnico padrão" cadastrado no MK que pode ser usado como placeholder? Qual o `CodigoTecnico`?
 
----
-
-## Resumo do que precisamos do MK Solutions
-
-| # | Item                                      | Status         |
-|---|-------------------------------------------|----------------|
-| 1 | Endpoint para buscar conexão ativa        | **❌ FALTANDO** |
-| 2 | Nome do campo `CodigoConexao` na resposta | **❌ FALTANDO** |
-| 3 | Confirmar parâmetros de `WSMKCriarOrdemServico.rule` | **❌ FALTANDO** |
-| 4 | Códigos internos: TipoOS, GrupoServico, Processo e Classificação para Manutenção | **❌ FALTANDO** |
-| 5 | Todos os itens acima para Alteração de Plano (P1 — fila após Manutenção) | pendente |
+**c) Comportamento esperado** — É possível abrir uma O.S. sem `CodigoTecnico` definido e designar o técnico posteriormente via MK ERP? Ou o campo é estritamente obrigatório na criação?
 
 ---
 
-## Contexto técnico
+## 5. Estrutura de parâmetros confirmada (para registro)
 
-- **Proxy:** Cloud Function Firebase (`southamerica-east1`) — o React nunca
-  faz chamada direta à API MK; tudo passa pela function.
-- **Credenciais:** armazenadas no Google Cloud Secret Manager.
-- **Modo shadow:** em dev/teste, os payloads são logados no Firestore sem
-  atingir a API MK. Basta setar `MK_MODE=real` para ativar em produção.
-- **Autenticação:** o token de sessão MK é obtido a cada requisição
-  (sem cache) para evitar expiração.
+### `WSMKNovoAtendimento.rule` — funcionando corretamente
+
+```
+GET /mk/WSMKNovoAtendimento.rule
+  ?sys=MK0
+  &token=<sessao>
+  &cd_cliente=28903
+  &cd_processo=14
+  &cd_classificacao_ate=3
+  &origem_contato=9
+  &info=<texto>
+  &cd_contrato=46364          ← necessário quando há múltiplas conexões
+  &conexao_associada=35525    ← necessário quando há múltiplas conexões
+```
+
+Retorno: `{ CodigoAtendimento, Protocolo }` ✅
+
+### `WSMKConexoesPorCliente.rule` — campo correto identificado
+
+A documentação menciona `CodigoConexao`, mas o campo retornado no JSON é **`codconexao`** (lowercase). Nosso código já trata esse caso via fallback.
+
+---
+
+## 6. Próximas integrações planejadas
+
+Assim que os bloqueios acima forem resolvidos, o sistema precisará também automatizar:
+
+| Processo              | Endpoints necessários                                       |
+|-----------------------|-------------------------------------------------------------|
+| Alteração de Plano    | `WSMKNovoAtendimento` + comentários + `WSMKCriarOrdemServico` |
+| Mudança de Endereço   | `WSMKNovoAtendimento` + `WSMKCriarOrdemServico`             |
+| Auto-desbloqueio      | `WSMKAutoDesbloqueioV2.rule`                                |
+| Encerramento de O.S.  | `PUT /os` (API especial Node.js)                            |
+
+---
+
+## 7. Contato técnico MZ NET
+
+Para dúvidas ou esclarecimentos sobre esta solicitação, entrar em contato com:
+
+**Setor de T.I. — MZ NET Telecom**  
+E-mail: ramonyml@gmail.com
+
+---
+
+*Documento gerado pelo sistema Gerador de O.S. — MZ NET T.I.*

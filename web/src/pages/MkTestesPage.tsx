@@ -138,6 +138,7 @@ export function MkTestesPage() {
   const call = httpsCallable(functions, 'mkSuporte')
 
   const [cpfCliente, setCpfCliente] = useState('')
+  const [cpfConexao, setCpfConexao] = useState('')
   const [processoId, setProcessoId] = useState('')
   const [cpfProt, setCpfProt] = useState('')
   const [processoProt, setProcessoProt] = useState('')
@@ -150,6 +151,7 @@ export function MkTestesPage() {
   const [classificacaoOs, setClassificacaoOs] = useState('')
   const [grupoOs, setGrupoOs] = useState('')
   const [tecnicoOs, setTecnicoOs] = useState('')
+  const [conexaoOs, setConexaoOs] = useState('')
 
   return (
     <AppPageChrome
@@ -206,9 +208,28 @@ export function MkTestesPage() {
           />
         </TestCard>
 
-        {/* 3. Tipos de OS */}
+        {/* 3. Buscar conexão ativa */}
         <TestCard
-          title="3. Listar tipos de O.S"
+          title="3. Buscar conexão ativa"
+          description="Busca as conexões ativas do cliente via WSMKConexoesPorCliente.rule. Retorna CodigoConexao — necessário para criar atendimento e OS."
+          onRun={async () => {
+            const res = await call({ action: 'buscar_conexao', cpf: cpfConexao })
+            return res.data
+          }}
+        >
+          <TextField
+            size="small"
+            label="CPF / CNPJ"
+            placeholder="Somente números"
+            value={cpfConexao}
+            onChange={(e) => setCpfConexao(e.target.value)}
+            sx={{ width: 220 }}
+          />
+        </TestCard>
+
+        {/* 5. Tipos de OS */}
+        <TestCard
+          title="5. Listar tipos de O.S"
           description="Retorna todos os tipos de OS cadastrados no MK com seus códigos — necessários para criar uma OS."
           onRun={async () => {
             const res = await call({ action: 'listar_tipos_os' })
@@ -216,9 +237,9 @@ export function MkTestesPage() {
           }}
         />
 
-        {/* 4. Grupos / Equipes */}
+        {/* 6. Grupos / Equipes */}
         <TestCard
-          title="4. Listar grupos / equipes"
+          title="6. Listar grupos / equipes"
           description="Retorna os grupos de serviço (equipes técnicas) com seus códigos."
           onRun={async () => {
             const res = await call({ action: 'listar_grupos' })
@@ -226,9 +247,9 @@ export function MkTestesPage() {
           }}
         />
 
-        {/* 5. Processos de atendimento */}
+        {/* 7. Processos de atendimento */}
         <TestCard
-          title="5. Listar processos de atendimento"
+          title="7. Listar processos de atendimento"
           description="Retorna os processos cadastrados — cada processo corresponde a um tipo de demanda (ex: Manutenção, Suporte)."
           onRun={async () => {
             const res = await call({ action: 'listar_processos' })
@@ -236,9 +257,9 @@ export function MkTestesPage() {
           }}
         />
 
-        {/* 6. Classificações */}
+        {/* 8. Classificações */}
         <TestCard
-          title="6. Listar classificações"
+          title="8. Listar classificações"
           description="Retorna as classificações de atendimento. Filtre por processo para ver só as vinculadas a ele."
           onRun={async () => {
             const res = await call({
@@ -258,9 +279,9 @@ export function MkTestesPage() {
           />
         </TestCard>
 
-        {/* 7. Criar Protocolo — Padrão B (sem OS) */}
+        {/* 9. Criar Protocolo — Padrão B (sem OS) */}
         <TestCard
-          title="7. Criar Protocolo (Padrão B — sem OS)"
+          title="9. Criar Protocolo (Padrão B — sem OS)"
           description="auth → buscar cliente → criar atendimento. Retorna o número do protocolo MK. Para abertura, sempre use classificação 3 (NORMAL) — classificações com encerramento='Sim' (ex: 8=ONU-SEM-LUZ) são para fechar, não abrir."
           onRun={async () => {
             const res = await call({
@@ -292,8 +313,8 @@ export function MkTestesPage() {
         </TestCard>
 
         <TestCard
-          title="8. Criar OS — fluxo completo (bloqueado ⚠️)"
-          description="Executa a sequência: auth → buscar cliente → criar atendimento → criar OS. Use os códigos obtidos nos testes anteriores."
+          title="10. Criar OS — fluxo completo"
+          description="auth → cliente → conexão (automática ou manual) → atendimento → OS. CodigoConexao é buscado automaticamente se não informado."
           onRun={async () => {
             const res = await call({
               action: 'criar_os',
@@ -305,6 +326,7 @@ export function MkTestesPage() {
               classificacaoId: Number(classificacaoOs),
               grupoServico: grupoOs ? Number(grupoOs) : undefined,
               tecnicoId: tecnicoOs ? Number(tecnicoOs) : undefined,
+              codigoConexao: conexaoOs ? Number(conexaoOs) : undefined,
             })
             return res.data
           }}
@@ -316,6 +338,7 @@ export function MkTestesPage() {
             <TextField size="small" label="Cód. classificação" value={classificacaoOs} onChange={(e) => setClassificacaoOs(e.target.value)} sx={{ width: 150 }} />
             <TextField size="small" label="Cód. grupo" value={grupoOs} onChange={(e) => setGrupoOs(e.target.value)} sx={{ width: 140 }} />
             <TextField size="small" label="Cód. técnico" value={tecnicoOs} onChange={(e) => setTecnicoOs(e.target.value)} sx={{ width: 140 }} />
+            <TextField size="small" label="CodigoConexao (opcional)" placeholder="Busca automática se vazio" value={conexaoOs} onChange={(e) => setConexaoOs(e.target.value)} sx={{ width: 230 }} />
             <TextField
               size="small"
               label="Descrição do problema"

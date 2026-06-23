@@ -1,0 +1,36 @@
+{
+  "_instrucoes": "Referência local apenas. Os códigos são armazenados no Firebase Config (firebase functions:config:set mk.*). Use como checklist para saber quais config keys já foram preenchidas.",
+  "_como_preencher": "firebase functions:config:set mk.tipo_os_visita_tecnica='CODIGO' --project gerador-de-os-3ba02",
+
+  "config_keys": {
+    "mk.tipo_os_visita_tecnica_manutencao":  null,
+    "mk.tipo_os_visita_tecnica_instalacao":  null,
+    "mk.tipo_os_atendimento_loja":           null,
+    "mk.tipo_os_alteracao_plano_remoto":     null,
+    "mk.tipo_os_alteracao_plano_visita":     null,
+    "mk.tipo_os_mudanca_endereco":           null,
+    "mk.tipo_os_wifi_extend_instalacao":     null,
+    "mk.tipo_os_stb_instalacao":             null,
+    "mk.tipo_os_stb_devolucao":              null,
+    "mk.tipo_os_roku_instalacao":            null,
+    "mk.tipo_os_ittv_instalacao":            null,
+    "mk.tipo_os_monitoramento":              null,
+    "mk.tipo_os_visita_instrutiva":          null,
+    "mk.tipo_os_reset_roteador":             null,
+    "mk.grupo_suporte_tecnico":              null,
+    "mk.grupo_instalacao":                   null,
+    "mk.grupo_loja":                         null,
+    "mk.classif_manutencao":                 null,
+    "mk.classif_alteracao_plano":            null,
+    "mk.classif_mudanca_endereco":           null,
+    "mk.classif_midia_tv":                   null,
+    "mk.classif_wifi_extend":                null,
+    "mk.classif_financeiro":                 null,
+    "mk.regra_vencimento":                   null,
+    "mk.regra_bloqueio":                     null,
+    "mk.forma_pagamento":                    null,
+    "mk.profile_pagamento":                  null,
+    "mk.metodo_faturamento":                 null,
+    "mk.plano_contas":                       null
+  }
+}

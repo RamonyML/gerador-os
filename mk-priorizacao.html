@@ -312,7 +312,7 @@
   <div class="header">
     <div class="badge">MZ NET × MK Solutions — Integração de API</div>
     <h1>Guarda-chuvas & Priorização</h1>
-    <p>186 variantes · 8 categorias · última atualização 19/06/2026</p>
+    <p>186 variantes · 8 categorias · última atualização 23/06/2026</p>
   </div>
 
   <!-- Base técnica -->
@@ -322,7 +322,7 @@
     <div class="base-items">
       <div class="base-item"><span class="dot"></span> Autenticação (token de sessão)</div>
       <div class="base-item"><span class="dot"></span> Buscar cliente por CPF/CNPJ</div>
-      <div class="base-item"><span class="dot pending"></span> Buscar conexão ativa do cliente &nbsp;<strong style="color:#f59e0b">← desbloqueio pendente</strong></div>
+      <div class="base-item"><span class="dot"></span> Buscar conexão ativa do cliente</div>
     </div>
   </div>
 
@@ -343,14 +343,15 @@
       <h3>✓ Funcionando</h3>
       <div class="status-item"><span class="icon">🔐</span> Auth — WSAutenticacao.rule</div>
       <div class="status-item"><span class="icon">🔍</span> Buscar cliente — WSMKConsultaDoc.rule</div>
+      <div class="status-item"><span class="icon">🔗</span> Buscar conexão — WSMKConexoesPorCliente.rule</div>
       <div class="status-item"><span class="icon">📋</span> Listar tipos OS, grupos, processos</div>
-      <div class="status-item"><span class="icon">🎫</span> Criar atendimento — WSMKNovoAtendimento.rule</div>
+      <div class="status-item"><span class="icon">🎫</span> Criar atendimento (com contrato + conexão) — WSMKNovoAtendimento.rule</div>
     </div>
     <div class="status-card blocked">
-      <h3>⚑ Próximo passo</h3>
-      <div class="status-item"><span class="icon">🔗</span> Buscar CodigoConexao do cliente</div>
-      <div class="status-item"><span class="icon">📄</span> Criar OS — WSMKCriarOrdemServico.rule</div>
-      <div class="status-item"><span class="icon">✏️</span> Comentário de encerramento — WSMKAtendimentoComentario.rule</div>
+      <h3>⚑ Aguardando MK Solutions</h3>
+      <div class="status-item"><span class="icon">✏️</span> Comentário de atendimento — WSMKAtendimentoComentario.rule (erro 500)</div>
+      <div class="status-item"><span class="icon">📄</span> Criar OS — WSMKCriarOrdemServico.rule (aguarda CodigoTecnico + GrupoServico)</div>
+      <div class="status-item"><span class="icon">👤</span> Mapeamento operadores Firebase → login MK ERP</div>
       <div class="status-item"><span class="icon">🔄</span> Atualizar plano — WSMKAlterarPlanoContasContrato.rule</div>
     </div>
   </div>

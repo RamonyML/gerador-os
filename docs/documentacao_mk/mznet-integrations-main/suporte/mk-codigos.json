@@ -1,0 +1,42 @@
+{
+  "_instrucoes": "Preencha os códigos conforme encontrado no painel do MK Solutions. A skill lê este arquivo antes de implementar cada tarefa e para para pedir ao junior caso o código necessário esteja null.",
+
+  "tiposOS": {
+    "visita_tecnica_manutencao":   null,
+    "visita_tecnica_instalacao":   null,
+    "atendimento_loja":            "teste",
+    "alteracao_plano_remoto":      null,
+    "alteracao_plano_visita":      null,
+    "mudanca_endereco":            null,
+    "wifi_extend_instalacao":      null,
+    "stb_instalacao":              null,
+    "stb_devolucao":               null,
+    "roku_instalacao":             null,
+    "ittv_instalacao":             null,
+    "monitoramento":               null,
+    "visita_instrutiva":           null,
+    "reset_roteador":              null
+  },
+
+  "gruposServico": {
+    "suporte_tecnico":             null,
+    "instalacao":                  null,
+    "loja":                        null
+  },
+
+  "classificacoesAtendimento": {
+    "manutencao":                  null,
+    "alteracao_plano":             null,
+    "mudanca_endereco":            null,
+    "midia_tv":                    null,
+    "wifi_extend":                 null,
+    "financeiro":                  null
+  },
+
+  "regraVencimento":               null,
+  "regraBloqueio":                 null,
+  "formaPagamento":                null,
+  "profilePagamento":              null,
+  "metodofaturamento":             null,
+  "planoContas":                   null
+}
