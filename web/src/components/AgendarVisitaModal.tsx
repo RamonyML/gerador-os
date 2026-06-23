@@ -15,7 +15,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { alpha, useTheme } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
+import { useColorMode } from '../contexts/ColorModeContext'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import { db } from '../lib/firebase'
 import { getDia, saveDia } from '../lib/agendaFirestore'
@@ -86,8 +87,7 @@ interface Props {
 }
 
 export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, onScheduled }: Props) {
-  const theme = useTheme()
-  const isDark = theme.palette.mode === 'dark'
+  const { isDark } = useColorMode()
   const [pickedDate, setPickedDate]   = useState('')           // yyyy-MM-dd
   const [pickedSlotId, setSlotId]     = useState<string | null>(null)
   const [selectedTecId, setSelected]  = useState<string | null>(null)
@@ -340,7 +340,7 @@ export function AgendarVisitaModal({ open, onClose, textoAgenda, initialDate, on
                       const cellBg = isSelected
                         ? alpha(ORANGE, 0.18)
                         : occupied
-                          ? (COLOR_DEFS[cell!.color]?.fill ?? '#fff')
+                          ? (isDark ? (COLOR_DEFS[cell!.color]?.fillDark ?? COLOR_DEFS[cell!.color]?.fill ?? '#1f2733') : (COLOR_DEFS[cell!.color]?.fill ?? '#fff'))
                           : 'transparent'
 
                       return (
