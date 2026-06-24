@@ -2,6 +2,12 @@
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import { HORARIOS_SABADO, HORARIOS_SEMANA } from './horarios'
 
+const T_TITULAR = 'titular'
+const T_TITULAR_TERCEIRO = 'titular_terceiro'
+const T_TERCEIRO_TERCEIRO = 'terceiro_terceiro'
+const T_TERCEIRO_TITULAR = 'terceiro_titular'
+
+const S_SOLICITACAO = 'TIPO DE SOLICITAÇÃO'
 const S_ID = 'IDENTIFICAÇÃO'
 const S_PLANO = 'PLANO E AGENDAMENTO'
 
@@ -82,7 +88,9 @@ export function buildInstTaxaEmpresarialTextos(
   const v: Record<string, string> = {}
   for (const [k, val] of Object.entries(rawValues)) v[k] = String(val ?? '')
 
+  const tipo = v.tipoSolicitacao || T_TITULAR_TERCEIRO
   const cp = first(upper(v.cliente))
+  const sp = first(upper(v.solicitante || ''))
   const solicitante = upper(v.solicitante || '')
   const parente = upper(v.parente || '')
   const canal = v.canal || ''
@@ -99,17 +107,46 @@ export function buildInstTaxaEmpresarialTextos(
   const horaVisita = v.horaVisita || ''
   const formaPag = upper(v.formaPag || '')
 
+  const quem =
+    tipo === T_TERCEIRO_TERCEIRO || tipo === T_TERCEIRO_TITULAR
+      ? `${sp} (REPRESENTANTE DA EMPRESA DE ${cp})`
+      : `${cp} (PROPRIETÁRIO DA EMPRESA)`
+
+  const ending =
+    tipo === T_TITULAR || tipo === T_TERCEIRO_TITULAR
+      ? `${cp} (PROPRIETÁRIO) ACOMPANHARÁ A INSTALAÇÃO.`
+      : `${cp} ASSINOU CONTRATO DIGITALMENTE E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR INSTALAÇÃO.`
+
   const textoProtocolo =
-    `${cp} (PROPRIETÁRIO DA EMPRESA) SOLICITOU ${canalStr} A INSTALAÇÃO DE INTERNET PARA O ENDEREÇO CITADO NA O.S, ` +
+    `${quem} SOLICITOU ${canalStr} A INSTALAÇÃO DE INTERNET PARA O ENDEREÇO CITADO NA O.S, ` +
     `PLANO DE ACESSO: ${planoDetalhes}; VENCIMENTO: DIA ${vencimento} DO MÊS; VIGÊNCIA DO CONTRATO: 12 MESES. ` +
-    `INSTALAÇÃO AGENDADA PARA ${dataVisita} ${horaVisita}. ` +
-    `${cp} ASSINOU CONTRATO DIGITALMENTE E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR INSTALAÇÃO. ` +
+    `INSTALAÇÃO AGENDADA PARA ${dataVisita} ${horaVisita}. ${ending} ` +
     `TAXA DE INSTALAÇÃO/ATIVAÇÃO: ${taxa}, PAGAMENTO JÁ EFETUADO EM ${formaPag}.`
 
   return { instTextoProtocolo: textoProtocolo, instTextoOS: INDICACAO_TECNICA }
 }
 
+const REP_SHOW: OsTemplateField['showWhen'] = {
+  field: 'tipoSolicitacao',
+  equals: [T_TITULAR_TERCEIRO, T_TERCEIRO_TERCEIRO, T_TERCEIRO_TITULAR],
+}
+
 export const INST_TAXA_EMPRESARIAL_FIELDS: OsTemplateField[] = [
+  {
+    id: 'tipoSolicitacao',
+    label: 'Tipo de solicitação',
+    control: 'radio',
+    defaultValue: T_TITULAR_TERCEIRO,
+    highlight: true,
+    section: S_SOLICITACAO,
+    layout: { md: 12 },
+    options: [
+      { value: T_TITULAR, label: 'Titular solicita e acompanha' },
+      { value: T_TITULAR_TERCEIRO, label: 'Titular solicita e autoriza terceiro' },
+      { value: T_TERCEIRO_TERCEIRO, label: 'Terceiro solicita, titular autoriza terceiro' },
+      { value: T_TERCEIRO_TITULAR, label: 'Terceiro solicita, titular acompanha' },
+    ],
+  },
   {
     id: 'cliente',
     label: 'Nome do proprietário da empresa',
@@ -125,6 +162,7 @@ export const INST_TAXA_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     placeholder: 'Nome completo',
     section: S_ID,
     layout: { md: 8 },
+    showWhen: REP_SHOW,
   },
   {
     id: 'parente',
@@ -133,6 +171,7 @@ export const INST_TAXA_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     placeholder: 'Ex.: SÓCIO, GERENTE, FUNCIONÁRIO',
     section: S_ID,
     layout: { md: 4 },
+    showWhen: REP_SHOW,
   },
   {
     id: 'canal',
@@ -212,10 +251,10 @@ export function getInstTaxaEmpresarialDefaults(): OsTemplatePresetPayload {
     operatorGuidance: {
       title: 'Orientação — Instalação com taxa empresarial',
       items: [
-        'Informe o nome do proprietário da empresa (titular do contrato).',
+        'Selecione o tipo de solicitação: quem entrou em contato e quem estará presente na instalação.',
+        'O proprietário da empresa é o titular do contrato — informe sempre o nome dele.',
         'A taxa (R$250,00 ou R$350,00) é determinada automaticamente pelo plano selecionado.',
-        'Informe a forma de pagamento da taxa utilizada pela empresa.',
-        'O representante autorizado é quem acompanhará a instalação no local.',
+        'Quando houver representante, informe o nome completo e o cargo/função (ex.: SÓCIO, GERENTE, FUNCIONÁRIO).',
       ],
     },
   }
