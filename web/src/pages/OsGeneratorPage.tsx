@@ -742,6 +742,7 @@ export function OsGeneratorPage() {
   }, [user, selected, preview, values.cliente, values.nome, saveObs])
 
   const multiPreviewTabs = previewSections.length > 1
+  const showMkCards = selected?.slug === 'senha-altera-senha' && !!alteraSenhaSegmentos
 
   const emptyFields = useMemo(() => {
     if (!selected) return []
@@ -1011,9 +1012,9 @@ export function OsGeneratorPage() {
               p: { xs: 2, md: 2.5 },
               borderRadius: 2.5,
               borderColor: 'divider',
-              position: { md: 'sticky' },
+              position: showMkCards ? 'static' : { md: 'sticky' },
               top: { md: 72 },
-              maxHeight: { md: 'calc(100vh - 96px)' },
+              maxHeight: showMkCards ? 'none' : { md: 'calc(100vh - 96px)' },
               display: 'flex',
               flexDirection: 'column',
               bgcolor:

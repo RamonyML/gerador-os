@@ -403,7 +403,7 @@ export function MkProtocolCards({
   const conexaoOk = buscaState === 'ok' && (conexoes.length === 0 || conexaoSelecionada !== '')
 
   return (
-    <Stack spacing={1.5} sx={{ flex: 1, overflow: 'auto', minHeight: { xs: 220, md: 280 }, pr: 0.5 }}>
+    <Stack spacing={1.5}>
 
       {/* Painel de busca de cliente + conexão */}
       {!card0Done && (
