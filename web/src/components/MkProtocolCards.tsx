@@ -169,8 +169,6 @@ function CardItem({
             wordBreak: 'break-word',
             lineHeight: 1.55,
             color: !enabled && state === 'idle' ? 'text.disabled' : 'text.primary',
-            maxHeight: 180,
-            overflowY: 'auto',
           }}
         >
           {text || '—'}
