@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>MZ NET × MK Solutions — Arquitetura da Integração: Setor de Cadastro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Ubuntu+Mono&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 56px 64px;
+    }
+
+    /* ─── Cabeçalho ─── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0ea5e9;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-left h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: -.02em;
+      margin-bottom: 2px;
+    }
+    .header-left .sub { font-size: 12px; color: #64748b; font-weight: 500; }
+    .header-right { text-align: right; font-size: 12px; color: #64748b; line-height: 1.6; }
+    .header-right strong { color: #1a1a2e; }
+
+    /* ─── Seções ─── */
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0369a1;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 .num {
+      background: #0ea5e9;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin: 20px 0 10px;
+    }
+    p { margin-bottom: 10px; color: #374151; }
+
+    code {
+      font-family: 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    pre {
+      font-family: 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 16px 18px;
+      border-radius: 8px;
+      margin: 12px 0 18px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    pre .c  { color: #64748b; }
+    pre .k  { color: #38bdf8; }
+    pre .s  { color: #a5f3fc; }
+    pre .v  { color: #86efac; }
+    pre .p  { color: #94a3b8; }
+
+    /* ─── Opções A / B ─── */
+    .option-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0 18px;
+    }
+    @media (max-width: 600px) { .option-grid { grid-template-columns: 1fr; } }
+
+    .option-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .option-card.recommended {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px #e0f2fe;
+    }
+    .option-header {
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .option-card.recommended .option-header {
+      background: #f0f9ff;
+      border-bottom-color: #bae6fd;
+    }
+    .option-header .option-label {
+      font-weight: 700;
+      font-size: 14px;
+      color: #1e3a5f;
+    }
+    .option-body {
+      padding: 12px 16px 14px;
+      font-size: 12.5px;
+      color: #374151;
+    }
+    .option-body .flow-text {
+      font-family: 'Ubuntu Mono', monospace;
+      font-size: 11.5px;
+      color: #475569;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin: 8px 0 12px;
+      line-height: 1.7;
+    }
+    .pro-con { margin-top: 10px; }
+    .pro-con li {
+      list-style: none;
+      display: flex;
+      gap: 7px;
+      font-size: 12.5px;
+      color: #374151;
+      padding: 3px 0;
+    }
+    .pro-con li .ic { flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── Badges ─── */
+    .ok     { color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .err    { color: #991b1b; background: #fee2e2; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .warn   { color: #78350f; background: #fef3c7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .unk    { color: #4c1d95; background: #ede9fe; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .rec    { color: #0369a1; background: #e0f2fe; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-block; }
+
+    /* ─── Tabelas ─── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 12px 0 18px;
+    }
+    th {
+      background: #f1f5f9;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #475569;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      color: #374151;
+      vertical-align: middle;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    /* ─── Fluxos ─── */
+    .flows-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0 20px;
+    }
+    @media (max-width: 580px) { .flows-grid { grid-template-columns: 1fr; } }
+
+    .flow-box {
+      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid;
+    }
+    .flow-box.aprovada {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+    .flow-box.negada {
+      border-color: #fca5a5;
+      background: #fff5f5;
+    }
+    .flow-box.cancelada {
+      border-color: #fca5a5;
+      background: #fff5f5;
+    }
+    .flow-box .flow-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .flow-box.aprovada .flow-title { color: #166534; }
+    .flow-box.negada .flow-title   { color: #991b1b; }
+    .flow-box.cancelada .flow-title { color: #991b1b; }
+    .flow-box .flow-api {
+      font-family: 'Ubuntu Mono', monospace;
+      font-size: 11px;
+      color: #64748b;
+      background: rgba(0,0,0,.04);
+      padding: 4px 7px;
+      border-radius: 5px;
+      margin: 3px 0;
+      display: block;
+    }
+    .flow-box .flow-count {
+      font-size: 11.5px;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+
+    /* ─── Caixas ─── */
+    .info-box {
+      border: 1px solid #93c5fd;
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #1e3a8a;
+    }
+    .highlight-box {
+      border: 1px solid #fbbf24;
+      background: #fffbeb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .highlight-box .title {
+      font-weight: 700;
+      color: #92400e;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+    .green-box {
+      border: 1px solid #86efac;
+      background: #f0fdf4;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #14532d;
+    }
+    .green-box .title {
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+      color: #166534;
+    }
+
+    /* ─── Rodapé ─── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body { font-size: 12px; }
+      .page { padding: 24px 32px; }
+      h2 { margin: 24px 0 10px; page-break-after: avoid; }
+      table, .option-grid, .flows-grid { page-break-inside: avoid; }
+      pre { background: #f1f5f9 !important; color: #0f172a !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <div class="header-left">
+      <h1>MZ NET × MK Solutions</h1>
+      <div class="sub">Arquitetura da Integração — Setor de Cadastro / Análise</div>
+    </div>
+    <div class="header-right">
+      <strong>24 de junho de 2026</strong><br>
+      Planejamento interno<br>
+      Ramony Lima × Felipe Prieto
+    </div>
+  </div>
+
+  <!-- Seção 1 — A questão central -->
+  <h2><span class="num">1</span> A questão central</h2>
+
+  <p>
+    O sistema do Felipe já possui o Kanban de fichas, o fluxo de análise e o trigger de finalização.
+    O que precisa ser definido é <strong>como o sistema dele se comunica com o MK a partir desse trigger</strong> — quem faz as chamadas, onde ficam as credenciais e como o gerador de O.S. se encaixa no fluxo.
+  </p>
+  <p>Existem dois caminhos:</p>
+
+  <div class="option-grid">
+
+    <!-- Opção A -->
+    <div class="option-card recommended">
+      <div class="option-header">
+        <span class="option-label">Opção A</span>
+        <span class="rec">✓ Recomendada</span>
+      </div>
+      <div class="option-body">
+        <strong>Sistema do Felipe chama nossa Cloud Function</strong>
+        <div class="flow-text">Felipe's system<br>
+  └── trigger disparado<br>
+        └── POST → nossa CF (mkCadastro)<br>
+              └── payload: { status, ficha }<br>
+                    └── CF orquestra todas as chamadas MK<br>
+                          └── retorna resultado consolidado</div>
+        <ul class="pro-con">
+          <li><span class="ic">✓</span> Credenciais MK ficam no Secret Manager — Felipe não precisa lidar com isso</li>
+          <li><span class="ic">✓</span> Toda a lógica de orquestração centralizada em um lugar</li>
+          <li><span class="ic">✓</span> Gerador de O.S. roda na CF antes de criar a O.S. no MK</li>
+          <li><span class="ic">✓</span> Atualiza sem mexer no sistema do Felipe</li>
+          <li><span class="ic">–</span> Sistema do Felipe depende da nossa infra para as chamadas MK</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Opção B -->
+    <div class="option-card">
+      <div class="option-header">
+        <span class="option-label">Opção B</span>
+        <span class="err">✗ Descartada</span>
+      </div>
+      <div class="option-body">
+        <strong>Sistema do Felipe chama o MK diretamente</strong>
+        <div class="flow-text">Felipe's system<br>
+  └── trigger disparado<br>
+        └── chama MK diretamente<br>
+              └── precisa das credenciais</div>
+        <ul class="pro-con">
+          <li><span class="ic">✗</span> Exige repassar credenciais MK para o sistema do Felipe</li>
+          <li><span class="ic">✗</span> Duplica toda a lógica de integração que já existe</li>
+          <li><span class="ic">✗</span> Qualquer mudança na API MK exige atualização nos dois sistemas</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Seção 2 — Contrato da API -->
+  <h2><span class="num">2</span> O contrato da API</h2>
+
+  <p>O sistema do Felipe envia um único payload para nossa Cloud Function <code>mkCadastro</code>. A CF cuida de todo o resto.</p>
+
+  <h3>Entrada — o que o sistema do Felipe manda</h3>
+  <pre><span class="p">{</span>
+  <span class="k">"action"</span><span class="p">:</span>    <span class="s">"processar_ficha"</span><span class="p">,</span>
+  <span class="k">"status"</span><span class="p">:</span>    <span class="s">"aprovada"</span> <span class="c">// ou "negada" | "cancelada"</span>
+  <span class="k">"operador"</span><span class="p">:</span>  <span class="s">"uid do usuário no Firebase"</span><span class="p">,</span>
+  <span class="k">"ficha"</span><span class="p">: {</span>
+    <span class="k">"cpf"</span><span class="p">:</span>              <span class="s">"000.000.000-00"</span><span class="p">,</span>
+    <span class="k">"nome"</span><span class="p">:</span>             <span class="s">"Nome do cliente"</span><span class="p">,</span>
+    <span class="k">"bairro"</span><span class="p">:</span>           <span class="s">"Nome do bairro"</span><span class="p">,</span>      <span class="c">// determina Zona Leste/Oeste</span>
+    <span class="k">"plano"</span><span class="p">: {</span> <span class="k">"codigo"</span><span class="p">:</span> <span class="s">"..."</span><span class="p">,</span> <span class="k">"nome"</span><span class="p">:</span> <span class="s">"..."</span> <span class="p">},</span>
+    <span class="k">"dataInstalacao"</span><span class="p">:</span>   <span class="s">"2026-07-01"</span><span class="p">,</span>
+    <span class="k">"formaPagamento"</span><span class="p">:</span>   <span class="s">"..."</span><span class="p">,</span>
+    <span class="k">"vencimento"</span><span class="p">:</span>       <span class="v">10</span><span class="p">,</span>
+    <span class="k">"temWifiExtend"</span><span class="p">:</span>    <span class="v">false</span><span class="p">,</span>
+    <span class="k">"tipoAprovacao"</span><span class="p">:</span>    <span class="s">"gratuita"</span><span class="p">,</span>            <span class="c">// ou "compra_equipamento" | "novos_dados"</span>
+    <span class="k">"motivo"</span><span class="p">:</span>           <span class="s">"preenchido só quando negada/cancelada"</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre>
+
+  <h3>Saída — o que a CF retorna</h3>
+  <pre><span class="p">{</span>
+  <span class="k">"success"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>
+  <span class="k">"etapas"</span><span class="p">: {</span>
+    <span class="k">"cadastro"</span><span class="p">:    {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"codigoPessoa"</span><span class="p">:</span> <span class="v">28903</span> <span class="p">},</span>
+    <span class="k">"lead"</span><span class="p">:        {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"codigoLead"</span><span class="p">:</span>   <span class="s">"..."</span>  <span class="p">},</span>
+    <span class="k">"contrato"</span><span class="p">:    {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"codigoContrato"</span><span class="p">:</span> <span class="s">"..."</span> <span class="p">},</span>
+    <span class="k">"conexao"</span><span class="p">:     {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"codigoConexao"</span><span class="p">:</span> <span class="v">35525</span> <span class="p">},</span>
+    <span class="k">"os"</span><span class="p">:          {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"textoGerado"</span><span class="p">:</span>  <span class="s">"..."</span><span class="p">,</span> <span class="k">"codigoOS"</span><span class="p">:</span> <span class="s">"..."</span> <span class="p">},</span>
+    <span class="k">"atendimento"</span><span class="p">: {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">true</span><span class="p">,</span>  <span class="k">"protocolo"</span><span class="p">:</span>    <span class="s">"268262"</span>             <span class="p">},</span>
+    <span class="k">"comentario"</span><span class="p">:  {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">false</span><span class="p">,</span> <span class="k">"erro"</span><span class="p">:</span>          <span class="s">"HTTP 500 — aguardando MK"</span>   <span class="p">},</span>
+    <span class="k">"subprocesso"</span><span class="p">: {</span> <span class="k">"ok"</span><span class="p">:</span> <span class="v">false</span><span class="p">,</span> <span class="k">"erro"</span><span class="p">:</span>          <span class="s">"endpoint não confirmado"</span>    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre>
+
+  <div class="highlight-box">
+    <div class="title">⚠ Resiliência por etapa</div>
+    A CF executa as etapas em sequência e registra o resultado de cada uma individualmente. Se uma etapa falhar, as anteriores já confirmadas ficam registradas — o analista sabe exatamente onde o fluxo parou e o que foi criado no MK.
+  </div>
+
+  <!-- Seção 3 — Gerador de O.S. -->
+  <h2><span class="num">3</span> O gerador de O.S. de cadastro</h2>
+
+  <p>
+    O algoritmo do gerador roda <strong>dentro da Cloud Function</strong>, antes de chamar <code>WSMKCriarOrdemServico</code>.
+    Felipe <strong>não precisa implementar nada</strong> no sistema dele — manda os dados da ficha, a CF gera o texto e envia direto para o MK.
+  </p>
+
+  <div class="green-box">
+    <div class="title">✓ Fluxo do gerador</div>
+    Dados da ficha → CF recebe → algoritmo gera texto da O.S. → texto vai em <code>DescricaoProblema</code> na chamada <code>WSMKCriarOrdemServico</code> → resultado volta no campo <code>etapas.os.textoGerado</code> da resposta.
+  </div>
+
+  <!-- Seção 4 — Os três fluxos -->
+  <h2><span class="num">4</span> Os três fluxos internos</h2>
+
+  <p>Ao receber o payload, a CF identifica o <code>status</code> e executa o fluxo correspondente:</p>
+
+  <div class="flows-grid">
+
+    <div class="flow-box aprovada">
+      <div class="flow-title">✓ Aprovada</div>
+      <span class="flow-api">WSMKConsultaDoc (verificar cliente)</span>
+      <span class="flow-api">WSMKNovaPessoa (criar/reativar)</span>
+      <span class="flow-api">WSMKNovaLead (abrir lead)</span>
+      <span class="flow-api">WSMKNovoContrato (criar contrato)</span>
+      <span class="flow-api">WSMKCriarConexao (criar conexão)</span>
+      <span class="flow-api">WSMKCriarOrdemServico (criar O.S.)</span>
+      <span class="flow-api">WSMKNovoAtendimento (protocolo)</span>
+      <span class="flow-api">WSMKAtendimentoComentario (padrão)</span>
+      <span class="flow-api">encaminhar subprocesso</span>
+      <div class="flow-count">9 chamadas em sequência</div>
+    </div>
+
+    <div class="flow-box negada">
+      <div class="flow-title">✗ Negada</div>
+      <span class="flow-api">WSMKAtendimentoComentario (motivo)</span>
+      <br>
+      <span style="font-size:12px;color:#64748b;">Fecha o protocolo existente com o texto do motivo informado pelo analista.</span>
+      <div class="flow-count">1 chamada</div>
+    </div>
+
+    <div class="flow-box cancelada">
+      <div class="flow-title">✗ Cancelada</div>
+      <span class="flow-api">WSMKAtendimentoComentario (motivo)</span>
+      <br>
+      <span style="font-size:12px;color:#64748b;">Fecha o protocolo existente com o texto do motivo informado pelo analista.</span>
+      <div class="flow-count">1 chamada</div>
+    </div>
+
+  </div>
+
+  <!-- Seção 5 — Estado atual -->
+  <h2><span class="num">5</span> Estado atual de cada etapa — pipeline Aprovada</h2>
+
+  <table>
+    <tr>
+      <th>Etapa</th>
+      <th>Endpoint MK</th>
+      <th>Estado</th>
+      <th>Bloqueio</th>
+    </tr>
+    <tr>
+      <td>Verificar cadastro</td>
+      <td><code>WSMKConsultaDoc.rule</code></td>
+      <td><span class="ok">✓ Disponível</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Criar / reativar cliente</td>
+      <td><code>WSMKNovaPessoa.rule</code></td>
+      <td><span class="warn">⏳ Aguarda confirmação</span></td>
+      <td>Módulo especial — MK não confirmou</td>
+    </tr>
+    <tr>
+      <td>Criar Lead</td>
+      <td><code>WSMKNovaLead.rule</code></td>
+      <td><span class="warn">⏳ Aguarda confirmação</span></td>
+      <td>Módulo especial — MK não confirmou</td>
+    </tr>
+    <tr>
+      <td>Criar Contrato</td>
+      <td><code>WSMKNovoContrato.rule</code></td>
+      <td><span class="warn">⏳ Aguarda confirmação</span></td>
+      <td>Módulo especial — MK não confirmou</td>
+    </tr>
+    <tr>
+      <td>Criar Conexão</td>
+      <td><code>WSMKCriarConexao.rule</code></td>
+      <td><span class="warn">⏳ Aguarda confirmação</span></td>
+      <td>Módulo especial — MK não confirmou</td>
+    </tr>
+    <tr>
+      <td>Gerar texto da O.S.</td>
+      <td>Algoritmo interno (CF)</td>
+      <td><span class="ok">✓ Pode ser implementado</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Criar O.S.</td>
+      <td><code>WSMKCriarOrdemServico.rule</code></td>
+      <td><span class="warn">⏳ Aguarda confirmação</span></td>
+      <td>Módulo especial + códigos internos pendentes</td>
+    </tr>
+    <tr>
+      <td>Abrir protocolo</td>
+      <td><code>WSMKNovoAtendimento.rule</code></td>
+      <td><span class="ok">✓ Funcional em produção</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Comentar padrão (PV)</td>
+      <td><code>WSMKAtendimentoComentario.rule</code></td>
+      <td><span class="err">✗ Bug HTTP 500</span></td>
+      <td>Chamado aberto no MK Solutions — aguardando</td>
+    </tr>
+    <tr>
+      <td>Encaminhar subprocesso</td>
+      <td>—</td>
+      <td><span class="unk">? Não confirmado</span></td>
+      <td>Endpoint não encontrado na documentação</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th colspan="3">Negada / Cancelada</th>
+    </tr>
+    <tr>
+      <th>Etapa</th>
+      <th>Endpoint MK</th>
+      <th>Estado</th>
+    </tr>
+    <tr>
+      <td>Fechar protocolo com comentário</td>
+      <td><code>WSMKAtendimentoComentario.rule</code></td>
+      <td><span class="err">✗ Bug HTTP 500 — chamado aberto</span></td>
+    </tr>
+  </table>
+
+  <!-- Seção 6 — O que pode começar agora -->
+  <h2><span class="num">6</span> O que pode ser construído agora</h2>
+
+  <div class="info-box">
+    Quase todo o fluxo de Aprovada depende de APIs especiais aguardando confirmação do MK. Mas a estrutura pode ser construída por completo — quando as APIs forem liberadas, conectam no orquestrador já pronto.
+  </div>
+
+  <table>
+    <tr>
+      <th>O quê</th>
+      <th>Dependência MK?</th>
+    </tr>
+    <tr>
+      <td>Cloud Function <code>mkCadastro</code> com o orquestrador dos três fluxos</td>
+      <td><span class="ok">✓ Não</span> — estrutura com mocks nas etapas bloqueadas</td>
+    </tr>
+    <tr>
+      <td>Algoritmo do gerador de O.S. de cadastro (portado para a CF)</td>
+      <td><span class="ok">✓ Não</span> — lógica interna pura</td>
+    </tr>
+    <tr>
+      <td>Etapa de autenticação + busca de cliente por CPF</td>
+      <td><span class="ok">✓ Não</span> — APIs disponíveis</td>
+    </tr>
+    <tr>
+      <td>Etapa de criar atendimento / protocolo</td>
+      <td><span class="ok">✓ Não</span> — <code>WSMKNovoAtendimento</code> funcional</td>
+    </tr>
+    <tr>
+      <td>Etapas de criar lead, contrato, conexão, O.S.</td>
+      <td><span class="err">✗ Sim</span> — aguarda MK confirmar módulos especiais</td>
+    </tr>
+    <tr>
+      <td>Etapa de comentário e encaminhar subprocesso</td>
+      <td><span class="err">✗ Sim</span> — bug 500 + endpoint não confirmado</td>
+    </tr>
+  </table>
+
+  <!-- Rodapé -->
+  <div class="footer">
+    <span>MZ NET — Suporte N3 · Ramony Lima</span>
+    <span>Integração MK Solutions — Cadastro · 2026-06-24</span>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const banner = document.createElement('div')
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0ea5e9;color:#fff;text-align:center;padding:8px;font-size:13px;font-family:Ubuntu,system-ui;z-index:9999;'
+    banner.innerHTML = '📄 Para salvar como PDF: <strong>Ctrl+P</strong> → "Salvar como PDF" → desmarque "Cabeçalhos e rodapés" → <strong>Salvar</strong> &nbsp;&nbsp;<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:12px;">✕</button>'
+    document.body.prepend(banner)
+  })
+</script>
+</body>
+</html>
