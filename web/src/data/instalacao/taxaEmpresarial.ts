@@ -141,10 +141,10 @@ export const INST_TAXA_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     section: S_SOLICITACAO,
     layout: { md: 12 },
     options: [
-      { value: T_TITULAR, label: 'Titular solicita e acompanha' },
-      { value: T_TITULAR_TERCEIRO, label: 'Titular solicita e autoriza terceiro' },
-      { value: T_TERCEIRO_TERCEIRO, label: 'Terceiro solicita, titular autoriza terceiro' },
-      { value: T_TERCEIRO_TITULAR, label: 'Terceiro solicita, titular acompanha' },
+      { value: T_TITULAR, label: 'Proprietário solicita e acompanha' },
+      { value: T_TITULAR_TERCEIRO, label: 'Proprietário solicita e autoriza representante' },
+      { value: T_TERCEIRO_TERCEIRO, label: 'Representante solicita, proprietário autoriza' },
+      { value: T_TERCEIRO_TITULAR, label: 'Representante solicita, proprietário acompanha' },
     ],
   },
   {
