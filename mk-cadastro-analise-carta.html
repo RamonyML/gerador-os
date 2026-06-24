@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>MZ NET × MK Solutions — Setor de Análise: Mapeamento de APIs</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 56px 64px;
+    }
+
+    /* ─── Cabeçalho ─── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0ea5e9;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-left h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: -.02em;
+      margin-bottom: 2px;
+    }
+    .header-left .sub {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .header-right strong { color: #1a1a2e; }
+
+    /* ─── Destinatário ─── */
+    .addressee {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 28px;
+      font-size: 13px;
+    }
+    .addressee strong {
+      display: block;
+      color: #0369a1;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .addressee strong + strong { margin-top: 8px; }
+
+    /* ─── Seções ─── */
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0369a1;
+      margin: 32px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 .num {
+      background: #0ea5e9;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin: 20px 0 8px;
+    }
+
+    p { margin-bottom: 10px; color: #374151; }
+    code {
+      font-family: 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    /* ─── Tabelas ─── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 12px 0 18px;
+    }
+    th {
+      background: #f1f5f9;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #475569;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      color: #374151;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    /* ─── Badges ─── */
+    .ok   { color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .err  { color: #991b1b; background: #fee2e2; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .warn { color: #78350f; background: #fef3c7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .paid { color: #5b21b6; background: #ede9fe; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+
+    /* ─── Fluxo de processo ─── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 14px 0 18px;
+    }
+    .flow-step {
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+    .flow-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: -2px;
+      width: 2px;
+      background: #e2e8f0;
+    }
+    .flow-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #0ea5e9;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+      position: relative;
+      z-index: 1;
+    }
+    .flow-icon.done  { background: #16a34a; }
+    .flow-icon.block { background: #dc2626; }
+    .flow-icon.pend  { background: #d97706; }
+    .flow-content {
+      padding-bottom: 18px;
+      flex: 1;
+    }
+    .flow-content .step-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #1e3a5f;
+      margin-bottom: 2px;
+    }
+    .flow-content .step-api {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .flow-content .step-api code { font-size: 11.5px; }
+
+    /* ─── Caixa de destaque ─── */
+    .highlight-box {
+      border: 1px solid #fbbf24;
+      background: #fffbeb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .highlight-box .title {
+      font-weight: 700;
+      color: #92400e;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+
+    .info-box {
+      border: 1px solid #93c5fd;
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #1e3a8a;
+    }
+
+    .purple-box {
+      border: 1px solid #c4b5fd;
+      background: #f5f3ff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #3b0764;
+    }
+    .purple-box .title {
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+      color: #5b21b6;
+    }
+
+    /* ─── Lista de perguntas ─── */
+    .ask-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 16px;
+    }
+    .ask-list li {
+      display: flex;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #374151;
+    }
+    .ask-list li:last-child { border-bottom: none; }
+    .ask-list .q-num {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      height: fit-content;
+      margin-top: 2px;
+    }
+
+    /* ─── Rodapé ─── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ─── Print ─── */
+    @media print {
+      body { font-size: 12px; }
+      .page { padding: 24px 32px; }
+      h2 { margin: 24px 0 10px; page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .flow-step { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <div class="header-left">
+      <h1>MZ NET × MK Solutions</h1>
+      <div class="sub">Setor de Análise — Mapeamento de APIs e Solicitação de Módulos</div>
+    </div>
+    <div class="header-right">
+      <strong>24 de junho de 2026</strong><br>
+      Versão 1.0<br>
+      Uso interno
+    </div>
+  </div>
+
+  <!-- Destinatário -->
+  <div class="addressee">
+    <strong>Para</strong>
+    Equipe Técnica / Comercial — MK Solutions<br>
+    <strong>De</strong>
+    MZ NET — Suporte N3 &nbsp;·&nbsp; Ramony Lima
+  </div>
+
+  <!-- Contexto -->
+  <h2><span class="num">1</span> Contexto</h2>
+  <p>O <strong>Setor de Análise</strong> da MZ NET é responsável pelo fluxo completo de entrada de novos clientes: da criação do lead até a abertura da O.S. de instalação no MK ERP. Atualmente todo esse processo é feito manualmente, passo a passo, pelo analista dentro do sistema.</p>
+  <p>Estamos mapeando quais etapas do fluxo podem ser automatizadas via API para integração com nosso sistema interno (<strong>CRM mznet.digital</strong>), eliminando o trabalho repetitivo e reduzindo erros de preenchimento. O objetivo deste documento é identificar:</p>
+  <ul style="margin: 8px 0 10px 20px; color: #374151; font-size: 13px; line-height: 1.9;">
+    <li>Quais APIs já estão disponíveis no nosso pacote atual;</li>
+    <li>Quais precisam ser contratadas separadamente;</li>
+    <li>Quais endpoints não existem ou precisam de esclarecimento.</li>
+  </ul>
+
+  <!-- Fluxo do processo -->
+  <h2><span class="num">2</span> Fluxo do processo — Análise de ficha</h2>
+  <p>O processo mapeado a partir do procedimento interno do setor:</p>
+
+  <div class="flow">
+
+    <div class="flow-step">
+      <div class="flow-icon done">1</div>
+      <div class="flow-content">
+        <div class="step-title">Verificar cadastro do cliente por CPF/CNPJ</div>
+        <div class="step-api">API: <code>WSMKConsultaDoc.rule</code> &nbsp;<span class="ok">✓ Disponível</span></div>
+        <div style="font-size:12px;color:#64748b;">Se inativo: necessário reativar e atualizar endereço antes de continuar.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">2</div>
+      <div class="flow-content">
+        <div class="step-title">Criar cadastro (se não existir) ou atualizar dados</div>
+        <div class="step-api">
+          Criar: <code>WSMKNovaPessoa.rule</code> &nbsp;<span class="paid">★ API especial</span><br>
+          Atualizar: <code>PUT /pessoas</code> &nbsp;<span class="paid">★ API Node.js</span>
+        </div>
+        <div style="font-size:12px;color:#64748b;">Inclui reativação de inativo, atualização de endereço e demais dados cadastrais.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">3</div>
+      <div class="flow-content">
+        <div class="step-title">Abrir Lead no CRM</div>
+        <div class="step-api">
+          <code>WSMKNovaLead.rule</code> &nbsp;<span class="paid">★ API especial</span><br>
+          <span style="font-size:11.5px;color:#64748b;">Alternativa (lead + pré-cadastro em um passo): <code>WSMKInserirLead.rule</code> &nbsp;<span class="paid">★ API especial</span></span>
+        </div>
+        <div style="font-size:12px;color:#64748b;">Vincula o produto solicitado, marca negócio fechado, define vendedor e vencimento.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">4</div>
+      <div class="flow-content">
+        <div class="step-title">Verificar viabilidade de endereço (portas disponíveis)</div>
+        <div class="step-api"><code>WSMKVerificaDispPorta.rule</code> (lat/lon) &nbsp;<span class="paid">★ API especial</span></div>
+        <div style="font-size:12px;color:#64748b;">Retorna caixas próximas com portas disponíveis. Reserva de porta: <code>WSMKReservarPorta.rule</code>.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon done">5</div>
+      <div class="flow-content">
+        <div class="step-title">Listar planos disponíveis</div>
+        <div class="step-api"><code>WSMKListaPlanoAcesso.rule</code> / <code>WSMKConsultaPlanos.rule</code> &nbsp;<span class="ok">✓ Disponível</span></div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">6</div>
+      <div class="flow-content">
+        <div class="step-title">Criar contrato (com plano, vencimento, forma de pagamento)</div>
+        <div class="step-api"><code>WSMKNovoContrato.rule</code> &nbsp;<span class="paid">★ API especial</span></div>
+        <div style="font-size:12px;color:#64748b;">Parâmetros necessários: CodigoPlanoAcesso, CodigoRegraVencimento, CodigoRegraBloqueio, CodigoFormaPagamento, CodigoProfilePagamento, CodigoMetodoFaturamento, CodigoPlanoContas.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">7</div>
+      <div class="flow-content">
+        <div class="step-title">Criar conexão (ponto de acesso, servidor concentrador)</div>
+        <div class="step-api"><code>WSMKCriarConexao.rule</code> &nbsp;<span class="paid">★ API especial</span></div>
+        <div style="font-size:12px;color:#64748b;">
+          Listar pontos de acesso: <code>WSMKConexaoPontoAcesso.rule</code> &nbsp;<span class="ok">✓ Disponível</span><br>
+          Listar servidores (Hawuey Patricia etc.): <code>WSMKConexaoServidorConcentrador.rule</code> &nbsp;<span class="ok">✓ Disponível</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">8</div>
+      <div class="flow-content">
+        <div class="step-title">Criar O.S. de instalação</div>
+        <div class="step-api"><code>WSMKCriarOrdemServico.rule</code> &nbsp;<span class="paid">★ API especial</span></div>
+        <div style="font-size:12px;color:#64748b;">
+          Tipo OS: <em>Instalação e Ativação</em> (ou + Wi-Fi Extend).<br>
+          O texto da O.S. é gerado pelo Gerador de O.S. atual e passado em <code>DescricaoProblema</code>.<br>
+          Requer: <code>CodigoTipoOS</code>, <code>CodigoTecnico</code>, <code>CodigoGrupoServico</code> — códigos não levantados ainda.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon done">9</div>
+      <div class="flow-content">
+        <div class="step-title">Abrir protocolo / atendimento</div>
+        <div class="step-api"><code>WSMKNovoAtendimento.rule</code> &nbsp;<span class="ok">✓ Disponível e funcionando em produção</span></div>
+        <div style="font-size:12px;color:#64748b;">Registro do operador via <code>op_abertura</code> já validado (atend. #268168).</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon block">10</div>
+      <div class="flow-content">
+        <div class="step-title">Inserir comentário no atendimento (padrão de aprovação, negação, etc.)</div>
+        <div class="step-api"><code>WSMKAtendimentoComentario.rule</code> &nbsp;<span class="err">✗ Bug ativo — HTTP 500</span></div>
+        <div style="font-size:12px;color:#64748b;">Aguardando resolução MK Solutions (chamado aberto — analista Jardel Henrique). Ver Seção 4.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">11</div>
+      <div class="flow-content">
+        <div class="step-title">Encaminhar atendimento para subprocesso (aprovado instalação gratuita / compra de equip.)</div>
+        <div class="step-api"><span class="warn">? Não encontrado na documentação disponível</span></div>
+        <div style="font-size:12px;color:#64748b;">Precisamos confirmar se existe endpoint para encaminhar um atendimento entre subprocessos via API.</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon pend">12</div>
+      <div class="flow-content">
+        <div class="step-title">Ativar contrato pós-instalação</div>
+        <div class="step-api"><code>WSMKAtivarContrato.rule</code> &nbsp;<span class="paid">★ API especial</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Resumo APIs -->
+  <h2><span class="num">3</span> Resumo — APIs necessárias por categoria</h2>
+
+  <h3>3.1 Já disponíveis no pacote atual</h3>
+  <table>
+    <tr><th>Endpoint</th><th>Função</th><th>Status</th></tr>
+    <tr><td><code>WSAutenticacao.rule</code></td><td>Autenticação</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKConsultaDoc.rule</code></td><td>Buscar cliente por CPF/CNPJ</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKNovoAtendimento.rule</code></td><td>Abrir protocolo / atendimento</td><td><span class="ok">✓ Funcional em produção</span></td></tr>
+    <tr><td><code>WSMKConexoesPorCliente.rule</code></td><td>Listar conexões do cliente</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKListaPlanoAcesso.rule</code></td><td>Listar planos disponíveis</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKConexaoPontoAcesso.rule</code></td><td>Listar pontos de acesso</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKConexaoServidorConcentrador.rule</code></td><td>Listar servidores/concentradores</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKListaRegraVencimento.rule</code></td><td>Listar regras de vencimento</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKListaProfilePagamento.rule</code></td><td>Listar profiles de pagamento</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKAtendimentoComentario.rule</code></td><td>Inserir comentário no atendimento</td><td><span class="err">✗ Bug ativo (HTTP 500)</span></td></tr>
+  </table>
+
+  <h3>3.2 APIs especiais — precisam ser contratadas</h3>
+  <table>
+    <tr><th>Endpoint</th><th>Função no processo de análise</th></tr>
+    <tr><td><code>WSMKNovaPessoa.rule</code></td><td>Criar cadastro de novo cliente</td></tr>
+    <tr><td><code>PUT /pessoas</code> (Node.js)</td><td>Atualizar dados / reativar cliente inativo</td></tr>
+    <tr><td><code>WSMKNovaLead.rule</code></td><td>Abrir lead no CRM para o cliente</td></tr>
+    <tr><td><code>WSMKInserirLead.rule</code></td><td>Criar lead + pré-cadastro em um único passo</td></tr>
+    <tr><td><code>WSMKVerificaDispPorta.rule</code></td><td>Verificar viabilidade de endereço (portas disponíveis)</td></tr>
+    <tr><td><code>WSMKReservarPorta.rule</code></td><td>Reservar porta do MAPS para a lead</td></tr>
+    <tr><td><code>WSMKNovoContrato.rule</code></td><td>Criar contrato com plano, vencimento e pagamento</td></tr>
+    <tr><td><code>WSMKCriarConexao.rule</code></td><td>Criar conexão do cliente (ponto de acesso + servidor)</td></tr>
+    <tr><td><code>WSMKCriarOrdemServico.rule</code></td><td>Criar O.S. de instalação</td></tr>
+    <tr><td><code>WSMKAtivarContrato.rule</code></td><td>Ativar contrato após instalação concluída</td></tr>
+  </table>
+
+  <div class="purple-box">
+    <div class="title">★ O que são as APIs especiais?</div>
+    Com base na documentação MK Solutions, os endpoints listados acima fazem parte de um pacote de <strong>webservices aprimorados</strong>, comercializados separadamente do pacote base. Gostaríamos de confirmar quais desses módulos precisam ser contratados, seus nomes comerciais e como proceder para ativação.
+  </div>
+
+  <!-- Perguntas -->
+  <h2><span class="num">4</span> Perguntas para o MK Solutions</h2>
+
+  <ul class="ask-list">
+    <li>
+      <span class="q-num">Q1</span>
+      <span>
+        <strong>WSMKAtendimentoComentario.rule — módulo contratado?</strong><br>
+        Em chamado anterior (analista Jardel Henrique), foi informado que <em>"a API não está na nossa base"</em>. Precisamos confirmar: esse endpoint requer a contratação de um módulo adicional? Se sim, qual o nome comercial e como procedemos?
+      </span>
+    </li>
+    <li>
+      <span class="q-num">Q2</span>
+      <span>
+        <strong>WSMKCriarOrdemServico.rule — módulo contratado?</strong><br>
+        Da mesma forma, gostaríamos de confirmar se esse endpoint está incluído no pacote atual ou requer contratação separada.
+      </span>
+    </li>
+    <li>
+      <span class="q-num">Q3</span>
+      <span>
+        <strong>APIs especiais — quais precisam ser contratadas?</strong><br>
+        Dos endpoints listados na Seção 3.2 (<code>WSMKNovaPessoa</code>, <code>WSMKNovaLead</code>, <code>WSMKNovoContrato</code>, <code>WSMKCriarConexao</code>, <code>WSMKAtivarContrato</code>, <code>WSMKVerificaDispPorta</code>, <code>WSMKReservarPorta</code>), quais fazem parte do pacote base e quais requerem contratação adicional? Podemos receber uma lista com os módulos disponíveis e seus respectivos valores?
+      </span>
+    </li>
+    <li>
+      <span class="q-num">Q4</span>
+      <span>
+        <strong>Encaminhamento de atendimento entre subprocessos via API?</strong><br>
+        No nosso fluxo, após a análise da ficha o analista encaminha o atendimento para um subprocesso específico (<em>"Aprovado Instalação Gratuita"</em>, <em>"Aprovado Compra de Equipamento"</em>, <em>"Negado"</em>, etc.). Existe algum endpoint que permita realizar esse encaminhamento via API?
+      </span>
+    </li>
+    <li>
+      <span class="q-num">Q5</span>
+      <span>
+        <strong>Reativação de cliente inativo via API?</strong><br>
+        Quando um cliente já possui cadastro mas está marcado como inativo, o processo atual exige reativação manual em <em>Pessoas/Empresas</em>. O endpoint <code>PUT /pessoas</code> cobre esse caso, ou existe um endpoint específico para reativação?
+      </span>
+    </li>
+    <li>
+      <span class="q-num">Q6</span>
+      <span>
+        <strong>WSMKCriarOrdemServico.rule — CodigoTecnico obrigatório?</strong><br>
+        Como a O.S. é aberta remotamente antes de escalonar para campo, não temos um técnico definido no momento da criação. É possível criar a O.S. sem <code>CodigoTecnico</code> e designar depois pelo painel ERP? Ou existe um cadastro de "técnico genérico / a designar" que pode ser usado como placeholder?
+      </span>
+    </li>
+  </ul>
+
+  <!-- Códigos internos necessários -->
+  <h2><span class="num">5</span> Códigos internos a levantar (admin MK da MZ NET)</h2>
+  <p>Independente das APIs especiais, os seguintes códigos precisam ser obtidos internamente com o administrador MK da MZ NET para parametrizar a integração:</p>
+
+  <table>
+    <tr><th>Parâmetro</th><th>Endpoint que usa</th><th>Situação</th></tr>
+    <tr><td><code>CodigoTipoOS</code> — Instalação e Ativação</td><td>WSMKCriarOrdemServico</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoTipoOS</code> — Wi-Fi Extend</td><td>WSMKCriarOrdemServico</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoGrupoServico</code> — Instalação</td><td>WSMKCriarOrdemServico</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoTecnico</code> — placeholder genérico</td><td>WSMKCriarOrdemServico</td><td><span class="warn">⚠ Aguarda resposta MK (Q6)</span></td></tr>
+    <tr><td><code>CodigoRegraVencimento</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoRegraBloqueio</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoFormaPagamento</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoProfilePagamento</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoMetodoFaturamento</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+    <tr><td><code>CodigoPlanoContas</code></td><td>WSMKNovoContrato</td><td><span class="warn">⚠ Não levantado</span></td></tr>
+  </table>
+
+  <div class="highlight-box">
+    <div class="title">⚠ Observação sobre os códigos</div>
+    Esses códigos são específicos da instalação MK da MZ NET e não constam na documentação geral. Precisam ser consultados diretamente no painel MK ERP pelo administrador do sistema antes de qualquer implementação dos endpoints de criação.
+  </div>
+
+  <!-- Status atual -->
+  <h2><span class="num">6</span> O que já funciona hoje (para referência)</h2>
+
+  <div class="info-box">
+    O fluxo de <strong>suporte técnico</strong> (abertura de protocolo + seleção de conexão + registro do operador) está <strong>100% operacional em produção</strong>. Teste validado — atendimento <strong>#268168</strong> criado corretamente, operador <code>mz.ramony</code> registrado via <code>op_abertura</code>.
+  </div>
+
+  <p>O que está pendente no fluxo de suporte (bloqueado externamente):</p>
+  <ul style="margin: 4px 0 10px 20px; color: #374151; font-size: 13px; line-height: 1.9;">
+    <li><strong>Comentário automático:</strong> <code>WSMKAtendimentoComentario.rule</code> — bug HTTP 500, chamado aberto com o analista Jardel (segunda mensagem enviada em 24/06/2026).</li>
+    <li><strong>O.S. de manutenção:</strong> <code>WSMKCriarOrdemServico.rule</code> — aguardando CodigoTipoOS, CodigoGrupoServico e CodigoTecnico do admin interno.</li>
+  </ul>
+
+  <!-- Rodapé -->
+  <div class="footer">
+    <span>MZ NET — Suporte N3 · Ramony Lima</span>
+    <span>Integração MK Solutions · 2026-06-24</span>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const banner = document.createElement('div')
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0ea5e9;color:#fff;text-align:center;padding:8px;font-size:13px;font-family:Ubuntu,system-ui;z-index:9999;'
+    banner.innerHTML = '📄 Para salvar como PDF: <strong>Ctrl+P</strong> → "Salvar como PDF" → desmarque "Cabeçalhos e rodapés" → <strong>Salvar</strong> &nbsp;&nbsp;<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:12px;">✕</button>'
+    document.body.prepend(banner)
+  })
+</script>
+</body>
+</html>

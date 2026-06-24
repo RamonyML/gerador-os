@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MK Solutions × MZ NET — Priorização</title>
+  <title>MK Solutions × MZ NET — Priorização de Integração</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Ubuntu+Mono&display=swap');
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
       background: #0f1117;
       color: #e2e8f0;
       min-height: 100vh;
@@ -18,7 +20,7 @@
     /* ── Header ── */
     .header {
       text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 40px;
     }
     .header .badge {
       display: inline-block;
@@ -30,29 +32,59 @@
       padding: 4px 14px;
       margin-bottom: 16px;
       letter-spacing: .04em;
+      font-weight: 500;
     }
     .header h1 {
-      font-size: clamp(22px, 4vw, 36px);
-      font-weight: 800;
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
       background: linear-gradient(135deg, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 8px;
     }
-    .header p {
+    .header .meta {
       color: #64748b;
-      font-size: 14px;
+      font-size: 13px;
     }
+    .header .meta strong { color: #94a3b8; }
+
+    /* ── Filtros ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0 auto 36px;
+      max-width: 860px;
+    }
+    .filter-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 6px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover { border-color: #475569; color: #cbd5e1; }
+    .filter-btn.active { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
+    .filter-btn.active.green { background: #22c55e; border-color: #22c55e; }
+    .filter-btn.active.amber { background: #f59e0b; border-color: #f59e0b; color: #0f172a; }
+    .filter-btn.active.red { background: #ef4444; border-color: #ef4444; }
 
     /* ── Bloco base técnica ── */
     .base-block {
       max-width: 860px;
-      margin: 0 auto 40px;
+      margin: 0 auto 32px;
       background: linear-gradient(135deg, #1a1f2e, #1e2a3a);
       border: 1px solid #0ea5e9;
       border-radius: 16px;
-      padding: 24px 28px;
+      padding: 20px 24px;
       position: relative;
       overflow: hidden;
     }
@@ -60,7 +92,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at top left, rgba(14,165,233,.12), transparent 60%);
+      background: radial-gradient(ellipse at top left, rgba(14,165,233,.1), transparent 60%);
       pointer-events: none;
     }
     .base-block .label {
@@ -69,74 +101,57 @@
       letter-spacing: .08em;
       color: #0ea5e9;
       text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .base-block h2 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
     .base-items {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
     .base-item {
       background: #0f1729;
       border: 1px solid #1e3a5f;
       border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 7px 12px;
+      font-size: 12.5px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
     .base-item .dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: #22c55e;
       flex-shrink: 0;
     }
-    .base-item .dot.pending {
-      background: #f59e0b;
-      box-shadow: 0 0 6px #f59e0b88;
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .4; }
-    }
 
     .arrow-down {
       text-align: center;
-      font-size: 24px;
+      font-size: 22px;
       color: #334155;
-      margin: -8px 0;
+      margin: -6px 0 28px;
     }
 
-    /* ── Grid de guarda-chuvas ── */
+    /* ── Grid de cards ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
       max-width: 860px;
-      margin: 0 auto 48px;
+      margin: 0 auto 40px;
     }
 
     .card {
       background: #161b27;
       border: 1px solid #1e293b;
       border-radius: 14px;
-      padding: 20px;
       position: relative;
       overflow: hidden;
-      transition: transform .2s, border-color .2s, box-shadow .2s;
-      cursor: default;
+      transition: border-color .2s, box-shadow .2s;
+      cursor: pointer;
+      user-select: none;
     }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,0,0,.4);
-    }
+    .card:hover { border-color: #334155; box-shadow: 0 6px 24px rgba(0,0,0,.3); }
     .card::before {
       content: '';
       position: absolute;
@@ -145,112 +160,204 @@
       border-radius: 14px 14px 0 0;
     }
 
-    /* Cores por prioridade */
-    .card.p1 { border-color: #16a34a44; }
-    .card.p1:hover { border-color: #22c55e; box-shadow: 0 8px 32px rgba(34,197,94,.12); }
+    /* Priority colors */
+    .card.p1 .card-num { background: #14532d; color: #4ade80; }
     .card.p1::before { background: linear-gradient(90deg, #16a34a, #22c55e); }
+    .card.p1:hover { border-color: #22c55e44; }
 
-    .card.p2 { border-color: #1d4ed844; }
-    .card.p2:hover { border-color: #3b82f6; box-shadow: 0 8px 32px rgba(59,130,246,.12); }
+    .card.p2 .card-num { background: #1e3a8a; color: #60a5fa; }
     .card.p2::before { background: linear-gradient(90deg, #1d4ed8, #3b82f6); }
+    .card.p2:hover { border-color: #3b82f644; }
 
-    .card.p3 { border-color: #6d28d944; }
-    .card.p3:hover { border-color: #8b5cf6; box-shadow: 0 8px 32px rgba(139,92,246,.12); }
+    .card.p3 .card-num { background: #4c1d95; color: #c4b5fd; }
     .card.p3::before { background: linear-gradient(90deg, #6d28d9, #8b5cf6); }
+    .card.p3:hover { border-color: #8b5cf644; }
 
-    .card.p4 { border-color: #b4530844; }
-    .card.p4:hover { border-color: #f97316; box-shadow: 0 8px 32px rgba(249,115,22,.12); }
+    .card.p4 .card-num { background: #7c2d12; color: #fb923c; }
     .card.p4::before { background: linear-gradient(90deg, #b45309, #f97316); }
+    .card.p4:hover { border-color: #f9731644; }
 
+    .card-top {
+      padding: 18px 18px 14px;
+    }
     .card-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .card-num {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 15px;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
-    .p1 .card-num { background: #14532d; color: #4ade80; }
-    .p2 .card-num { background: #1e3a8a; color: #60a5fa; }
-    .p3 .card-num { background: #4c1d95; color: #c4b5fd; }
-    .p4 .card-num { background: #7c2d12; color: #fb923c; }
+    .card h3 { font-size: 14.5px; font-weight: 700; }
 
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
     .card-count {
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: .04em;
-      padding: 3px 10px;
+      letter-spacing: .03em;
+      padding: 3px 9px;
       border-radius: 999px;
-    }
-    .p1 .card-count { background: #14532d; color: #4ade80; }
-    .p2 .card-count { background: #1e3a8a; color: #60a5fa; }
-    .p3 .card-count { background: #4c1d95; color: #c4b5fd; }
-    .p4 .card-count { background: #7c2d12; color: #fb923c; }
-
-    .card h3 {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .card .flow {
-      font-size: 12px;
-      color: #475569;
-      font-family: monospace;
-      margin-bottom: 12px;
-      line-height: 1.6;
-    }
-    .card .flow span {
+      background: #1e293b;
       color: #64748b;
     }
+
+    .expand-arrow {
+      color: #475569;
+      font-size: 12px;
+      transition: transform .25s;
+      flex-shrink: 0;
+    }
+    .card.open .expand-arrow { transform: rotate(180deg); }
+
+    .card .flow {
+      font-size: 11.5px;
+      color: #475569;
+      font-family: 'Ubuntu Mono', monospace;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .card .flow em { color: #64748b; font-style: normal; }
+
+    .card .meta-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Status chips on card */
+    .chip {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 5px;
+      letter-spacing: .02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chip.ready     { background: #14532d; color: #4ade80; }
+    .chip.blocked   { background: #3b1515; color: #fca5a5; }
+    .chip.partial   { background: #3b2800; color: #fcd34d; }
+    .chip.prod      { background: #1e3a5f; color: #38bdf8; }
+    .chip.proto-ok      { background: #14532d44; color: #4ade80; border: 1px solid #14532d; }
+    .chip.os-pend       { background: #3b280044; color: #fcd34d; border: 1px solid #78350f; }
+    .chip.comment-pend  { background: #1e3a5f44; color: #93c5fd; border: 1px solid #1e3a5f; }
+
     .card .note {
       font-size: 11.5px;
       color: #94a3b8;
       background: #0f1117;
       border-left: 2px solid #334155;
-      padding: 6px 10px;
-      border-radius: 0 6px 6px 0;
+      padding: 5px 10px;
+      border-radius: 0 5px 5px 0;
+      margin: 8px 0 0;
+      line-height: 1.5;
     }
 
-    /* ── Barra de progresso total ── */
+    /* ── Sub-demands collapse ── */
+    .subcats-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s cubic-bezier(.16,1,.3,1);
+    }
+    .card.open .subcats-panel {
+      max-height: 600px;
+    }
+    .subcats-inner {
+      border-top: 1px solid #1e293b;
+      padding: 12px 18px 16px;
+    }
+    .subcats-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+    .subcat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #1a2030;
+      gap: 8px;
+    }
+    .subcat-row:last-child { border-bottom: none; }
+    .subcat-name {
+      font-size: 12.5px;
+      color: #94a3b8;
+      flex: 1;
+    }
+    .subcat-count {
+      font-size: 11px;
+      color: #475569;
+      flex-shrink: 0;
+    }
+    .subcat-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .subcat-badge.r { background: #14532d44; color: #4ade80; border: 1px solid #14532d; }
+    .subcat-badge.b { background: #3b151544; color: #fca5a5; border: 1px solid #3b1515; }
+
+    /* ── Progress bars ── */
     .progress-section {
       max-width: 860px;
-      margin: 0 auto 48px;
+      margin: 0 auto 32px;
       background: #161b27;
       border: 1px solid #1e293b;
       border-radius: 14px;
-      padding: 24px 28px;
+      padding: 22px 24px;
     }
-    .progress-section h2 {
-      font-size: 15px;
+    .progress-section .sec-title {
+      font-size: 11px;
       font-weight: 700;
-      margin-bottom: 20px;
-      color: #94a3b8;
       text-transform: uppercase;
-      letter-spacing: .06em;
-      font-size: 12px;
+      letter-spacing: .07em;
+      color: #475569;
+      margin-bottom: 18px;
     }
     .bar-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     .bar-label {
-      font-size: 13px;
-      width: 160px;
+      font-size: 12.5px;
+      width: 155px;
       flex-shrink: 0;
       color: #cbd5e1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .bar-track {
       flex: 1;
-      height: 8px;
+      height: 6px;
       background: #1e293b;
       border-radius: 999px;
       overflow: hidden;
@@ -261,183 +368,357 @@
       transition: width 1.2s cubic-bezier(.16,1,.3,1);
     }
     .bar-val {
-      font-size: 12px;
-      color: #64748b;
-      width: 40px;
+      font-size: 11.5px;
+      color: #475569;
+      width: 30px;
       text-align: right;
       flex-shrink: 0;
     }
 
-    /* ── Status atual ── */
+    /* ── Status ── */
     .status-section {
       max-width: 860px;
-      margin: 0 auto;
+      margin: 0 auto 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
-    @media (max-width: 560px) {
-      .status-section { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 580px) { .status-section { grid-template-columns: 1fr; } }
     .status-card {
       background: #161b27;
       border: 1px solid #1e293b;
       border-radius: 14px;
-      padding: 20px;
+      padding: 18px 20px;
     }
     .status-card h3 {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: 14px;
+      letter-spacing: .07em;
+      margin-bottom: 12px;
     }
     .status-card.ok h3 { color: #22c55e; }
     .status-card.blocked h3 { color: #f59e0b; }
+    .status-card.next h3 { color: #38bdf8; }
     .status-item {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      padding: 6px 0;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 12.5px;
+      padding: 5px 0;
       border-bottom: 1px solid #1e293b;
       color: #94a3b8;
+      line-height: 1.5;
     }
     .status-item:last-child { border-bottom: none; }
-    .status-item .icon { font-size: 15px; }
+    .status-item .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Summary totals ── */
+    .totals {
+      max-width: 860px;
+      margin: 0 auto 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 480px) { .totals { grid-template-columns: 1fr; } }
+    .total-card {
+      background: #161b27;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .total-card .num {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .total-card .lbl { font-size: 11.5px; color: #64748b; font-weight: 500; }
+    .total-card.green .num { color: #4ade80; }
+    .total-card.amber .num { color: #fbbf24; }
+    .total-card.red .num   { color: #f87171; }
+
+    /* hidden card */
+    .card.hidden { display: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
   </style>
 </head>
 <body>
 
   <div class="header">
     <div class="badge">MZ NET × MK Solutions — Integração de API</div>
-    <h1>Guarda-chuvas & Priorização</h1>
-    <p>186 variantes · 8 categorias · última atualização 23/06/2026</p>
+    <h1>Guarda-chuvas &amp; Priorização</h1>
+    <p class="meta">
+      <strong>186 variantes</strong> · <strong>8 categorias</strong> · última atualização 24/06/2026
+      &nbsp;·&nbsp; clique em um card para ver as subdemandas
+    </p>
+  </div>
+
+  <!-- Totais -->
+  <div class="totals">
+    <div class="total-card green">
+      <div class="num" id="total-ready">–</div>
+      <div class="lbl">prontas agora</div>
+    </div>
+    <div class="total-card amber">
+      <div class="num" id="total-partial">–</div>
+      <div class="lbl">protocolo ok, falta endpoint</div>
+    </div>
+    <div class="total-card red">
+      <div class="num" id="total-blocked">–</div>
+      <div class="lbl">sem endpoint disponível</div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Todos</button>
+    <button class="filter-btn green" data-filter="ready">Prontos / Parciais</button>
+    <button class="filter-btn amber" data-filter="partial">Protocolo ok, falta endpoint</button>
+    <button class="filter-btn red" data-filter="blocked">Sem endpoint disponível</button>
   </div>
 
   <!-- Base técnica -->
   <div class="base-block">
-    <div class="label">⬡ Pré-requisito de todos os fluxos</div>
-    <h2>Base Técnica</h2>
+    <div class="label">⬡ Pré-requisito de todos os fluxos — base técnica disponível</div>
     <div class="base-items">
-      <div class="base-item"><span class="dot"></span> Autenticação (token de sessão)</div>
+      <div class="base-item"><span class="dot"></span> Autenticação — WSAutenticacao.rule</div>
       <div class="base-item"><span class="dot"></span> Buscar cliente por CPF/CNPJ</div>
-      <div class="base-item"><span class="dot"></span> Buscar conexão ativa do cliente</div>
+      <div class="base-item"><span class="dot"></span> Listar conexões ativas — WSMKConexoesPorCliente.rule</div>
+      <div class="base-item"><span class="dot"></span> Listar contratos — WSMKContratosPorCliente.rule</div>
+      <div class="base-item"><span class="dot"></span> Criar atendimento — WSMKNovoAtendimento.rule</div>
     </div>
   </div>
 
   <div class="arrow-down">↓</div>
 
-  <!-- Cards -->
+  <!-- Grid de cards -->
   <div class="grid" id="grid"></div>
 
   <!-- Barras de volume -->
   <div class="progress-section">
-    <h2>Volume por guarda-chuva</h2>
+    <div class="sec-title">Volume por guarda-chuva</div>
     <div id="bars"></div>
   </div>
 
   <!-- Status atual -->
   <div class="status-section">
     <div class="status-card ok">
-      <h3>✓ Funcionando</h3>
-      <div class="status-item"><span class="icon">🔐</span> Auth — WSAutenticacao.rule</div>
-      <div class="status-item"><span class="icon">🔍</span> Buscar cliente — WSMKConsultaDoc.rule</div>
-      <div class="status-item"><span class="icon">🔗</span> Buscar conexão — WSMKConexoesPorCliente.rule</div>
-      <div class="status-item"><span class="icon">📋</span> Listar tipos OS, grupos, processos</div>
-      <div class="status-item"><span class="icon">🎫</span> Criar atendimento (com contrato + conexão) — WSMKNovoAtendimento.rule</div>
+      <h3>✓ Funcionando em produção</h3>
+      <div class="status-item"><span class="icon">🔐</span> WSAutenticacao.rule</div>
+      <div class="status-item"><span class="icon">🔍</span> WSMKConsultaDoc.rule — busca por CPF/CNPJ</div>
+      <div class="status-item"><span class="icon">🔗</span> WSMKConexoesPorCliente.rule</div>
+      <div class="status-item"><span class="icon">📋</span> WSMKContratosPorCliente.rule</div>
+      <div class="status-item"><span class="icon">📋</span> WSMKListaPlanoAcesso.rule</div>
+      <div class="status-item"><span class="icon">🎫</span> WSMKNovoAtendimento.rule — atend. #268168 validado</div>
     </div>
     <div class="status-card blocked">
       <h3>⚑ Aguardando MK Solutions</h3>
-      <div class="status-item"><span class="icon">✏️</span> Comentário de atendimento — WSMKAtendimentoComentario.rule (erro 500)</div>
-      <div class="status-item"><span class="icon">📄</span> Criar OS — WSMKCriarOrdemServico.rule (aguarda CodigoTecnico + GrupoServico)</div>
+      <div class="status-item"><span class="icon">🔴</span> WSMKCriarOrdemServico.rule — base ou especial? (~135 var. travadas)</div>
+      <div class="status-item"><span class="icon">🔴</span> WSMKAtendimentoComentario.rule — HTTP 500 (11 var. travadas)</div>
+      <div class="status-item"><span class="icon">❓</span> Endpoint para buscar atendimento por protocolo (feedback)</div>
       <div class="status-item"><span class="icon">👤</span> Mapeamento operadores Firebase → login MK ERP</div>
-      <div class="status-item"><span class="icon">🔄</span> Atualizar plano — WSMKAlterarPlanoContasContrato.rule</div>
     </div>
   </div>
 
   <script>
     const umbrellas = [
       {
-        num: '1',
-        title: 'Manutenção',
-        count: 60,
-        priority: 'p1',
+        id: 1, title: 'Manutenção', count: 77, priority: 'p1',
+        status: 'proto_ok', readyCount: 0,
         flow: 'cliente → atendimento → OS técnica',
-        note: 'Maior volume e maior impacto. Prioridade máxima.',
+        blocker: 'WSMKCriarOrdemServico',
+        note: 'Maior volume e impacto. Prioridade máxima.',
+        subcats: [
+          { name: 'Equipamento queimado', count: 6, ready: false },
+          { name: 'Visita instrutiva', count: 1, ready: false },
+          { name: 'Lentidão', count: 6, ready: false },
+          { name: 'Luz vermelha', count: 23, ready: false },
+          { name: 'Luz vermelha 7 dias', count: 23, ready: false },
+          { name: 'Monitoramento', count: 1, ready: false },
+          { name: 'Mudança de ponto interno', count: 5, ready: false },
+          { name: 'Realocação de fibra', count: 5, ready: false },
+          { name: 'Reset de roteador', count: 2, ready: false },
+          { name: 'Sinal alto', count: 5, ready: false },
+        ]
       },
       {
-        num: '2',
-        title: 'Alteração de Plano',
-        count: 59,
-        priority: 'p1',
-        flow: 'cliente → atendimento → OS → atualizar plano',
-        note: 'Requer endpoint extra + códigos internos de cada plano.',
+        id: 2, title: 'Alteração de Plano', count: 58, priority: 'p1',
+        status: 'partial', readyCount: 10,
+        flow: 'cliente → atendimento [→ OS de visita]',
+        blocker: 'WSMKCriarOrdemServico (com visita)',
+        note: '10 variantes remotas prontas para implementação.',
+        subcats: [
+          { name: 'Remoto — catálogo principal', count: 5, ready: true },
+          { name: 'Remoto — ofertado / retenção', count: 5, ready: true },
+          { name: 'Sem troca — visita isenta', count: 5, ready: false },
+          { name: 'Sem troca — visita paga', count: 5, ready: false },
+          { name: 'Com troca — visita isenta', count: 10, ready: false },
+          { name: 'Com troca — visita paga', count: 8, ready: false },
+          { name: 'Wi-Fi Extend + altplan', count: 11, ready: false },
+          { name: 'Mudança de endereço + altplan', count: 6, ready: false },
+          { name: 'Encerramentos / Feedback de altplan', count: 3, ready: false },
+        ]
       },
       {
-        num: '3',
-        title: 'Mídia / TV (Roku)',
-        count: 10,
-        priority: 'p2',
-        flow: 'cliente → atendimento apenas',
-        note: 'Sem OS técnica — é venda de serviço.',
+        id: 3, title: 'Mudança de Endereço', count: 15, priority: 'p1',
+        status: 'proto_ok_all', readyCount: 0,
+        flow: 'cliente → atendimento → OS técnica → novo endereço',
+        blocker: 'WSMKAtendimentoComentario + WSMKCriarOrdemServico',
+        note: 'Fluxo complexo — requer dados do novo endereço.',
+        subcats: [
+          { name: 'Padrão', count: 9, ready: false },
+          { name: 'Inviabilidade de cobertura', count: 6, ready: false },
+        ]
       },
       {
-        num: '4',
-        title: 'Wi-Fi Extend',
-        count: 10,
-        priority: 'p2',
+        id: 4, title: 'Mídia / TV', count: 10, priority: 'p2',
+        status: 'proto_ok', readyCount: 0,
+        flow: 'cliente → atendimento → OS técnica',
+        blocker: 'WSMKCriarOrdemServico',
+        note: 'Ativação de serviço com OS técnica vinculada.',
+        subcats: [
+          { name: 'Roku', count: 2, ready: true },
+          { name: 'STB (Set-top Box)', count: 6, ready: true },
+          { name: 'ITTV', count: 2, ready: true },
+        ]
+      },
+      {
+        id: 5, title: 'Wi-Fi Extend', count: 10, priority: 'p2',
+        status: 'blocked', readyCount: 0,
         flow: 'cliente → atendimento → OS de instalação',
+        blocker: 'WSMKCriarOrdemServico',
         note: null,
+        subcats: [
+          { name: 'Ponto adicional — migração', count: 2, ready: false },
+          { name: 'TP-Link', count: 4, ready: false },
+          { name: 'Ponto adicional', count: 4, ready: false },
+        ]
       },
       {
-        num: '5',
-        title: 'Feedback',
-        count: 8,
-        priority: 'p3',
-        flow: 'localizar OS existente → comentário de encerramento',
-        note: 'Endpoint diferente: WSMKAtendimentoComentario.rule',
+        id: 6, title: 'Feedback', count: 8, priority: 'p3',
+        status: 'comment_blocked', readyCount: 0,
+        flow: 'localizar protocolo aberto → inserir comentário de encerramento',
+        blocker: 'WSMKAtendimentoComentario',
+        note: 'Só usa comentário — sem OS. Bloqueado pelo endpoint de comentário (HTTP 500).',
+        subcats: [
+          { name: 'Feedback de visita técnica', count: 8, ready: false },
+        ]
       },
       {
-        num: '6',
-        title: 'Termos e Docs',
-        count: 3,
-        priority: 'p4',
-        flow: 'cliente → atendimento simples',
-        note: null,
+        id: 7, title: 'Termo de responsabilidade', count: 3, priority: 'p4',
+        status: 'proto_ok_comment', readyCount: 0,
+        flow: 'cliente → atendimento + comentário',
+        blocker: 'WSMKAtendimentoComentario',
+        note: 'Protocolo disponível — aguardando endpoint de comentário.',
+        subcats: [
+          { name: 'Termo de responsabilidade', count: 3, ready: true },
+        ]
       },
       {
-        num: '7',
-        title: 'Senha de Rede',
-        count: 1,
-        priority: 'p4',
-        flow: 'cliente → atendimento simples',
-        note: null,
+        id: 8, title: 'Senha de Rede', count: 1, priority: 'p4',
+        status: 'proto_ok_comment', readyCount: 0,
+        flow: 'cliente → atendimento + comentário',
+        blocker: 'WSMKAtendimentoComentario',
+        note: 'Protocolo em produção (atend. #268168) — aguardando comentário.',
+        subcats: [
+          { name: 'Alteração de senha Wi-Fi', count: 1, ready: true },
+        ]
       },
     ]
 
-    const grid = document.getElementById('grid')
-    umbrellas.forEach(u => {
-      grid.innerHTML += `
-        <div class="card ${u.priority}">
-          <div class="card-header">
-            <div class="card-num">${u.num}</div>
-            <div class="card-count">${u.count} variantes</div>
-          </div>
-          <h3>${u.title}</h3>
-          <div class="flow"><span>fluxo:</span> ${u.flow}</div>
-          ${u.note ? `<div class="note">${u.note}</div>` : ''}
-        </div>`
-    })
-
-    const total = umbrellas.reduce((s, u) => s + u.count, 0)
-    const colors = {
+    const barColors = {
       p1: 'linear-gradient(90deg,#16a34a,#22c55e)',
       p2: 'linear-gradient(90deg,#1d4ed8,#3b82f6)',
       p3: 'linear-gradient(90deg,#6d28d9,#8b5cf6)',
       p4: 'linear-gradient(90deg,#b45309,#f97316)',
     }
 
+    function statusChip(u) {
+      if (u.status === 'ready')
+        return `<span class="chip ready">✓ pronto</span>`
+      if (u.status === 'partial')
+        return `<span class="chip partial">⚡ ${u.readyCount} prontas / ${u.count - u.readyCount} bloq.</span>`
+      if (u.status === 'proto_ok')
+        return `<span class="chip proto-ok">✓ protocolo ok</span><span class="chip os-pend">⏳ O.S. pendente</span>`
+      if (u.status === 'proto_ok_comment')
+        return `<span class="chip proto-ok">✓ protocolo ok</span><span class="chip comment-pend">💬 comentário pendente</span>`
+      if (u.status === 'proto_ok_all')
+        return `<span class="chip proto-ok">✓ protocolo ok</span><span class="chip comment-pend">💬 falta comentário</span><span class="chip os-pend">⏳ O.S. pendente</span>`
+      if (u.status === 'comment_blocked')
+        return `<span class="chip blocked">⊗ endpoint comentário</span>`
+      return `<span class="chip blocked">⊗ bloqueado</span>`
+    }
+
+    function blockerChip(u) {
+      if (!u.blocker) return ''
+      return `<span class="chip" style="background:#1a1a2e;color:#64748b;border:1px solid #1e293b;font-family:'Ubuntu Mono',monospace;font-size:10px">${u.blocker}</span>`
+    }
+
+    const grid = document.getElementById('grid')
+    umbrellas.forEach(u => {
+      const subcatsHtml = u.subcats.map(s => `
+        <div class="subcat-row">
+          <span class="subcat-name">${s.name}</span>
+          <span class="subcat-count">${s.count} var.</span>
+          <span class="subcat-badge ${s.ready ? 'r' : 'b'}">${s.ready ? 'pronto' : 'bloq.'}</span>
+        </div>`).join('')
+
+      const el = document.createElement('div')
+      el.className = `card ${u.priority}`
+      el.dataset.status = u.status
+      el.innerHTML = `
+        <div class="card-top">
+          <div class="card-header">
+            <div class="card-left">
+              <div class="card-num">${u.id}</div>
+              <h3>${u.title}</h3>
+            </div>
+            <div class="card-right">
+              <div class="card-count">${u.count}</div>
+              <span class="expand-arrow">▼</span>
+            </div>
+          </div>
+          <div class="flow"><em>fluxo:</em> ${u.flow}</div>
+          <div class="meta-row">
+            ${statusChip(u)}
+            ${blockerChip(u)}
+          </div>
+          ${u.note ? `<div class="note">${u.note}</div>` : ''}
+        </div>
+        <div class="subcats-panel">
+          <div class="subcats-inner">
+            <div class="subcats-title">Subdemandas (${u.subcats.length})</div>
+            ${subcatsHtml}
+          </div>
+        </div>`
+
+      el.addEventListener('click', () => el.classList.toggle('open'))
+      grid.appendChild(el)
+    })
+
+    // Totals
+    const PROTO_OK_STATUSES = ['proto_ok', 'proto_ok_comment', 'proto_ok_all']
+    // prontas agora = somente altplan remoto (partial.readyCount)
+    const totalReadyNow = umbrellas.filter(u => u.status === 'partial').reduce((s, u) => s + u.readyCount, 0)
+    // protocolo ok = funciona parcialmente (protocolo disponível, falta OS e/ou comentário)
+    const totalProtoOk = umbrellas.filter(u => PROTO_OK_STATUSES.includes(u.status)).reduce((s, u) => s + u.count, 0)
+    // bloqueadas = sem endpoint disponível (altplan com visita + wifi-extend + feedback)
+    const totalBlocked =
+      umbrellas.filter(u => u.status === 'blocked' || u.status === 'comment_blocked').reduce((s, u) => s + u.count, 0)
+      + umbrellas.filter(u => u.status === 'partial').reduce((s, u) => s + (u.count - u.readyCount), 0)
+    document.getElementById('total-ready').textContent = totalReadyNow
+    document.getElementById('total-partial').textContent = totalProtoOk
+    document.getElementById('total-blocked').textContent = totalBlocked
+
+    // Progress bars
+    const total = umbrellas.reduce((s, u) => s + u.count, 0)
     const bars = document.getElementById('bars')
     umbrellas.forEach(u => {
       const pct = Math.round((u.count / total) * 100)
@@ -445,17 +726,42 @@
         <div class="bar-row">
           <div class="bar-label">${u.title}</div>
           <div class="bar-track">
-            <div class="bar-fill" data-pct="${pct}" style="width:0%;background:${colors[u.priority]}"></div>
+            <div class="bar-fill" data-pct="${pct}" style="width:0%;background:${barColors[u.priority]}"></div>
           </div>
           <div class="bar-val">${u.count}</div>
         </div>`
     })
 
-    // Anima as barras ao carregar
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.bar-fill').forEach(el => {
-          el.style.width = el.dataset.pct + '%'
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.querySelectorAll('.bar-fill').forEach(el => {
+        el.style.width = el.dataset.pct + '%'
+      })
+    }))
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'green', 'amber', 'red')
+        })
+        const f = btn.dataset.filter
+        btn.classList.add('active')
+        if (f === 'ready') btn.classList.add('green')
+        else if (f === 'partial') btn.classList.add('amber')
+        else if (f === 'blocked') btn.classList.add('red')
+
+        const PROTO_OK = ['proto_ok', 'proto_ok_comment', 'proto_ok_all']
+        document.querySelectorAll('.card').forEach(card => {
+          const s = card.dataset.status
+          if (f === 'all') {
+            card.classList.remove('hidden')
+          } else if (f === 'ready') {
+            card.classList.toggle('hidden', s !== 'ready' && s !== 'partial')
+          } else if (f === 'partial') {
+            card.classList.toggle('hidden', !PROTO_OK.includes(s))
+          } else if (f === 'blocked') {
+            card.classList.toggle('hidden', s !== 'blocked' && s !== 'comment_blocked')
+          }
         })
       })
     })

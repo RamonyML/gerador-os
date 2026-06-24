@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>MZ NET × MK Solutions — Perguntas: Endpoints Bloqueados (Suporte)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 56px 64px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0ea5e9;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .header-left h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: -.02em;
+      margin-bottom: 2px;
+    }
+    .header-left .sub { font-size: 12px; color: #64748b; font-weight: 500; }
+    .header-right { text-align: right; font-size: 12px; color: #64748b; line-height: 1.6; }
+    .header-right strong { color: #1a1a2e; }
+
+    .addressee {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 28px;
+      font-size: 13px;
+    }
+    .addressee strong {
+      display: block;
+      color: #0369a1;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .addressee strong + strong { margin-top: 8px; }
+
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0369a1;
+      margin: 32px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 .num {
+      background: #0ea5e9;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    p { margin-bottom: 10px; color: #374151; }
+
+    code {
+      font-family: 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 12px 0 18px;
+    }
+    th {
+      background: #f1f5f9;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #475569;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      color: #374151;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    .ok   { color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .err  { color: #991b1b; background: #fee2e2; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .warn { color: #78350f; background: #fef3c7; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+
+    .ask-list { list-style: none; padding: 0; margin: 10px 0 16px; }
+    .ask-list li {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #374151;
+    }
+    .ask-list li:last-child { border-bottom: none; }
+    .ask-list .q-num {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      height: fit-content;
+      margin-top: 3px;
+    }
+    .ask-list .q-body strong {
+      display: block;
+      color: #1e3a5f;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .impact-box {
+      display: flex;
+      gap: 10px;
+      margin: 8px 0 14px;
+      flex-wrap: wrap;
+    }
+    .impact-chip {
+      background: #fef3c7;
+      color: #78350f;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px solid #fde68a;
+    }
+    .impact-chip.red {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+
+    .info-box {
+      border: 1px solid #93c5fd;
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #1e3a8a;
+    }
+
+    .highlight-box {
+      border: 1px solid #fbbf24;
+      background: #fffbeb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0 16px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .highlight-box .title {
+      font-weight: 700;
+      color: #92400e;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body { font-size: 12px; }
+      .page { padding: 24px 32px; }
+      h2 { margin: 24px 0 10px; page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>MZ NET × MK Solutions</h1>
+      <div class="sub">Suporte — Questionamento sobre Endpoints Bloqueados</div>
+    </div>
+    <div class="header-right">
+      <strong>24 de junho de 2026</strong><br>
+      Versão 1.0<br>
+      Movdesk — chamado em aberto
+    </div>
+  </div>
+
+  <div class="addressee">
+    <strong>Para</strong>
+    Equipe Técnica — MK Solutions (via Movdesk)<br>
+    <strong>De</strong>
+    MZ NET — Suporte N3 &nbsp;·&nbsp; Ramony Lima
+  </div>
+
+  <!-- Contexto -->
+  <h2><span class="num">1</span> Contexto</h2>
+  <p>Estamos integrando o sistema interno <strong>gerador-os / mznet.digital</strong> com o MK Solutions ERP via webservices. O objetivo é automatizar a abertura de atendimentos e criação de Ordens de Serviço para as demandas do setor de suporte técnico.</p>
+  <p>Temos <strong>186 variantes</strong> mapeadas em 8 categorias. Atualmente <strong>WSMKNovoAtendimento</strong> está funcionando em produção (atendimento <strong>#268168</strong> validado). No entanto, dois endpoints estão bloqueando o avanço da maior parte das variantes:</p>
+
+  <table>
+    <tr><th>Endpoint</th><th>Categorias impactadas</th><th>Variantes travadas</th><th>Status</th></tr>
+    <tr>
+      <td><code>WSMKCriarOrdemServico.rule</code></td>
+      <td>Manutenção, Altplan com visita, Wi-Fi Extend, Mud. Endereço</td>
+      <td style="text-align:center;"><strong>~135</strong></td>
+      <td><span class="warn">⚠ Aguardando</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKAtendimentoComentario.rule</code></td>
+      <td>Feedback de visita, Encerramentos de altplan</td>
+      <td style="text-align:center;"><strong>11</strong></td>
+      <td><span class="err">✗ HTTP 500</span></td>
+    </tr>
+  </table>
+
+  <!-- Perguntas -->
+  <h2><span class="num">2</span> Perguntas</h2>
+
+  <ul class="ask-list">
+
+    <li>
+      <span class="q-num">Q1</span>
+      <div class="q-body">
+        <strong>WSMKCriarOrdemServico.rule — está incluso no nosso pacote ou é API especial?</strong>
+        Precisamos criar Ordens de Serviço técnicas diretamente via API. A criação manual no painel não se encaixa no fluxo integrado porque o atendimento é gerado automaticamente pelo sistema e a O.S. deve ser vinculada ao mesmo protocolo em tempo real.
+        <div class="impact-box">
+          <span class="impact-chip">Manutenção — 77 variantes</span>
+          <span class="impact-chip">Altplan com visita — 38 variantes</span>
+          <span class="impact-chip">Wi-Fi Extend — 10 variantes</span>
+          <span class="impact-chip">Mudança de endereço — 10 variantes</span>
+        </div>
+        Se for API especial: qual o nome comercial do módulo e como contratamos?<br>
+        Se já estiver incluso: precisamos dos códigos <code>CodigoTipoOS</code>, <code>CodigoGrupoServico</code> e confirmar se <code>CodigoTecnico</code> pode ser omitido na abertura (técnico designado depois pelo painel).
+      </div>
+    </li>
+
+    <li>
+      <span class="q-num">Q2</span>
+      <div class="q-body">
+        <strong>WSMKAtendimentoComentario.rule — bug na instalação ou módulo não contratado?</strong>
+        Em chamado anterior o analista Jardel Henrique informou que <em>"a API não está na nossa base"</em>. Estamos retornando <strong>HTTP 500</strong> no POST do comentário. Precisamos confirmar: esse endpoint requer a contratação de um módulo separado?
+        <div class="impact-box">
+          <span class="impact-chip red">Feedback de visita — 8 variantes</span>
+          <span class="impact-chip red">Encerramentos de altplan — 3 variantes</span>
+        </div>
+        O fluxo precisa: 1) localizar o atendimento aberto, 2) inserir comentário de encerramento com texto padronizado. Sem esse endpoint o feedback técnico pós-visita não pode ser automatizado.<br><br>
+        Se for módulo a contratar: qual o nome e valor? Se for configuração: qual o passo para ativar?
+      </div>
+    </li>
+
+    <li>
+      <span class="q-num">Q3</span>
+      <div class="q-body">
+        <strong>Existe endpoint para buscar um atendimento existente por número de protocolo?</strong>
+        O fluxo de feedback precisa localizar um atendimento já aberto para então inserir o comentário de encerramento (via <code>WSMKAtendimentoComentario</code>). Atualmente conseguimos buscar o <em>cliente</em> por CPF/CNPJ, mas não encontramos endpoint para buscar um <em>atendimento/protocolo</em> por número.
+        <div class="impact-box">
+          <span class="impact-chip">Feedback de visita — 8 variantes</span>
+        </div>
+        Existe <code>WSMKBuscarAtendimento.rule</code> ou similar? Se não houver, há alguma outra forma de obter o <code>CodigoAtendimento</code> a partir do número de protocolo visível para o operador?
+      </div>
+    </li>
+
+  </ul>
+
+  <!-- O que já funciona -->
+  <h2><span class="num">3</span> O que já está funcionando (referência)</h2>
+  <div class="info-box">
+    O fluxo de <strong>Senha de Rede Wi-Fi</strong> está em produção e validado. <code>WSMKNovoAtendimento</code> cria o atendimento com <code>op_abertura</code> correto (atend. <strong>#268168</strong> — operador <code>mz.ramony</code>). Busca de cliente por CPF/CNPJ e listagem de conexões ativas também funcionam.
+  </div>
+
+  <table>
+    <tr><th>Endpoint</th><th>Função</th><th>Status</th></tr>
+    <tr><td><code>WSAutenticacao.rule</code></td><td>Autenticação</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKConsultaDoc.rule</code></td><td>Buscar cliente por CPF/CNPJ</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKConexoesPorCliente.rule</code></td><td>Listar conexões do cliente</td><td><span class="ok">✓ Funcional</span></td></tr>
+    <tr><td><code>WSMKNovoAtendimento.rule</code></td><td>Abrir protocolo / atendimento</td><td><span class="ok">✓ Funcional em produção</span></td></tr>
+    <tr><td><code>WSMKContratosPorCliente.rule</code></td><td>Listar contratos do cliente</td><td><span class="ok">✓ Disponível</span></td></tr>
+    <tr><td><code>WSMKListaPlanoAcesso.rule</code></td><td>Listar planos disponíveis</td><td><span class="ok">✓ Disponível</span></td></tr>
+  </table>
+
+  <div class="highlight-box">
+    <div class="title">⚠ Observação sobre o chamado do setor de Cadastro</div>
+    Em paralelo, enviamos um questionamento separado (carta anexa) referente às APIs necessárias para o setor de Análise/Cadastro (<code>WSMKNovaPessoa</code>, <code>WSMKNovaLead</code>, <code>WSMKNovoContrato</code>, <code>WSMKCriarConexao</code> etc.). Este documento trata exclusivamente das APIs do setor de <strong>Suporte Técnico</strong>.
+  </div>
+
+  <div class="footer">
+    <span>MZ NET — Suporte N3 · Ramony Lima</span>
+    <span>Integração MK Solutions · 2026-06-24</span>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const banner = document.createElement('div')
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0ea5e9;color:#fff;text-align:center;padding:8px;font-size:13px;font-family:Ubuntu,system-ui;z-index:9999;'
+    banner.innerHTML = '📄 Para salvar como PDF: <strong>Ctrl+P</strong> → "Salvar como PDF" → desmarque "Cabeçalhos e rodapés" → <strong>Salvar</strong> &nbsp;&nbsp;<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:12px;">✕</button>'
+    document.body.prepend(banner)
+  })
+</script>
+</body>
+</html>
