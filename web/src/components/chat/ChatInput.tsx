@@ -1,21 +1,33 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Box, IconButton, InputBase } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
 
 type Props = {
   onSend: (text: string) => void
+  onTypingChange?: (isTyping: boolean) => void
   disabled?: boolean
 }
 
-export function ChatInput({ onSend, disabled = false }: Props) {
+export function ChatInput({ onSend, onTypingChange, disabled = false }: Props) {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const [text, setText] = useState('')
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setText(e.target.value)
+    if (!onTypingChange) return
+    onTypingChange(true)
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+    typingTimerRef.current = setTimeout(() => onTypingChange(false), 3000)
+  }
 
   const handleSend = () => {
     const trimmed = text.trim()
     if (!trimmed) return
+    if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+    onTypingChange?.(false)
     onSend(trimmed)
     setText('')
   }
@@ -41,7 +53,7 @@ export function ChatInput({ onSend, disabled = false }: Props) {
     >
       <InputBase
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Mensagem…"
         multiline

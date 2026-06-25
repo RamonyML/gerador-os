@@ -26,6 +26,16 @@ function dayKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
 }
 
+const GROUP_GAP_MS = 2 * 60 * 1000
+
+function sameGroup(a: ChatMessage, b: ChatMessage): boolean {
+  return (
+    a.senderId === b.senderId &&
+    dayKey(a.createdAt) === dayKey(b.createdAt) &&
+    Math.abs(a.createdAt.getTime() - b.createdAt.getTime()) < GROUP_GAP_MS
+  )
+}
+
 function DateSeparator({ label }: { label: string }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, my: 1 }}>
@@ -76,9 +86,26 @@ export function ChatMessages({ messages, myUid }: Props) {
       {messages.map((msg, index) => {
         const isMine = msg.senderId === myUid
         const prevMsg = messages[index - 1]
+        const nextMsg = messages[index + 1]
         const showDateSep = !prevMsg || dayKey(prevMsg.createdAt) !== dayKey(msg.createdAt)
+        const groupedWithPrev = !showDateSep && !!prevMsg && sameGroup(msg, prevMsg)
+        const groupedWithNext = !!nextMsg && sameGroup(msg, nextMsg)
+        // Mostra timestamp apenas na última mensagem do grupo (ou mensagem solo)
+        const showTime = !groupedWithNext
+
+        // Raio da bolha: remove o "rabo" em mensagens intermediárias do grupo
+        const br = isMine
+          ? (groupedWithPrev && groupedWithNext ? '12px 4px 4px 12px'
+            : groupedWithPrev ? '12px 4px 2px 12px'
+            : groupedWithNext ? '12px 12px 4px 12px'
+            : '12px 12px 2px 12px')
+          : (groupedWithPrev && groupedWithNext ? '4px 12px 12px 4px'
+            : groupedWithPrev ? '4px 12px 12px 2px'
+            : groupedWithNext ? '12px 12px 4px 4px'
+            : '12px 12px 12px 2px')
+
         return (
-          <Box key={msg.id}>
+          <Box key={msg.id} sx={{ mt: groupedWithPrev ? 0.25 : 0 }}>
             {showDateSep && <DateSeparator label={formatDateLabel(msg.createdAt)} />}
             <Box
               sx={{
@@ -92,7 +119,7 @@ export function ChatMessages({ messages, myUid }: Props) {
                   maxWidth: '80%',
                   px: 1.25,
                   py: 0.625,
-                  borderRadius: isMine ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
+                  borderRadius: br,
                   bgcolor: isMine
                     ? primary
                     : (isDark ? alpha('#fff', 0.1) : alpha('#000', 0.06)),
@@ -103,13 +130,15 @@ export function ChatMessages({ messages, myUid }: Props) {
                   {msg.text}
                 </Typography>
               </Box>
-              <Typography
-                variant="caption"
-                color="text.disabled"
-                sx={{ mt: 0.25, px: 0.5, fontSize: 10 }}
-              >
-                {formatTime(msg.createdAt)}
-              </Typography>
+              {showTime && (
+                <Typography
+                  variant="caption"
+                  color="text.disabled"
+                  sx={{ mt: 0.25, px: 0.5, fontSize: 10 }}
+                >
+                  {formatTime(msg.createdAt)}
+                </Typography>
+              )}
             </Box>
           </Box>
         )

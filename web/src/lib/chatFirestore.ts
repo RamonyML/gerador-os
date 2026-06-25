@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   increment,
   limit,
@@ -79,6 +80,30 @@ export function subscribeMessages(
         }
       }),
     )
+  })
+}
+
+// ---- Indicador de digitação ----
+// Escreve/apaga chats/{chatId}/typing/{uid} com timestamp.
+// subscribeTyping considera stale se o doc tiver mais de 5s (fallback p/ perda de cleanup).
+
+export async function setTyping(chatId: string, uid: string): Promise<void> {
+  await setDoc(doc(db, 'chats', chatId, 'typing', uid), { at: serverTimestamp() }, { merge: true })
+}
+
+export async function clearTyping(chatId: string, uid: string): Promise<void> {
+  try { await deleteDoc(doc(db, 'chats', chatId, 'typing', uid)) } catch { /* doc pode não existir */ }
+}
+
+export function subscribeTyping(
+  chatId: string,
+  otherUid: string,
+  callback: (isTyping: boolean) => void,
+): () => void {
+  return onSnapshot(doc(db, 'chats', chatId, 'typing', otherUid), (snap) => {
+    if (!snap.exists()) { callback(false); return }
+    const age = Date.now() - (snap.data().at?.toMillis() ?? 0)
+    callback(age < 5000)
   })
 }
 

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Avatar, Box, IconButton, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
-import { getChatId, markAsRead, sendMessage, subscribeMessages } from '../../lib/chatFirestore'
+import { clearTyping, getChatId, markAsRead, sendMessage, setTyping, subscribeMessages, subscribeTyping } from '../../lib/chatFirestore'
 import { STATUS_CONFIG } from '../../types/chat'
 import type { ChatMessage, UserPresence } from '../../types/chat'
 import { ChatMessages } from './ChatMessages'
@@ -28,6 +28,7 @@ export function ChatConversation({ other, onBack }: Props) {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [otherTyping, setOtherTyping] = useState(false)
 
   const chatId = user ? getChatId(user.uid, other.uid) : ''
   const cfg = STATUS_CONFIG[other.status]
@@ -41,6 +42,24 @@ export function ChatConversation({ other, onBack }: Props) {
   useEffect(() => {
     if (!chatId || !user) return
     void markAsRead(chatId, user.uid)
+  }, [chatId, user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Assina status de digitação do outro
+  useEffect(() => {
+    if (!chatId) return
+    return subscribeTyping(chatId, other.uid, setOtherTyping)
+  }, [chatId, other.uid])
+
+  // Limpa o indicador de digitação próprio ao desmontar
+  useEffect(() => {
+    if (!chatId || !user) return
+    return () => { void clearTyping(chatId, user.uid) }
+  }, [chatId, user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleTypingChange = useCallback((isTyping: boolean) => {
+    if (!chatId || !user) return
+    if (isTyping) void setTyping(chatId, user.uid)
+    else void clearTyping(chatId, user.uid)
   }, [chatId, user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSend = async (text: string) => {
@@ -95,8 +114,16 @@ export function ChatConversation({ other, onBack }: Props) {
           <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.2 }} noWrap>
             {other.displayName}
           </Typography>
-          <Typography variant="caption" sx={{ color: cfg.color, fontWeight: 500 }}>
-            {cfg.label}
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 500,
+              color: otherTyping ? 'primary.main' : cfg.color,
+              fontStyle: otherTyping ? 'italic' : 'normal',
+              transition: 'color 0.2s',
+            }}
+          >
+            {otherTyping ? 'digitando...' : cfg.label}
           </Typography>
         </Box>
       </Box>
@@ -105,7 +132,7 @@ export function ChatConversation({ other, onBack }: Props) {
       <ChatMessages messages={messages} myUid={user?.uid ?? ''} />
 
       {/* Input */}
-      <ChatInput onSend={(text) => void handleSend(text)} />
+      <ChatInput onSend={(text) => void handleSend(text)} onTypingChange={handleTypingChange} />
     </Box>
   )
 }

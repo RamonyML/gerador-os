@@ -245,6 +245,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     0,
   )
 
+  // Badge na aba do navegador
+  useEffect(() => {
+    const base = 'Gerador de O.S.'
+    document.title = totalUnread > 0 ? `(${totalUnread}) ${base}` : base
+  }, [totalUnread])
+
   const openChat = useCallback(
     (otherUid: string) => {
       if (!user) return
