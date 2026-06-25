@@ -77,22 +77,7 @@ export function buildFeedbackManOcasionadoTextos(
   return { feedbackManOcasionadoTexto: lines.join('\n') }
 }
 
-export function buildFeedbackManOcasionadoSegmentos(
-  rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
-  const { feedbackManOcasionadoTexto } = buildFeedbackManOcasionadoTextos(rawValues)
-  return { info: feedbackManOcasionadoTexto, comentarios: [] }
-}
-
 export const FEEDBACK_MAN_OCASIONADO_FIELDS: OsTemplateField[] = [
-  {
-    id: 'cpf',
-    label: 'CPF / CNPJ',
-    control: 'text',
-    placeholder: 'Somente números',
-    section: S_ID,
-    layout: { md: 5 },
-  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

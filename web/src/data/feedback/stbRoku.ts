@@ -90,22 +90,7 @@ export function buildFeedbackStbRokuTextos(
   return { feedbackStbRokuTexto: lines.join('\n') }
 }
 
-export function buildFeedbackStbRokuSegmentos(
-  rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
-  const { feedbackStbRokuTexto } = buildFeedbackStbRokuTextos(rawValues)
-  return { info: feedbackStbRokuTexto, comentarios: [] }
-}
-
 export const FEEDBACK_STB_ROKU_FIELDS: OsTemplateField[] = [
-  {
-    id: 'cpf',
-    label: 'CPF / CNPJ',
-    control: 'text',
-    placeholder: 'Somente números',
-    section: S_ID,
-    layout: { md: 5 },
-  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

@@ -78,6 +78,7 @@ import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
 import { buildRokuPadraoTextos } from '../data/midiaTv/rokuPadrao'
 import { buildRokuPresencialTextos } from '../data/midiaTv/rokuPresencial'
 import { buildAlteraSenhaTextos } from '../data/senhaRede/alteraSenha'
+import { MkFeedbackCards } from '../components/MkFeedbackCards'
 import { MkProtocolCards } from '../components/MkProtocolCards'
 import { MK_PROTOCOL_REGISTRY } from '../data/mkProtocolRegistry'
 import { buildWifiExtendZteTextos } from '../data/wifiExtend/extendZte'
@@ -633,8 +634,13 @@ export function OsGeneratorPage() {
   const mkEntry = selected ? (MK_PROTOCOL_REGISTRY[selected.slug] ?? null) : null
 
   const mkSegmentos = useMemo(() => {
-    if (!mkEntry) return null
+    if (!mkEntry || mkEntry.mode !== 'new') return null
     return mkEntry.buildSegmentos(values)
+  }, [mkEntry, values])
+
+  const mkFeedbackText = useMemo(() => {
+    if (!mkEntry || mkEntry.mode !== 'comment') return null
+    return mkEntry.buildText(values)
   }, [mkEntry, values])
 
   const modalTextoAgenda = useMemo(() => {
@@ -745,7 +751,7 @@ export function OsGeneratorPage() {
   }, [user, selected, preview, values.cliente, values.nome, saveObs])
 
   const multiPreviewTabs = previewSections.length > 1
-  const showMkCards = !!mkEntry && !!mkSegmentos
+  const showMkCards = !!mkEntry
 
   const emptyFields = useMemo(() => {
     if (!selected) return []
@@ -1142,13 +1148,18 @@ export function OsGeneratorPage() {
               </Tabs>
             ) : null}
 
-            {showMkCards && mkEntry && mkSegmentos ? (
+            {showMkCards && mkEntry && mkEntry.mode === 'new' && mkSegmentos ? (
               <MkProtocolCards
                 slug={selected!.slug}
                 cpf={String(values.cpf ?? '')}
                 processoId={mkEntry.processoId}
                 classificacaoId={mkEntry.classificacaoId}
                 segmentos={mkSegmentos}
+                disabled={emptyFields.length > 0}
+              />
+            ) : showMkCards && mkEntry && mkEntry.mode === 'comment' && mkFeedbackText !== null ? (
+              <MkFeedbackCards
+                text={mkFeedbackText}
                 disabled={emptyFields.length > 0}
               />
             ) : (

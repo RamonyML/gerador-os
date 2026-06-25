@@ -66,22 +66,7 @@ export function buildFeedbackManExternalTextos(
   return { feedbackManExternalTexto: lines.join('\n') }
 }
 
-export function buildFeedbackManExternalSegmentos(
-  rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
-  const { feedbackManExternalTexto } = buildFeedbackManExternalTextos(rawValues)
-  return { info: feedbackManExternalTexto, comentarios: [] }
-}
-
 export const FEEDBACK_MAN_EXTERNAL_FIELDS: OsTemplateField[] = [
-  {
-    id: 'cpf',
-    label: 'CPF / CNPJ',
-    control: 'text',
-    placeholder: 'Somente números',
-    section: S_ID,
-    layout: { md: 5 },
-  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

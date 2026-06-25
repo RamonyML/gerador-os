@@ -1,33 +1,43 @@
 import { buildAlteraSenhaSegmentos } from './senhaRede/alteraSenha'
-import { buildFeedbackSemSucessoSegmentos } from './feedback/semSucesso'
-import { buildFeedbackManExternalSegmentos } from './feedback/manExternal'
-import { buildFeedbackManOcasionadoSegmentos } from './feedback/manOcasionado'
-import { buildFeedbackTrocaEquipSegmentos } from './feedback/trocaEquip'
-import { buildFeedbackMudancaPontoSegmentos } from './feedback/mudancaPonto'
-import { buildFeedbackAltplanSegmentos } from './feedback/altplan'
-import { buildFeedbackStbRokuSegmentos } from './feedback/stbRoku'
-import { buildFeedbackWifiExtendSegmentos } from './feedback/wifiExtend'
+import { buildFeedbackSemSucessoTextos } from './feedback/semSucesso'
+import { buildFeedbackManExternalTextos } from './feedback/manExternal'
+import { buildFeedbackManOcasionadoTextos } from './feedback/manOcasionado'
+import { buildFeedbackTrocaEquipTextos } from './feedback/trocaEquip'
+import { buildFeedbackMudancaPontoTextos } from './feedback/mudancaPonto'
+import { buildFeedbackAltplanTextos } from './feedback/altplan'
+import { buildFeedbackStbRokuTextos } from './feedback/stbRoku'
+import { buildFeedbackWifiExtendTextos } from './feedback/wifiExtend'
 
-export type MkProtocolEntry = {
+export type MkProtocolNewEntry = {
+  mode: 'new'
   processoId: number
   classificacaoId: number
   buildSegmentos: (v: Record<string, unknown>) => { info: string; comentarios: string[] }
 }
 
+export type MkProtocolCommentEntry = {
+  mode: 'comment'
+  buildText: (v: Record<string, unknown>) => string
+}
+
+export type MkProtocolEntry = MkProtocolNewEntry | MkProtocolCommentEntry
+
 export const MK_PROTOCOL_REGISTRY: Record<string, MkProtocolEntry> = {
   'senha-altera-senha': {
+    mode: 'new',
     processoId: 14,
     classificacaoId: 3,
     buildSegmentos: buildAlteraSenhaSegmentos,
   },
 
-  // Feedback — TODO: substituir processoId/classificacaoId pelos códigos reais do MK admin
-  'feedback-sem-sucesso':    { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackSemSucessoSegmentos },
-  'feedback-man-externa':    { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackManExternalSegmentos },
-  'feedback-man-ocasionado': { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackManOcasionadoSegmentos },
-  'feedback-troca-equip':    { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackTrocaEquipSegmentos },
-  'feedback-mudanca-ponto':  { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackMudancaPontoSegmentos },
-  'feedback-altplan':        { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackAltplanSegmentos },
-  'feedback-stb-roku':       { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackStbRokuSegmentos },
-  'feedback-wifi-extend':    { processoId: 14, classificacaoId: 3, buildSegmentos: buildFeedbackWifiExtendSegmentos },
+  // Feedback — insere comentário num atendimento existente (protocolo informado pelo operador)
+  // TODO: confirmar se processId/classificacaoId são necessários para comentários de feedback
+  'feedback-sem-sucesso':    { mode: 'comment', buildText: (v) => buildFeedbackSemSucessoTextos(v).feedbackSemSucessoTexto },
+  'feedback-man-externa':    { mode: 'comment', buildText: (v) => buildFeedbackManExternalTextos(v).feedbackManExternalTexto },
+  'feedback-man-ocasionado': { mode: 'comment', buildText: (v) => buildFeedbackManOcasionadoTextos(v).feedbackManOcasionadoTexto },
+  'feedback-troca-equip':    { mode: 'comment', buildText: (v) => buildFeedbackTrocaEquipTextos(v).feedbackTrocaEquipTexto },
+  'feedback-mudanca-ponto':  { mode: 'comment', buildText: (v) => buildFeedbackMudancaPontoTextos(v).feedbackMudancaPontoTexto },
+  'feedback-altplan':        { mode: 'comment', buildText: (v) => buildFeedbackAltplanTextos(v).feedbackAltplanTexto },
+  'feedback-stb-roku':       { mode: 'comment', buildText: (v) => buildFeedbackStbRokuTextos(v).feedbackStbRokuTexto },
+  'feedback-wifi-extend':    { mode: 'comment', buildText: (v) => buildFeedbackWifiExtendTextos(v).feedbackWifiExtendTexto },
 }

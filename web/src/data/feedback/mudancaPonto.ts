@@ -79,22 +79,7 @@ export function buildFeedbackMudancaPontoTextos(
   return { feedbackMudancaPontoTexto: lines.join('\n') }
 }
 
-export function buildFeedbackMudancaPontoSegmentos(
-  rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
-  const { feedbackMudancaPontoTexto } = buildFeedbackMudancaPontoTextos(rawValues)
-  return { info: feedbackMudancaPontoTexto, comentarios: [] }
-}
-
 export const FEEDBACK_MUDANCA_PONTO_FIELDS: OsTemplateField[] = [
-  {
-    id: 'cpf',
-    label: 'CPF / CNPJ',
-    control: 'text',
-    placeholder: 'Somente números',
-    section: S_ID,
-    layout: { md: 5 },
-  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

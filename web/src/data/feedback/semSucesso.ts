@@ -1,8 +1,7 @@
 import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 
-const S_ID   = 'IDENTIFICAÇÃO'
-const S_T1   = '1ª TENTATIVA'
+const S_T1 = '1ª TENTATIVA'
 const S_T2   = '2ª TENTATIVA'
 const S_INFO = 'INFORMAÇÕES DA CONEXÃO'
 
@@ -54,22 +53,7 @@ export function buildFeedbackSemSucessoTextos(
   return { feedbackSemSucessoTexto: lines.join('\n') }
 }
 
-export function buildFeedbackSemSucessoSegmentos(
-  rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
-  const { feedbackSemSucessoTexto } = buildFeedbackSemSucessoTextos(rawValues)
-  return { info: feedbackSemSucessoTexto, comentarios: [] }
-}
-
 export const FEEDBACK_SEM_SUCESSO_FIELDS: OsTemplateField[] = [
-  {
-    id: 'cpf',
-    label: 'CPF / CNPJ',
-    control: 'text',
-    placeholder: 'Somente números',
-    section: S_ID,
-    layout: { md: 5 },
-  },
   {
     id: 'canal1',
     label: 'Canal (1ª tentativa)',
