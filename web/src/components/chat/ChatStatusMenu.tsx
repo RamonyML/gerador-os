@@ -2,7 +2,7 @@ import { Box, ListItemIcon, Menu, MenuItem, Typography } from '@mui/material'
 import { STATUS_CONFIG, type UserStatus } from '../../types/chat'
 import { useChat } from '../../contexts/ChatContext'
 
-const STATUSES: UserStatus[] = ['online', 'ocupado', 'em_pausa', 'offline']
+const STATUSES: UserStatus[] = ['online', 'ausente', 'ocupado', 'em_pausa', 'offline']
 
 type Props = {
   anchorEl: HTMLElement | null

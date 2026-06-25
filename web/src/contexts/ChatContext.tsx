@@ -34,7 +34,6 @@ type ChatContextValue = {
 
 const STALE_MS     = 3 * 60 * 1000  // considera offline após 3 min sem heartbeat
 const HEARTBEAT_MS = 60 * 1000      // escreve presença a cada 1 min
-const AWAY_AFTER_MS = 5 * 60 * 1000 // marca ausente após 5 min com aba oculta
 
 const ChatContext = createContext<ChatContextValue | null>(null)
 
@@ -54,9 +53,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const chatInitializedRef = useRef(false)
   const isWidgetOpenRef = useRef(false)
   const activeConvUidRef = useRef<string | null>(null)
-  const visibilityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const wasVisibilityForcedRef = useRef(false)
-  const setMyStatusRef = useRef<(s: UserStatus) => void>(() => {})
 
   const pushPresence = useCallback(
     (status: UserStatus) => {
@@ -75,9 +71,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     },
     [pushPresence],
   )
-
-  // Mantém ref atualizada para uso em efeitos com deps mínimas
-  useEffect(() => { setMyStatusRef.current = setMyStatus }, [setMyStatus])
 
   // Presença: online ao logar, offline ao fechar/esconder aba
   useEffect(() => {
@@ -104,35 +97,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const id = setInterval(() => setTick((t) => t + 1), HEARTBEAT_MS)
     return () => clearInterval(id)
   }, [])
-
-  // Visibilidade: ausente após 5 min com aba oculta, online ao voltar
-  useEffect(() => {
-    if (!user) return
-    const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') {
-        visibilityTimerRef.current = setTimeout(() => {
-          if (statusRef.current === 'online') {
-            wasVisibilityForcedRef.current = true
-            setMyStatusRef.current('em_pausa')
-          }
-        }, AWAY_AFTER_MS)
-      } else {
-        if (visibilityTimerRef.current) {
-          clearTimeout(visibilityTimerRef.current)
-          visibilityTimerRef.current = null
-        }
-        if (wasVisibilityForcedRef.current) {
-          wasVisibilityForcedRef.current = false
-          setMyStatusRef.current('online')
-        }
-      }
-    }
-    document.addEventListener('visibilitychange', handleVisibility)
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibility)
-      if (visibilityTimerRef.current) clearTimeout(visibilityTimerRef.current)
-    }
-  }, [user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // Assinar diretório público (todos os usuários, mesmo antes do 1º login)
   useEffect(() => {

@@ -1,4 +1,4 @@
-export type UserStatus = 'online' | 'ocupado' | 'em_pausa' | 'offline'
+export type UserStatus = 'online' | 'ausente' | 'ocupado' | 'em_pausa' | 'offline'
 
 export type UserPresence = {
   uid: string
@@ -27,7 +27,8 @@ export type Chat = {
 
 export const STATUS_CONFIG: Record<UserStatus, { label: string; color: string }> = {
   online:   { label: 'Online',   color: '#4caf50' },
+  ausente:  { label: 'Ausente',  color: '#ff9800' },
   ocupado:  { label: 'Ocupado',  color: '#f44336' },
-  em_pausa: { label: 'Em pausa', color: '#ff9800' },
+  em_pausa: { label: 'Em pausa', color: '#9c27b0' },
   offline:  { label: 'Offline',  color: '#9e9e9e' },
 }
