@@ -24,7 +24,7 @@ function initialsFrom(name: string): string {
 
 export function ChatConversation({ other, onBack }: Props) {
   const { user, profile } = useAuth()
-  useChat()
+  const { chats } = useChat()
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -32,6 +32,9 @@ export function ChatConversation({ other, onBack }: Props) {
 
   const chatId = user ? getChatId(user.uid, other.uid) : ''
   const cfg = STATUS_CONFIG[other.status]
+
+  const chat = chats.find((c) => c.id === chatId)
+  const otherRead = !!chat?.lastMessage && (chat.unreadCount[other.uid] ?? 0) === 0
 
   useEffect(() => {
     if (!chatId) return
@@ -129,7 +132,7 @@ export function ChatConversation({ other, onBack }: Props) {
       </Box>
 
       {/* Mensagens */}
-      <ChatMessages messages={messages} myUid={user?.uid ?? ''} />
+      <ChatMessages messages={messages} myUid={user?.uid ?? ''} otherRead={otherRead} />
 
       {/* Input */}
       <ChatInput onSend={(text) => void handleSend(text)} onTypingChange={handleTypingChange} />

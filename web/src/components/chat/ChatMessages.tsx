@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react'
-import { Box, Typography } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { Box, IconButton, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import type { ChatMessage } from '../../types/chat'
 
 type Props = {
   messages: ChatMessage[]
   myUid: string
+  otherRead?: boolean
 }
 
 function formatTime(date: Date): string {
@@ -51,15 +53,28 @@ function DateSeparator({ label }: { label: string }) {
   )
 }
 
-export function ChatMessages({ messages, myUid }: Props) {
+export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
   const bottomRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [showScrollBtn, setShowScrollBtn] = useState(false)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages.length])
+
+  const handleScroll = () => {
+    const el = containerRef.current
+    if (!el) return
+    setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > 120)
+  }
+
+  const scrollToBottom = () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+
+  // Índice da última mensagem enviada por mim (para read receipt)
+  const lastMineIndex = messages.reduce((acc, msg, i) => msg.senderId === myUid ? i : acc, -1)
 
   if (messages.length === 0) {
     return (
@@ -72,9 +87,12 @@ export function ChatMessages({ messages, myUid }: Props) {
   }
 
   return (
+    <Box sx={{ flex: 1, position: 'relative', minHeight: 0 }}>
     <Box
+      ref={containerRef}
+      onScroll={handleScroll}
       sx={{
-        flex: 1,
+        height: '100%',
         overflowY: 'auto',
         px: 1.5,
         py: 1,
@@ -131,19 +149,51 @@ export function ChatMessages({ messages, myUid }: Props) {
                 </Typography>
               </Box>
               {showTime && (
-                <Typography
-                  variant="caption"
-                  color="text.disabled"
-                  sx={{ mt: 0.25, px: 0.5, fontSize: 10 }}
-                >
-                  {formatTime(msg.createdAt)}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.25, px: 0.5 }}>
+                  <Typography variant="caption" color="text.disabled" sx={{ fontSize: 10 }}>
+                    {formatTime(msg.createdAt)}
+                  </Typography>
+                  {isMine && index === lastMineIndex && (
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: otherRead ? primary : 'text.disabled',
+                        lineHeight: 1,
+                      }}
+                    >
+                      {otherRead ? '✓✓' : '✓'}
+                    </Typography>
+                  )}
+                </Box>
               )}
             </Box>
           </Box>
         )
       })}
       <div ref={bottomRef} />
+    </Box>
+
+    {/* Botão rolar para o fim */}
+    {showScrollBtn && (
+      <IconButton
+        size="small"
+        onClick={scrollToBottom}
+        sx={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          bgcolor: 'background.paper',
+          border: 1,
+          borderColor: 'divider',
+          boxShadow: 2,
+          '&:hover': { bgcolor: 'action.hover' },
+        }}
+      >
+        <KeyboardArrowDownRoundedIcon sx={{ fontSize: 18 }} />
+      </IconButton>
+    )}
     </Box>
   )
 }

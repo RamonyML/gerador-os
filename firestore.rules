@@ -577,6 +577,12 @@ service cloud.firestore {
 
         allow update, delete: if false;
       }
+
+      /** Indicador de digitação: cada participante escreve/apaga apenas o próprio doc. */
+      match /typing/{uid} {
+        allow read: if isChatParticipant(chatId);
+        allow write: if isChatParticipant(chatId) && request.auth.uid == uid;
+      }
     }
 
     /**

@@ -87,8 +87,10 @@ export function subscribeMessages(
 // Escreve/apaga chats/{chatId}/typing/{uid} com timestamp.
 // subscribeTyping considera stale se o doc tiver mais de 5s (fallback p/ perda de cleanup).
 
+// Date.now() em vez de serverTimestamp(): evita o snapshot local com at=null
+// que faria age = Date.now() - 0 >> 5000 → callback(false) imediato.
 export async function setTyping(chatId: string, uid: string): Promise<void> {
-  await setDoc(doc(db, 'chats', chatId, 'typing', uid), { at: serverTimestamp() }, { merge: true })
+  await setDoc(doc(db, 'chats', chatId, 'typing', uid), { at: Date.now() }, { merge: true })
 }
 
 export async function clearTyping(chatId: string, uid: string): Promise<void> {
@@ -102,7 +104,7 @@ export function subscribeTyping(
 ): () => void {
   return onSnapshot(doc(db, 'chats', chatId, 'typing', otherUid), (snap) => {
     if (!snap.exists()) { callback(false); return }
-    const age = Date.now() - (snap.data().at?.toMillis() ?? 0)
+    const age = Date.now() - (snap.data().at as number ?? 0)
     callback(age < 5000)
   })
 }

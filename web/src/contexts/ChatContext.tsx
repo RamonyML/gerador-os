@@ -186,6 +186,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     const unlock = () => {
       void audio.play().then(() => { audio.pause(); audio.currentTime = 0 }).catch(() => {})
+      if (Notification.permission === 'default') void Notification.requestPermission()
       window.removeEventListener('click', unlock)
       window.removeEventListener('keydown', unlock)
     }
@@ -217,16 +218,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
 
     let shouldPlay = false
+    let notifSender = ''
+    let notifText = ''
+
     for (const chat of chats) {
       const myUnread = chat.unreadCount[user.uid] ?? 0
       const prev = prevChatsRef.current.find((c) => c.id === chat.id)
       const prevUnread = prev ? (prev.unreadCount[user.uid] ?? 0) : 0
 
       if (myUnread > prevUnread) {
-        const otherUid = chat.participants.find((p) => p !== user.uid) ?? null
+        const otherUid = chat.participants.find((p) => p !== user.uid) ?? ''
         const isViewing = isWidgetOpenRef.current && activeConvUidRef.current === otherUid
         if (!isViewing) {
           shouldPlay = true
+          notifSender = directory[otherUid]?.displayName ?? 'Nova mensagem'
+          notifText = chat.lastMessage
           break
         }
       }
@@ -235,6 +241,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     if (shouldPlay && audioRef.current) {
       audioRef.current.currentTime = 0
       void audioRef.current.play().catch(() => {})
+    }
+
+    if (shouldPlay && notifSender && Notification.permission === 'granted' && document.visibilityState === 'hidden') {
+      new Notification(notifSender, { body: notifText, icon: '/favicon.ico' })
     }
 
     prevChatsRef.current = chats
