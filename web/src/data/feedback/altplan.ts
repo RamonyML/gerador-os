@@ -104,7 +104,22 @@ export function buildFeedbackAltplanTextos(
   return { feedbackAltplanTexto: lines.join('\n') }
 }
 
+export function buildFeedbackAltplanSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const { feedbackAltplanTexto } = buildFeedbackAltplanTextos(rawValues)
+  return { info: feedbackAltplanTexto, comentarios: [] }
+}
+
 export const FEEDBACK_ALTPLAN_FIELDS: OsTemplateField[] = [
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 5 },
+  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

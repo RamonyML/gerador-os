@@ -77,8 +77,9 @@ import { buildOnuQueimadaTextos } from '../data/manutencao/onuQueimada'
 import { buildRoteadorResetTextos } from '../data/manutencao/roteadorReset'
 import { buildRokuPadraoTextos } from '../data/midiaTv/rokuPadrao'
 import { buildRokuPresencialTextos } from '../data/midiaTv/rokuPresencial'
-import { buildAlteraSenhaTextos, buildAlteraSenhaSegmentos } from '../data/senhaRede/alteraSenha'
+import { buildAlteraSenhaTextos } from '../data/senhaRede/alteraSenha'
 import { MkProtocolCards } from '../components/MkProtocolCards'
+import { MK_PROTOCOL_REGISTRY } from '../data/mkProtocolRegistry'
 import { buildWifiExtendZteTextos } from '../data/wifiExtend/extendZte'
 import { buildWifiExtendTplinkTextos } from '../data/wifiExtend/extendTplink'
 import { buildPontoAdicionalTextos } from '../data/wifiExtend/pontoAdicional'
@@ -629,10 +630,12 @@ export function OsGeneratorPage() {
     return base
   }, [values, profile, user, selected?.slug])
 
-  const alteraSenhaSegmentos = useMemo(() => {
-    if (selected?.slug !== 'senha-altera-senha') return null
-    return buildAlteraSenhaSegmentos(values)
-  }, [selected?.slug, values])
+  const mkEntry = selected ? (MK_PROTOCOL_REGISTRY[selected.slug] ?? null) : null
+
+  const mkSegmentos = useMemo(() => {
+    if (!mkEntry) return null
+    return mkEntry.buildSegmentos(values)
+  }, [mkEntry, values])
 
   const modalTextoAgenda = useMemo(() => {
     if (!selected) return ''
@@ -742,7 +745,7 @@ export function OsGeneratorPage() {
   }, [user, selected, preview, values.cliente, values.nome, saveObs])
 
   const multiPreviewTabs = previewSections.length > 1
-  const showMkCards = selected?.slug === 'senha-altera-senha' && !!alteraSenhaSegmentos
+  const showMkCards = !!mkEntry && !!mkSegmentos
 
   const emptyFields = useMemo(() => {
     if (!selected) return []
@@ -1139,13 +1142,13 @@ export function OsGeneratorPage() {
               </Tabs>
             ) : null}
 
-            {selected?.slug === 'senha-altera-senha' && alteraSenhaSegmentos ? (
+            {showMkCards && mkEntry && mkSegmentos ? (
               <MkProtocolCards
-                slug={selected.slug}
+                slug={selected!.slug}
                 cpf={String(values.cpf ?? '')}
-                processoId={14}
-                classificacaoId={3}
-                segmentos={alteraSenhaSegmentos}
+                processoId={mkEntry.processoId}
+                classificacaoId={mkEntry.classificacaoId}
+                segmentos={mkSegmentos}
                 disabled={emptyFields.length > 0}
               />
             ) : (

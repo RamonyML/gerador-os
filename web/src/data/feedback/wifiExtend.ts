@@ -125,6 +125,13 @@ export function buildFeedbackWifiExtendTextos(
   return { feedbackWifiExtendTexto: lines.join('\n') }
 }
 
+export function buildFeedbackWifiExtendSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const { feedbackWifiExtendTexto } = buildFeedbackWifiExtendTextos(rawValues)
+  return { info: feedbackWifiExtendTexto, comentarios: [] }
+}
+
 function routerFields(index: number, showWhenValues: string[]): OsTemplateField[] {
   const i = String(index)
   const label = `Roteador ${index}`
@@ -230,6 +237,14 @@ function routerFields(index: number, showWhenValues: string[]): OsTemplateField[
 }
 
 export const FEEDBACK_WIFI_EXTEND_FIELDS: OsTemplateField[] = [
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 5 },
+  },
   {
     id: 'cliente',
     label: 'Nome do cliente',

@@ -67,7 +67,22 @@ export function buildFeedbackTrocaEquipTextos(
   return { feedbackTrocaEquipTexto: lines.join('\n') }
 }
 
+export function buildFeedbackTrocaEquipSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const { feedbackTrocaEquipTexto } = buildFeedbackTrocaEquipTextos(rawValues)
+  return { info: feedbackTrocaEquipTexto, comentarios: [] }
+}
+
 export const FEEDBACK_TROCA_EQUIP_FIELDS: OsTemplateField[] = [
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 5 },
+  },
   {
     id: 'cliente',
     label: 'Nome do cliente',
