@@ -100,7 +100,7 @@ export function buildInstGratisEmpresarialTextos(
 
   const quem =
     tipo === T_TERCEIRO_TERCEIRO || tipo === T_TERCEIRO_TITULAR
-      ? `${sp} (REPRESENTANTE DA EMPRESA DE ${cp})`
+      ? `${sp} (${parente})`
       : `${cp} (PROPRIETÁRIO DA EMPRESA)`
 
   const ending =
@@ -132,9 +132,9 @@ export const INST_GRATIS_EMPRESARIAL_FIELDS: OsTemplateField[] = [
     layout: { md: 12 },
     options: [
       { value: T_TITULAR, label: 'Proprietário solicita e acompanha' },
-      { value: T_TITULAR_TERCEIRO, label: 'Proprietário solicita e autoriza representante' },
-      { value: T_TERCEIRO_TERCEIRO, label: 'Representante solicita, proprietário autoriza' },
-      { value: T_TERCEIRO_TITULAR, label: 'Representante solicita, proprietário acompanha' },
+      { value: T_TITULAR_TERCEIRO, label: 'Titular solicita e autoriza terceiro' },
+      { value: T_TERCEIRO_TERCEIRO, label: 'Terceiro solicita, titular autoriza' },
+      { value: T_TERCEIRO_TITULAR, label: 'Terceiro solicita, titular acompanha' },
     ],
   },
   {

@@ -4,6 +4,7 @@ import {
   doc, serverTimestamp, query, orderBy, type DocumentData,
 } from 'firebase/firestore'
 import { db } from '../firebase'
+import { NotesViewer } from '../components/NotesViewer'
 
 interface Registro {
   id: string
@@ -26,6 +27,7 @@ export function RegistrosPage({ uid }: { uid: string }) {
   const [copied, setCopied] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [showNotes, setShowNotes] = useState(false)
 
   const toggleExpand = (id: string) =>
     setExpanded((prev) => {
@@ -100,6 +102,10 @@ export function RegistrosPage({ uid }: { uid: string }) {
     URL.revokeObjectURL(url)
   }
 
+  if (showNotes) {
+    return <NotesViewer uid={uid} onClose={() => setShowNotes(false)} />
+  }
+
   return (
     <div className="reg-root">
       {/* Toolbar */}
@@ -123,6 +129,13 @@ export function RegistrosPage({ uid }: { uid: string }) {
             </svg>
           </button>
         )}
+        <button className="btn-clear reg-notes-btn" onClick={() => setShowNotes(true)} title="Notas do Gerador">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/>
+            <path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/>
+            <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+          </svg>
+        </button>
       </div>
 
       {/* Lista */}

@@ -144,37 +144,49 @@ type Props = {
 export function ChatUserList({ onSelectUser }: Props) {
   const { presence, chats } = useChat()
   const { user } = useAuth()
-  const theme = useTheme()
-  const isDark = theme.palette.mode === 'dark'
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [filterUnread, setFilterUnread] = useState(false)
+
+  const getUnread = (u: UserPresence) => {
+    const chat = chats.find((c) => c.participants.includes(u.uid))
+    return user ? (chat?.unreadCount[user.uid] ?? 0) : 0
+  }
+
+  const sortByRecent = (a: UserPresence, b: UserPresence) => {
+    const chatA = chats.find((c) => c.participants.includes(a.uid))
+    const chatB = chats.find((c) => c.participants.includes(b.uid))
+    const timeA = chatA?.lastMessageAt?.getTime() ?? 0
+    const timeB = chatB?.lastMessageAt?.getTime() ?? 0
+    return timeB - timeA
+  }
 
   const normalized = query.trim().toLowerCase()
   const filtered = normalized
     ? presence.filter((u) => u.displayName.toLowerCase().includes(normalized))
     : presence
 
-  // Ordena dentro de cada grupo pelo tempo da última mensagem (mais recente primeiro)
-  const sortByRecent = (a: UserPresence, b: UserPresence) => {
-    const chatA = chats.find((c) => c.participants.includes(a.uid))
-    const chatB = chats.find((c) => c.participants.includes(b.uid))
-    // Conversas com não-lidas sempre primeiro
-    const unreadA = user ? (chatA?.unreadCount[user.uid] ?? 0) : 0
-    const unreadB = user ? (chatB?.unreadCount[user.uid] ?? 0) : 0
-    if (unreadA !== unreadB) return unreadB - unreadA
-    const timeA = chatA?.lastMessageAt?.getTime() ?? 0
-    const timeB = chatB?.lastMessageAt?.getTime() ?? 0
-    return timeB - timeA
-  }
+  // Usuários com não-lidas (qualquer status) — ficam sempre no topo
+  const unreadUsers = filtered.filter((u) => getUnread(u) > 0).sort(sortByRecent)
+  // Ativos sem não-lidas
+  const onlineClean = filtered.filter((u) => u.status !== 'offline' && getUnread(u) === 0).sort(sortByRecent)
+  // Offline sem não-lidas
+  const offlineClean = filtered.filter((u) => u.status === 'offline' && getUnread(u) === 0).sort(sortByRecent)
 
-  const online = filtered.filter((u) => u.status !== 'offline').sort(sortByRecent)
-  const offline = filtered.filter((u) => u.status === 'offline').sort(sortByRecent)
+  const totalUnreadCount = presence.reduce((acc, u) => acc + getUnread(u), 0)
 
   const handleOpenSearch = () => setSearchOpen(true)
-  const handleCloseSearch = () => {
-    setQuery('')
-    setSearchOpen(false)
-  }
+  const handleCloseSearch = () => { setQuery(''); setSearchOpen(false) }
+
+  const SectionLabel = ({ label, pt }: { label: string; pt?: number }) => (
+    <Typography
+      variant="caption"
+      color="text.secondary"
+      sx={{ px: 2.25, pt: pt ?? 0.5, pb: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+    >
+      {label}
+    </Typography>
+  )
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -210,6 +222,16 @@ export function ChatUserList({ onSelectUser }: Props) {
             <Typography variant="caption" color="text.secondary" sx={{ flex: 1, fontWeight: 600, letterSpacing: '0.04em' }}>
               {presence.length} {presence.length === 1 ? 'usuário' : 'usuários'}
             </Typography>
+            {totalUnreadCount > 0 && (
+              <Chip
+                label={filterUnread ? 'Todas' : `Não lidas ${totalUnreadCount}`}
+                size="small"
+                onClick={() => setFilterUnread((v) => !v)}
+                color={filterUnread ? 'primary' : 'error'}
+                variant={filterUnread ? 'filled' : 'outlined'}
+                sx={{ height: 20, fontSize: 10, fontWeight: 700, cursor: 'pointer', '& .MuiChip-label': { px: 0.75 } }}
+              />
+            )}
             <IconButton size="small" onClick={handleOpenSearch} sx={{ p: 0.25 }}>
               <SearchRoundedIcon sx={{ fontSize: 17, color: 'text.secondary' }} />
             </IconButton>
@@ -221,40 +243,43 @@ export function ChatUserList({ onSelectUser }: Props) {
       <Box sx={{ flex: 1, overflowY: 'auto', py: 0.5 }}>
         {presence.length === 0 ? (
           <Box sx={{ py: 4, textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              Nenhum usuário encontrado ainda
-            </Typography>
+            <Typography variant="body2" color="text.secondary">Nenhum usuário encontrado ainda</Typography>
           </Box>
         ) : filtered.length === 0 ? (
           <Box sx={{ py: 3, textAlign: 'center' }}>
-            <Typography variant="body2" color="text.disabled">
-              Nenhum resultado para "{query}"
-            </Typography>
+            <Typography variant="body2" color="text.disabled">Nenhum resultado para "{query}"</Typography>
           </Box>
+        ) : filterUnread ? (
+          // ── Modo filtro: só não lidas ──
+          unreadUsers.length === 0 ? (
+            <Box sx={{ py: 3, textAlign: 'center' }}>
+              <Typography variant="body2" color="text.disabled">Nenhuma mensagem não lida</Typography>
+            </Box>
+          ) : (
+            <>
+              <SectionLabel label={`Não lidas — ${unreadUsers.length}`} />
+              {unreadUsers.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+            </>
+          )
         ) : (
+          // ── Modo normal: não lidas no topo, depois ativos, depois offline ──
           <>
-            {online.length > 0 && (
+            {unreadUsers.length > 0 && (
               <>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ px: 2.25, py: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
-                >
-                  Ativos — {online.length}
-                </Typography>
-                {online.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+                <SectionLabel label={`Não lidas — ${unreadUsers.length}`} />
+                {unreadUsers.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
               </>
             )}
-            {offline.length > 0 && (
+            {onlineClean.length > 0 && (
               <>
-                <Typography
-                  variant="caption"
-                  color={isDark ? 'text.disabled' : 'text.disabled'}
-                  sx={{ px: 2.25, pt: 1.25, pb: 0.5, display: 'block', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}
-                >
-                  Offline — {offline.length}
-                </Typography>
-                {offline.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+                <SectionLabel label={`Ativos — ${onlineClean.length}`} pt={unreadUsers.length > 0 ? 1.25 : 0.5} />
+                {onlineClean.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
+              </>
+            )}
+            {offlineClean.length > 0 && (
+              <>
+                <SectionLabel label={`Offline — ${offlineClean.length}`} pt={1.25} />
+                {offlineClean.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
               </>
             )}
           </>

@@ -45,6 +45,7 @@ const MK_USER_MAP: Record<string, string> = {
   'cYldsb3BkogRPG9dQRbEcPjJKIc2': 'mz.vitorsilva',
   'EzcVPkrbnKZqG1Xqfravbp26cEv1': 'mz.luis',
   'dZGecnIydSbOSCDfkwH4bwJZilc2': 'mz.ronald',
+  'kV7VX6qkQObt5cZcF0cb2VRzDBn2': 'mz.karolayne',
 }
 
 function mkLoginByUid(uid: string): string | undefined {
@@ -584,6 +585,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           CodigoGrupoServico: grupoServico,
           CodigoTecnico: tecnicoId,
           CodigoAtendimento: atendimento.id,
+          categoria: 1,  // 1=cliente OS, 2=provedor OS — obrigatório a partir da release 74
         })
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)

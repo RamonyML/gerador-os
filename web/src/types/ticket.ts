@@ -45,9 +45,6 @@ export const TICKET_PRIORITY_LABELS: Record<TicketPriority, string> = {
 
 export type TicketCategory =
   | 'suporte_sistemas'
-  | 'suporte_hardware'
-  | 'troca_equipamento'
-  | 'manutencao_equipamento'
   | 'rede_conectividade'
   | 'acesso_senhas'
   | 'instalacao_software'
@@ -56,9 +53,6 @@ export type TicketCategory =
 
 export const TICKET_CATEGORIES: TicketCategory[] = [
   'suporte_sistemas',
-  'suporte_hardware',
-  'troca_equipamento',
-  'manutencao_equipamento',
   'rede_conectividade',
   'acesso_senhas',
   'instalacao_software',
@@ -68,9 +62,6 @@ export const TICKET_CATEGORIES: TicketCategory[] = [
 
 export const TICKET_CATEGORY_LABELS: Record<TicketCategory, string> = {
   suporte_sistemas: 'Suporte em sistemas',
-  suporte_hardware: 'Suporte em hardware',
-  troca_equipamento: 'Solicitação de troca de equipamento',
-  manutencao_equipamento: 'Manutenção em equipamento',
   rede_conectividade: 'Rede e conectividade',
   acesso_senhas: 'Acessos e senhas',
   instalacao_software: 'Instalação/atualização de software',
