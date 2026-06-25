@@ -327,6 +327,7 @@ export type MkSuporteRequest =
       action: 'inserir_comentario'
       atendimentoId: number
       comentario: string
+      tipo?: number  // 1=privado (default), 2=público
     }
   | { action: 'buscar_conexao'; cpf: string }
   | {
@@ -514,18 +515,27 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
     // ---- inserir_comentario: auth própria → insere comentário no atendimento ----
     if (action === 'inserir_comentario') {
-      const { atendimentoId, comentario } = req.data
+      const { atendimentoId, comentario, tipo } = req.data
       if (!comentario?.trim()) throw new HttpsError('invalid-argument', '"comentario" é obrigatório.')
       if (!atendimentoId) throw new HttpsError('invalid-argument', '"atendimentoId" é obrigatório.')
 
       if (cfg.shadow) {
-        console.log('[MK shadow] inserir_comentario:', JSON.stringify({ atendimentoId, comentario }))
+        console.log('[MK shadow] inserir_comentario:', JSON.stringify({ atendimentoId, comentario, tipo }))
         return { shadow: true }
       }
 
       try {
         const session = await mkAuth(cfg)
-        await mkInserirComentario(cfg, session, atendimentoId, comentario.trim(), mkLoginByUid(uid))
+        const params: Record<string, string | number> = {
+          sys: 'MK0',
+          token: session.token,
+          cd_atendimento: atendimentoId,
+          comentario: comentario.trim(),
+          tipo: tipo ?? 1,
+        }
+        const mkLogin = mkLoginByUid(uid)
+        if (mkLogin) params.user = mkLogin
+        await mkRequest<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params, session.jsessionid)
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)

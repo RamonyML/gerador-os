@@ -390,6 +390,7 @@ export function MkProtocolCards({
         action: 'inserir_comentario',
         atendimentoId,
         comentario: text,
+        tipo: index === 1 ? 1 : 2,  // 1º comentário privado, demais públicos
       })
       setCommentStates(prev => ({ ...prev, [index]: 'ok' }))
     } catch (e) {
