@@ -1,4 +1,4 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   T_TITULAR,
@@ -8,14 +8,14 @@ import {
 } from '../mudEnd/padrao'
 
 /**
- * ONU queimada (equipamento queimado) — mesma lógica do roteador/ONT queimado
+ * ONU queimada (equipamento queimado) — mesma logica do roteador/ONT queimado
  * (modo cobrada, dano ocasionado, separadores `=`×41, sinal fixo DYINGGASP).
  *
  * Paridade (titular) com legado-exemplo/suporte/equip-queimado/onu-queimada/onu-queimada.html.
  *
- * As variações de Pessoa Jurídica e Terceiros (1/2) e o pagamento na mensalidade
- * NÃO possuem implementação no legado (abas/botões apontavam para `#`); foram
- * compostas por ANALOGIA — o titular permanece fiel byte-a-byte e é coberto por teste.
+ * As variacoes de Pessoa Juridica e Terceiros (1/2) e o pagamento na mensalidade
+ * NAO possuem implementacao no legado (abas/botoes apontavam para `#`); foram
+ * compostas por ANALOGIA — o titular permanece fiel byte-a-byte e e coberto por teste.
  */
 
 export const T_PJ = 'pessoa-juridica'
@@ -23,13 +23,13 @@ export const T_PJ = 'pessoa-juridica'
 const SEP_EQ = '='.repeat(41)
 
 const S_SOL = 'DADOS DO SOLICITANTE'
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
-const S_DET = 'DETALHES DA OCORRÊNCIA'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
+const S_DET = 'DETALHES DA OCORRENCIA'
 const S_AGE = 'AGENDAMENTO'
 
-const ALARME_POWER = 'ESTÁ APENAS COM A LUZ POWER ACESA'
-const ALARME_POWER_LAN = 'ESTÁ APENAS COM AS LUZES POWER/LAN ACESAS'
-const ALARME_APAGADAS = 'ESTÁ COM TODAS AS LUZES APAGADAS'
+const ALARME_POWER = 'ESTA APENAS COM A LUZ POWER ACESA'
+const ALARME_POWER_LAN = 'ESTA APENAS COM AS LUZES POWER/LAN ACESAS'
+const ALARME_APAGADAS = 'ESTA COM TODAS AS LUZES APAGADAS'
 
 export const ONU_QUEIMADA_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -85,7 +85,7 @@ export function buildOnuQueimadaTextos(
   const horaVisita = v.horaVisita
   const mensal = v.pagamento === 'MENSALIDADE'
 
-  // Peças que variam por tipo de solicitação.
+  // Pecas que variam por tipo de solicitacao.
   const isTerceiro = TIPOS_TERCEIRO.includes(tipo)
   let abertura = cp
   let nome = cp
@@ -100,16 +100,16 @@ export function buildOnuQueimadaTextos(
   }
 
   const agree = mensal
-    ? `CONCORDOU COM A VISITA E CASO HAJA COBRANÇA OPTOU POR LANÇAR O VALOR NA PRÓXIMA MENSALIDADE`
-    : `CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM ${formaPag}`
+    ? `CONCORDOU COM A VISITA E CASO HAJA COBRANCA OPTOU POR LANCAR O VALOR NA PROXIMA MENSALIDADE`
+    : `CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}`
   const visita = `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA O DIA ${dataVisita} ${horaVisita}`
-  const proced = `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
+  const proced = `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
 
   // Fechamento do PROTOCOLO (varia por tipo).
   let closeProtoLines: string[]
   if (tipo === T_TITULAR_TERCEIRO) {
     closeProtoLines = [
-      `${cp} ${agree},${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`,
+      `${cp} ${agree},${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`,
     ]
   } else if (tipo === T_TERCEIRO_TERCEIRO) {
     closeProtoLines = [
@@ -121,48 +121,48 @@ export function buildOnuQueimadaTextos(
     closeProtoLines = [
       `${sp_} ${agree}.`,
       '',
-      `${proced} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.`,
+      `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.`,
     ]
   } else {
     // T_TITULAR / T_PJ (fiel ao legado p/ titular)
     closeProtoLines = [
-      `${nome} ${agree},DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. ${visita}.`,
+      `${nome} ${agree},DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visita}.`,
     ]
   }
 
   // Fechamento da O.S (varia por tipo).
   let osClose: string
   if (tipo === T_TITULAR_TERCEIRO) {
-    osClose = `${cp} ${agree}, ${cp} NÃO ESTARÁ PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`
+    osClose = `${cp} ${agree}, ${cp} NAO ESTARA PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`
   } else if (tipo === T_TERCEIRO_TERCEIRO) {
     osClose = `${sp_} ${agree}. ${proced} AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`
   } else if (tipo === T_TERCEIRO_TITULAR) {
-    osClose = `${sp_} ${agree}. ${proced} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.`
+    osClose = `${sp_} ${agree}. ${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.`
   } else {
     // T_TITULAR / T_PJ (fiel ao legado p/ titular)
     osClose = `${nome} ${agree}. ${visita}.`
   }
 
   const protocoloTxt = [
-    `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP_EQ,
     '',
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU SEM SINAL (DYINGGASP).`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU SEM SINAL (DYINGGASP).`,
     '',
     SEP_EQ,
     '',
-    `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NÃO ESTÁ LIGANDO.`,
+    `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO.`,
     '',
-    `REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU ${alarme} (SEM SINAL: DYINGGASP).`,
+    `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ${alarme} (SEM SINAL: DYINGGASP).`,
     '',
-    `ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E INVERTE-LOS, FEITO, PORÉM, CONEXÃO NÃO RESTABELECEU.`,
+    `ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E INVERTE-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU.`,
     '',
-    `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+    `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
     '',
     SEP_EQ,
     '',
-    `INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS.`,
+    `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS.`,
     '',
     SEP_EQ,
     '',
@@ -171,13 +171,13 @@ export function buildOnuQueimadaTextos(
     `CLIENTE SEM DUVIDAS.`,
   ].join('\n')
 
-  const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, ${nome} DISSE "QUE ONU ${alarme}". REMOTAMENTE VERIFIQUEI QUE ONU ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${nome} A INVERTER AS FONTES DE ENERGIA DOS EQUIPAMENTOS (ONU E ROTEADOR) E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${nome} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS. ${osClose}`
-  const tecnico = `TÉCNICO: CONFERIR AS TOMADAS,  T , ETC. ONDE ESTÃO LIGADOS ONU E ROTEADOR. CONFERIR FONTES DOS EQUIPAMENTOS E CONFERIR ONU (APARÊNCIA FÍSICA). SE NÃO FOR PROBLEMAS NA TOMADA, NAS FONTES E ONU ESTIVER SEM AVARIAS, SUBSTITUIR ONU ${onu} POR OUTRA SIMILAR. EFETUAR TESTES PADRÕES, FILMAR E FOTOGRAFAR. VERIFICAR ATUALIZAÇÃO DO FIRMWARE DO ROTEADOR. CASO PROBLEMA SEJA NA TOMADA,  T , FONTES OU ONU AVARIADA: FILMAR E ENCAMINHAR PARA SUPORTE QUE LIGARÁ DE IMEDIATO PARA CLIENTE. SANAR TODAS AS DÚVIDAS DE ${nome}. TEMPO ESTIMADO 40 MINUTOS.`
+  const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, ${nome} DISSE "QUE ONU ${alarme}". REMOTAMENTE VERIFIQUEI QUE ONU ESTA DESCONECTADO/APAGADA. ORIENTEI ${nome} A INVERTER AS FONTES DE ENERGIA DOS EQUIPAMENTOS (ONU E ROTEADOR) E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS. ${osClose}`
+  const tecnico = `TECNICO: CONFERIR AS TOMADAS,  T , ETC. ONDE ESTAO LIGADOS ONU E ROTEADOR. CONFERIR FONTES DOS EQUIPAMENTOS E CONFERIR ONU (APARENCIA FISICA). SE NAO FOR PROBLEMAS NA TOMADA, NAS FONTES E ONU ESTIVER SEM AVARIAS, SUBSTITUIR ONU ${onu} POR OUTRA SIMILAR. EFETUAR TESTES PADROES, FILMAR E FOTOGRAFAR. VERIFICAR ATUALIZACAO DO FIRMWARE DO ROTEADOR. CASO PROBLEMA SEJA NA TOMADA,  T , FONTES OU ONU AVARIADA: FILMAR E ENCAMINHAR PARA SUPORTE QUE LIGARA DE IMEDIATO PARA CLIENTE. SANAR TODAS AS DUVIDAS DE ${nome}. TEMPO ESTIMADO 40 MINUTOS.`
   const os = `${intro}
 
 ${SEP_EQ}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${tecnico}`
 
@@ -206,13 +206,13 @@ const ONU_OPTIONS = [
 export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
   {
     id: 'tipoSolicitacao',
-    label: 'Tipo de solicitação',
+    label: 'Tipo de solicitacao',
     control: 'select',
     highlight: true,
     defaultValue: T_TITULAR,
     options: [
       { value: T_TITULAR, label: 'Titular solicita e acompanha', icon: 'user-round' },
-      { value: T_PJ, label: 'Pessoa jurídica', icon: 'factory' },
+      { value: T_PJ, label: 'Pessoa juridica', icon: 'factory' },
       {
         value: T_TERCEIRO_TERCEIRO,
         label: 'Terceiro solicita (titular ausente)',
@@ -242,9 +242,9 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'cargo',
-    label: 'Cargo/Função',
+    label: 'Cargo/Funcao',
     control: 'text',
-    placeholder: 'Ex.: Sócio, Admin, Gerente…',
+    placeholder: 'Ex.: Socio, Admin, Gerente…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: [T_PJ] },
     layout: { md: 4 },
@@ -253,7 +253,7 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
     id: 'parente',
     label: 'Grau de relacionamento',
     control: 'text',
-    placeholder: 'Ex.: Mãe, Filho, Irmão, Esposa…',
+    placeholder: 'Ex.: Mae, Filho, Irmao, Esposa…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_TERCEIRO },
     layout: { md: 4 },
@@ -262,18 +262,26 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
     id: 'contatoSol',
     label: 'Contato do solicitante',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_CONTATO_SOL },
     layout: { md: 4 },
   },
   {
-    id: 'cliente',
-    label: 'Nome completo / Razão social',
+    id: 'cpf',
+    label: 'CPF / CNPJ',
     control: 'text',
-    placeholder: 'Nome completo (ou razão social, p/ pessoa jurídica)',
+    placeholder: 'Somente numeros',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 4 },
+  },
+  {
+    id: 'cliente',
+    label: 'Nome completo / Razao social',
+    control: 'text',
+    placeholder: 'Nome completo (ou razao social, p/ pessoa juridica)',
+    section: S_ID,
+    layout: { md: 8 },
   },
   {
     id: 'canal',
@@ -282,7 +290,7 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -290,7 +298,7 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 4 },
   },
@@ -350,11 +358,23 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
     defaultValue: 'AVISTA',
     layout: { md: 4 },
     options: [
-      { value: 'AVISTA', label: 'À vista (no ato)' },
-      { value: 'MENSALIDADE', label: 'Lançar na mensalidade' },
+      { value: 'AVISTA', label: 'A vista (no ato)' },
+      { value: 'MENSALIDADE', label: 'Lancar na mensalidade' },
     ],
   },
 ]
+
+export function buildOnuQueimadaSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { onuQueimadaTextoProtocolo } = buildOnuQueimadaTextos(rawValues, operadorPrimeiroNome)
+  const segments = onuQueimadaTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
 
 export function getManutOnuQueimadaDefaults(): OsTemplatePresetPayload {
   return {

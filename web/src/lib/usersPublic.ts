@@ -19,6 +19,8 @@ export type PublicProfile = {
   photoURL: string | null
   sector: string
   hierarchy: string
+  /** Formato MM-DD, ex.: "07-15" para 15 de julho. */
+  birthday?: string
 }
 
 const COLLECTION = 'usersPublic'
@@ -67,12 +69,22 @@ export function subscribeUsersPublic(
           photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
           sector: typeof data.sector === 'string' ? data.sector : '',
           hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
+          birthday: typeof data.birthday === 'string' ? data.birthday : undefined,
         }
       })
       onNext(map)
     },
     (err) => onError?.(err),
   )
+}
+
+/** Grava ou remove o aniversário (MM-DD) de qualquer usuário — uso exclusivo dev/admin. */
+export async function setBirthday(
+  db: Firestore,
+  uid: string,
+  birthday: string | null,
+): Promise<void> {
+  await setDoc(doc(db, COLLECTION, uid), { birthday: birthday ?? null }, { merge: true })
 }
 
 /** Lista ordenada de todos os usuários do diretório público (para pausa, etc). */
@@ -92,6 +104,7 @@ export function subscribeUsersDirectory(
           photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
           sector: typeof data.sector === 'string' ? data.sector : '',
           hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
+          birthday: typeof data.birthday === 'string' ? data.birthday : undefined,
         }
       })
       onNext(users)

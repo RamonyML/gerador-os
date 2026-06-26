@@ -284,6 +284,7 @@ export function MkProtocolCards({
 }: Props) {
   const cards = [segmentos.info, ...segmentos.comentarios]
   const total = cards.length
+  const pendingCodes = processoId === 0 || classificacaoId === 0
 
   // ---- conexão ----
   const [buscaState, setBuscaState] = useState<CardState>('idle')
@@ -390,7 +391,7 @@ export function MkProtocolCards({
         action: 'inserir_comentario',
         atendimentoId,
         comentario: text,
-        tipo: index === 1 ? 1 : 2,  // 1º comentário privado, demais públicos
+        tipo: 1,
       })
       setCommentStates(prev => ({ ...prev, [index]: 'ok' }))
     } catch (e) {
@@ -403,8 +404,18 @@ export function MkProtocolCards({
   const anyStarted = card0State !== 'idle'
   const conexaoOk = buscaState === 'ok' && (conexoes.length === 0 || conexaoSelecionada !== '')
 
+  const isCardDone = (i: number) =>
+    i === 0 ? card0State === 'ok' : commentStates[i] === 'ok'
+
   return (
     <Stack spacing={1.5}>
+
+      {pendingCodes && (
+        <Alert severity="warning" icon={false} sx={{ py: 0.5, px: 1.5, borderRadius: 1.5, fontSize: 12 }}>
+          <strong>Integração pendente</strong> — aguardando o admin MK fornecer os códigos de processo e classificação para esta categoria.
+          Os textos abaixo estão disponíveis para cópia manual.
+        </Alert>
+      )}
 
       {/* Painel de busca de cliente + conexão */}
       {!card0Done && (
@@ -532,7 +543,7 @@ export function MkProtocolCards({
 
       {cards.map((text, i) => {
         const isFirst = i === 0
-        const enabled = !disabled && conexaoOk && (isFirst || card0Done)
+        const enabled = !disabled && conexaoOk && !pendingCodes && (isFirst ? true : isCardDone(i - 1))
         const cardState = isFirst ? card0State : (commentStates[i] ?? 'idle')
         const cardError = isFirst ? card0Error : (commentErrors[i] ?? '')
         const onSend = isFirst

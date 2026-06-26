@@ -157,11 +157,11 @@ async function mkRequest<T>(
   const qs = new URLSearchParams(
     Object.entries(params).map(([k, v]) => [k, String(v)])
   ).toString()
-  const url = `${baseUrl}${path}?${qs}`
+  const url = `${baseUrl}${path}`
   console.log(`[MK] POST ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
   const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' }
   if (jsessionid) headers['Cookie'] = `JSESSIONID=${jsessionid}`
-  const res = await fetch(url, { method: 'POST', body: '', headers, signal: AbortSignal.timeout(15_000) })
+  const res = await fetch(url, { method: 'POST', body: qs, headers, signal: AbortSignal.timeout(15_000) })
   // Captura JSESSIONID retornado pelo Tomcat para manter a sessão Java
   const setCookie = res.headers.get('set-cookie') ?? ''
   const match = setCookie.match(/JSESSIONID=([^;]+)/)
@@ -252,22 +252,67 @@ async function mkCriarAtendimento(cfg: MkConfig, session: MkSession, payload: Mk
   return { id, protocolo: data.Protocolo ?? '' }
 }
 
+// MK grava acentos como entidades HTML (&Aacute; etc.) antes do varchar(300).
+// Cada char não-ASCII custa ~8 chars. Estimamos o tamanho real para não ultrapassar.
+function mkEstimatedLength(text: string): number {
+  let len = 0
+  for (const ch of text) {
+    len += ch.charCodeAt(0) > 127 ? 8 : 1
+  }
+  return len
+}
+
+const HTML_RED_PREFIX = '<font color="#FF0000">'
+const HTML_RED_SUFFIX = '</font>'
+const HTML_RED_OVERHEAD = HTML_RED_PREFIX.length + HTML_RED_SUFFIX.length // 28
+
 async function mkInserirComentario(
   cfg: MkConfig,
   session: MkSession,
   atendimentoId: number,
   comentario: string,
   mkLogin?: string,
+  tipo = 1,
 ): Promise<void> {
-  const params: Record<string, string | number> = {
-    sys: 'MK0',
-    token: session.token,
-    cd_atendimento: atendimentoId,
-    comentario,
-    tipo: 1,
+  // tipo 1 = vermelho/privado: wrapper HTML consome 28 chars do varchar(300)
+  const contentMax = 290 - (tipo === 1 ? HTML_RED_OVERHEAD : 0)
+  const normalized = comentario
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean)
+    .join(' ')
+
+  const chunks: string[] = []
+  let remaining = normalized
+  while (mkEstimatedLength(remaining) > contentMax) {
+    let i = remaining.length
+    while (i > 0 && mkEstimatedLength(remaining.slice(0, i)) > contentMax) i--
+    const cut = remaining.slice(0, i).lastIndexOf(' ')
+    if (cut > 0) {
+      chunks.push(remaining.slice(0, cut))
+      remaining = remaining.slice(cut + 1)
+    } else {
+      chunks.push(remaining.slice(0, i))
+      remaining = remaining.slice(i)
+    }
   }
-  if (mkLogin) params.user = mkLogin
-  await mkRequest<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params, session.jsessionid)
+  if (remaining) chunks.push(remaining)
+
+  for (const chunk of chunks) {
+    const content = tipo === 1
+      ? `${HTML_RED_PREFIX}${chunk}${HTML_RED_SUFFIX}`
+      : chunk
+    const params: Record<string, string | number> = {
+      sys: 'MK0',
+      token: session.token,
+      cd_atendimento: atendimentoId,
+      comentario: content,
+      tipo,
+    }
+    if (mkLogin) params.user = mkLogin
+    await mkRequest<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params, session.jsessionid)
+  }
 }
 
 async function mkCriarOS(cfg: MkConfig, session: MkSession, payload: MkOsPayload): Promise<number> {
@@ -526,16 +571,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       try {
         const session = await mkAuth(cfg)
-        const params: Record<string, string | number> = {
-          sys: 'MK0',
-          token: session.token,
-          cd_atendimento: atendimentoId,
-          comentario: comentario.trim(),
-          tipo: tipo ?? 1,
-        }
         const mkLogin = mkLoginByUid(uid)
-        if (mkLogin) params.user = mkLogin
-        await mkRequest<Record<string, unknown>>(cfg.baseUrl, '/mk/WSMKAtendimentoComentario.rule', params, session.jsessionid)
+        await mkInserirComentario(cfg, session, atendimentoId, comentario.trim(), mkLogin, tipo ?? 1)
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         throw new HttpsError('internal', `Falha ao inserir comentário: ${msg}`)

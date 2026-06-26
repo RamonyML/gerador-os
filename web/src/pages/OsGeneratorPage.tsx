@@ -1080,7 +1080,7 @@ export function OsGeneratorPage() {
                 >
                   Salvar O.S
                 </Button>
-                {multiPreviewTabs ? (
+                {multiPreviewTabs && !(showMkCards && mkEntry?.mode === 'new') ? (
                   <Button
                     size="small"
                     variant="outlined"
@@ -1123,7 +1123,7 @@ export function OsGeneratorPage() {
               )
             ) : null}
 
-            {multiPreviewTabs ? (
+            {multiPreviewTabs && !(showMkCards && mkEntry?.mode === 'new') ? (
               <Tabs
                 value={Math.min(previewTab, previewSections.length - 1)}
                 onChange={(_, v) => setPreviewTab(v)}
@@ -1149,14 +1149,42 @@ export function OsGeneratorPage() {
             ) : null}
 
             {showMkCards && mkEntry && mkEntry.mode === 'new' && mkSegmentos ? (
-              <MkProtocolCards
-                slug={selected!.slug}
-                cpf={String(values.cpf ?? '')}
-                processoId={mkEntry.processoId}
-                classificacaoId={mkEntry.classificacaoId}
-                segmentos={mkSegmentos}
-                disabled={emptyFields.length > 0}
-              />
+              <>
+                <MkProtocolCards
+                  slug={selected!.slug}
+                  cpf={String(values.cpf ?? '')}
+                  processoId={mkEntry.processoId}
+                  classificacaoId={mkEntry.classificacaoId}
+                  segmentos={mkSegmentos}
+                  disabled={emptyFields.length > 0}
+                />
+                {previewSections.slice(1).map((sec) => (
+                  <Accordion key={sec.id} disableGutters variant="outlined" sx={{ borderRadius: '8px !important', '&:before': { display: 'none' } }}>
+                    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ minHeight: 40, '& .MuiAccordionSummary-content': { my: 0.75 } }}>
+                      <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, color: 'text.secondary' }}>
+                        {sec.label}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ pt: 0, pb: 1.5 }}>
+                      <Box
+                        component="pre"
+                        sx={{ m: 0, fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 1.55, color: 'text.primary', fontFamily: 'inherit' }}
+                      >
+                        {sec.body}
+                      </Box>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<ContentCopy sx={{ fontSize: 13 }} />}
+                        onClick={() => { void navigator.clipboard.writeText(sec.body) }}
+                        sx={{ mt: 1, fontSize: 12 }}
+                      >
+                        Copiar
+                      </Button>
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+              </>
             ) : showMkCards && mkEntry && mkEntry.mode === 'comment' && mkFeedbackText !== null ? (
               <MkFeedbackCards
                 text={mkFeedbackText}

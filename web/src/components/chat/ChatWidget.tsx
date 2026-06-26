@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Badge, Box, IconButton, Paper, Slide, Tooltip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded'
@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG } from '../../types/chat'
 import type { UserPresence } from '../../types/chat'
+import { useTodaysBirthdays } from '../../hooks/useTodaysBirthdays'
 import { ChatStatusMenu } from './ChatStatusMenu'
 import { ChatUserList } from './ChatUserList'
 import { ChatConversation } from './ChatConversation'
@@ -19,6 +20,13 @@ export function ChatWidget() {
   const primary = theme.palette.primary.main
 
   const [statusAnchor, setStatusAnchor] = useState<HTMLElement | null>(null)
+  const todaysBirthdays = useTodaysBirthdays()
+  const [birthdayDismissed, setBirthdayDismissed] = useState(false)
+
+  // Reaparece toda vez que o chat é aberto
+  useEffect(() => {
+    if (isWidgetOpen) setBirthdayDismissed(false)
+  }, [isWidgetOpen])
 
   // Se o usuário não está autenticado, não renderiza
   if (!user || !profile) return null
@@ -128,6 +136,44 @@ export function ChatWidget() {
               <CloseRoundedIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Box>
+
+          {/* Banner de aniversariante(s) do dia */}
+          {todaysBirthdays.length > 0 && !birthdayDismissed && (
+            <Box
+              sx={{
+                px: 1.5,
+                pt: 0.875,
+                pb: 0.75,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 0.75,
+                borderBottom: 1,
+                borderColor: 'divider',
+                bgcolor: isDark ? alpha('#f59e0b', 0.12) : alpha('#fef3c7', 0.9),
+                flexShrink: 0,
+              }}
+            >
+              <Typography sx={{ fontSize: 16, lineHeight: 1, mt: 0.125 }}>🎂</Typography>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography sx={{ fontWeight: 700, color: isDark ? '#fcd34d' : '#92400e', fontSize: 12, lineHeight: 1.3 }}>
+                  {todaysBirthdays.map((u) => u.displayName ?? 'Alguém').join(' e ')}
+                  {todaysBirthdays.length === 1 ? ' faz aniversário hoje!' : ' fazem aniversário hoje!'}
+                </Typography>
+                <Typography sx={{ fontSize: 11, color: isDark ? alpha('#fcd34d', 0.75) : '#a16207', mt: 0.25, lineHeight: 1.3 }}>
+                  Que tal abrir a conversa e mandar um parabéns? 🎉
+                </Typography>
+              </Box>
+              <Tooltip title="Fechar">
+                <IconButton
+                  size="small"
+                  onClick={() => setBirthdayDismissed(true)}
+                  sx={{ color: isDark ? '#fcd34d' : '#a16207', p: 0.25, mt: -0.25 }}
+                >
+                  <CloseRoundedIcon sx={{ fontSize: 14 }} />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
 
           {/* Conteúdo: conversa ativa ou lista de usuários */}
           <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>

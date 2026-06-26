@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import pfHtml from '../../../../legado-exemplo/suporte/lentidao/index-lentidao.html?raw'
 import pjHtml from '../../../../legado-exemplo/suporte/lentidao/index-lentidao-pj.html?raw'
 import isentoPfHtml from '../../../../legado-exemplo/suporte/lentidao/isento/index-lentidao.html?raw'
@@ -19,7 +19,7 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/lentidao/ — o teste extrai e EXECUTA
- * a própria função gerarTextos() de cada HTML legado e compara com o builder.
+ * a propria funcao gerarTextos() de cada HTML legado e compara com o builder.
  */
 
 type Inputs = Record<string, string>
@@ -51,14 +51,14 @@ function runLegacy(html: string, inputs: Inputs) {
 }
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   solicitante: 'MARIA DAS DORES SOUZA',
   cargo: 'GERENTE',
   canal: 'WHATSAPP',
   contato: '1133334444',
   sinalONU: '-19.20 DBM',
-  oscila: 'SEM OSCILAÇÃO',
-  repetidor: ' CLIENTE NÃO POSSUI REPETIDOR DE SINAL.',
+  oscila: 'SEM OSCILACAO',
+  repetidor: ' CLIENTE NAO POSSUI REPETIDOR DE SINAL.',
   disp1: '8',
   disp2: '6',
   disp3: '2',
@@ -82,7 +82,7 @@ const CASES: Array<{ file: string; html: string; tipo: string }> = [
   { file: 'disp-remoto/index-lentidao-disp-pj.html', html: dispPjHtml, tipo: T_DISP_PJ },
 ]
 
-describe('visita de testes (lentidão) — paridade com legado', () => {
+describe('visita de testes (lentidao) — paridade com legado', () => {
   for (const { file, html, tipo } of CASES) {
     it(file, () => {
       const legacy = runLegacy(html, BASE)
@@ -97,6 +97,6 @@ describe('visita de testes (lentidão) — paridade com legado', () => {
     const rendered = renderTemplate(VISITA_TESTES_OUTPUT, built)
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN TESTES JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN TESTES JOAO DA SILVA SAURO')
   })
 })

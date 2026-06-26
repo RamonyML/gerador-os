@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import padraoHtml from '../../../../legado-exemplo/suporte/realoc-fibra/realoc-fibra.html?raw'
 import pjHtml from '../../../../legado-exemplo/suporte/realoc-fibra/realoc-fibra-pj.html?raw'
 import fibra1Html from '../../../../legado-exemplo/suporte/realoc-fibra/realoc-fibra1/realoc-fibra1.html?raw'
@@ -19,7 +19,7 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/realoc-fibra/ — o teste extrai e EXECUTA
- * a própria função gerarTextos() de cada HTML legado e compara com o builder.
+ * a propria funcao gerarTextos() de cada HTML legado e compara com o builder.
  */
 
 type Inputs = Record<string, string>
@@ -27,7 +27,7 @@ type Inputs = Record<string, string>
 function runLegacy(html: string, inputs: Inputs, operador: string) {
   const marker = "getElementById('textoAgenda').value = textoAgenda;"
   const endPos = html.indexOf(marker)
-  // Há uma gerarTextos() duplicada (stub) antes da real; pegamos a última.
+  // Ha uma gerarTextos() duplicada (stub) antes da real; pegamos a ultima.
   const start = html.lastIndexOf('function gerarTextos()', endPos)
   const fnSrc = html.slice(start, endPos + marker.length)
   const store: Record<string, string> = {}
@@ -54,7 +54,7 @@ function runLegacy(html: string, inputs: Inputs, operador: string) {
 }
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   contatoSol: '1199998888',
@@ -62,7 +62,7 @@ const BASE: Inputs = {
   bairro: 'CENTRO',
   motivo: 'REALIZOU REFORMA EM SUA SALA E PRECISA REALOCAR O DROP INTERNO',
   valor:
-    'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA.',
+    'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO FAZER EMENDA TECNICA, O VALOR E DE R$ 50,00 REFERENTE A MAO DE OBRA TECNICA.',
   dataVisita: '20/06/2026',
   horaVisita: '08:30',
   protocolo: '123.456',
@@ -96,12 +96,12 @@ describe('remanejamento de fibra — paridade com legado', () => {
     })
   }
 
-  it('output template renderiza as três abas', () => {
+  it('output template renderiza as tres abas', () => {
     const built = buildRealocFibraTextos({ ...BASE, tipoSolicitacao: T_TITULAR }, OPERADOR)
     const rendered = renderTemplate(REALOC_FIBRA_OUTPUT, built)
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN REMANEJAMENTO DE FIBRA JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN REMANEJAMENTO DE FIBRA JOAO DA SILVA SAURO')
   })
 })

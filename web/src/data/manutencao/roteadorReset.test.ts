@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import visitaHtml from '../../../../legado-exemplo/suporte/roteador-reset/index-roteador-reset.html?raw'
 import lojaHtml from '../../../../legado-exemplo/suporte/roteador-reset/rot-reset-loja/rot-reset-loja.html?raw'
 import {
@@ -11,7 +11,7 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/roteador-reset — o teste extrai e EXECUTA
- * a própria função gerarTextos() dos HTMLs legados e compara com o builder.
+ * a propria funcao gerarTextos() dos HTMLs legados e compara com o builder.
  */
 
 type Inputs = Record<string, string>
@@ -44,16 +44,16 @@ function runLegacy(source: string, inputs: Inputs, marker: string) {
 const OPERADOR = 'FULANO'
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   sinalONU: '-19.20 DBM',
-  oscila: 'SEM OSCILAÇÃO',
+  oscila: 'SEM OSCILACAO',
   roteador: 'TP-LINK 840',
 }
 
 describe('roteador resetado — paridade com legado', () => {
-  it('index-roteador-reset.html (visita técnica)', () => {
+  it('index-roteador-reset.html (visita tecnica)', () => {
     const inputs = {
       ...BASE,
       bairro: 'CENTRO',
@@ -90,7 +90,7 @@ describe('roteador resetado — paridade com legado', () => {
     expect(built.roteadorResetTextoAgenda).toBe('')
   })
 
-  it('output template compõe Protocolo, O.S e Agenda (visita)', () => {
+  it('output template compoe Protocolo, O.S e Agenda (visita)', () => {
     const built = buildRoteadorResetTextos(
       {
         ...BASE,
@@ -107,10 +107,10 @@ describe('roteador resetado — paridade com legado', () => {
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN ROTEADOR RESETADO JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN ROTEADOR RESETADO JOAO DA SILVA SAURO')
   })
 
-  it('output template compõe somente Protocolo (loja)', () => {
+  it('output template compoe somente Protocolo (loja)', () => {
     const built = buildRoteadorResetTextos(
       { ...BASE, tipoSolicitacao: M_LOJA, dataLigacao: '20/06/2026 14:30' },
       OPERADOR,

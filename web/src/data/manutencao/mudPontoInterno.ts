@@ -1,4 +1,4 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   T_TITULAR,
@@ -8,34 +8,34 @@ import {
 } from '../mudEnd/padrao'
 
 /**
- * Mudança de ponto interno — fluxo único com variações.
+ * Mudanca de ponto interno — fluxo unico com variacoes.
  * Paridade com legado-exemplo/suporte/mud-ponto-int/:
- * - mud-ponto-int.html (titular / padrão)
- * - mud-ponto-int-pj.html (pessoa jurídica)
+ * - mud-ponto-int.html (titular / padrao)
+ * - mud-ponto-int-pj.html (pessoa juridica)
  * - mudponto1/mudponto1.html (titular solicita e autoriza terceiro)
  * - mudponto2/mudponto2.html (terceiro solicita, titular ausente)
  * - mudponto3/mudponto3.html (terceiro solicita, titular presente)
  *
- * Observação: o legado mistura separadores `---` (titular/PJ/terceiro-autorizado)
- * e `*`×35 (variações de terceiro), além de espaçamentos inconsistentes
- * (linhas com 4 ou 8 espaços) — reproduzidos fielmente.
+ * Observacao: o legado mistura separadores `---` (titular/PJ/terceiro-autorizado)
+ * e `*`×35 (variacoes de terceiro), alem de espacamentos inconsistentes
+ * (linhas com 4 ou 8 espacos) — reproduzidos fielmente.
  */
 
 export const T_PJ = 'pessoa-juridica'
 
 const SEP_STAR = '*'.repeat(35)
 
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
 const S_SOL = 'DADOS DO SOLICITANTE'
-const S_DET = 'DETALHES DA SOLICITAÇÃO'
+const S_DET = 'DETALHES DA SOLICITACAO'
 const S_AGE = 'AGENDAMENTO'
 
 const VALOR_50 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA.'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO, O VALOR E DE R$ 50,00 REFERENTE A MAO DE OBRA TECNICA.'
 const VALOR_100 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 100,00 REFERENTE A MÃO DE OBRA TÉCNICA.'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO FAZER EMENDA TECNICA, O VALOR E DE R$ 100,00 REFERENTE A MAO DE OBRA TECNICA.'
 const VALOR_50_100 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS APROVEITANDO O MESMO DROP (CABO/FIBRA) O CUSTO DO SERVIÇO É DE R$50,00. EXPLIQUEI TAMBÉM QUE CASO DROP (CABO/FIBRA) NÃO TENHA SOBRA E FOR NECESSÁRIO SER SUBSTITUÍDO POR OUTRO, O CUSTO PASSA A SER DE R$100,00 (INCLUI PEÇAS E SERVIÇOS).'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS APROVEITANDO O MESMO DROP (CABO/FIBRA) O CUSTO DO SERVICO E DE R$50,00. EXPLIQUEI TAMBEM QUE CASO DROP (CABO/FIBRA) NAO TENHA SOBRA E FOR NECESSARIO SER SUBSTITUIDO POR OUTRO, O CUSTO PASSA A SER DE R$100,00 (INCLUI PECAS E SERVICOS).'
 
 export const MUD_PONTO_INT_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -65,14 +65,14 @@ function sp(n: number): string {
 }
 
 const TECNICO =
-  'TÉCNICO: EFETUAR A MUDANÇA DE PONTO DOS EQUIPAMENTOS PARA O LOCAL ESPECIFICADO PELO CLIENTE, CASO SEJA POSSÍVEL REAPROVEITAR CABO DROP USANDO A SOBRA E RECONECTORIZAR. SE NÃO DER TAMANHO, SERÁ NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO PARA CONCLUIR O SERVIÇO. REALIZAR TESTES E AFERIR VELOCIDADE DO PLANO, TESTAR E APRESENTAR ABRANGÊNCIA DO WI-FI COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT DE TESTES DA EMPRESA E COM OS DISPOSITIVOS DA CLIENTE E APRESENTAR VARIAÇÕES SE HOUVER. ATUALIZAR FIRMWARE DO ROTEADOR SE NECESSÁRIO. TEMPO ESTIMADO: 60 MIN.'
+  'TECNICO: EFETUAR A MUDANCA DE PONTO DOS EQUIPAMENTOS PARA O LOCAL ESPECIFICADO PELO CLIENTE, CASO SEJA POSSIVEL REAPROVEITAR CABO DROP USANDO A SOBRA E RECONECTORIZAR. SE NAO DER TAMANHO, SERA NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO PARA CONCLUIR O SERVICO. REALIZAR TESTES E AFERIR VELOCIDADE DO PLANO, TESTAR E APRESENTAR ABRANGENCIA DO WI-FI COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT DE TESTES DA EMPRESA E COM OS DISPOSITIVOS DA CLIENTE E APRESENTAR VARIACOES SE HOUVER. ATUALIZAR FIRMWARE DO ROTEADOR SE NECESSARIO. TEMPO ESTIMADO: 60 MIN.'
 
 function osText(intro: string): string {
   return `${intro}
 
 ${SEP_STAR}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${TECNICO}`
 }
@@ -114,51 +114,51 @@ export function buildMudPontoIntTextos(
 
   if (tipo === T_PJ) {
     protocoloTxt = [
-      `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMAÇÕES SOBRE MUDANÇA DE PONTO INTERNO`,
+      `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
       '---',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       '---',
       `QUESTIONADO ${sp_} DISSE QUE ${motivo}.`,
       '',
       `AMBIENTE ATUAL: ${ambienteAtual}`,
       `NOVO AMBIENTE: ${ambienteNovo}`,
       '',
-      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.`,
+      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTAO OU PIX.`,
       sp(4),
       SEP_STAR,
       sp(4),
-      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
     ].join('\n')
     os = osText(
-      `${sp_} (${cargo}) SOLICITOU POR ${canal} (${contato}) MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARÁ EM ${formaPag}. AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HORAS.`,
+      `${sp_} (${cargo}) SOLICITOU POR ${canal} (${contato}) MUDANCA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARA EM ${formaPag}. AGENDADA PARA ${dataVisita} AS ${horaVisita} HORAS.`,
     )
   } else if (tipo === T_TITULAR_TERCEIRO) {
     protocoloTxt = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMAÇÕES SOBRE MUDANÇA DE PONTO INTERNO`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
       '---',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       '---',
       `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
       sp(4),
       `AMBIENTE ATUAL: ${ambienteAtual}`,
       `NOVO AMBIENTE: ${ambienteNovo}`,
       sp(8),
-      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.`,
+      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTAO OU PIX.`,
       sp(4),
       SEP_STAR,
       sp(4),
-      `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}, ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     ].join('\n')
     os = osText(
-      `${cp} SOLICITOU POR ${canal} (${contato}) MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARÁ EM ${formaPag}. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} SOLICITOU POR ${canal} (${contato}) MUDANCA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARA EM ${formaPag}. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     )
   } else if (tipo === T_TERCEIRO_TERCEIRO) {
     protocoloTxt = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMAÇÕES SOBRE MUDANÇA DE PONTO INTERNO`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
       '',
       SEP_STAR,
       '',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU} SEM OSCILAÇÃO.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} SEM OSCILACAO.`,
       '',
       SEP_STAR,
       '',
@@ -167,24 +167,24 @@ export function buildMudPontoIntTextos(
       `AMBIENTE ATUAL: ${ambienteAtual}`,
       `NOVO AMBIENTE: ${ambienteNovo}`,
       '',
-      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.`,
+      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTAO OU PIX.`,
       '',
       SEP_STAR,
       sp(4),
-      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}.`,
+      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}.`,
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     ].join('\n')
     os = osText(
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} ${sp_} SOLICITOU PAGAR EM ${formaPag}. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) MUDANCA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} ${sp_} SOLICITOU PAGAR EM ${formaPag}. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     )
   } else if (tipo === T_TERCEIRO_TITULAR) {
     protocoloTxt = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMAÇÕES SOBRE MUDANÇA DE PONTO INTERNO`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
       '',
       SEP_STAR,
       '',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       '',
       SEP_STAR,
       '',
@@ -193,37 +193,37 @@ export function buildMudPontoIntTextos(
       `AMBIENTE ATUAL: ${ambienteAtual}`,
       `NOVO AMBIENTE: ${ambienteNovo}`,
       '',
-      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.`,
+      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTAO OU PIX.`,
       sp(4),
       SEP_STAR,
       sp(4),
-      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}.`,
+      `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}.`,
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     ].join('\n')
     os = osText(
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} ${sp_} ESCOLHEU PAGAR EM ${formaPag}. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) MUDANCA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} ${sp_} ESCOLHEU PAGAR EM ${formaPag}. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
     )
   } else {
-    // T_TITULAR (padrão)
+    // T_TITULAR (padrao)
     protocoloTxt = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMAÇÕES SOBRE MUDANÇA DE PONTO INTERNO`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
       '---',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       '---',
       `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
       '',
       `AMBIENTE ATUAL: ${ambienteAtual}`,
       `NOVO AMBIENTE: ${ambienteNovo}`,
       '',
-      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.`,
+      `${valor} VALOR PAGO NO ATO EM DINHEIRO, CARTAO OU PIX.`,
       sp(4),
       SEP_STAR,
       sp(4),
-      `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA, PAGAMENTO SERÁ FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
     ].join('\n')
     os = osText(
-      `${cp} SOLICITOU POR ${canal} (${contato}) MUDANÇA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARÁ EM ${formaPag}. AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HORAS.`,
+      `${cp} SOLICITOU POR ${canal} (${contato}) MUDANCA DE PONTO INTERNO, RETIRAR EQUIPAMENTOS DE: ${ambienteAtual}, E REINSTALAR EM: ${ambienteNovo}. MOTIVO: ${motivo}. ${valor} CLIENTE PAGARA EM ${formaPag}. AGENDADA PARA ${dataVisita} AS ${horaVisita} HORAS.`,
     )
   }
 
@@ -241,13 +241,13 @@ const COM_CONTATO_SOL = [T_TERCEIRO_TERCEIRO, T_TERCEIRO_TITULAR]
 export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
   {
     id: 'tipoSolicitacao',
-    label: 'Tipo de solicitação',
+    label: 'Tipo de solicitacao',
     control: 'select',
     highlight: true,
     defaultValue: T_TITULAR,
     options: [
       { value: T_TITULAR, label: 'Titular solicita e acompanha', icon: 'user-round' },
-      { value: T_PJ, label: 'Pessoa jurídica', icon: 'factory' },
+      { value: T_PJ, label: 'Pessoa juridica', icon: 'factory' },
       {
         value: T_TERCEIRO_TERCEIRO,
         label: 'Terceiro solicita (titular ausente)',
@@ -277,9 +277,9 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'cargo',
-    label: 'Cargo/Função',
+    label: 'Cargo/Funcao',
     control: 'text',
-    placeholder: 'Ex.: Sócio, Admin, Gerente…',
+    placeholder: 'Ex.: Socio, Admin, Gerente…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: [T_PJ] },
     layout: { md: 4 },
@@ -288,7 +288,7 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
     id: 'parente',
     label: 'Grau de relacionamento',
     control: 'text',
-    placeholder: 'Ex.: Mãe, Filho, Irmão, Esposa…',
+    placeholder: 'Ex.: Mae, Filho, Irmao, Esposa…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_TERCEIRO },
     layout: { md: 4 },
@@ -297,18 +297,26 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
     id: 'contatoSol',
     label: 'Contato do solicitante',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_CONTATO_SOL },
     layout: { md: 4 },
   },
   {
-    id: 'cliente',
-    label: 'Nome completo / Razão social',
+    id: 'cpf',
+    label: 'CPF / CNPJ',
     control: 'text',
-    placeholder: 'Nome completo (ou razão social, p/ pessoa jurídica)',
+    placeholder: 'Somente numeros',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 4 },
+  },
+  {
+    id: 'cliente',
+    label: 'Nome completo / Razao social',
+    control: 'text',
+    placeholder: 'Nome completo (ou razao social, p/ pessoa juridica)',
+    section: S_ID,
+    layout: { md: 8 },
   },
   {
     id: 'canal',
@@ -317,7 +325,7 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 3 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -325,7 +333,7 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 3 },
   },
@@ -347,7 +355,7 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'motivo',
-    label: 'Motivo da mudança de ponto (o que o cliente disse)',
+    label: 'Motivo da mudanca de ponto (o que o cliente disse)',
     control: 'text',
     placeholder: "Ex.: 'realizou uma reforma em sua sala e deseja alterar o roteador de lugar'",
     section: S_DET,
@@ -379,7 +387,7 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'valor',
-    label: 'Valor / explicação de custo',
+    label: 'Valor / explicacao de custo',
     control: 'select',
     section: S_DET,
     layout: { md: 12 },
@@ -403,10 +411,22 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
   },
 ]
 
+export function buildMudPontoIntSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { mudPontoIntTextoProtocolo } = buildMudPontoIntTextos(rawValues, operadorPrimeiroNome)
+  const segments = mudPontoIntTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
+
 export function getManutMudPontoIntDefaults(): OsTemplatePresetPayload {
   return {
     slug: 'manut-mud-ponto-int',
-    title: 'Mudança de ponto interno',
+    title: 'Mudanca de ponto interno',
     demandCategory: 'manutencao',
     outputTemplate: MUD_PONTO_INT_OUTPUT,
     fields: MUD_PONTO_INT_FIELDS.map((f) => ({ ...f })),

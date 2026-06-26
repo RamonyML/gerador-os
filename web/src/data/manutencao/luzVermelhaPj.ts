@@ -1,20 +1,20 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 
 /**
- * Luz vermelha / PON piscando — Pessoa Jurídica.
+ * Luz vermelha / PON piscando — Pessoa Juridica.
  * Paridade com legado-exemplo/suporte/luz-vermelha/luzv-pj-padrao/index-luzverm-padrao-pj.html.
  */
 
 const SEP_AST = '*'.repeat(19)
 const SEP_OS = '='.repeat(39)
 
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
-const S_DET = 'DETALHES DA OCORRÊNCIA'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
+const S_DET = 'DETALHES DA OCORRENCIA'
 const S_AGE = 'AGENDAMENTO'
 
 const TECNICO =
-  'TÉCNICO: VERIFICAR CONECTOR E DROP INTERNO E EXTERNO, ACHANDO O PROBLEMA APRESENTAR AO CLIENTE. SENDO DEFEITO EM QUE É DE OBRIGAÇÃO DO PROVEDOR, TOMAR PROVIDÊNCIAS E RESTITUIR SEM CUSTO. SENDO OCASIONADO PEDIR AUTORIZAÇÃO DO CLIENTE PARA CORRIGIR E RESTABELECER LEMBRANDO DO VALOR A SER COBRADO NO ATO. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WI-FI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADO. TEMPO ESTIMADO 60 MIN.'
+  'TECNICO: VERIFICAR CONECTOR E DROP INTERNO E EXTERNO, ACHANDO O PROBLEMA APRESENTAR AO CLIENTE. SENDO DEFEITO EM QUE E DE OBRIGACAO DO PROVEDOR, TOMAR PROVIDENCIAS E RESTITUIR SEM CUSTO. SENDO OCASIONADO PEDIR AUTORIZACAO DO CLIENTE PARA CORRIGIR E RESTABELECER LEMBRANDO DO VALOR A SER COBRADO NO ATO. APOS RESTITUIR INTERNET, DAR EXPLICACOES SOBRE PLANO, WI-FI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTENCIAS NA INSTALACAO QUE NAO TIVER PADRAO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADO. TEMPO ESTIMADO 60 MIN.'
 
 export const LUZ_VERMELHA_PJ_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -80,36 +80,36 @@ export function buildLuzVermelhaPjTextos(
   const cto = upper(v.cto)
   const passante = upper(v.passante)
 
-  const protocolo = `${solicitantePrimeiro} (${cargo}) ENTROU EM CONTATO POR ${v.canal ?? ''} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.
+  const protocolo = `${solicitantePrimeiro} (${cargo}) ENTROU EM CONTATO POR ${v.canal ?? ''} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.
 
 ${SEP_AST}
 ${sp(4)}
-CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${onuPrimeiro} SEM SINAL.
+CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${onuPrimeiro} SEM SINAL.
 ${sp(4)}
 ${SEP_AST}
 ${sp(4)}
-QUESTIONADO, DISSE QUE A ${onuPrimeiro} ESTÁ COM ${alarme}.
+QUESTIONADO, DISSE QUE A ${onuPrimeiro} ESTA COM ${alarme}.
 ${sp(4)}
-REMOTAMENTE VERIFIQUEI QUE ${onuPrimeiro} ESTÁ DESCONECTADO/APAGADA. 
-ORIENTEI ${solicitantePrimeiro} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. 
+REMOTAMENTE VERIFIQUEI QUE ${onuPrimeiro} ESTA DESCONECTADO/APAGADA. 
+ORIENTEI ${solicitantePrimeiro} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. 
 ${sp(4)}
-PERGUNTEI A ${solicitantePrimeiro} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. 
-${sp(4)}
-${SEP_AST}
-${sp(4)}
-INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E CASO OS EQUIPAMENTOS TENHAM DEFEITOS OCASIONADOS, SERÁ COBRADO O VALOR REFERENTE AOS MESMOS.
+PERGUNTEI A ${solicitantePrimeiro} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. 
 ${sp(4)}
 ${SEP_AST}
 ${sp(4)}
-${solicitantePrimeiro} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E CASO HAJA CUSTOS PAGARÁ EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${v.dataVisita ?? ''} ÀS ${v.horaVisita ?? ''} HRS.
+INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E CASO OS EQUIPAMENTOS TENHAM DEFEITOS OCASIONADOS, SERA COBRADO O VALOR REFERENTE AOS MESMOS.
+${sp(4)}
+${SEP_AST}
+${sp(4)}
+${solicitantePrimeiro} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${v.dataVisita ?? ''} AS ${v.horaVisita ?? ''} HRS.
 
 CLIENTE SEM DUVIDAS.`
 
-  const osBase = `${solicitantePrimeiro} (${cargo}) ENTROU EM CONTATO POR ${v.canal ?? ''} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${onuPrimeiro} ESTÁ COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ONU ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${solicitantePrimeiro} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI A ${solicitantePrimeiro} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS. ${solicitantePrimeiro} CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM ${formaPag}. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita ?? ''} ÀS ${v.horaVisita ?? ''} HRS.`
+  const osBase = `${solicitantePrimeiro} (${cargo}) ENTROU EM CONTATO POR ${v.canal ?? ''} (${contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${onuPrimeiro} ESTA COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ONU ESTA DESCONECTADO/APAGADA. ORIENTEI ${solicitantePrimeiro} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI A ${solicitantePrimeiro} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS. ${solicitantePrimeiro} CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita ?? ''} AS ${v.horaVisita ?? ''} HRS.`
 
   const os = `${osBase}${ctoBlock(ctoType, cto, passante)}${SEP_OS}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${TECNICO}`
 
@@ -149,19 +149,27 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'cargo',
-    label: 'Cargo/Função',
+    label: 'Cargo/Funcao',
     control: 'text',
-    placeholder: 'Ex.: Sócio, Admin, Técnico, Gerente...',
+    placeholder: 'Ex.: Socio, Admin, Tecnico, Gerente...',
+    section: S_ID,
+    layout: { md: 4 },
+  },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente numeros',
     section: S_ID,
     layout: { md: 4 },
   },
   {
     id: 'cliente',
-    label: 'Razão Social',
+    label: 'Razao Social',
     control: 'text',
     placeholder: 'Informe o nome da empresa conforme cadastro no MK',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 8 },
   },
   {
     id: 'canal',
@@ -170,7 +178,7 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -178,7 +186,7 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 4 },
   },
@@ -223,9 +231,9 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'passante',
-    label: 'Localização do passante',
+    label: 'Localizacao do passante',
     control: 'text',
-    placeholder: "Ex.: 'Passante no poste próximo ao sobrado'",
+    placeholder: "Ex.: 'Passante no poste proximo ao sobrado'",
     section: S_DET,
     layout: { md: 8 },
   },
@@ -251,10 +259,22 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
   },
 ]
 
+export function buildLuzVermelhaPjSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { luzVmPjTextoProtocolo } = buildLuzVermelhaPjTextos(rawValues, operadorPrimeiroNome)
+  const segments = luzVmPjTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
+
 export function getManutLuzVermelhaPjDefaults(): OsTemplatePresetPayload {
   return {
     slug: 'manut-luz-vermelha-pj',
-    title: 'Luz vermelha — pessoa jurídica',
+    title: 'Luz vermelha — pessoa juridica',
     demandCategory: 'manutencao',
     outputTemplate: LUZ_VERMELHA_PJ_OUTPUT,
     fields: LUZ_VERMELHA_PJ_FIELDS.map((f) => ({ ...f })),

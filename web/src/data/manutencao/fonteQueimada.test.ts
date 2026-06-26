@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import comVisitaHtml from '../../../../legado-exemplo/suporte/equip-queimado/fonte-queimada.html?raw'
 import lojaHtml from '../../../../legado-exemplo/suporte/equip-queimado/fonte-queimada-loja.html?raw'
 import {
@@ -11,7 +11,7 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/equip-queimado/ — o teste extrai e EXECUTA
- * a própria função gerarTextos() de cada HTML legado e compara com o builder.
+ * a propria funcao gerarTextos() de cada HTML legado e compara com o builder.
  */
 
 type Inputs = Record<string, string>
@@ -47,7 +47,7 @@ const PROC =
   'ORIENTEI CLIENTE A INVERTER A FONTE DA ONU COM A DO ROTEADOR, E ASSIM EQUIPAMENTO FUNCIONOU'
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   sinalONU: '-31.87 DBM',
@@ -73,27 +73,27 @@ describe('fonte queimada — paridade com legado', () => {
   })
 
   it('fonte-queimada-loja.html (retirar na loja)', () => {
-    // O legado da loja usa horaVisita = período (MANHÃ/TARDE).
-    const lojaInputs = { ...BASE, horaVisita: 'MANHÃ' }
+    // O legado da loja usa horaVisita = periodo (MANHA/TARDE).
+    const lojaInputs = { ...BASE, horaVisita: 'MANHA' }
     const legacy = runLegacy(lojaHtml, lojaInputs)
     const built = buildFonteQueimadaTextos(
-      { ...BASE, tipoSolicitacao: M_LOJA, periodo: 'MANHÃ' },
+      { ...BASE, tipoSolicitacao: M_LOJA, periodo: 'MANHA' },
       OPERADOR,
     )
     expect(built.fonteQueimadaTextoProtocolo).toBe(legacy.textoProtocolo)
     expect(built.fonteQueimadaTextoAgenda).toBe(legacy.textoAgenda)
   })
 
-  it('output template compõe Protocolo, O.S e Agenda (com visita)', () => {
+  it('output template compoe Protocolo, O.S e Agenda (com visita)', () => {
     const built = buildFonteQueimadaTextos({ ...BASE, tipoSolicitacao: M_VISITA }, OPERADOR)
     const rendered = renderTemplate(FONTE_QUEIMADA_OUTPUT, built)
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN TROCA FONTE JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN TROCA FONTE JOAO DA SILVA SAURO')
   })
 
-  it('output template compõe Protocolo e LEIA, sem O.S (loja)', () => {
+  it('output template compoe Protocolo e LEIA, sem O.S (loja)', () => {
     const built = buildFonteQueimadaTextos(
       { ...BASE, tipoSolicitacao: M_LOJA, periodo: 'TARDE' },
       OPERADOR,

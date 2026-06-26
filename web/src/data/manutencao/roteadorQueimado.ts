@@ -1,4 +1,4 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   T_TITULAR,
@@ -8,18 +8,18 @@ import {
 } from '../mudEnd/padrao'
 
 /**
- * Roteador queimado (equipamento queimado) — fluxo único com dois modos de custo.
+ * Roteador queimado (equipamento queimado) — fluxo unico com dois modos de custo.
  *
  * Paridade (titular) com legado-exemplo/suporte/equip-queimado/:
  * - roteador-queimado/roteador-queimado.html  -> modo "cobrada" (separadores `=`×41):
  *   cobra R$50 + equipamento se o dano for ocasionado pelo cliente.
  * - script.js (roteador-queimado.html de topo) -> modo "isento" (separadores `*`):
- *   cliente isento do custo do roteador, paga só R$50 de deslocamento.
+ *   cliente isento do custo do roteador, paga so R$50 de deslocamento.
  *
- * As variações de Pessoa Jurídica e Terceiros (1/2) e o pagamento na mensalidade
- * NÃO possuem implementação no legado (abas/botões apontavam para `#`); foram
- * compostas por ANALOGIA seguindo o padrão das demais O.S — o titular permanece
- * fiel byte-a-byte ao legado e é coberto por testes.
+ * As variacoes de Pessoa Juridica e Terceiros (1/2) e o pagamento na mensalidade
+ * NAO possuem implementacao no legado (abas/botoes apontavam para `#`); foram
+ * compostas por ANALOGIA seguindo o padrao das demais O.S — o titular permanece
+ * fiel byte-a-byte ao legado e e coberto por testes.
  */
 
 export const M_COBRADA = 'cobrada'
@@ -32,11 +32,11 @@ const SEP19 = '*'.repeat(19)
 const SEP42 = '*'.repeat(42)
 
 const S_SOL = 'DADOS DO SOLICITANTE'
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
-const S_DET = 'DETALHES DA OCORRÊNCIA'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
+const S_DET = 'DETALHES DA OCORRENCIA'
 const S_AGE = 'AGENDAMENTO'
 
-/** Mapa nome do roteador -> valor (usado no modo isento, que exibe o preço). */
+/** Mapa nome do roteador -> valor (usado no modo isento, que exibe o preco). */
 const ROTEADOR_PRECO: Record<string, string> = {
   MULTILASER: 'R$150,00',
   'TP-LINK 840': 'R$150,00',
@@ -113,7 +113,7 @@ export function buildRoteadorQueimadoTextos(
   const horaCobrada = v.horaCobrada
   const mensal = !isento && v.pagamento === 'MENSALIDADE'
 
-  // Peças que variam por tipo de solicitação.
+  // Pecas que variam por tipo de solicitacao.
   const isTerceiro = TIPOS_TERCEIRO.includes(tipo)
   let abertura = cp
   let nome = cp
@@ -127,26 +127,26 @@ export function buildRoteadorQueimadoTextos(
     contatoOpen = contatoSol
   }
 
-  // Frases de "concordância" / agendamento conforme o modo.
+  // Frases de "concordancia" / agendamento conforme o modo.
   const agree = isento
-    ? `CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E PAGARÁ EM ${formaPag}`
+    ? `CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}`
     : mensal
-      ? `CONCORDOU COM A VISITA E CASO HAJA COBRANÇA OPTOU POR LANÇAR O VALOR NA PRÓXIMA MENSALIDADE`
-      : `CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM ${formaPag}`
+      ? `CONCORDOU COM A VISITA E CASO HAJA COBRANCA OPTOU POR LANCAR O VALOR NA PROXIMA MENSALIDADE`
+      : `CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}`
   const visitaProto = isento
-    ? `VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS`
+    ? `VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS`
     : `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA O DIA ${dataVisita} ${horaCobrada}`
   const visitaOS = isento
-    ? `VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS`
+    ? `VISITA AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS`
     : `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA O DIA ${dataVisita} ${horaCobrada}`
   const disseConn = isento ? ', ' : ','
-  const proced = `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
+  const proced = `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
 
   // Linhas de fechamento do PROTOCOLO (variam por tipo).
   let closeProtoLines: string[]
   if (tipo === T_TITULAR_TERCEIRO) {
     closeProtoLines = [
-      `${cp} ${agree}${disseConn}${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.`,
+      `${cp} ${agree}${disseConn}${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.`,
     ]
   } else if (tipo === T_TERCEIRO_TERCEIRO) {
     closeProtoLines = [
@@ -158,12 +158,12 @@ export function buildRoteadorQueimadoTextos(
     closeProtoLines = [
       `${sp_} ${agree}.`,
       '',
-      `${proced} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaProto}.`,
+      `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaProto}.`,
     ]
   } else {
     // T_TITULAR / T_PJ
     closeProtoLines = [
-      `${nome} ${agree}${disseConn}DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. ${visitaProto}.`,
+      `${nome} ${agree}${disseConn}DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visitaProto}.`,
     ]
   }
 
@@ -171,24 +171,24 @@ export function buildRoteadorQueimadoTextos(
   let osClose: string
   if (isento) {
     if (tipo === T_TITULAR_TERCEIRO) {
-      osClose = `${cp} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARÁ O PAGAMENTO EM ${formaPag}, ${cp} NÃO ESTARÁ PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
+      osClose = `${cp} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARA O PAGAMENTO EM ${formaPag}, ${cp} NAO ESTARA PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
     } else if (tipo === T_TERCEIRO_TERCEIRO) {
-      osClose = `${sp_} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARÁ O PAGAMENTO EM ${formaPag}. ${proced} AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
+      osClose = `${sp_} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARA O PAGAMENTO EM ${formaPag}. ${proced} AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
     } else if (tipo === T_TERCEIRO_TITULAR) {
-      osClose = `${sp_} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARÁ O PAGAMENTO EM ${formaPag}. ${proced} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaOS}.`
+      osClose = `${sp_} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARA O PAGAMENTO EM ${formaPag}. ${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaOS}.`
     } else if (tipo === T_PJ) {
-      osClose = `${nome} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARÁ O PAGAMENTO EM ${formaPag}. ${visitaOS}.`
+      osClose = `${nome} DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARA O PAGAMENTO EM ${formaPag}. ${visitaOS}.`
     } else {
       // T_TITULAR (fiel ao legado)
-      osClose = `CLIENTE DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARÁ O PAGAMENTO EM ${formaPag}. ${visitaOS}.`
+      osClose = `CLIENTE DISSE ESTAR CIENTE, AUTORIZOU A VISITA E CASO HAJA CUSTOS REALIZARA O PAGAMENTO EM ${formaPag}. ${visitaOS}.`
     }
   } else {
     if (tipo === T_TITULAR_TERCEIRO) {
-      osClose = `${cp} ${agree}, ${cp} NÃO ESTARÁ PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
+      osClose = `${cp} ${agree}, ${cp} NAO ESTARA PRESENTE MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
     } else if (tipo === T_TERCEIRO_TERCEIRO) {
       osClose = `${sp_} ${agree}. ${proced} AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaOS}.`
     } else if (tipo === T_TERCEIRO_TITULAR) {
-      osClose = `${sp_} ${agree}. ${proced} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaOS}.`
+      osClose = `${sp_} ${agree}. ${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaOS}.`
     } else {
       // T_TITULAR / T_PJ (fiel ao legado p/ titular)
       osClose = `${nome} ${agree}. ${visitaOS}.`
@@ -200,23 +200,23 @@ export function buildRoteadorQueimadoTextos(
 
   if (isento) {
     protocoloTxt = [
-      `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       sp(4),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       sp(4),
       SEP19,
       sp(4),
-      `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NÃO ESTÁ LIGANDO.`,
+      `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO.`,
       sp(4),
-      `REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU ESTÁ ACESA (SINAL ${sinalONU}). ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, PORÉM, CONEXÃO NÃO RESTABELECEU. `,
+      `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ESTA ACESA (SINAL ${sinalONU}). ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU. `,
       sp(4),
-      `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
       sp(4),
       SEP19,
       sp(4),
-      `INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE DEVIDO ${nome} CONECTAR O EQUIPAMENTO À ENERGIA CONFORME RECOMENDAÇÃO DA MZNET, ESTARÁ ISENTO DO CUSTO DO ROTEADOR. FICANDO APENAS A COBRANÇA DO DESLOCAMENTO DO TÉCNICO COM O CUSTO DE R$50,00.`,
+      `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE DEVIDO ${nome} CONECTAR O EQUIPAMENTO A ENERGIA CONFORME RECOMENDACAO DA MZNET, ESTARA ISENTO DO CUSTO DO ROTEADOR. FICANDO APENAS A COBRANCA DO DESLOCAMENTO DO TECNICO COM O CUSTO DE R$50,00.`,
       sp(4),
       SEP19,
       sp(4),
@@ -225,37 +225,37 @@ export function buildRoteadorQueimadoTextos(
       `CLIENTE SEM DUVIDAS.`,
     ].join('\n')
 
-    const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET, QUESTIONADO DISSE QUE "QUE ROTEADOR ESTÁ COM TODAS AS LUZES APAGADAS E ONU ESTÁ LIGADO NORMALMENTE". REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU ESTÁ ACESA (SINAL ${sinalONU}). ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, PORÉM, CONEXÃO NÃO RESTABELECEU. INFORMEI ${nome} QUE É NECESSÁRIO VISITA TÉCNICA, E QUE HAVENDO PROBLEMAS DE QUEIMA NA FONTE DE ENERGIA OU EQUIPAMENTO NÃO OCASIONADO, SUBSTITUIÇÃO DO COMODATO NÃO HAVERÁ CUSTOS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) COBRA-SE VISITA TÉCNICA DE R$50,00 MAIS O CUSTO DA PEÇA OU EQUIPAMENTO A SER SUBSTITUÍDO (FONTE R$40,00) OU (ROTEADOR ${roteadorPreco}), ${osClose}`
-    const tecnico = `TECNICO: CONFERIR ENERGIA DAS TOMADAS, ANALISAR FONTE E ROTEADOR, CASO ENERGIA E FONTE ESTIVER NORMAL, E EQUIPAMENTO NÃO APRESENTAR SINAL DE MAL USO OU QUEDA, SUBSTITUIR FONTE E/OU ROTEADOR QUEIMADO, RESTABELECER CONEXÃO E REALIZAR OS DEVIDOS TESTES. CASO ENERGIA NÃO ESTIVER NORMAL INSTRUIR ${nome} A VERIFICA-LA E COBRAR VISITA DE R$50,00 + EQUIPAMENTO DANIFICADO. APÓS RESTITUIR INTERNET, DAR EXPLICAÇÕES SOBRE PLANO, WIFI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 60 MIN.`
+    const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET, QUESTIONADO DISSE QUE "QUE ROTEADOR ESTA COM TODAS AS LUZES APAGADAS E ONU ESTA LIGADO NORMALMENTE". REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ESTA ACESA (SINAL ${sinalONU}). ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU. INFORMEI ${nome} QUE E NECESSARIO VISITA TECNICA, E QUE HAVENDO PROBLEMAS DE QUEIMA NA FONTE DE ENERGIA OU EQUIPAMENTO NAO OCASIONADO, SUBSTITUICAO DO COMODATO NAO HAVERA CUSTOS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO) COBRA-SE VISITA TECNICA DE R$50,00 MAIS O CUSTO DA PECA OU EQUIPAMENTO A SER SUBSTITUIDO (FONTE R$40,00) OU (ROTEADOR ${roteadorPreco}), ${osClose}`
+    const tecnico = `TECNICO: CONFERIR ENERGIA DAS TOMADAS, ANALISAR FONTE E ROTEADOR, CASO ENERGIA E FONTE ESTIVER NORMAL, E EQUIPAMENTO NAO APRESENTAR SINAL DE MAL USO OU QUEDA, SUBSTITUIR FONTE E/OU ROTEADOR QUEIMADO, RESTABELECER CONEXAO E REALIZAR OS DEVIDOS TESTES. CASO ENERGIA NAO ESTIVER NORMAL INSTRUIR ${nome} A VERIFICA-LA E COBRAR VISITA DE R$50,00 + EQUIPAMENTO DANIFICADO. APOS RESTITUIR INTERNET, DAR EXPLICACOES SOBRE PLANO, WIFI E DISPOSITIVOS, CORRIGIR QUALQUER INCONSISTENCIAS NA INSTALACAO QUE NAO TIVER PADRAO, ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 60 MIN.`
     os = `${intro}
 
 ${SEP42}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${tecnico}`
   } else {
     // M_COBRADA
     protocoloTxt = [
-      `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP_EQ,
       '',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
       '',
       SEP_EQ,
       '',
-      `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NÃO ESTÁ LIGANDO (${roteador}).`,
+      `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO (${roteador}).`,
       '',
-      `REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU ESTÁ ONLINE COM SINAL ${sinalONU}.`,
+      `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ESTA ONLINE COM SINAL ${sinalONU}.`,
       '',
-      `ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E INVERTE-LOS, FEITO, PORÉM, CONEXÃO NÃO RESTABELECEU.`,
+      `ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E INVERTE-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU.`,
       '',
-      `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
       '',
       SEP_EQ,
       '',
-      `INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS.`,
+      `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS.`,
       '',
       SEP_EQ,
       '',
@@ -264,13 +264,13 @@ ${tecnico}`
       `CLIENTE SEM DUVIDAS.`,
     ].join('\n')
 
-    const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, ${nome} DISSE "QUE ROTEADOR ESTÁ COM TODAS AS LUZES APAGADAS". REMOTAMENTE VERIFIQUEI QUE ONU ESTÁ CONECTADA E COM SINAL ${sinalONU}. ORIENTEI ${nome} A INVERTER AS FONTES DE ENERGIA DOS EQUIPAMENTOS (ONU E ROTEADOR) E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${nome} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO), SERÁ COBRADA VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS SE DANIFICADOS. ${osClose}`
-    const tecnico = `TÉCNICO: CONFERIR AS TOMADAS, T, ETC. ONDE ESTÃO LIGADOS ONU E ROTEADOR. CONFERIR FONTES DOS EQUIPAMENTOS E CONFERIR ROTEADOR (APARÊNCIA FÍSICA). SE NÃO FOR PROBLEMAS NA TOMADA, NAS FONTES E ROTEADOR ESTIVER SEM AVARIAS, SUBSTITUIR ROTEADOR ${roteador} POR OUTRO SIMILAR. EFETUAR TESTES PADRÕES, FILMAR E FOTOGRAFAR. VERIFICAR ATUALIZAÇÃO DO FIRMWARE DO ROTEADOR. CASO PROBLEMA SEJA NA TOMADA,  T , FONTES OU ROTEADOR AVARIADO: FILMAR E ENCAMINHAR PARA SUPORTE QUE LIGARÁ DE IMEDIATO PARA CLIENTE. SANAR TODAS AS DÚVIDAS DE ${nome}. TEMPO ESTIMADO 40 MINUTOS.`
+    const intro = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, ${nome} DISSE "QUE ROTEADOR ESTA COM TODAS AS LUZES APAGADAS". REMOTAMENTE VERIFIQUEI QUE ONU ESTA CONECTADA E COM SINAL ${sinalONU}. ORIENTEI ${nome} A INVERTER AS FONTES DE ENERGIA DOS EQUIPAMENTOS (ONU E ROTEADOR) E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS. ${osClose}`
+    const tecnico = `TECNICO: CONFERIR AS TOMADAS, T, ETC. ONDE ESTAO LIGADOS ONU E ROTEADOR. CONFERIR FONTES DOS EQUIPAMENTOS E CONFERIR ROTEADOR (APARENCIA FISICA). SE NAO FOR PROBLEMAS NA TOMADA, NAS FONTES E ROTEADOR ESTIVER SEM AVARIAS, SUBSTITUIR ROTEADOR ${roteador} POR OUTRO SIMILAR. EFETUAR TESTES PADROES, FILMAR E FOTOGRAFAR. VERIFICAR ATUALIZACAO DO FIRMWARE DO ROTEADOR. CASO PROBLEMA SEJA NA TOMADA,  T , FONTES OU ROTEADOR AVARIADO: FILMAR E ENCAMINHAR PARA SUPORTE QUE LIGARA DE IMEDIATO PARA CLIENTE. SANAR TODAS AS DUVIDAS DE ${nome}. TEMPO ESTIMADO 40 MINUTOS.`
     os = `${intro}
 
 ${SEP_EQ}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${tecnico}`
   }
@@ -306,25 +306,25 @@ const ROTEADOR_OPTIONS = [
 export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
   {
     id: 'modoCusto',
-    label: 'Modo de cobrança',
+    label: 'Modo de cobranca',
     control: 'select',
     highlight: true,
     defaultValue: M_COBRADA,
     options: [
       { value: M_COBRADA, label: 'Com visita cobrada (dano ocasionado)', icon: 'plug' },
-      { value: M_ISENTO, label: 'Instalação no padrão (isento do roteador)', icon: 'plug' },
+      { value: M_ISENTO, label: 'Instalacao no padrao (isento do roteador)', icon: 'plug' },
     ],
     layout: { md: 6 },
   },
   {
     id: 'tipoSolicitacao',
-    label: 'Tipo de solicitação',
+    label: 'Tipo de solicitacao',
     control: 'select',
     highlight: true,
     defaultValue: T_TITULAR,
     options: [
       { value: T_TITULAR, label: 'Titular solicita e acompanha', icon: 'user-round' },
-      { value: T_PJ, label: 'Pessoa jurídica', icon: 'factory' },
+      { value: T_PJ, label: 'Pessoa juridica', icon: 'factory' },
       {
         value: T_TERCEIRO_TERCEIRO,
         label: 'Terceiro solicita (titular ausente)',
@@ -354,9 +354,9 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'cargo',
-    label: 'Cargo/Função',
+    label: 'Cargo/Funcao',
     control: 'text',
-    placeholder: 'Ex.: Sócio, Admin, Gerente…',
+    placeholder: 'Ex.: Socio, Admin, Gerente…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: [T_PJ] },
     layout: { md: 4 },
@@ -365,7 +365,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     id: 'parente',
     label: 'Grau de relacionamento',
     control: 'text',
-    placeholder: 'Ex.: Mãe, Filho, Irmão, Esposa…',
+    placeholder: 'Ex.: Mae, Filho, Irmao, Esposa…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_TERCEIRO },
     layout: { md: 4 },
@@ -374,18 +374,26 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     id: 'contatoSol',
     label: 'Contato do solicitante',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_CONTATO_SOL },
     layout: { md: 4 },
   },
   {
-    id: 'cliente',
-    label: 'Nome completo / Razão social',
+    id: 'cpf',
+    label: 'CPF / CNPJ',
     control: 'text',
-    placeholder: 'Nome completo (ou razão social, p/ pessoa jurídica)',
+    placeholder: 'Somente numeros',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 4 },
+  },
+  {
+    id: 'cliente',
+    label: 'Nome completo / Razao social',
+    control: 'text',
+    placeholder: 'Nome completo (ou razao social, p/ pessoa juridica)',
+    section: S_ID,
+    layout: { md: 8 },
   },
   {
     id: 'canal',
@@ -394,7 +402,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 3 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -402,7 +410,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 3 },
   },
@@ -446,16 +454,16 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'modoCusto', equals: [M_COBRADA] },
     layout: { md: 4 },
     options: [
-      { value: 'ÀS 08:30 HRS', label: '08:30' },
-      { value: 'ÀS 09:30 HRS', label: '09:30' },
-      { value: 'ÀS 10:30 HRS', label: '10:30' },
-      { value: 'ÀS 11:30 HRS', label: '11:30' },
-      { value: 'ÀS 14:30 HRS', label: '14:30' },
-      { value: 'ÀS 15:30 HRS', label: '15:30' },
-      { value: 'ÀS 16:30 HRS', label: '16:30' },
-      { value: 'ÀS 17:30 HRS', label: '17:30' },
-      { value: 'NO PERÍODO DA MANHÃ', label: 'No período da manhã' },
-      { value: 'NO PERÍODO DA TARDE', label: 'No período da tarde' },
+      { value: 'AS 08:30 HRS', label: '08:30' },
+      { value: 'AS 09:30 HRS', label: '09:30' },
+      { value: 'AS 10:30 HRS', label: '10:30' },
+      { value: 'AS 11:30 HRS', label: '11:30' },
+      { value: 'AS 14:30 HRS', label: '14:30' },
+      { value: 'AS 15:30 HRS', label: '15:30' },
+      { value: 'AS 16:30 HRS', label: '16:30' },
+      { value: 'AS 17:30 HRS', label: '17:30' },
+      { value: 'NO PERIODO DA MANHA', label: 'No periodo da manha' },
+      { value: 'NO PERIODO DA TARDE', label: 'No periodo da tarde' },
     ],
   },
   {
@@ -479,11 +487,23 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     defaultValue: 'AVISTA',
     layout: { md: 4 },
     options: [
-      { value: 'AVISTA', label: 'À vista (no ato)' },
-      { value: 'MENSALIDADE', label: 'Lançar na mensalidade' },
+      { value: 'AVISTA', label: 'A vista (no ato)' },
+      { value: 'MENSALIDADE', label: 'Lancar na mensalidade' },
     ],
   },
 ]
+
+export function buildRoteadorQueimadoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { roteadorQueimadoTextoProtocolo } = buildRoteadorQueimadoTextos(rawValues, operadorPrimeiroNome)
+  const segments = roteadorQueimadoTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
 
 export function getManutRoteadorQueimadoDefaults(): OsTemplatePresetPayload {
   return {

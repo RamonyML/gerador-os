@@ -50,6 +50,8 @@ import { ValidacaoNovaPage } from './pages/ValidacaoNovaPage'
 import { RequireValidacao } from './components/RequireValidacao'
 import { SeedValidacaoPage } from './pages/SeedValidacaoPage'
 import { NotesPage } from './pages/NotesPage'
+import { DevBirthdaysPage } from './pages/DevBirthdaysPage'
+import { DevChatAuditPage } from './pages/DevChatAuditPage'
 
 export default function App() {
   return (
@@ -278,6 +280,22 @@ export default function App() {
           element={
             <RequireDev>
               <MkTestesPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/aniversarios"
+          element={
+            <RequireDev>
+              <DevBirthdaysPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/conversas"
+          element={
+            <RequireDev>
+              <DevChatAuditPage />
             </RequireDev>
           }
         />

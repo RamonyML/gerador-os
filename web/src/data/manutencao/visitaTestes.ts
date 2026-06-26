@@ -1,18 +1,18 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 
 /**
- * Visita de Testes (lentidão / instabilidades) — fluxo único com variações.
+ * Visita de Testes (lentidao / instabilidades) — fluxo unico com variacoes.
  * Paridade com legado-exemplo/suporte/lentidao/:
- * - index-lentidao.html (pessoa física)
- * - index-lentidao-pj.html (pessoa jurídica)
- * - isento/index-lentidao.html (isento — pessoa física)
- * - isento/index-lentidao-pj.html (isento — pessoa jurídica)
- * - disp-remoto/index-lentidao-disp.html (dispensou suporte remoto — pessoa física)
- * - disp-remoto/index-lentidao-disp-pj.html (dispensou suporte remoto — pessoa jurídica)
+ * - index-lentidao.html (pessoa fisica)
+ * - index-lentidao-pj.html (pessoa juridica)
+ * - isento/index-lentidao.html (isento — pessoa fisica)
+ * - isento/index-lentidao-pj.html (isento — pessoa juridica)
+ * - disp-remoto/index-lentidao-disp.html (dispensou suporte remoto — pessoa fisica)
+ * - disp-remoto/index-lentidao-disp-pj.html (dispensou suporte remoto — pessoa juridica)
  *
- * Observação: este fluxo NÃO gera texto de protocolo (apenas O.S e Agenda).
- * O legado tem inconsistências de espaçamento no trecho do repetidor entre
+ * Observacao: este fluxo NAO gera texto de protocolo (apenas O.S e Agenda).
+ * O legado tem inconsistencias de espacamento no trecho do repetidor entre
  * isento-PF (`POR CABO. ${repetidor}.`) e os demais (`POR CABO.${repetidor}`)
  * — reproduzidas fielmente.
  */
@@ -26,20 +26,20 @@ export const T_DISP_PJ = 'disp-pj'
 
 const SEP = '*'.repeat(42)
 
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
 const S_SOL = 'DADOS DO SOLICITANTE'
-const S_DET = 'DETALHES DA SOLICITAÇÃO'
+const S_DET = 'DETALHES DA SOLICITACAO'
 const S_AGE = 'AGENDAMENTO'
 
 const REP_WIFI =
-  ' CLIENTE TAMBÉM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTÁ LIGADO POR WI-FI.'
+  ' CLIENTE TAMBEM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTA LIGADO POR WI-FI.'
 const REP_CABO =
-  ' CLIENTE TAMBÉM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTÁ LIGADO POR CABO DE REDE.'
+  ' CLIENTE TAMBEM MENCIONOU QUE POSSUI REPETIDOR E O MESMO ESTA LIGADO POR CABO DE REDE.'
 const REP_MESH =
-  ' CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTÁ CONECTADO POR WI-FI (MESH).'
+  ' CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTA CONECTADO POR WI-FI (MESH).'
 const REP_EXT_CABO =
-  ' CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTÁ CONECTADO POR CABO DE REDE.'
-const REP_SEM = ' CLIENTE NÃO POSSUI REPETIDOR DE SINAL.'
+  ' CLIENTE POSSUI WI-FI EXTEND E O MESMO ESTA CONECTADO POR CABO DE REDE.'
+const REP_SEM = ' CLIENTE NAO POSSUI REPETIDOR DE SINAL.'
 
 export const VISITA_TESTES_OUTPUT = [
   '=== Texto O.S ===',
@@ -66,7 +66,7 @@ function osText(intro: string, tecnico: string): string {
 
 ${SEP}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${tecnico}`
 }
@@ -109,25 +109,25 @@ export function buildVisitaTestesTextos(
   const isPJ = tipo === T_PJ || tipo === T_ISENTO_PJ || tipo === T_DISP_PJ
   const nome = isPJ ? sp_ : cp
   const abertura = isPJ ? `${sp_} (${cargo})` : cp
-  const local = isPJ ? 'EMPRESA' : 'RESIDÊNCIA'
+  const local = isPJ ? 'EMPRESA' : 'RESIDENCIA'
 
   let os = ''
 
   if (tipo === T_DISP_PF || tipo === T_DISP_PJ) {
-    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E SOLICITOU VISITA TÉCNICA. QUESTIONADO, ${nome} DISSE QUE "INTERNET ESTÁ RUIM E DISPENSOU O SUPORTE REMOTO PARA QUAISQUER PROCEDIMENTOS". INFORMEI QUE VISITA POSSUI O CUSTO DE R$50,00 REFERENTE AO DESLOCAMENTO TÉCNICO, QUE ESTE PODERÁ SER PAGO EM DINHEIRO, CARTÃO OU PIX E QUE PODERÁ SER ACRESCIDO O CUSTO DE EQUIPAMENTOS DANIFICADOS SE HOUVER. SE DE FATO TIVER PROBLEMAS NA CONEXÃO DE INTERNET DE RESPONSABILIDADE DO PROVEDOR VISITA É ISENTA DE CUSTOS. ${nome} CONCORDOU E CASO HAJA COBRANÇA PAGARÁ NO ATO COM ${formaPag}. VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`
-    const tecnico = `TÉCNICO: PEDIR PARA ${nome} APRESENTAR PROBLEMA DE TESTE DE INTERNET QUE ELE DIZ TER. COMPARAR MESMO TESTE COM NOTEBOOK E CELULAR DO KIT TÉCNICO FOTOGRAFAR/FILMAR. SE HOUVER PROBLEMA NOS EQUIPAMENTOS DA EMPRESA (ROTEADOR OU ONU) QUE NÃO SEJAM OCASIONADOS, REPARAR OU TROCAR. SE HOUVER PROBLEMAS NESTE QUE FOREM OCASIONADOS, APRESENTAR AO CLIENTE E INFORMAR CUSTOS. CONFERIR INSTALAÇÃO E LIGAÇÕES ELÉTRICAS, INSTRUIR SOBRE COBERTURA WI-FI (SE NECESSÁRIO). CASO NÃO HAJA PROBLEMAS E VISITA TER SIDO SOMENTE INSTRUTIVA, COBRAR VALOR DA VISITA E SOLICITAR REALIZAÇÃO DO FEEDBACK. TEMPO ESTIMADO: 40 MINUTOS.`
+    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E SOLICITOU VISITA TECNICA. QUESTIONADO, ${nome} DISSE QUE "INTERNET ESTA RUIM E DISPENSOU O SUPORTE REMOTO PARA QUAISQUER PROCEDIMENTOS". INFORMEI QUE VISITA POSSUI O CUSTO DE R$50,00 REFERENTE AO DESLOCAMENTO TECNICO, QUE ESTE PODERA SER PAGO EM DINHEIRO, CARTAO OU PIX E QUE PODERA SER ACRESCIDO O CUSTO DE EQUIPAMENTOS DANIFICADOS SE HOUVER. SE DE FATO TIVER PROBLEMAS NA CONEXAO DE INTERNET DE RESPONSABILIDADE DO PROVEDOR VISITA E ISENTA DE CUSTOS. ${nome} CONCORDOU E CASO HAJA COBRANCA PAGARA NO ATO COM ${formaPag}. VISITA AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS.`
+    const tecnico = `TECNICO: PEDIR PARA ${nome} APRESENTAR PROBLEMA DE TESTE DE INTERNET QUE ELE DIZ TER. COMPARAR MESMO TESTE COM NOTEBOOK E CELULAR DO KIT TECNICO FOTOGRAFAR/FILMAR. SE HOUVER PROBLEMA NOS EQUIPAMENTOS DA EMPRESA (ROTEADOR OU ONU) QUE NAO SEJAM OCASIONADOS, REPARAR OU TROCAR. SE HOUVER PROBLEMAS NESTE QUE FOREM OCASIONADOS, APRESENTAR AO CLIENTE E INFORMAR CUSTOS. CONFERIR INSTALACAO E LIGACOES ELETRICAS, INSTRUIR SOBRE COBERTURA WI-FI (SE NECESSARIO). CASO NAO HAJA PROBLEMAS E VISITA TER SIDO SOMENTE INSTRUTIVA, COBRAR VALOR DA VISITA E SOLICITAR REALIZACAO DO FEEDBACK. TEMPO ESTIMADO: 40 MINUTOS.`
     os = osText(intro, tecnico)
   } else if (isento) {
-    // O isento-PF tem espaçamento diferente no trecho do repetidor.
+    // O isento-PF tem espacamento diferente no trecho do repetidor.
     const repTrecho =
       tipo === T_ISENTO_PF ? `POR CABO. ${repetidor}. ` : `POR CABO.${repetidor} `
-    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E DISSE QUE ESTÁ COM LENTIDÃO NA CONEXÃO COM A INTERNET, QUESTIONADO INFORMOU QUE "TODOS OS DISPOSITIVOS DA ${local} FICAM COM A INTERNET LENTA REPETIDAS VEZES AO LONGO DO DIA E NÃO CONSEGUE AFERIR A VELOCIDADE DO PLANO EM NENHUM DE SEUS DISPOSITIVOS". REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ CONECTADO, SINAL ONU (${sinalONU} ${oscila}) NÃO CONSTAM DESCONEXÕES, NO MOMENTO HÁ ${disp1} DISPOSITIVOS CONECTADOS AO ROTEADOR, ${disp2} VIA WI-FI E ${disp3} ${repTrecho}${nome} SOLICITOU VISITA TÉCNICA PARA VERIFICAR PROBLEMA QUE "DIZ TER". ${gestor} AUTORIZOU VISITA ISENTA DE CUSTOS DESDE QUE OS EQUIPAMENTOS ESTEJAM EM PERFEITO ESTADO DE CONSERVAÇÃO. ${nome} DISSE ESTAR CIENTE E CONCORDOU COM A VISITA QUE FOI AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`
-    const tecnico = `TÉCNICO: PEDIR PARA QUE ${nome} APRESENTE OS “PROBLEMAS DE INTERNET” QUE DIZ TER. COMPARAR TESTES ENTRE DISPOSITIVOS DELES COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT TÉCNICO. VISITA ISENTA DE CUSTOS (CORTESIA). CASO APRESENTAR ALGUM PROBLEMA ATUALIZAR O ROTEADOR COM UMA NOVA FIRMWARE E TESTAR NOVAMENTE, E SE AINDA NÃO RESOLVER SUBSTITUIR O ROTEADOR POR UM NOVO. EXPLICAR E TIRAR TODAS AS DÚVIDAS DO CLIENTE. TEMPO ESTIMADO 60 MINUTOS.`
+    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E DISSE QUE ESTA COM LENTIDAO NA CONEXAO COM A INTERNET, QUESTIONADO INFORMOU QUE "TODOS OS DISPOSITIVOS DA ${local} FICAM COM A INTERNET LENTA REPETIDAS VEZES AO LONGO DO DIA E NAO CONSEGUE AFERIR A VELOCIDADE DO PLANO EM NENHUM DE SEUS DISPOSITIVOS". REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA CONECTADO, SINAL ONU (${sinalONU} ${oscila}) NAO CONSTAM DESCONEXOES, NO MOMENTO HA ${disp1} DISPOSITIVOS CONECTADOS AO ROTEADOR, ${disp2} VIA WI-FI E ${disp3} ${repTrecho}${nome} SOLICITOU VISITA TECNICA PARA VERIFICAR PROBLEMA QUE "DIZ TER". ${gestor} AUTORIZOU VISITA ISENTA DE CUSTOS DESDE QUE OS EQUIPAMENTOS ESTEJAM EM PERFEITO ESTADO DE CONSERVACAO. ${nome} DISSE ESTAR CIENTE E CONCORDOU COM A VISITA QUE FOI AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS.`
+    const tecnico = `TECNICO: PEDIR PARA QUE ${nome} APRESENTE OS “PROBLEMAS DE INTERNET” QUE DIZ TER. COMPARAR TESTES ENTRE DISPOSITIVOS DELES COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT TECNICO. VISITA ISENTA DE CUSTOS (CORTESIA). CASO APRESENTAR ALGUM PROBLEMA ATUALIZAR O ROTEADOR COM UMA NOVA FIRMWARE E TESTAR NOVAMENTE, E SE AINDA NAO RESOLVER SUBSTITUIR O ROTEADOR POR UM NOVO. EXPLICAR E TIRAR TODAS AS DUVIDAS DO CLIENTE. TEMPO ESTIMADO 60 MINUTOS.`
     os = osText(intro, tecnico)
   } else {
-    // T_PF / T_PJ (padrão com custo)
-    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E DISSE QUE ESTÁ COM LENTIDÃO NA CONEXÃO COM A INTERNET, QUESTIONADO INFORMOU QUE "TODOS OS DISPOSITIVOS DA ${local} FICAM COM A INTERNET LENTA REPETIDAS VEZES AO LONGO DO DIA E NÃO CONSEGUE AFERIR A VELOCIDADE DO PLANO EM NENHUM DE SEUS DISPOSITIVOS". REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ CONECTADO, SINAL ONU (${sinalONU} ${oscila}) NÃO CONSTAM DESCONEXÕES, NO MOMENTO HÁ ${disp1} DISPOSITIVOS CONECTADOS AO ROTEADOR, ${disp2} VIA WI-FI E ${disp3} POR CABO.${repetidor} ${nome} SOLICITOU VISITA TÉCNICA PARA VERIFICAR PROBLEMA QUE "DIZ TER". INFORMEI QUE HAVENDO PROBLEMA DE RESPONSABILIDADE DO PROVEDOR VISITA NÃO TERÁ CUSTO, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NÃO) OU SOMENTE PARA INSTRUÇÃO DE USO COBRAMOS VISITA TÉCNICA DE R$50,00 E ATÉ MESMO EQUIPAMENTOS DANIFICADOS. ${nome} DISSE ESTAR CIENTE E CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO ${formaPag}. VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`
-    const tecnico = `TÉCNICO: PEDIR PARA QUE ${nome} APRESENTE OS “PROBLEMAS DE INTERNET” QUE DIZ TER. COMPARAR TESTES ENTRE DISPOSITIVOS DELES COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT TÉCNICO. CASO NÃO TIVER OU APRESENTAR NENHUM PROBLEMA COBRAR VALOR MÍNIMO DA VISITA DE R$50,00, CASO APRESENTAR ALGUM PROBLEMA ATUALIZAR O ROTEADOR COM UMA NOVA FIRMWARE E TESTAR NOVAMENTE, E SE AINDA NÃO RESOLVER SUBSTITUIR O ROTEADOR POR UM NOVO. EXPLICAR E TIRAR TODAS AS DÚVIDAS DO CLIENTE. TEMPO ESTIMADO 60 MINUTOS.`
+    // T_PF / T_PJ (padrao com custo)
+    const intro = `${abertura} ENTROU EM CONTATO VIA ${canal} (${contato}) E DISSE QUE ESTA COM LENTIDAO NA CONEXAO COM A INTERNET, QUESTIONADO INFORMOU QUE "TODOS OS DISPOSITIVOS DA ${local} FICAM COM A INTERNET LENTA REPETIDAS VEZES AO LONGO DO DIA E NAO CONSEGUE AFERIR A VELOCIDADE DO PLANO EM NENHUM DE SEUS DISPOSITIVOS". REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA CONECTADO, SINAL ONU (${sinalONU} ${oscila}) NAO CONSTAM DESCONEXOES, NO MOMENTO HA ${disp1} DISPOSITIVOS CONECTADOS AO ROTEADOR, ${disp2} VIA WI-FI E ${disp3} POR CABO.${repetidor} ${nome} SOLICITOU VISITA TECNICA PARA VERIFICAR PROBLEMA QUE "DIZ TER". INFORMEI QUE HAVENDO PROBLEMA DE RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTO, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO) OU SOMENTE PARA INSTRUCAO DE USO COBRAMOS VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS DANIFICADOS. ${nome} DISSE ESTAR CIENTE E CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO ${formaPag}. VISITA AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS.`
+    const tecnico = `TECNICO: PEDIR PARA QUE ${nome} APRESENTE OS “PROBLEMAS DE INTERNET” QUE DIZ TER. COMPARAR TESTES ENTRE DISPOSITIVOS DELES COM DISPOSITIVOS (CELULAR E NOTEBOOK) DO KIT TECNICO. CASO NAO TIVER OU APRESENTAR NENHUM PROBLEMA COBRAR VALOR MINIMO DA VISITA DE R$50,00, CASO APRESENTAR ALGUM PROBLEMA ATUALIZAR O ROTEADOR COM UMA NOVA FIRMWARE E TESTAR NOVAMENTE, E SE AINDA NAO RESOLVER SUBSTITUIR O ROTEADOR POR UM NOVO. EXPLICAR E TIRAR TODAS AS DUVIDAS DO CLIENTE. TEMPO ESTIMADO 60 MINUTOS.`
     os = osText(intro, tecnico)
   }
 
@@ -145,23 +145,23 @@ const COM_FORMA_PAG = [T_PF, T_PJ, T_DISP_PF, T_DISP_PJ]
 export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
   {
     id: 'tipoSolicitacao',
-    label: 'Tipo de solicitação',
+    label: 'Tipo de solicitacao',
     control: 'select',
     highlight: true,
     defaultValue: T_PF,
     options: [
-      { value: T_PF, label: 'Pessoa física', icon: 'user-round' },
-      { value: T_PJ, label: 'Pessoa jurídica', icon: 'factory' },
-      { value: T_ISENTO_PF, label: 'Isento — pessoa física', icon: 'banknote-x' },
-      { value: T_ISENTO_PJ, label: 'Isento — pessoa jurídica', icon: 'banknote-x' },
+      { value: T_PF, label: 'Pessoa fisica', icon: 'user-round' },
+      { value: T_PJ, label: 'Pessoa juridica', icon: 'factory' },
+      { value: T_ISENTO_PF, label: 'Isento — pessoa fisica', icon: 'banknote-x' },
+      { value: T_ISENTO_PJ, label: 'Isento — pessoa juridica', icon: 'banknote-x' },
       {
         value: T_DISP_PF,
-        label: 'Dispensou suporte remoto — pessoa física',
+        label: 'Dispensou suporte remoto — pessoa fisica',
         icon: 'octagon-x',
       },
       {
         value: T_DISP_PJ,
-        label: 'Dispensou suporte remoto — pessoa jurídica',
+        label: 'Dispensou suporte remoto — pessoa juridica',
         icon: 'octagon-x',
       },
     ],
@@ -178,18 +178,18 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'cargo',
-    label: 'Cargo/Função',
+    label: 'Cargo/Funcao',
     control: 'text',
-    placeholder: 'Ex.: Sócio, Admin, Gerente…',
+    placeholder: 'Ex.: Socio, Admin, Gerente…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_PJ },
     layout: { md: 4 },
   },
   {
     id: 'cliente',
-    label: 'Nome completo / Razão social',
+    label: 'Nome completo / Razao social',
     control: 'text',
-    placeholder: 'Nome completo (ou razão social, p/ pessoa jurídica)',
+    placeholder: 'Nome completo (ou razao social, p/ pessoa juridica)',
     section: S_ID,
     layout: { md: 12 },
   },
@@ -200,7 +200,7 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -208,7 +208,7 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 4 },
   },
@@ -237,8 +237,8 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'tipoSolicitacao', equals: COM_DETALHE },
     layout: { md: 4 },
     options: [
-      { value: 'COM OSCILAÇÃO', label: 'Sim' },
-      { value: 'SEM OSCILAÇÃO', label: 'Não' },
+      { value: 'COM OSCILACAO', label: 'Sim' },
+      { value: 'SEM OSCILACAO', label: 'Nao' },
     ],
   },
   {
@@ -260,7 +260,7 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     id: 'disp1',
     label: 'Total de aparelhos conectados',
     control: 'text',
-    placeholder: 'Apenas números',
+    placeholder: 'Apenas numeros',
     section: S_DET,
     showWhen: { field: 'tipoSolicitacao', equals: COM_DETALHE },
     layout: { md: 4 },
@@ -269,7 +269,7 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     id: 'disp2',
     label: 'Via Wi-Fi',
     control: 'text',
-    placeholder: 'Apenas números',
+    placeholder: 'Apenas numeros',
     section: S_DET,
     showWhen: { field: 'tipoSolicitacao', equals: COM_DETALHE },
     layout: { md: 4 },
@@ -278,14 +278,14 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
     id: 'disp3',
     label: 'Via cabo',
     control: 'text',
-    placeholder: 'Apenas números',
+    placeholder: 'Apenas numeros',
     section: S_DET,
     showWhen: { field: 'tipoSolicitacao', equals: COM_DETALHE },
     layout: { md: 4 },
   },
   {
     id: 'gestor',
-    label: 'Isenção autorizada por',
+    label: 'Isencao autorizada por',
     control: 'select',
     section: S_DET,
     showWhen: { field: 'tipoSolicitacao', equals: COM_GESTOR },

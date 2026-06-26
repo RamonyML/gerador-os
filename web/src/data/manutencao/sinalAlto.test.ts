@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import padraoHtml from '../../../../legado-exemplo/suporte/sinal-alto/index-sinal-padrao.html?raw'
 import pjHtml from '../../../../legado-exemplo/suporte/sinal-alto/index-sinal-pj.html?raw'
 import sinal1Html from '../../../../legado-exemplo/suporte/sinal-alto/sinal1.html?raw'
@@ -19,9 +19,9 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/sinal-alto/ — o teste extrai e EXECUTA
- * a própria função gerarTextos() de cada HTML legado e compara com o builder.
+ * a propria funcao gerarTextos() de cada HTML legado e compara com o builder.
  * - index-sinal-padrao.html (titular)
- * - index-sinal-pj.html (pessoa jurídica)
+ * - index-sinal-pj.html (pessoa juridica)
  * - sinal1.html (terceiro solicita, titular ausente)
  * - sinal2.html (terceiro solicita, titular presente)
  * - sinal3.html (titular solicita e autoriza terceiro)
@@ -32,8 +32,8 @@ type Inputs = Record<string, string>
 function runLegacy(html: string, inputs: Inputs, ctoType: 'CTOE' | 'CTOI', operador: string) {
   const marker = "getElementById('textoAgenda').value = textoAgenda;"
   const endPos = html.indexOf(marker)
-  // Alguns legados têm uma gerarTextos() duplicada (com bloco flatpickr no meio);
-  // a função real é a última antes das atribuições finais.
+  // Alguns legados tem uma gerarTextos() duplicada (com bloco flatpickr no meio);
+  // a funcao real e a ultima antes das atribuicoes finais.
   const start = html.lastIndexOf('function gerarTextos()', endPos)
   const end = endPos + marker.length
   const fnSrc = html.slice(start, end)
@@ -60,17 +60,17 @@ function runLegacy(html: string, inputs: Inputs, ctoType: 'CTOE' | 'CTOI', opera
 }
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   contatoSol: '1199998888',
   bairro: 'CENTRO',
   sinalONU: '-31.87 DBM',
   sinalONUan: '-17.45 DBM',
-  oscila: 'SEM OSCILAÇÃO',
+  oscila: 'SEM OSCILACAO',
   onu: 'ONU E ROTEADOR',
   cto: '1035-A',
-  passante: 'PASSANTE NO POSTE PRÓXIMO AO SOBRADO',
+  passante: 'PASSANTE NO POSTE PROXIMO AO SOBRADO',
   dataVisita: '20/06/2026',
   horaVisita: '08:30',
   formaPag: 'PIX',
@@ -99,9 +99,9 @@ describe('sinal alto — paridade com legado', () => {
           { ...BASE, tipoSolicitacao: tipo, ctoType: cto },
           OPERADOR,
         )
-        // sinal1/2/3 têm um bug no legado: o operador na agenda é lido de um
+        // sinal1/2/3 tem um bug no legado: o operador na agenda e lido de um
         // campo inexistente e cai no default "SEM SINAL". O sistema novo usa
-        // corretamente o nome do operador, então normalizamos a comparação.
+        // corretamente o nome do operador, entao normalizamos a comparacao.
         const expectedAgenda = legacy.textoAgenda.replace('(SEM SINAL)', `(${OPERADOR})`)
         expect(built.sinalAltoTextoProtocolo).toBe(legacy.textoProtocolo)
         expect(built.sinalAltoTextoOS).toBe(legacy.textoOS)
@@ -110,7 +110,7 @@ describe('sinal alto — paridade com legado', () => {
     }
   }
 
-  it('output template renderiza as três abas', () => {
+  it('output template renderiza as tres abas', () => {
     const built = buildSinalAltoTextos(
       { ...BASE, tipoSolicitacao: T_TITULAR, ctoType: 'CTOE' },
       OPERADOR,
@@ -119,6 +119,6 @@ describe('sinal alto — paridade com legado', () => {
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN SINAL ALTO JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN SINAL ALTO JOAO DA SILVA SAURO')
   })
 })

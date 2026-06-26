@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import cobradaHtml from '../../../../legado-exemplo/suporte/equip-queimado/roteador-queimado/roteador-queimado.html?raw'
 import isentoJs from '../../../../legado-exemplo/suporte/equip-queimado/script.js?raw'
 import {
@@ -10,10 +10,10 @@ import {
 import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
- * Paridade (titular) com o legado: o teste extrai e EXECUTA a própria função
+ * Paridade (titular) com o legado: o teste extrai e EXECUTA a propria funcao
  * gerarTextos() de cada fonte (HTML cobrada / script.js isento) e compara com o
- * builder. As variações PJ/Terceiros/mensalidade são por analogia (sem fonte
- * legada) e por isso não são cobertas por paridade.
+ * builder. As variacoes PJ/Terceiros/mensalidade sao por analogia (sem fonte
+ * legada) e por isso nao sao cobertas por paridade.
  */
 
 type Inputs = Record<string, string>
@@ -50,12 +50,12 @@ const OPERADOR = 'FULANO'
 describe('roteador queimado — paridade titular com legado', () => {
   it('cobrada (roteador-queimado.html) — separadores =', () => {
     const legacyInputs: Inputs = {
-      cliente: 'JOÃO DA SILVA SAURO',
+      cliente: 'JOAO DA SILVA SAURO',
       canal: 'WHATSAPP',
       contato: '1133334444',
       bairro: 'CENTRO',
       dataVisita: '20/06/2026',
-      horaVisita: 'ÀS 08:30 HRS',
+      horaVisita: 'AS 08:30 HRS',
       protocolo: '123.456',
       formaPag: 'PIX',
       operador: OPERADOR,
@@ -67,12 +67,12 @@ describe('roteador queimado — paridade titular com legado', () => {
       {
         modoCusto: M_COBRADA,
         tipoSolicitacao: 'titular',
-        cliente: 'JOÃO DA SILVA SAURO',
+        cliente: 'JOAO DA SILVA SAURO',
         canal: 'WHATSAPP',
         contato: '1133334444',
         bairro: 'CENTRO',
         dataVisita: '20/06/2026',
-        horaCobrada: 'ÀS 08:30 HRS',
+        horaCobrada: 'AS 08:30 HRS',
         protocolo: '123.456',
         formaPag: 'PIX',
         roteador: 'MULTILASER',
@@ -88,7 +88,7 @@ describe('roteador queimado — paridade titular com legado', () => {
 
   it('isento (script.js) — separadores *', () => {
     const legacyInputs: Inputs = {
-      cliente: 'JOÃO DA SILVA SAURO',
+      cliente: 'JOAO DA SILVA SAURO',
       canal: 'WHATSAPP',
       contato: '1133334444',
       sinalONU: '-19.20 DBM',
@@ -105,7 +105,7 @@ describe('roteador queimado — paridade titular com legado', () => {
       {
         modoCusto: M_ISENTO,
         tipoSolicitacao: 'titular',
-        cliente: 'JOÃO DA SILVA SAURO',
+        cliente: 'JOAO DA SILVA SAURO',
         canal: 'WHATSAPP',
         contato: '1133334444',
         sinalONU: '-19.20 DBM',
@@ -123,17 +123,17 @@ describe('roteador queimado — paridade titular com legado', () => {
     expect(built.roteadorQueimadoTextoAgenda).toBe(legacy.textoAgenda)
   })
 
-  it('output template compõe Protocolo, O.S e Agenda', () => {
+  it('output template compoe Protocolo, O.S e Agenda', () => {
     const built = buildRoteadorQueimadoTextos(
       {
         modoCusto: M_COBRADA,
         tipoSolicitacao: 'titular',
-        cliente: 'JOÃO DA SILVA SAURO',
+        cliente: 'JOAO DA SILVA SAURO',
         canal: 'WHATSAPP',
         contato: '1133334444',
         bairro: 'CENTRO',
         dataVisita: '20/06/2026',
-        horaCobrada: 'ÀS 08:30 HRS',
+        horaCobrada: 'AS 08:30 HRS',
         protocolo: '123.456',
         formaPag: 'PIX',
         roteador: 'MULTILASER',
@@ -145,7 +145,7 @@ describe('roteador queimado — paridade titular com legado', () => {
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN TROCA ROTEADOR JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN TROCA ROTEADOR JOAO DA SILVA SAURO')
   })
 
   it('mensalidade reflete na agenda (cobrada)', () => {
@@ -153,12 +153,12 @@ describe('roteador queimado — paridade titular com legado', () => {
       {
         modoCusto: M_COBRADA,
         tipoSolicitacao: 'titular',
-        cliente: 'JOÃO DA SILVA SAURO',
+        cliente: 'JOAO DA SILVA SAURO',
         canal: 'WHATSAPP',
         contato: '1133334444',
         bairro: 'CENTRO',
         dataVisita: '20/06/2026',
-        horaCobrada: 'ÀS 08:30 HRS',
+        horaCobrada: 'AS 08:30 HRS',
         protocolo: '123.456',
         formaPag: 'PIX',
         roteador: 'MULTILASER',
@@ -168,6 +168,6 @@ describe('roteador queimado — paridade titular com legado', () => {
       OPERADOR,
     )
     expect(built.roteadorQueimadoTextoAgenda).toContain('PROT:123.456 MENSALIDADE')
-    expect(built.roteadorQueimadoTextoProtocolo).toContain('LANÇAR O VALOR NA PRÓXIMA MENSALIDADE')
+    expect(built.roteadorQueimadoTextoProtocolo).toContain('LANCAR O VALOR NA PROXIMA MENSALIDADE')
   })
 })

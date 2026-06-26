@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import padraoHtml from '../../../../legado-exemplo/suporte/mud-ponto-int/mud-ponto-int.html?raw'
 import pjHtml from '../../../../legado-exemplo/suporte/mud-ponto-int/mud-ponto-int-pj.html?raw'
 import mp1Html from '../../../../legado-exemplo/suporte/mud-ponto-int/mudponto1/mudponto1.html?raw'
@@ -19,7 +19,7 @@ import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
  * Paridade com legado-exemplo/suporte/mud-ponto-int/ — o teste extrai e EXECUTA
- * a própria função gerarTextos() de cada HTML legado e compara com o builder.
+ * a propria funcao gerarTextos() de cada HTML legado e compara com o builder.
  */
 
 type Inputs = Record<string, string>
@@ -27,7 +27,7 @@ type Inputs = Record<string, string>
 function runLegacy(html: string, inputs: Inputs) {
   const marker = "getElementById('textoAgenda').value = textoAgenda;"
   const endPos = html.indexOf(marker)
-  // Há uma gerarTextos() duplicada (stub) antes da real; pegamos a última.
+  // Ha uma gerarTextos() duplicada (stub) antes da real; pegamos a ultima.
   const start = html.lastIndexOf('function gerarTextos()', endPos)
   const fnSrc = html.slice(start, endPos + marker.length)
   const store: Record<string, string> = {}
@@ -53,10 +53,10 @@ function runLegacy(html: string, inputs: Inputs) {
 }
 
 const VALOR_50 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA.'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR OS EQUIPAMENTOS NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO A PASSAGEM DE UM NOVO CABEAMENTO, O VALOR E DE R$ 50,00 REFERENTE A MAO DE OBRA TECNICA.'
 
 const BASE: Inputs = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   contatoSol: '1199998888',
@@ -88,7 +88,7 @@ const CASES: Array<{ file: string; html: string; tipo: string }> = [
   { file: 'mudponto3.html', html: mp3Html, tipo: T_TERCEIRO_TITULAR },
 ]
 
-describe('mudança de ponto interno — paridade com legado', () => {
+describe('mudanca de ponto interno — paridade com legado', () => {
   for (const { file, html, tipo } of CASES) {
     it(file, () => {
       const legacy = runLegacy(html, BASE)
@@ -99,12 +99,12 @@ describe('mudança de ponto interno — paridade com legado', () => {
     })
   }
 
-  it('output template renderiza as três abas', () => {
+  it('output template renderiza as tres abas', () => {
     const built = buildMudPontoIntTextos({ ...BASE, tipoSolicitacao: T_TITULAR }, OPERADOR)
     const rendered = renderTemplate(MUD_PONTO_INT_OUTPUT, built)
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN MUD PONTO INTERNO JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN MUD PONTO INTERNO JOAO DA SILVA SAURO')
   })
 })

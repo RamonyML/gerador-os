@@ -51,7 +51,7 @@ export function MkFeedbackCards({ text, disabled }: Props) {
         action: 'inserir_comentario',
         atendimentoId,
         comentario: text.trim(),
-        tipo: 2,
+        tipo: 1,
       })
       setInsertStatus('done')
     } catch (e) {

@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import ontHtml from '../../../../legado-exemplo/suporte/equip-queimado/ont-queimada/ont-queimada.html?raw'
 import { ONT_QUEIMADA_OUTPUT, buildOntQueimadaTextos } from './ontQueimada'
 import { renderTemplate } from '../../lib/renderTemplate'
 
 /**
- * Paridade (titular) com o legado: extrai e EXECUTA a própria gerarTextos() do
- * HTML legado e compara com o builder. PJ/Terceiros/mensalidade são por analogia
+ * Paridade (titular) com o legado: extrai e EXECUTA a propria gerarTextos() do
+ * HTML legado e compara com o builder. PJ/Terceiros/mensalidade sao por analogia
  * (sem fonte legada).
  */
 
@@ -41,15 +41,15 @@ function runLegacy(source: string, inputs: Inputs) {
 const OPERADOR = 'FULANO'
 
 const COMMON = {
-  cliente: 'JOÃO DA SILVA SAURO',
+  cliente: 'JOAO DA SILVA SAURO',
   canal: 'WHATSAPP',
   contato: '1133334444',
   bairro: 'CENTRO',
-  alarme: 'ESTÁ APENAS COM A LUZ POWER ACESA',
+  alarme: 'ESTA APENAS COM A LUZ POWER ACESA',
   onu: 'ONT ZTE F 670-L',
   protocolo: '123.456',
   dataVisita: '20/06/2026',
-  horaVisita: 'ÀS 08:30 HRS',
+  horaVisita: 'AS 08:30 HRS',
   formaPag: 'PIX',
 }
 
@@ -65,7 +65,7 @@ describe('ONT queimada — paridade titular com legado', () => {
     expect(built.ontQueimadaTextoAgenda).toBe(legacy.textoAgenda)
   })
 
-  it('output template compõe Protocolo, O.S e Agenda', () => {
+  it('output template compoe Protocolo, O.S e Agenda', () => {
     const built = buildOntQueimadaTextos(
       { ...COMMON, tipoSolicitacao: 'titular' },
       OPERADOR,
@@ -74,7 +74,7 @@ describe('ONT queimada — paridade titular com legado', () => {
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('=== Texto O.S ===')
     expect(rendered).toContain('=== Texto da Agenda ===')
-    expect(rendered).toContain('MAN TROCA ONT JOÃO DA SILVA SAURO')
+    expect(rendered).toContain('MAN TROCA ONT JOAO DA SILVA SAURO')
   })
 
   it('mensalidade reflete na agenda e no protocolo', () => {
@@ -83,6 +83,6 @@ describe('ONT queimada — paridade titular com legado', () => {
       OPERADOR,
     )
     expect(built.ontQueimadaTextoAgenda).toContain('PROT:123.456 MENSALIDADE')
-    expect(built.ontQueimadaTextoProtocolo).toContain('LANÇAR O VALOR NA PRÓXIMA MENSALIDADE')
+    expect(built.ontQueimadaTextoProtocolo).toContain('LANCAR O VALOR NA PROXIMA MENSALIDADE')
   })
 })

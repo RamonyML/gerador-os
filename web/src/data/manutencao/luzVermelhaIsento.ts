@@ -1,4 +1,4 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   T_TITULAR,
@@ -10,17 +10,17 @@ import { LUZ_VERMELHA_FIELDS } from './luzVermelha'
 
 /**
  * Luz vermelha / PON piscando — ISENTO (dentro dos 7 dias).
- * Variante isenta de custos: instalação realizada dentro de 07 dias, visita
- * técnica sem cobrança. Não há forma de pagamento.
+ * Variante isenta de custos: instalacao realizada dentro de 07 dias, visita
+ * tecnica sem cobranca. Nao ha forma de pagamento.
  *
  * Paridade com legado-exemplo/suporte/luz-vermelha-7dias/:
  * - index-luzverm-padrao.html (titular) — fiel ao legado
  * - luz-padrao1.html (terceiro solicita, titular ausente) — fiel ao legado
  * - luz-padrao2.html (terceiro solicita, titular presente) — fiel ao legado
  * - luz-padrao3.html (titular autoriza terceiro) — COMPOSTO POR ANALOGIA:
- *   no legado, este HTML não foi atualizado para isento (ficou com a redação
+ *   no legado, este HTML nao foi atualizado para isento (ficou com a redacao
  *   "com custo" R$50,00). Aqui ele foi reescrito para isento, mantendo a
- *   estrutura do fluxo "titular autoriza terceiro". Validar com a operação.
+ *   estrutura do fluxo "titular autoriza terceiro". Validar com a operacao.
  */
 
 const SEP28 = '='.repeat(28)
@@ -28,7 +28,7 @@ const SEP19 = '*'.repeat(19)
 const SEP_OS = '='.repeat(39)
 
 const INFORMEI_ISENTO =
-  'INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS.'
+  'INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS.'
 
 export const LUZ_VERMELHA_ISENTO_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -68,7 +68,7 @@ function ctoBlock(ctoType: string, cto: string, passante: string): string {
 }
 
 function tecnico(quem: string): string {
-  return `TÉCNICO: VERIFICAR CONECTOR, DROP INTERNO E EXTERNO. ACHANDO O PROBLEMA, TOMAR PROVIDÊNCIAS E RESTITUIR SEM CUSTO. APÓS TÉRMINO DO SERVIÇO, PERGUNTA À ${quem} (OU QUEM ESTIVER ACOMPANHADO SERVIÇO) SE HÁ NECESSIDADE DE QUALQUER OUTRA ORIENTAÇÃO SOBRE A INTERNET.`
+  return `TECNICO: VERIFICAR CONECTOR, DROP INTERNO E EXTERNO. ACHANDO O PROBLEMA, TOMAR PROVIDENCIAS E RESTITUIR SEM CUSTO. APOS TERMINO DO SERVICO, PERGUNTA A ${quem} (OU QUEM ESTIVER ACOMPANHADO SERVICO) SE HA NECESSIDADE DE QUALQUER OUTRA ORIENTACAO SOBRE A INTERNET.`
 }
 
 function buildAgenda(
@@ -113,20 +113,20 @@ export function buildLuzVermelhaIsentoTextos(
 
   if (tipo === T_TERCEIRO_TERCEIRO) {
     const protocolo = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       sp(4),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(4),
       SEP19,
       sp(4),
-      `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${alarme}.`,
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${alarme}.`,
       sp(4),
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-      `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+      `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
       sp(4),
-      `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
       '',
       SEP19,
       '',
@@ -135,34 +135,34 @@ export function buildLuzVermelhaIsentoTextos(
       SEP19,
       '',
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       luzVmIsentoTextoProtocolo: protocolo,
-      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n${sp(18)}\nINDICAÇÃO TÉCNICA:\n${sp(20)}\n${tecnico(sp_)}`,
+      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n${sp(18)}\nINDICACAO TECNICA:\n${sp(20)}\n${tecnico(sp_)}`,
       luzVmIsentoTextoAgenda: agenda,
     }
   }
 
   if (tipo === T_TERCEIRO_TITULAR) {
     const protocolo = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       sp(4),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(4),
       SEP19,
       sp(4),
-      `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${alarme}.`,
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${alarme}.`,
       sp(4),
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-      `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+      `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
       sp(4),
-      `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
       sp(4),
       SEP19,
       '',
@@ -170,35 +170,35 @@ export function buildLuzVermelhaIsentoTextos(
       '',
       SEP19,
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       luzVmIsentoTextoProtocolo: protocolo,
-      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\nINDICAÇÃO TÉCNICA:\n\n${tecnico(sp_)}`,
+      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\nINDICACAO TECNICA:\n\n${tecnico(sp_)}`,
       luzVmIsentoTextoAgenda: agenda,
     }
   }
 
   if (tipo === T_TITULAR_TERCEIRO) {
-    // Composto por analogia (legado luz-padrao3 não foi atualizado para isento).
+    // Composto por analogia (legado luz-padrao3 nao foi atualizado para isento).
     const protocolo = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
       sp(20),
       SEP19,
       sp(24),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(24),
       SEP19,
       sp(24),
-      `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${alarme}.`,
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${alarme}.`,
       sp(24),
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-      `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+      `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
       sp(24),
-      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
       sp(24),
       SEP19,
       sp(20),
@@ -206,33 +206,33 @@ export function buildLuzVermelhaIsentoTextos(
       sp(20),
       SEP19,
       sp(20),
-      `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       luzVmIsentoTextoProtocolo: protocolo,
-      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\nINDICAÇÃO TÉCNICA:\n${sp(20)}\n${tecnico(cp)}`,
+      luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\nINDICACAO TECNICA:\n${sp(20)}\n${tecnico(cp)}`,
       luzVmIsentoTextoAgenda: agenda,
     }
   }
 
   const protocolo = [
-    `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP28,
     '',
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(8),
     SEP28,
     sp(8),
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${alarme}.`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${alarme}.`,
     sp(8),
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
     sp(8),
-    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO.`,
+    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
     sp(8),
     SEP28,
     '',
@@ -240,14 +240,14 @@ export function buildLuzVermelhaIsentoTextos(
     sp(8),
     SEP28,
     sp(8),
-    `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+    `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+  const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
   return {
     luzVmIsentoTextoProtocolo: protocolo,
-    luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\n> INDICAÇÃO TÉCNICA:\n\n${tecnico(cp)}`,
+    luzVmIsentoTextoOS: osBase + ctoLine + `${SEP_OS}\n\n> INDICACAO TECNICA:\n\n${tecnico(cp)}`,
     luzVmIsentoTextoAgenda: agenda,
   }
 }
@@ -258,7 +258,7 @@ export const LUZ_VERMELHA_ISENTO_FIELDS: OsTemplateField[] = [
   ...LUZ_VERMELHA_FIELDS.filter((f) => f.id !== 'formaPag').map((f) => ({ ...f })),
   {
     id: 'dataVisita',
-    label: 'Visita Técnica',
+    label: 'Visita Tecnica',
     control: 'date' as const,
     placeholder: 'dd/mm/aaaa',
     section: S_AGE,
@@ -278,12 +278,24 @@ export const LUZ_VERMELHA_ISENTO_FIELDS: OsTemplateField[] = [
       { value: '13:30', label: '13:30' },
       { value: '15:00', label: '15:00' },
       { value: '15:30', label: '15:30' },
-      { value: '17:00', label: '17:00 (somente com autorização)' },
-      { value: 'APÓS ÀS 11:00', label: 'Após às 11:00 (aos sábados)' },
+      { value: '17:00', label: '17:00 (somente com autorizacao)' },
+      { value: 'APOS AS 11:00', label: 'Apos as 11:00 (aos sabados)' },
     ],
     layout: { md: 4 },
   },
 ]
+
+export function buildLuzVermelhaIsentoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { luzVmIsentoTextoProtocolo } = buildLuzVermelhaIsentoTextos(rawValues, operadorPrimeiroNome)
+  const segments = luzVmIsentoTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
 
 export function getManutLuzVermelhaIsentoDefaults(): OsTemplatePresetPayload {
   return {

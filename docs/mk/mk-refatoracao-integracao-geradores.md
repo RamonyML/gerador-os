@@ -22,6 +22,31 @@ Este documento cobre a **Fase 1** em detalhe e a Fase 2 em esboço.
 
 ---
 
+## Regras de formatação dos comentários MK
+
+> Estas regras são fixas e se aplicam a **todos** os formulários integrados, sem exceção.
+
+### 1. Campo `info` → `WSMKNovoAtendimento.rule`
+- Enviado como **texto puro, sem HTML**.
+- Corresponde ao primeiro bloco do texto (diagnóstico/situação do cliente, ex: `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU -23DBM SEM OSCILAÇÃO.`).
+- O MK ERP exibe como a abertura do atendimento, com formatação padrão neutra (preto).
+- **Nunca** envolver em `<h2>` ou qualquer outra tag.
+
+### 2. Comentários → `WSMKAtendimentoComentario.rule`
+- **Sempre** `tipo: 1` (privado).
+- O **primeiro comentário** (`comentarios[0]` = Card 1 no `MkProtocolCards`) é enviado com `raw: true` → texto puro, sem `<h2>`. É o bloco diagnóstico ("CLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU ...").
+- Os demais comentários (Card 2+) são envolvidos em `<h2 style="color: red;">texto</h2>` via `wrapCommentHtml`.
+- Isso garante aparência igual à inserção manual pelos operadores no MK ERP.
+- Nunca passar `tipo: 2` em nenhum formulário de suporte.
+
+### 3. Ordem e desbloqueio sequencial dos cards
+- Card 0 (Abertura do atendimento): habilitado assim que a conexão do cliente for encontrada.
+- Card N (Comentário N): habilitado **apenas quando o Card N-1 tiver sido enviado com sucesso ao MK**.
+- O operador não pode pular um card — o botão "Inserir no MK" fica desabilitado até o anterior ser confirmado.
+- Isso garante que os comentários sejam inseridos na ordem correta e que o `atendimentoId` seja obtido antes de qualquer comentário.
+
+---
+
 ## O padrão-alvo (referência: `senha-altera-senha`)
 
 O formulário de Alteração de SSID / Senha é o único já refatorado. Ele serve de modelo para todos os outros. O que ele tem que os demais ainda não têm:
@@ -64,10 +89,12 @@ Atualmente todos estão `null` em `docs/documentacao_mk/mznet-integrations-main/
 
 O **administrador MK da MZ NET** precisa levantar os valores no painel e preencher o arquivo antes de implementar qualquer formulário da categoria correspondente.
 
+> **Cada categoria usa códigos distintos no MK.** O `processoId` e `classificacaoId` de "Alteração de Senha" (14 / 3) NÃO se aplicam às demais. Para manutenção, o processo seria algo como "Sem Conexão / Suporte Técnico". O admin MK deve fornecer o código correto por categoria.
+
 | Categoria | Chave em mk-codigos.json | Estado |
 |---|---|---|
 | Senha/SSID Wi-Fi | — | ✅ Já em produção (`processoId: 14, classificacaoId: 3`) |
-| Manutenção | `classificacoesAtendimento.manutencao` | ❌ null |
+| Manutenção | `classificacoesAtendimento.manutencao` | ❌ null — formulários registrados com `0` (pendente) |
 | Alteração de plano | `classificacoesAtendimento.alteracao_plano` | ❌ null |
 | Mudança de endereço | `classificacoesAtendimento.mudanca_endereco` | ❌ null |
 | Mídia TV | `classificacoesAtendimento.midia_tv` | ❌ null |
@@ -281,8 +308,7 @@ Quando os códigos internos MK estiverem disponíveis (`CodigoTipoOS`, `CodigoGr
 
 ```
 Card 0: Abertura do atendimento   → "Abrir atendimento no MK"  ✅ (Fase 1)
-Card 1: Comentário privado        → "Inserir no MK"             ✅ (Fase 1)
-Card N: Comentários públicos      → "Inserir no MK"             ✅ (Fase 1)
+Card 1..N: Comentários privados   → "Inserir no MK"             ✅ (Fase 1)
 ── divider ──
 Card OS: Ordem de Serviço         → "Criar O.S. no MK"          ⏳ (Fase 2)
 ```

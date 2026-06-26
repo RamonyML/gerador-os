@@ -1,12 +1,12 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 
 /**
- * Roteador resetado — fluxo com duas saídas legadas:
- * - index-roteador-reset.html: Protocolo + O.S + Agenda (visita técnica paga)
+ * Roteador resetado — fluxo com duas saidas legadas:
+ * - index-roteador-reset.html: Protocolo + O.S + Agenda (visita tecnica paga)
  * - rot-reset-loja/rot-reset-loja.html: apenas Protocolo (cliente traz na loja)
  *
- * Reproduz os separadores `*`×19/42 e os espaçamentos/trailing spaces do legado.
+ * Reproduz os separadores `*`×19/42 e os espacamentos/trailing spaces do legado.
  */
 
 export const M_VISITA = 'visita'
@@ -15,8 +15,8 @@ export const M_LOJA = 'loja'
 const SEP19 = '*'.repeat(19)
 const SEP42 = '*'.repeat(42)
 
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
-const S_DET = 'DETALHES DA CONEXÃO'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
+const S_DET = 'DETALHES DA CONEXAO'
 const S_AGE = 'AGENDAMENTO'
 
 export const ROTEADOR_RESET_OUTPUT = '{{roteadorResetSaida}}'
@@ -62,34 +62,34 @@ export function buildRoteadorResetTextos(
   if (modo === M_LOJA) {
     const [dataLigacao = '', horaLigacao = ''] = v.dataLigacao.split(' ')
     protocoloTxt = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       '',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU} ${oscila}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} ${oscila}.`,
       '',
       SEP19,
       sp(4),
-      `QUESTIONADO ${cp} DISSE QUE ESTÁ SEM CONEXÃO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NÃO ESTÁ APARECENDO MAIS.`,
+      `QUESTIONADO ${cp} DISSE QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NAO ESTA APARECENDO MAIS.`,
       sp(4),
-      `REMOTAMENTE, VERIFIQUEI QUE ONU ESTÁ ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTÁ INACESSÍVEL. `,
-      sp(4),
-      SEP19,
-      sp(4),
-      `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APÓS 30 SEGUNDOS. FEZ PORÉM REDE WI-FI NÃO VOLTOU A APARECER. `,
-      sp(4),
-      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL. `,
       sp(4),
       SEP19,
       sp(4),
-      `INFORMEI QUE O ROTEADOR ESTÁ RESETADO, E REPASSEI AO CLIENTE 2 OPÇÕES PARA SOLUÇÃO DO PROBLEMA.`,
+      `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER. `,
+      sp(4),
+      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
+      sp(4),
+      SEP19,
+      sp(4),
+      `INFORMEI QUE O ROTEADOR ESTA RESETADO, E REPASSEI AO CLIENTE 2 OPCOES PARA SOLUCAO DO PROBLEMA.`,
       '',
-      `1ª. AGENDAMENTO DE UMA VISITA TÉCNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,0 REFERENTE O DESLOCAMENTO TÉCNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTÃO.`,
+      `1ª. AGENDAMENTO DE UMA VISITA TECNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,0 REFERENTE O DESLOCAMENTO TECNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTAO.`,
       '',
-      `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURÁ-LO. ESTA OPÇÃO NÃO TERÁ CUSTOS`,
+      `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURA-LO. ESTA OPCAO NAO TERA CUSTOS`,
       SEP19,
       sp(4),
-      `${cp} OPTOU POR TRAZER O ROTEADOR NA LOJA EM ${dataLigacao} ÀS ${horaLigacao}.`,
+      `${cp} OPTOU POR TRAZER O ROTEADOR NA LOJA EM ${dataLigacao} AS ${horaLigacao}.`,
       '',
       `CLIENTE SEM DUVIDAS.`,
     ].join('\n')
@@ -101,46 +101,46 @@ export function buildRoteadorResetTextos(
     const formaPag = v.formaPag
 
     protocoloTxt = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       '',
       SEP19,
       '',
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU} ${oscila}.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} ${oscila}.`,
       '',
       SEP19,
       sp(4),
-      `QUESTIONADO ${cp} DISSE QUE ESTÁ SEM CONEXÃO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NÃO ESTÁ APARECENDO MAIS.`,
+      `QUESTIONADO ${cp} DISSE QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NAO ESTA APARECENDO MAIS.`,
       sp(4),
-      `REMOTAMENTE, VERIFIQUEI QUE ONU ESTÁ ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTÁ INACESSÍVEL. `,
-      sp(4),
-      SEP19,
-      sp(4),
-      `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APÓS 30 SEGUNDOS. FEZ PORÉM REDE WI-FI NÃO VOLTOU A APARECER. `,
-      sp(4),
-      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+      `REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL. `,
       sp(4),
       SEP19,
       sp(4),
-      `INFORMEI QUE O ROTEADOR ESTÁ RESETADO, E REPASSEI AO CLIENTE 2 OPÇÕES PARA SOLUÇÃO DO PROBLEMA.`,
+      `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER. `,
+      sp(4),
+      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
+      sp(4),
+      SEP19,
+      sp(4),
+      `INFORMEI QUE O ROTEADOR ESTA RESETADO, E REPASSEI AO CLIENTE 2 OPCOES PARA SOLUCAO DO PROBLEMA.`,
       '',
-      `1ª. AGENDAMENTO DE UMA VISITA TÉCNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,00 REFERENTE O DESLOCAMENTO TÉCNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTÃO.`,
+      `1ª. AGENDAMENTO DE UMA VISITA TECNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,00 REFERENTE O DESLOCAMENTO TECNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTAO.`,
       '',
-      `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURÁ-LO. ESTA OPÇÃO NÃO TERÁ CUSTOS`,
+      `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURA-LO. ESTA OPCAO NAO TERA CUSTOS`,
       SEP19,
       sp(4),
-      `${cp} OPTOU PELA VISITA TÉCNICA, CONCORDOU COM OS TERMOS REPASSADOS E SOLICITOU PAGAR EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} OPTOU PELA VISITA TECNICA, CONCORDOU COM OS TERMOS REPASSADOS E SOLICITOU PAGAR EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       `CLIENTE SEM DUVIDAS.`,
     ].join('\n')
 
-    const intro = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E INFORMOU QUE ESTÁ SEM CONEXÃO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE SUA REDE WIFI NÃO ESTÁ APARECENDO MAIS. REMOTAMENTE, VERIFIQUEI QUE ONU ESTÁ ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTÁ INACESSÍVEL. ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APÓS 30 SEGUNDOS. FEZ PORÉM REDE WI-FI NÃO VOLTOU A APARECER. INFORMEI QUE ROTEADOR ESTÁ RESETADO, É NECESSÁRIA VISITA TÉCNICA PARA RECONFIGURÁ-LO, QUE ESTE SERVIÇO POSSUI CUSTO R$50,00. ${cp} CONCORDOU E SOLICITOU PAGAR NO ATO EM ${formaPag}. VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`
-    const tecnico = `TÉCNICO: ANALISAR ESTRUTURA INTERNA CONFERIR EQUIPAMENTOS SE DANIFICADOS, ANALISAR FONTE E ROTEADOR. CONFIGURAR EQUIPAMENTO, RESTABELECER CONEXÃO E REALIZAR OS DEVIDOS TESTES, FILMAR, FOTOGRAFAR E APRESENTAR A ${cp}. EXPLICAR SOBRE REDE 2 E 5GHZ, E SUAS ABRANGÊNCIAS.  ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 40 MIN.`
+    const intro = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E INFORMOU QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE SUA REDE WIFI NAO ESTA APARECENDO MAIS. REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL. ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER. INFORMEI QUE ROTEADOR ESTA RESETADO, E NECESSARIA VISITA TECNICA PARA RECONFIGURA-LO, QUE ESTE SERVICO POSSUI CUSTO R$50,00. ${cp} CONCORDOU E SOLICITOU PAGAR NO ATO EM ${formaPag}. VISITA AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS.`
+    const tecnico = `TECNICO: ANALISAR ESTRUTURA INTERNA CONFERIR EQUIPAMENTOS SE DANIFICADOS, ANALISAR FONTE E ROTEADOR. CONFIGURAR EQUIPAMENTO, RESTABELECER CONEXAO E REALIZAR OS DEVIDOS TESTES, FILMAR, FOTOGRAFAR E APRESENTAR A ${cp}. EXPLICAR SOBRE REDE 2 E 5GHZ, E SUAS ABRANGENCIAS.  ATUALIZAR FIRMWARE DO ROTEADOR SE ESTIVER DESATUALIZADA. TEMPO ESTIMADO 40 MIN.`
     os = `${intro}
 
 ${SEP42}
 
-INDICAÇÃO TÉCNICA:
+INDICACAO TECNICA:
 
 ${tecnico}`
 
@@ -197,18 +197,26 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     highlight: true,
     defaultValue: M_VISITA,
     options: [
-      { value: M_VISITA, label: 'Visita técnica', icon: 'router' },
+      { value: M_VISITA, label: 'Visita tecnica', icon: 'router' },
       { value: M_LOJA, label: 'Trazer roteador na loja', icon: 'router' },
     ],
     layout: { md: 12 },
   },
   {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente numeros',
+    section: S_ID,
+    layout: { md: 4 },
+  },
+  {
     id: 'cliente',
     label: 'Nome completo',
     control: 'text',
-    placeholder: 'Nome completo do titular da conexão',
+    placeholder: 'Nome completo do titular da conexao',
     section: S_ID,
-    layout: { md: 12 },
+    layout: { md: 8 },
   },
   {
     id: 'canal',
@@ -217,7 +225,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -225,7 +233,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 4 },
   },
@@ -248,13 +256,13 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'oscila',
-    label: 'Oscilação',
+    label: 'Oscilacao',
     control: 'select',
     section: S_DET,
     layout: { md: 4 },
     options: [
-      { value: 'COM OSCILAÇÃO', label: 'Sim' },
-      { value: 'SEM OSCILAÇÃO', label: 'Não' },
+      { value: 'COM OSCILACAO', label: 'Sim' },
+      { value: 'SEM OSCILACAO', label: 'Nao' },
     ],
   },
   {
@@ -267,7 +275,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'dataLigacao',
-    label: 'Quando o cliente virá à loja?',
+    label: 'Quando o cliente vira a loja?',
     control: 'datetime',
     placeholder: 'dd/mm/aaaa hh:mm',
     section: S_AGE,
@@ -282,7 +290,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'tipoSolicitacao', equals: COM_VISITA },
     layout: { md: 3 },
     options: [
-      { value: 'CARTÃO', label: 'Cartão' },
+      { value: 'CARTAO', label: 'Cartao' },
       { value: 'DINHEIRO', label: 'Dinheiro' },
       { value: 'PIX', label: 'Pix' },
     ],
@@ -297,6 +305,18 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     layout: { md: 3 },
   },
 ]
+
+export function buildRoteadorResetSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { roteadorResetTextoProtocolo } = buildRoteadorResetTextos(rawValues, operadorPrimeiroNome)
+  const segments = roteadorResetTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
 
 export function getManutRoteadorResetDefaults(): OsTemplatePresetPayload {
   return {

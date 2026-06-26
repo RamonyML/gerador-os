@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG, type UserPresence } from '../../types/chat'
 import { SECTOR_LABELS, type Sector } from '../../types/profile'
+import { useTodaysBirthdays } from '../../hooks/useTodaysBirthdays'
 
 function StatusDot({ color }: { color: string }) {
   return (
@@ -44,13 +45,17 @@ function formatLastTime(date: Date): string {
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
 }
 
-function UserRow({ user: otherUser, onSelect }: { user: UserPresence; onSelect: (uid: string) => void }) {
+function UserRow({ user: otherUser, onSelect, isBirthday = false }: { user: UserPresence; onSelect: (uid: string) => void; isBirthday?: boolean }) {
   const { chats } = useChat()
   const { user } = useAuth()
   const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
   const cfg = STATUS_CONFIG[otherUser.status]
   const chat = chats.find((c) => c.participants.includes(otherUser.uid))
   const unread = user ? (chat?.unreadCount[user.uid] ?? 0) : 0
+
+  const birthdayBg = isDark ? alpha('#f59e0b', 0.13) : '#fef9ec'
+  const birthdayBgHover = isDark ? alpha('#f59e0b', 0.22) : '#fef3c7'
 
   return (
     <Box
@@ -60,14 +65,22 @@ function UserRow({ user: otherUser, onSelect }: { user: UserPresence; onSelect: 
         alignItems: 'center',
         gap: 1.25,
         px: 1.5,
-        py: 0.875,
+        py: isBirthday ? 1 : 0.875,
         cursor: 'pointer',
         borderRadius: 2,
         mx: 0.75,
         transition: 'background 0.15s',
-        bgcolor: unread > 0 ? alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.08 : 0.05) : 'transparent',
+        bgcolor: isBirthday
+          ? birthdayBg
+          : unread > 0
+            ? alpha(theme.palette.primary.main, isDark ? 0.08 : 0.05)
+            : 'transparent',
+        border: isBirthday ? 1 : 0,
+        borderColor: isDark ? alpha('#f59e0b', 0.35) : '#fde68a',
         '&:hover': {
-          bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.12 : 0.08),
+          bgcolor: isBirthday
+            ? birthdayBgHover
+            : alpha(theme.palette.primary.main, isDark ? 0.12 : 0.08),
         },
       }}
     >
@@ -81,37 +94,75 @@ function UserRow({ user: otherUser, onSelect }: { user: UserPresence; onSelect: 
         >
           <Avatar
             src={otherUser.photoURL ?? undefined}
-            sx={{ width: 36, height: 36, fontSize: 13, fontWeight: 700, bgcolor: 'primary.main' }}
+            sx={{
+              width: 36,
+              height: 36,
+              fontSize: 13,
+              fontWeight: 700,
+              bgcolor: isBirthday ? (isDark ? '#b45309' : '#f59e0b') : 'primary.main',
+            }}
           >
             {initialsFrom(otherUser.displayName)}
           </Avatar>
         </Badge>
         <StatusDot color={cfg.color} />
+        {isBirthday && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: -6,
+              right: -6,
+              fontSize: 13,
+              lineHeight: 1,
+              pointerEvents: 'none',
+            }}
+          >
+            🎂
+          </Box>
+        )}
       </Box>
 
       <Box sx={{ minWidth: 0, flex: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <Typography
             variant="body2"
-            sx={{ fontWeight: unread > 0 ? 700 : 600, lineHeight: 1.3, flex: 1 }}
+            sx={{ fontWeight: unread > 0 || isBirthday ? 700 : 600, lineHeight: 1.3, flex: 1, color: isBirthday ? (isDark ? '#fcd34d' : '#92400e') : 'text.primary' }}
             noWrap
           >
             {otherUser.displayName}
           </Typography>
-          {otherUser.sector && (
+          {isBirthday ? (
             <Chip
-              label={SECTOR_LABELS[otherUser.sector as Sector] ?? otherUser.sector}
+              label="🎉 Aniversário"
               size="small"
               sx={{
                 height: 16,
                 fontSize: 9,
                 fontWeight: 700,
                 flexShrink: 0,
-                bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.2 : 0.1),
-                color: 'primary.main',
+                bgcolor: isDark ? alpha('#f59e0b', 0.25) : '#fef08a',
+                color: isDark ? '#fcd34d' : '#92400e',
+                border: '1px solid',
+                borderColor: isDark ? alpha('#f59e0b', 0.4) : '#fbbf24',
                 '& .MuiChip-label': { px: 0.75 },
               }}
             />
+          ) : (
+            otherUser.sector && (
+              <Chip
+                label={SECTOR_LABELS[otherUser.sector as Sector] ?? otherUser.sector}
+                size="small"
+                sx={{
+                  height: 16,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  bgcolor: alpha(theme.palette.primary.main, isDark ? 0.2 : 0.1),
+                  color: 'primary.main',
+                  '& .MuiChip-label': { px: 0.75 },
+                }}
+              />
+            )
           )}
           {chat?.lastMessageAt && (
             <Typography variant="caption" sx={{ fontSize: 10, color: unread > 0 ? 'primary.main' : 'text.disabled', flexShrink: 0 }}>
@@ -119,9 +170,15 @@ function UserRow({ user: otherUser, onSelect }: { user: UserPresence; onSelect: 
             </Typography>
           )}
         </Box>
-        <Typography variant="caption" sx={{ color: cfg.color, fontWeight: 500 }}>
-          {cfg.label}
-        </Typography>
+        {isBirthday ? (
+          <Typography variant="caption" sx={{ color: isDark ? alpha('#fcd34d', 0.7) : '#a16207', fontWeight: 500 }}>
+            Mande um parabéns! 🥳
+          </Typography>
+        ) : (
+          <Typography variant="caption" sx={{ color: cfg.color, fontWeight: 500 }}>
+            {cfg.label}
+          </Typography>
+        )}
         {chat?.lastMessage ? (
           <Typography
             variant="caption"
@@ -148,6 +205,9 @@ export function ChatUserList({ onSelectUser }: Props) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [filterUnread, setFilterUnread] = useState(false)
 
+  const birthdayProfiles = useTodaysBirthdays()
+  const birthdayUids = new Set(birthdayProfiles.map((p) => p.uid).filter(Boolean) as string[])
+
   const getUnread = (u: UserPresence) => {
     const chat = chats.find((c) => c.participants.includes(u.uid))
     return user ? (chat?.unreadCount[user.uid] ?? 0) : 0
@@ -166,12 +226,14 @@ export function ChatUserList({ onSelectUser }: Props) {
     ? presence.filter((u) => u.displayName.toLowerCase().includes(normalized))
     : presence
 
-  // Usuários com não-lidas (qualquer status) — ficam sempre no topo
-  const unreadUsers = filtered.filter((u) => getUnread(u) > 0).sort(sortByRecent)
-  // Ativos sem não-lidas
-  const onlineClean = filtered.filter((u) => u.status !== 'offline' && getUnread(u) === 0).sort(sortByRecent)
-  // Offline sem não-lidas
-  const offlineClean = filtered.filter((u) => u.status === 'offline' && getUnread(u) === 0).sort(sortByRecent)
+  // Aniversariantes — sempre no topo (excluídos das demais seções)
+  const birthdayUsers = filtered.filter((u) => birthdayUids.has(u.uid))
+  // Usuários com não-lidas (exceto aniversariantes) — ficam logo abaixo
+  const unreadUsers = filtered.filter((u) => !birthdayUids.has(u.uid) && getUnread(u) > 0).sort(sortByRecent)
+  // Ativos sem não-lidas (exceto aniversariantes)
+  const onlineClean = filtered.filter((u) => !birthdayUids.has(u.uid) && u.status !== 'offline' && getUnread(u) === 0).sort(sortByRecent)
+  // Offline sem não-lidas (exceto aniversariantes)
+  const offlineClean = filtered.filter((u) => !birthdayUids.has(u.uid) && u.status === 'offline' && getUnread(u) === 0).sort(sortByRecent)
 
   const totalUnreadCount = presence.reduce((acc, u) => acc + getUnread(u), 0)
 
@@ -262,17 +324,23 @@ export function ChatUserList({ onSelectUser }: Props) {
             </>
           )
         ) : (
-          // ── Modo normal: não lidas no topo, depois ativos, depois offline ──
+          // ── Modo normal: aniversariantes no topo, depois não lidas, ativos, offline ──
           <>
+            {birthdayUsers.length > 0 && (
+              <>
+                <SectionLabel label="🎂 Aniversário hoje" pt={0.5} />
+                {birthdayUsers.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} isBirthday />)}
+              </>
+            )}
             {unreadUsers.length > 0 && (
               <>
-                <SectionLabel label={`Não lidas — ${unreadUsers.length}`} />
+                <SectionLabel label={`Não lidas — ${unreadUsers.length}`} pt={birthdayUsers.length > 0 ? 1.25 : 0.5} />
                 {unreadUsers.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
               </>
             )}
             {onlineClean.length > 0 && (
               <>
-                <SectionLabel label={`Ativos — ${onlineClean.length}`} pt={unreadUsers.length > 0 ? 1.25 : 0.5} />
+                <SectionLabel label={`Ativos — ${onlineClean.length}`} pt={birthdayUsers.length > 0 || unreadUsers.length > 0 ? 1.25 : 0.5} />
                 {onlineClean.map((u) => <UserRow key={u.uid} user={u} onSelect={onSelectUser} />)}
               </>
             )}

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+﻿import { describe, it, expect } from 'vitest'
 import {
   LUZ_VERMELHA_ISENTO_OUTPUT,
   buildLuzVermelhaIsentoTextos,
@@ -13,13 +13,13 @@ import { renderTemplate } from '../../lib/renderTemplate'
 import { splitOsPreviewSections } from '../../lib/splitOsPreviewSections'
 
 /**
- * Paridade com legado-exemplo/suporte/luz-vermelha-7dias/ (versão ISENTA):
+ * Paridade com legado-exemplo/suporte/luz-vermelha-7dias/ (versao ISENTA):
  * - index-luzverm-padrao.html (titular)
  * - luz-padrao1.html (terceiro 1 — titular ausente)
  * - luz-padrao2.html (terceiro 2 — titular presente)
  *
- * luz-padrao3 (titular autoriza terceiro) é COMPOSTO por analogia (o legado
- * não foi atualizado para isento), então é validado contra a redação composta.
+ * luz-padrao3 (titular autoriza terceiro) e COMPOSTO por analogia (o legado
+ * nao foi atualizado para isento), entao e validado contra a redacao composta.
  */
 
 const SEP28 = '='.repeat(28)
@@ -28,10 +28,10 @@ const SEP_OS = '='.repeat(39)
 const sp = (n: number) => ' '.repeat(n)
 
 const INFORMEI =
-  'INFORMEI QUE É NECESSÁRIA VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXÃO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVAÇÃO E INSTALAÇÃO REALIZADA DENTRO DE 07 DIAS.'
+  'INFORMEI QUE E NECESSARIA VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E RESTABELECER A CONEXAO. VISITA ISENTA MEDIANTE EQUIPAMENTOS EMPRESTADOS ESTAREM EM PERFEITO ESTADO DE CONSERVACAO E INSTALACAO REALIZADA DENTRO DE 07 DIAS.'
 
 const tecnico = (quem: string) =>
-  `TÉCNICO: VERIFICAR CONECTOR, DROP INTERNO E EXTERNO. ACHANDO O PROBLEMA, TOMAR PROVIDÊNCIAS E RESTITUIR SEM CUSTO. APÓS TÉRMINO DO SERVIÇO, PERGUNTA À ${quem} (OU QUEM ESTIVER ACOMPANHADO SERVIÇO) SE HÁ NECESSIDADE DE QUALQUER OUTRA ORIENTAÇÃO SOBRE A INTERNET.`
+  `TECNICO: VERIFICAR CONECTOR, DROP INTERNO E EXTERNO. ACHANDO O PROBLEMA, TOMAR PROVIDENCIAS E RESTITUIR SEM CUSTO. APOS TERMINO DO SERVICO, PERGUNTA A ${quem} (OU QUEM ESTIVER ACOMPANHADO SERVICO) SE HA NECESSIDADE DE QUALQUER OUTRA ORIENTACAO SOBRE A INTERNET.`
 
 type Vars = {
   cliente: string
@@ -67,20 +67,20 @@ function legadoPadrao(v: Vars, c: 'CTOE' | 'CTOI') {
   const cp = v.cliente.split(' ')[0]
   const op = v.onu.split(' ')[0]
   const protocolo = [
-    `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP28,
     '',
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(8),
     SEP28,
     sp(8),
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${v.alarme}.`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${v.alarme}.`,
     sp(8),
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
     sp(8),
-    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO.`,
+    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
     sp(8),
     SEP28,
     '',
@@ -88,12 +88,12 @@ function legadoPadrao(v: Vars, c: 'CTOE' | 'CTOI') {
     sp(8),
     SEP28,
     sp(8),
-    `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`,
+    `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${v.dataVisita} AS ${v.horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. ${INFORMEI} VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`
-  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\n> INDICAÇÃO TÉCNICA:\n\n${tecnico(cp)}`
+  const osBase = `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. ${INFORMEI} VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`
+  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\n> INDICACAO TECNICA:\n\n${tecnico(cp)}`
   return { protocolo, os, agenda: agenda(v, c) }
 }
 
@@ -102,20 +102,20 @@ function legadoP1(v: Vars, c: 'CTOE' | 'CTOI') {
   const sp_ = v.solicitante.split(' ')[0]
   const op = v.onu.split(' ')[0]
   const protocolo = [
-    `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP19,
     sp(4),
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(4),
     SEP19,
     sp(4),
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${v.alarme}.`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${v.alarme}.`,
     sp(4),
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-    `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+    `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
     sp(4),
-    `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+    `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
     '',
     SEP19,
     '',
@@ -124,13 +124,13 @@ function legadoP1(v: Vars, c: 'CTOE' | 'CTOI') {
     SEP19,
     '',
     '',
-    `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${v.solicitante} (${v.parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`,
+    `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${v.solicitante} (${v.parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. ${INFORMEI} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${v.solicitante} (${v.parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`
+  const osBase = `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTO (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. ${INFORMEI} POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${v.solicitante} (${v.parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`
   const os =
-    osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n${sp(18)}\nINDICAÇÃO TÉCNICA:\n${sp(20)}\n${tecnico(sp_)}`
+    osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n${sp(18)}\nINDICACAO TECNICA:\n${sp(20)}\n${tecnico(sp_)}`
   return { protocolo, os, agenda: agenda(v, c) }
 }
 
@@ -139,20 +139,20 @@ function legadoP2(v: Vars, c: 'CTOE' | 'CTOI') {
   const sp_ = v.solicitante.split(' ')[0]
   const op = v.onu.split(' ')[0]
   const protocolo = [
-    `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP19,
     sp(4),
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(4),
     SEP19,
     sp(4),
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${v.alarme}.`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${v.alarme}.`,
     sp(4),
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-    `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+    `ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
     sp(4),
-    `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+    `PERGUNTEI A ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
     sp(4),
     SEP19,
     '',
@@ -160,12 +160,12 @@ function legadoP2(v: Vars, c: 'CTOE' | 'CTOI') {
     '',
     SEP19,
     '',
-    `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`,
+    `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTA-LOS APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. ${INFORMEI} POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`
-  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\nINDICAÇÃO TÉCNICA:\n\n${tecnico(sp_)}`
+  const osBase = `${sp_} (${v.parente} DE ${cp}) ENTROU EM CONTATO POR ${v.canal} (${v.contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${sp_} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${sp_} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. ${INFORMEI} POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${v.canal} (${v.contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`
+  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\nINDICACAO TECNICA:\n\n${tecnico(sp_)}`
   return { protocolo, os, agenda: agenda(v, c) }
 }
 
@@ -173,20 +173,20 @@ function compostoP3(v: Vars, c: 'CTOE' | 'CTOI') {
   const cp = v.cliente.split(' ')[0]
   const op = v.onu.split(' ')[0]
   const protocolo = [
-    `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
     sp(20),
     SEP19,
     sp(24),
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(24),
     SEP19,
     sp(24),
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM ${v.alarme}.`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${v.alarme}.`,
     sp(24),
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. `,
-    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. `,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. `,
+    `ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. `,
     sp(24),
-    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. `,
+    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
     sp(24),
     SEP19,
     sp(20),
@@ -194,12 +194,12 @@ function compostoP3(v: Vars, c: 'CTOE' | 'CTOI') {
     sp(20),
     SEP19,
     sp(20),
-    `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${v.solicitante} (${v.parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`,
+    `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${v.solicitante} (${v.parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTÁ COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELÉTRICA E RECONECTAR APÓS 30 SEGUNDOS. FEZ, PORÉM CONEXÃO NÃO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICAÇÃO/INTERVENÇÃO NA INSTALAÇÃO E CLIENTE DISSE QUE NÃO. ${INFORMEI} ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${v.solicitante} (${v.parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} ÀS ${v.horaVisita} HRS.`
-  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\nINDICAÇÃO TÉCNICA:\n${sp(20)}\n${tecnico(cp)}`
+  const osBase = `${cp} ENTROU EM CONTATO POR ${v.canal} (${v.contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, DISSE "QUE ${op} ESTA COM ${v.alarme}". REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA. ORIENTEI ${cp} A DESCONECTAR EQUIPAMENTOS (${v.onu}) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. ${INFORMEI} ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${v.solicitante} (${v.parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${v.dataVisita} AS ${v.horaVisita} HRS.`
+  const os = osBase + ctoBlock(c, v.cto, v.passante) + `${SEP_OS}\n\nINDICACAO TECNICA:\n${sp(20)}\n${tecnico(cp)}`
   return { protocolo, os, agenda: agenda(v, c) }
 }
 
@@ -217,7 +217,7 @@ function gerarNovo(tipo: string, v: Vars, c: 'CTOE' | 'CTOI') {
 
 const BASE: Vars = {
   cliente: 'MARIA OLIVEIRA SANTOS',
-  solicitante: 'JOÃO PEDRO OLIVEIRA',
+  solicitante: 'JOAO PEDRO OLIVEIRA',
   parente: 'FILHO',
   canal: 'WHATSAPP',
   contato: '34991112233',
@@ -229,7 +229,7 @@ const BASE: Vars = {
   horaVisita: '14:30',
   protocolo: '456.789',
   cto: '1035-A',
-  passante: 'PASSANTE NO POSTE PRÓXIMO AO SOBRADO',
+  passante: 'PASSANTE NO POSTE PROXIMO AO SOBRADO',
   operador: 'GABRIEL',
 }
 
@@ -238,7 +238,7 @@ const CASOS: Array<{
   tipo: string
   legado: (v: Vars, c: 'CTOE' | 'CTOI') => { protocolo: string; os: string; agenda: string }
 }> = [
-  { nome: 'titular (padrão)', tipo: T_TITULAR, legado: legadoPadrao },
+  { nome: 'titular (padrao)', tipo: T_TITULAR, legado: legadoPadrao },
   { nome: 'terceiro 1 (titular ausente)', tipo: T_TERCEIRO_TERCEIRO, legado: legadoP1 },
   { nome: 'terceiro 2 (titular presente)', tipo: T_TERCEIRO_TITULAR, legado: legadoP2 },
   { nome: 'titular autoriza terceiro (composto)', tipo: T_TITULAR_TERCEIRO, legado: compostoP3 },

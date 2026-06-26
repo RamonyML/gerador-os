@@ -1,4 +1,4 @@
-import type { OsTemplateField } from '../../types/osTemplate'
+﻿import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   T_TITULAR,
@@ -8,14 +8,14 @@ import {
 } from '../mudEnd/padrao'
 
 /**
- * Dano ocasionado na fibra (externo) — fluxo único com variações de terceiro.
+ * Dano ocasionado na fibra (externo) — fluxo unico com variacoes de terceiro.
  * Paridade com legado-exemplo/suporte/luz-vermelha/ocasionado-fibra/:
  * - ocas-fibra-padrao.html (titular solicita e acompanha)
  * - ocas-fibra1.html (terceiro solicita, titular ausente)
  * - ocas-fibra2.html (terceiro solicita, titular presente)
  * - ocas-fibra3.html (titular solicita e autoriza terceiro)
  *
- * Obs.: os textos do legado são copiados caractere-a-caractere, inclusive
+ * Obs.: os textos do legado sao copiados caractere-a-caractere, inclusive
  * eventuais "erros" (ex.: "PAGAMENTOEM" no fluxo de terceiro 1).
  */
 
@@ -23,23 +23,23 @@ const SEP19 = '*'.repeat(19)
 const SEP42 = '*'.repeat(42)
 const SEP_OS = '='.repeat(39)
 
-const S_ID = 'IDENTIFICAÇÃO DO CLIENTE'
+const S_ID = 'IDENTIFICACAO DO CLIENTE'
 const S_SOL = 'DADOS DO SOLICITANTE'
-const S_DET = 'DETALHES DA OCORRÊNCIA'
+const S_DET = 'DETALHES DA OCORRENCIA'
 const S_AGE = 'AGENDAMENTO'
 
 const VALOR_50 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 50,00 REFERENTE A MÃO DE OBRA TÉCNICA.'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO FAZER EMENDA TECNICA, O VALOR E DE R$ 50,00 REFERENTE A MAO DE OBRA TECNICA.'
 const VALOR_100 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NÃO SEJA POSSÍVEL REAPROVEITÁ-LO SENDO NECESSÁRIO FAZER EMENDA TÉCNICA, O VALOR É DE R$ 100,00 REFERENTE A MÃO DE OBRA TÉCNICA.'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) OU CASO NAO SEJA POSSIVEL REAPROVEITA-LO SENDO NECESSARIO FAZER EMENDA TECNICA, O VALOR E DE R$ 100,00 REFERENTE A MAO DE OBRA TECNICA.'
 const VALOR_50_100 =
-  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) O CUSTO DO SERVIÇO É DE R$50,00. EXPLIQUEI TAMBÉM QUE CASO DROP (CABO/FIBRA) NÃO TENHA SOBRA E FOR NECESSÁRIO SER SUBSTITUÍDO POR OUTRO, O CUSTO PASSA A SER DE R$100,00 (INCLUI PEÇAS E SERVIÇOS).'
+  'EXPLIQUEI QUE SE CONSEGUIR REINSTALAR DROP NO LOCAL DESEJADO APROVEITANDO O MESMO DROP (CABO/FIBRA) O CUSTO DO SERVICO E DE R$50,00. EXPLIQUEI TAMBEM QUE CASO DROP (CABO/FIBRA) NAO TENHA SOBRA E FOR NECESSARIO SER SUBSTITUIDO POR OUTRO, O CUSTO PASSA A SER DE R$100,00 (INCLUI PECAS E SERVICOS).'
 
 const CUSTO =
-  'INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA PARA VERIFICAR A FONTE DO PROBLEMA. ESTA VISITA TÉCNICA POSSUI O CUSTO DE R$50,00 E CASO OS EQUIPAMENTOS TENHAM DEFEITOS OCASIONADOS, SERÁ COBRADO O VALOR REFERENTE AOS MESMOS.'
+  'INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA. ESTA VISITA TECNICA POSSUI O CUSTO DE R$50,00 E CASO OS EQUIPAMENTOS TENHAM DEFEITOS OCASIONADOS, SERA COBRADO O VALOR REFERENTE AOS MESMOS.'
 
 function tecnico(quem: string): string {
-  return `TÉCNICO: VERIFICAR DROP INTERNO E EXTERNO, SE SOBRA TÉCNICA FOR SUFICIENTE, USAR PARA REPARO E RESTABELECER CONEXÃO. CASO NÃO SEJA PASSAR OUTRO DROP. CORRIGIR QUALQUER INCONSISTÊNCIAS NA INSTALAÇÃO QUE NÃO TIVER PADRÃO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZAÇÃO COM ${quem}. TEMPO ESTIMADO 60 MIN.`
+  return `TECNICO: VERIFICAR DROP INTERNO E EXTERNO, SE SOBRA TECNICA FOR SUFICIENTE, USAR PARA REPARO E RESTABELECER CONEXAO. CASO NAO SEJA PASSAR OUTRO DROP. CORRIGIR QUALQUER INCONSISTENCIAS NA INSTALACAO QUE NAO TIVER PADRAO. AO FINALIZAR ENTRAR EM CONTATO COM SUPORTE PARA CONFERIR SINAL E CONFIRMAR NORMALIZACAO COM ${quem}. TEMPO ESTIMADO 60 MIN.`
 }
 
 export const OCAS_FIBRA_OUTPUT = [
@@ -80,11 +80,11 @@ function alarmeAgendaPrefix(alarme: string): string {
 }
 
 function osTailPadrao(quem: string): string {
-  return `${SEP_OS}\n\nINDICAÇÃO TÉCNICA:\n\n${tecnico(quem)}`
+  return `${SEP_OS}\n\nINDICACAO TECNICA:\n\n${tecnico(quem)}`
 }
 
 function osTailFibra1(quem: string): string {
-  return `${SEP_OS}\n${sp(18)}\nINDICAÇÃO TÉCNICA:\n\n${tecnico(quem)}`
+  return `${SEP_OS}\n${sp(18)}\nINDICACAO TECNICA:\n\n${tecnico(quem)}`
 }
 
 export function buildOcasFibraTextos(
@@ -122,17 +122,17 @@ export function buildOcasFibraTextos(
 
   if (tipo === T_TERCEIRO_TERCEIRO) {
     const protocolo = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       sp(4),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(4),
       SEP19,
       sp(4),
-      `QUESTIONADO, ${sp_} DISSE QUE A ${op} ESTÁ COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${sp_} DISSE QUE "${motivo}", E FICOU SEM ACESSO À INTERNET.`,
+      `QUESTIONADO, ${sp_} DISSE QUE A ${op} ESTA COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${sp_} DISSE QUE "${motivo}", E FICOU SEM ACESSO A INTERNET.`,
       '',
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA.`,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA.`,
       '',
       SEP42,
       '',
@@ -140,11 +140,11 @@ export function buildOcasFibraTextos(
       sp(4),
       SEP42,
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E FARÁ O PAGAMENTOEM ${formaPag}. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E FARA O PAGAMENTOEM ${formaPag}. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO À INTERNET. REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO DO SISTEMA E ${op} APAGADA. EXPLIQUEI QUE COM A QUEDA/INTERVENÇÃO PODE TER DANIFICADO A FIBRA, CONECTOR OU ATÉ MESMO OS EQUIPAMENTOS. ${valor} ${sp_} CONCORDOU COM A VISITA E CASO HAJA COBRANÇA SOLICITOU PAGAR NO ATO COM ${formaPag}. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO A INTERNET. REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO DO SISTEMA E ${op} APAGADA. EXPLIQUEI QUE COM A QUEDA/INTERVENCAO PODE TER DANIFICADO A FIBRA, CONECTOR OU ATE MESMO OS EQUIPAMENTOS. ${valor} ${sp_} CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitanteUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       ocasFibraTextoProtocolo: protocolo,
       ocasFibraTextoOS: osBase + ctoLine + osTailFibra1(sp_),
@@ -154,17 +154,17 @@ export function buildOcasFibraTextos(
 
   if (tipo === T_TERCEIRO_TITULAR) {
     const protocolo = [
-      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
       '',
       SEP19,
       sp(4),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(4),
       SEP19,
       sp(4),
-      `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${sp_} DISSE QUE "${motivo}", E FICOU SEM ACESSO À INTERNET.`,
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${sp_} DISSE QUE "${motivo}", E FICOU SEM ACESSO A INTERNET.`,
       '',
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA.`,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA.`,
       sp(4),
       SEP19,
       '',
@@ -172,11 +172,11 @@ export function buildOcasFibraTextos(
       '',
       SEP19,
       '',
-      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. ${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E FARÁ O PAGAMENTO EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. ${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E FARA O PAGAMENTO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO À INTERNET. REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO DO SISTEMA E ${op} APAGADA. ${valor} ${sp_} CONCORDOU COM A VISITA E FARÁ O PAGAMENTO EM ${formaPag}. POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO A INTERNET. REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO DO SISTEMA E ${op} APAGADA. ${valor} ${sp_} CONCORDOU COM A VISITA E FARA O PAGAMENTO EM ${formaPag}. POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       ocasFibraTextoProtocolo: protocolo,
       ocasFibraTextoOS: osBase + ctoLine + osTailPadrao(cp),
@@ -186,17 +186,17 @@ export function buildOcasFibraTextos(
 
   if (tipo === T_TITULAR_TERCEIRO) {
     const protocolo = [
-      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
       sp(20),
       SEP19,
       sp(24),
-      `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
       sp(24),
       SEP19,
       sp(24),
-      `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${cp} DISSE QUE "${motivo}", E FICOU SEM ACESSO À INTERNET.`,
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${cp} DISSE QUE "${motivo}", E FICOU SEM ACESSO A INTERNET.`,
       '',
-      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO/APAGADA.`,
+      `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA.`,
       sp(24),
       SEP19,
       sp(20),
@@ -204,11 +204,11 @@ export function buildOcasFibraTextos(
       '',
       SEP19,
       sp(20),
-      `${cp} CONCORDOU COM A VISITA E FARÁ O PAGAMENTO COM ${formaPag}. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`,
+      `${cp} CONCORDOU COM A VISITA E FARA O PAGAMENTO COM ${formaPag}. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`,
       '',
       'CLIENTE SEM DUVIDAS.',
     ].join('\n')
-    const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO À INTERNET. REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO DO SISTEMA E ${op} APAGADA. ${valor} ${cp} CONCORDOU COM A VISITA E FARÁ O PAGAMENTO COM ${formaPag}. ${cp} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+    const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO A INTERNET. REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO DO SISTEMA E ${op} APAGADA. ${valor} ${cp} CONCORDOU COM A VISITA E FARA O PAGAMENTO COM ${formaPag}. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solicitanteUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} AS ${horaVisita} HRS.`
     return {
       ocasFibraTextoProtocolo: protocolo,
       ocasFibraTextoOS: osBase + ctoLine + osTailPadrao(cp),
@@ -217,26 +217,26 @@ export function buildOcasFibraTextos(
   }
 
   const protocolo = [
-    `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXÃO.`,
+    `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
     '',
     SEP42,
     sp(4),
-    `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${op} SEM SINAL.`,
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
     sp(4),
     SEP42,
-    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTÁ DESCONECTADO.`,
+    `REMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO.`,
     '',
-    `QUESTIONADO, DISSE QUE A ${op} ESTÁ COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${cp} DISSE QUE "${motivo}".`,
+    `QUESTIONADO, DISSE QUE A ${op} ESTA COM LUZ VERMELHA ACESA. PERGUNTEI O MOTIVO E ${cp} DISSE QUE "${motivo}".`,
     '',
     valor,
     '',
     SEP42,
     '',
-    `${cp} CONCORDOU COM OS TERMOS DA VISITA TÉCNICA E FARÁ O PAGAMENTO EM ${formaPag}, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.`,
+    `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E FARA O PAGAMENTO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataVisita} AS ${horaVisita} HRS.`,
     '',
     'CLIENTE SEM DUVIDAS.',
   ].join('\n')
-  const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTÁ SEM CONEXÃO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO À INTERNET. PERGUNTEI SOBRE A ${op}, E CLIENTE DISSE QUE ESTÁ COM LUZ VERMELHA ACESA. REMOTAMENTE VERIFIQUEI QUE USUÁRIO ESTÁ DESCONECTADO E ONU APAGADA. ${valor} ${cp} AUTORIZOU VISITA E PAGARÁ EM ${formaPag} NO ATO. VISITA AGENDADA PARA ${dataVisita} ÀS ${horaVisita} HRS.`
+  const osBase = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO DISSE QUE: "${motivo}", E FICOU SEM ACESSO A INTERNET. PERGUNTEI SOBRE A ${op}, E CLIENTE DISSE QUE ESTA COM LUZ VERMELHA ACESA. REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU APAGADA. ${valor} ${cp} AUTORIZOU VISITA E PAGARA EM ${formaPag} NO ATO. VISITA AGENDADA PARA ${dataVisita} AS ${horaVisita} HRS.`
   return {
     ocasFibraTextoProtocolo: protocolo,
     ocasFibraTextoOS: osBase + ctoLine + osTailPadrao(cp),
@@ -263,7 +263,7 @@ const COM_CONTATO_SOL = [T_TERCEIRO_TITULAR, T_TERCEIRO_TERCEIRO]
 export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
   {
     id: 'tipoSolicitacao',
-    label: 'Tipo de solicitação',
+    label: 'Tipo de solicitacao',
     control: 'select',
     highlight: true,
     defaultValue: T_TITULAR,
@@ -300,7 +300,7 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     id: 'parente',
     label: 'Grau de relacionamento',
     control: 'text',
-    placeholder: 'Ex.: Mãe, Filho, Irmão, Esposa…',
+    placeholder: 'Ex.: Mae, Filho, Irmao, Esposa…',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_TERCEIRO },
     layout: { md: 4 },
@@ -309,9 +309,17 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     id: 'contatoSol',
     label: 'Contato do solicitante',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_SOL,
     showWhen: { field: 'tipoSolicitacao', equals: COM_CONTATO_SOL },
+    layout: { md: 4 },
+  },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente numeros',
+    section: S_ID,
     layout: { md: 4 },
   },
   {
@@ -329,7 +337,7 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGAÇÃO', label: 'Telefone' },
+      { value: 'LIGACAO', label: 'Telefone' },
       { value: 'WHATSAPP', label: 'WhatsApp' },
     ],
   },
@@ -337,7 +345,7 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     id: 'contato',
     label: 'Contato',
     control: 'phone',
-    placeholder: 'Somente os números',
+    placeholder: 'Somente os numeros',
     section: S_ID,
     layout: { md: 4 },
   },
@@ -353,7 +361,7 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     id: 'motivo',
     label: 'Resumo do ocorrido',
     control: 'text',
-    placeholder: "Ex.: 'ao podar uma árvore, cliente cortou a fibra ótica externa'",
+    placeholder: "Ex.: 'ao podar uma arvore, cliente cortou a fibra otica externa'",
     section: S_DET,
     layout: { md: 12 },
   },
@@ -390,9 +398,9 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
   },
   {
     id: 'passante',
-    label: 'Localização do passante',
+    label: 'Localizacao do passante',
     control: 'text',
-    placeholder: "Ex.: 'Passante no poste próximo ao sobrado'",
+    placeholder: "Ex.: 'Passante no poste proximo ao sobrado'",
     section: S_DET,
     layout: { md: 8 },
   },
@@ -429,6 +437,18 @@ export const OCAS_FIBRA_FIELDS: OsTemplateField[] = [
     ],
   },
 ]
+
+export function buildOcasFibraSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
+  const { ocasFibraTextoProtocolo } = buildOcasFibraTextos(rawValues, operadorPrimeiroNome)
+  const segments = ocasFibraTextoProtocolo
+    .split(/^[=*]{5,}$/gm)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+}
 
 export function getManutOcasFibraDefaults(): OsTemplatePresetPayload {
   return {
