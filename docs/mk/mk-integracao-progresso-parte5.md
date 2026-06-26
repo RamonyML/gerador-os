@@ -266,13 +266,79 @@ c633ac9  feat(mk): integracao MK completa — CPF, processos, comentarios vermel
 
 ---
 
-## 10. Arquivos relevantes
+## 10. Fix encoding UTF-8 → Windows-1252 (2026-06-26)
+
+### 10.1 Problema
+Textos com caracteres especiais (Ç, Ã, etc.) apareciam como `NAVEGAÃ‡ÃƒO` no MK ERP. Causa: `URLSearchParams.toString()` percent-encoda em UTF-8 (`%C3%87` para Ç), mas o servidor Tomcat do MK decodificava os bytes como ISO-8859-1/Windows-1252 (`0xC3 → Ã`, `0x87 → ‡`).
+
+### 10.2 Fix
+Uma linha em `functions/src/mk-suporte.ts`:
+```typescript
+// Antes:
+{ 'Content-Type': 'application/x-www-form-urlencoded' }
+// Depois:
+{ 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+```
+O header `charset=UTF-8` instrui o Tomcat a usar UTF-8 na decodificação do form body. Deployado e confirmado em produção.
+
+---
+
+## 11. Novo padrão `buildSegmentos` — construção direta (2026-06-26)
+
+### 11.1 Problema com o padrão antigo
+O padrão anterior construía `buildSegmentos` fazendo split do texto de protocolo pelos separadores `=` ou `*`. Isso limitava a granularidade dos cards ao número de separadores visuais no texto — que eram inseridos por razões de formatação de O.S., não por lógica de protocolo MK.
+
+Exemplo: `buildLuzVermelhaSegmentos` antigo produzia 3 cards (QUESTIONADO+ORIENTEI+PERGUNTEI juntos / INFORMEI+MAS juntos / CONCORDOU). O MK ideal requer 6 cards separados.
+
+### 11.2 Novo padrão confirmado em produção
+`buildSegmentos` constrói os segmentos **diretamente**, sem depender do texto de preview.
+
+**Resultado para `manut-luz-vermelha` (titular):**
+| Card | Conteúdo |
+|---|---|
+| `info` | `RAMONY ENTROU EM CONTATO POR ... CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU SEM SINAL.` |
+| `comentarios[0]` | `QUESTIONADO, DISSE QUE A ONU ESTA COM LUZ VERMELHA ACESA.\nREMOTAMENTE VERIFIQUEI QUE ONU ESTA DESCONECTADO/APAGADA.` |
+| `comentarios[1]` | `ORIENTEI RAMONY A DESCONECTAR EQUIPAMENTOS (ONU) DA REDE ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU.` |
+| `comentarios[2]` | `PERGUNTEI A RAMONY SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.` |
+| `comentarios[3]` | `INFORMEI QUE E NECESSARIO VISITA TECNICA ... VISITA NAO TERA CUSTOS` |
+| `comentarios[4]` | `MAS, SENDO PROBLEMA OCASIONADO ... SERA COBRADO O VALOR REFERENTE AOS MESMOS.` |
+| `comentarios[5]` | `RAMONY CONCORDOU COM OS TERMOS ... VISITA AGENDADA PARA O DIA XX/XX/XXXX AS XX:XX HRS.\n\nCLIENTE SEM DUVIDAS.` |
+
+O texto de preview (cópia da O.S./Agenda) continua inalterado — só `buildSegmentos` mudou.
+
+**Este é o padrão a seguir para todos os próximos formulários.**
+
+---
+
+## 12. Cards sequenciais + auto-preenchimento de protocolo (2026-06-26)
+
+### 12.1 Cards sequenciais
+`MkProtocolCards.tsx` alterado: cada card de comentário só habilita o botão "Inserir no MK" após o card anterior ter sido confirmado.
+
+```typescript
+const prevState = i === 0 ? 'ok' : i === 1 ? card0State : (commentStates[i - 1] ?? 'idle')
+const prevDone = prevState === 'ok'
+const enabled = isFirst ? !disabled && conexaoOk && !pendingCodes : !disabled && prevDone
+```
+
+### 12.2 Auto-preenchimento do campo `protocolo`
+Quando o Card 0 abre o atendimento no MK com sucesso:
+1. `MkProtocolCards` chama `onProtocoloGerado(protocolo)` → callback novo na interface do componente
+2. `OsGeneratorPage` recebe o protocolo e seta `values.protocolo = protocolo`
+3. O campo `protocolo` do formulário fica **desabilitado** via `disabledFieldIds` em `OsTemplateFieldsForm`
+
+O operador não precisa mais copiar/colar o número de protocolo — o formulário preenche sozinho.
+
+---
+
+## 13. Arquivos relevantes (atualizado)
 
 | Arquivo | Conteúdo |
 |---|---|
-| `functions/src/mk-suporte.ts` | CF `mkSuporte` — toda lógica da integração, `mkEstimatedLength`, chunking |
-| `web/src/components/MkProtocolCards.tsx` | UI de criação de protocolo — cards independentes, copy sempre disponível |
+| `functions/src/mk-suporte.ts` | CF `mkSuporte` — encoding UTF-8, `mkEstimatedLength`, chunking |
+| `web/src/components/MkProtocolCards.tsx` | Cards sequenciais + `onProtocoloGerado` callback |
 | `web/src/components/MkFeedbackCards.tsx` | UI de feedback — campo cód. atendimento + botão inserir comentário |
+| `web/src/components/OsTemplateFieldsForm.tsx` | Suporte a `disabledFieldIds` para travar campo `protocolo` |
 | `web/src/data/mkProtocolRegistry.ts` | Registry com 14 entradas de manutenção + 1 senha + 8 feedbacks |
-| `web/src/data/manutencao/*.ts` | 14 formulários — todos com `buildSegmentos` e textos ASCII puro |
-| `web/src/pages/OsGeneratorPage.tsx` | Renderização condicional por `mode` — MkProtocolCards, MkFeedbackCards ou preview |
+| `web/src/data/manutencao/luzVermelha.ts` | Primeiro formulário com novo padrão de `buildSegmentos` direto (6 cards) |
+| `web/src/pages/OsGeneratorPage.tsx` | `mkProtocoloGerado` state + auto-fill + `disabledFieldIds` |

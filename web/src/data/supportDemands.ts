@@ -8,7 +8,7 @@ import WifiOutlinedIcon from '@mui/icons-material/WifiOutlined'
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined'
 import RouterOutlinedIcon from '@mui/icons-material/RouterOutlined'
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined'
 
 /** Chave de agrupamento no hub Suporte (`demandCategory` em cada fluxo). */
 export const DEFAULT_DEMAND_CATEGORY = 'geral' as const
@@ -75,9 +75,9 @@ export const SUPPORT_DEMANDS: SupportDemandMeta[] = [
   },
   {
     id: 'geral',
-    title: 'Demais demandas',
-    description: 'Modelos gerais ou ainda não classificados.',
-    Icon: CategoryOutlinedIcon,
+    title: 'Tutoriais',
+    description: 'Guias passo a passo para configuração de equipamentos.',
+    Icon: SchoolOutlinedIcon,
   },
 ]
 

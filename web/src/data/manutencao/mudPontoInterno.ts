@@ -414,13 +414,89 @@ export const MUD_PONTO_INT_FIELDS: OsTemplateField[] = [
 export function buildMudPontoIntSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { mudPontoIntTextoProtocolo } = buildMudPontoIntTextos(rawValues, operadorPrimeiroNome)
-  const segments = mudPontoIntTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo          = v.tipoSolicitacao || T_TITULAR
+  const cp            = first(upper(v.cliente))
+  const solUpper      = upper(v.solicitante)
+  const sp_           = first(solUpper)
+  const parente       = upper(v.parente)
+  const cargo         = upper(v.cargo)
+  const canal         = upper(v.canal)
+  const contato       = digits(v.contato)
+  const contatoSol    = digits(v.contatoSol)
+  const sinalONU      = upper(v.sinalONU)
+  const motivo        = upper(v.motivo)
+  const ambienteAtual = upper(v.ambienteAtual)
+  const ambienteNovo  = upper(v.ambienteNovo)
+  const valor         = v.valor || ''
+  const formaPag      = upper(v.formaPag)
+  const dataV         = v.dataVisita || 'XX/XX/XXXX'
+  const horaV         = v.horaVisita || 'XX:XX'
+
+  const sMotivoAmbiente = `QUESTIONADO ${tipo === T_TITULAR || tipo === T_TITULAR_TERCEIRO ? cp : sp_} DISSE QUE ${motivo}.\n\nAMBIENTE ATUAL: ${ambienteAtual}\nNOVO AMBIENTE: ${ambienteNovo}`
+
+  if (tipo === T_PJ) {
+    return {
+      info: `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.\n\nAMBIENTE ATUAL: ${ambienteAtual}\nNOVO AMBIENTE: ${ambienteNovo}`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TITULAR_TERCEIRO) {
+    return {
+      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        sMotivoAmbiente,
+        `${valor}`,
+        `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}. ${cp} NAO ESTARA PRESENTE, MAS AUTORIZOU ${solUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TERCEIRO) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.\n\nAMBIENTE ATUAL: ${ambienteAtual}\nNOVO AMBIENTE: ${ambienteNovo}`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.\n\nAMBIENTE ATUAL: ${ambienteAtual}\nNOVO AMBIENTE: ${ambienteNovo}`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  // T_TITULAR (padrão)
+  return {
+    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+    comentarios: [
+      sMotivoAmbiente,
+      `${valor}`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
+    ],
+  }
 }
 
 export function getManutMudPontoIntDefaults(): OsTemplatePresetPayload {

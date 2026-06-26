@@ -159,7 +159,7 @@ async function mkRequest<T>(
   ).toString()
   const url = `${baseUrl}${path}`
   console.log(`[MK] POST ${path}`, Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'token' && k !== 'password')))
-  const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded' }
+  const headers: Record<string, string> = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
   if (jsessionid) headers['Cookie'] = `JSESSIONID=${jsessionid}`
   const res = await fetch(url, { method: 'POST', body: qs, headers, signal: AbortSignal.timeout(15_000) })
   // Captura JSESSIONID retornado pelo Tomcat para manter a sessão Java
@@ -373,18 +373,19 @@ export type MkSuporteRequest =
       processoId: number
       classificacaoId: number
       info: string
-      comentarios?: string[]  // blocos adicionais inseridos como comentários separados
-      origemContato?: number  // 6=Telefone, 9=WhatsApp (default)
-      conexaoAssociada?: number  // CodigoConexao — se omitido, buscado automaticamente
-      contratoId?: number       // contrato da conexão — passado junto com conexaoAssociada
+      comentarios?: string[]
+      origemContato?: number
+      conexaoAssociada?: number
+      contratoId?: number
+      clienteCodigo?: number  // override: pula busca por CPF, usa este código MK direto
     }
   | {
       action: 'inserir_comentario'
       atendimentoId: number
       comentario: string
-      tipo?: number  // 1=privado (default), 2=público
+      tipo?: number
     }
-  | { action: 'buscar_conexao'; cpf: string }
+  | { action: 'buscar_conexao'; cpf: string; clienteCodigo?: number }
   | {
       action: 'criar_os'
       slug: string
@@ -486,12 +487,23 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
     // ---- buscar_conexao: auth → cliente → lista de conexões ativas ----
     if (action === 'buscar_conexao') {
-      const { cpf } = req.data
-      if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
+      const { cpf, clienteCodigo: codigoOverride } = req.data
+      if (!cpf?.trim() && !codigoOverride) throw new HttpsError('invalid-argument', 'CPF ou código MK é obrigatório.')
       if (cfg.shadow) return { shadow: true, conexoes: [], raw: { simulado: true, cpf } }
       const session = await mkAuth(cfg)
-      const cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
-      const lista = await mkListarConexoes(cfg, session, cliente.codigo)
+
+      let clienteCodigo: number
+      let clienteNome: string
+      if (codigoOverride) {
+        clienteCodigo = codigoOverride
+        clienteNome = `Cadastro MK #${codigoOverride}`
+      } else {
+        const cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
+        clienteCodigo = cliente.codigo
+        clienteNome = cliente.nome
+      }
+
+      const lista = await mkListarConexoes(cfg, session, clienteCodigo)
       const conexoes: MkConexaoPublic[] = lista.map((c) => ({
         codigo: (c.CodigoConexao ?? c.Codigo ?? c.codconexao) as number,
         contrato: (c.contrato ?? 0) as number,
@@ -499,12 +511,12 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         tecnologia: String(c.tecnologia ?? ''),
         bloqueada: String(c.bloqueada ?? 'Não'),
       })).filter(c => c.codigo)
-      return { shadow: false, clienteCodigo: cliente.codigo, clienteNome: cliente.nome, conexoes }
+      return { shadow: false, clienteCodigo, clienteNome, conexoes }
     }
 
     // ---- criar_protocolo: Padrão B — auth → cliente → atendimento (sem OS) ----
     if (action === 'criar_protocolo') {
-      const { slug, cpf, processoId, classificacaoId, info, comentarios, origemContato, conexaoAssociada, contratoId } = req.data
+      const { slug, cpf, processoId, classificacaoId, info, comentarios, origemContato, conexaoAssociada, contratoId, clienteCodigo: clienteCodigoOverride } = req.data
 
       if (!info?.trim()) throw new HttpsError('invalid-argument', 'Campo "info" é obrigatório.')
       if (!cpf?.trim()) throw new HttpsError('invalid-argument', 'CPF é obrigatório.')
@@ -524,7 +536,11 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       try {
         session = await mkAuth(cfg)
-        cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
+        if (clienteCodigoOverride) {
+          cliente = { codigo: clienteCodigoOverride, nome: `Cadastro MK #${clienteCodigoOverride}` }
+        } else {
+          cliente = await mkBuscarClientePorCpf(cfg, session, cpf)
+        }
 
         let conexao = conexaoAssociada
         if (!conexao) {

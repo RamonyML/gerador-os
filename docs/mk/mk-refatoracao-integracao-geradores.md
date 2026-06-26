@@ -1,5 +1,5 @@
 # Guia de Refatoração — Integração MK nos Geradores de Suporte
-> Documento de trabalho interno. Atualizado em 2026-06-25.
+> Documento de trabalho interno. Atualizado em 2026-06-26.
 
 ---
 
@@ -44,6 +44,7 @@ Este documento cobre a **Fase 1** em detalhe e a Fase 2 em esboço.
 - Card N (Comentário N): habilitado **apenas quando o Card N-1 tiver sido enviado com sucesso ao MK**.
 - O operador não pode pular um card — o botão "Inserir no MK" fica desabilitado até o anterior ser confirmado.
 - Isso garante que os comentários sejam inseridos na ordem correta e que o `atendimentoId` seja obtido antes de qualquer comentário.
+- **Implementado em `MkProtocolCards.tsx`** via `prevState` calculado por índice: `i===1 → card0State`, `i>1 → commentStates[i-1]`.
 
 ---
 
@@ -110,7 +111,7 @@ O **administrador MK da MZ NET** precisa levantar os valores no painel e preench
 
 ### Peças que já existem e não mudam
 
-- `MkProtocolCards` — componente já genérico; aceita `slug`, `cpf`, `processoId`, `classificacaoId`, `segmentos`, `disabled`
+- `MkProtocolCards` — componente genérico; aceita `slug`, `cpf`, `processoId`, `classificacaoId`, `segmentos`, `disabled`, `onProtocoloGerado`
 - `mkSuporte` (Cloud Function) — já trata `criar_protocolo` e `inserir_comentario`
 - `buscar_conexao` — já implementado e funcional
 - Toda a lógica de estado (idle/loading/ok/error) e exibição de cards
@@ -121,24 +122,41 @@ O **administrador MK da MZ NET** precisa levantar os valores no painel e preench
 
 Adicionar a função `buildXxxSegmentos()` ao lado da `buildXxxTextos()` já existente.
 
-**Padrão da função:**
+**Padrão confirmado em produção (`manut-luz-vermelha` — 2026-06-26):**
+
+Construir os segmentos **diretamente**, sem depender do split do texto de preview. O texto de preview (`buildXxxTextos`) continua inalterado para cópia manual. `buildXxxSegmentos` monta cada card como string independente.
+
 ```typescript
 export function buildXxxSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const { xxxTextoProtocolo } = buildXxxTextos(rawValues)
-  const segments = xxxTextoProtocolo
-    .split('***********************')  // mesmo separador usado no texto
-    .map((s) => s.trim())
-    .filter(Boolean)
+  // Extrair e normalizar os valores (upper, digits, etc.)
+  const v = ...
+
+  // Segmentos compartilhados (constantes reutilizáveis entre variações)
+  const sInformei = `INFORMEI QUE E NECESSARIO VISITA TECNICA...`
+  const sOcasionado = `MAS, SENDO PROBLEMA OCASIONADO...`
+
+  // Construir info + comentarios diretamente para cada variação (titular, terceiro, etc.)
   return {
-    info: segments[0] ?? '',
-    comentarios: segments.slice(1),
+    info: `${cp} ENTROU EM CONTATO POR ${canal} ...`,
+    comentarios: [
+      `QUESTIONADO, DISSE QUE...\nREMOTAMENTE VERIFIQUEI...`,  // \n = quebra dentro do card
+      `ORIENTEI ${cp} A DESCONECTAR...`,
+      `PERGUNTEI A ${cp} SE EFETUOU...`,
+      sInformei,
+      sOcasionado,
+      `${cp} CONCORDOU...\n\nCLIENTE SEM DUVIDAS.`,
+    ],
   }
 }
 ```
 
-> **Atenção:** o separador usado nos textos é `'*'.repeat(23)` (23 asteriscos). Confirmar em cada arquivo de dados que o separador é o mesmo. Se o texto não tiver separadores, todos os comentários ficam em `info` e `comentarios` fica vazio — o atendimento abre mas sem comentários extras.
+**Regras:**
+- Use `\n` dentro de um segmento para quebras de linha dentro do mesmo card.
+- Cada card deve ficar **abaixo de 244 chars de conteúdo** (o chunker automático do MK cobre overflow, mas 244 é o limite seguro antes do wrapper HTML vermelho).
+- Não há separadores no texto — os comentários são strings isoladas, não split de texto maior.
+- O padrão antigo (split do texto de protocolo) ainda funciona para formulários simples, mas o padrão direto é preferido: maior controle granular e zero dependência de formatação visual.
 
 #### 2. Registry central (arquivo novo: `web/src/data/mkProtocolRegistry.ts`)
 
@@ -172,7 +190,31 @@ export const MK_PROTOCOL_REGISTRY: Record<string, MkProtocolEntry> = {
 
 Quando `processoId: 0` ou `classificacaoId: 0`, o formulário não aparece como "integrado" ainda — a UI pode checar isso e mostrar um aviso ou desabilitar o botão "Abrir atendimento no MK".
 
-#### 3. `OsGeneratorPage.tsx` — simplificação do painel direito
+#### 3. Auto-preenchimento do campo `protocolo`
+
+Quando o Card 0 confirma a abertura do atendimento no MK, o número de protocolo gerado (`DDMM.XXXXX`) é automaticamente:
+- Gravado em `values.protocolo` via `setValues`
+- O campo `protocolo` no formulário é **desabilitado** automaticamente (`disabledFieldIds={new Set(['protocolo'])}` em `OsTemplateFieldsForm`)
+
+O operador não precisa copiar/colar o número — ele aparece no campo já preenchido e travado.
+
+```typescript
+// OsGeneratorPage.tsx
+<MkProtocolCards
+  ...
+  onProtocoloGerado={(prot) => {
+    setMkProtocoloGerado(prot)
+    setValues((prev) => ({ ...prev, protocolo: prot }))
+  }}
+/>
+
+<OsTemplateFieldsForm
+  ...
+  disabledFieldIds={mkEntry && mkProtocoloGerado ? new Set(['protocolo']) : undefined}
+/>
+```
+
+#### 4. `OsGeneratorPage.tsx` — simplificação do painel direito
 
 **O que sai:**
 - O `useMemo` específico para `alteraSenhaSegmentos`
@@ -348,6 +390,38 @@ Para cada formulário do Grupo 2/3, executar em ordem:
 3. **Migrar um formulário piloto** do Grupo 1 (ex: `feedback-sem-sucesso` — mais simples, sem O.S. nem Agenda) para validar a arquitetura do registry
 4. **Migrar o primeiro do Grupo 2** (ex: `manut-luz-vermelha` — o mais comum) usando os accordions de O.S./Agenda
 5. Repetir para os demais em ordem
+
+---
+
+## Seleção de cadastro MK quando o CNPJ/CPF tem múltiplos registros
+
+> Adicionado em 2026-06-26 — clientes PJ podem ter mais de um cadastro no MK para o mesmo CNPJ (ex.: mesma empresa, duas filiais/unidades distintas).
+
+### Problema
+
+`WSMKConsultaDoc` retorna **um único** `CodigoPessoa` para um CPF/CNPJ. Se o mesmo CNPJ tiver dois registros no MK (ex.: códigos 28713 e 18195), o sistema sempre resolve para o primeiro, e as conexões do segundo cadastro ficam inacessíveis.
+
+### Solução implementada
+
+**Backend (`functions/src/mk-suporte.ts`):**
+- Ação `buscar_conexao` aceita agora o parâmetro opcional `clienteCodigo?: number`.
+- Se fornecido, pula o `WSMKConsultaDoc` e chama diretamente o `WSMKConexoesPorCliente` com aquele código — retornando as conexões do cadastro correto.
+- Ação `criar_protocolo` aceita também `clienteCodigo?: number`. Se fornecido, o atendimento é aberto para esse código sem refazer a busca por CPF.
+
+**Frontend (`MkProtocolCards.tsx`):**
+- Após encontrar o cliente via CPF, exibe um link discreto **"Outro cadastro MK?"** em laranja, logo abaixo das informações de conexão.
+- Ao clicar, abre um campo inline: **"Código MK conforme Pessoas ou Empresas:"** + botão "Buscar".
+- O operador consulta o código correto na tela de Pessoas/Empresas do MK ERP e digita aqui.
+- A busca atualiza o nome do cliente e a lista de conexões para o cadastro informado.
+- O `clienteCodigo` selecionado é propagado para `criar_protocolo`, garantindo que o atendimento seja aberto no cadastro certo.
+
+### Fluxo para o operador
+
+1. Clicar "Buscar cliente" — o sistema encontra o primeiro cadastro pelo CNPJ.
+2. Se a conexão exibida não é a correta (ou diz "nenhuma conexão encontrada"), clicar **"Outro cadastro MK?"**.
+3. No MK ERP, abrir **Workspace → Pessoas ou Empresas**, buscar pelo CNPJ e anotar o **Código** da linha correta.
+4. Digitar esse código no campo e clicar "Buscar".
+5. O painel atualiza com o nome e conexões do cadastro correto — prosseguir normalmente.
 
 ---
 

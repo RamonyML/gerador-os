@@ -304,13 +304,50 @@ export const FONTE_QUEIMADA_FIELDS: OsTemplateField[] = [
 export function buildFonteQueimadaSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { fonteQueimadaTextoProtocolo } = buildFonteQueimadaTextos(rawValues, operadorPrimeiroNome)
-  const segments = fonteQueimadaTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const modo      = v.tipoSolicitacao || M_VISITA
+  const cp        = first(upper(v.cliente))
+  const canal     = upper(v.canal)
+  const contato   = digits(v.contato)
+  const sinalONU  = upper(v.sinalONU)
+  const equip     = v.equip || 'ONU'
+  const proced    = v.proced || ''
+  const formaPag  = upper(v.formaPag)
+  const dataV     = v.dataVisita || 'XX/XX/XXXX'
+  const horaV     = v.horaVisita || 'XX:XX'
+  const periodo   = upper(v.periodo) || 'MANHA'
+
+  if (modo === M_LOJA) {
+    return {
+      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E FIBRA COM SINAL: ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO.`,
+        `REMOTAMENTE VERIFIQUEI QUE ${equip} ESTA DESCONECTADO.\n${upper(proced)}`,
+        `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+        `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA, E QUE DEVIDO ${cp} TER CONECTADO O EQUIPAMENTO A ENERGIA CONFORME RECOMENDACAO DA MZNET, ESTARA ISENTO DO CUSTO DA FONTE DE ENERGIA.`,
+        `FICANDO APENAS A COBRANCA DO DESLOCAMENTO DO TECNICO COM O CUSTO DE R$50,00.`,
+        `SUGERI TAMBEM, A POSSIBILIDADE DE COMPARECER A LOJA E RETIRAR UMA NOVA FONTE DE ENERGIA SEM NENHUM CUSTO ADICIONAL.`,
+        `${cp} OPTOU POR VIR A LOJA, DISSE QUE VIRA NO DIA ${dataV} NO PERIODO DA ${periodo}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  // M_VISITA
+  return {
+    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+    comentarios: [
+      `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO.`,
+      `REMOTAMENTE VERIFIQUEI QUE ${equip} ESTA DESCONECTADO.\n${proced}.`,
+      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+      `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE DEVIDO ${cp} CONECTAR O EQUIPAMENTO A ENERGIA CONFORME RECOMENDACAO DA MZNET, ESTARA ISENTO DO CUSTO DA FONTE DE ENERGIA.`,
+      `FICANDO APENAS A COBRANCA DO DESLOCAMENTO DO TECNICO COM O CUSTO DE R$50,00.`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} A PARTIR DE ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutFonteQueimadaDefaults(): OsTemplatePresetPayload {

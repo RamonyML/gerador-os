@@ -52,6 +52,11 @@ import { SeedValidacaoPage } from './pages/SeedValidacaoPage'
 import { NotesPage } from './pages/NotesPage'
 import { DevBirthdaysPage } from './pages/DevBirthdaysPage'
 import { DevChatAuditPage } from './pages/DevChatAuditPage'
+import { DevMkStatusPage } from './pages/DevMkStatusPage'
+import { DevFuncoesPage } from './pages/DevFuncoesPage'
+import { DevMkCodigosPage } from './pages/DevMkCodigosPage'
+import { TutoriaisHomePage } from './pages/TutoriaisHomePage'
+import { TutorialRoteadorResetadoPage } from './pages/TutorialRoteadorResetadoPage'
 
 export default function App() {
   return (
@@ -134,6 +139,22 @@ export default function App() {
           element={
             <RequireSupport>
               <FeedbackHubPage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/tutoriais"
+          element={
+            <RequireSupport>
+              <TutoriaisHomePage />
+            </RequireSupport>
+          }
+        />
+        <Route
+          path="/suporte/tutoriais/roteador-resetado"
+          element={
+            <RequireSupport>
+              <TutorialRoteadorResetadoPage />
             </RequireSupport>
           }
         />
@@ -296,6 +317,30 @@ export default function App() {
           element={
             <RequireDev>
               <DevChatAuditPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/mk-status"
+          element={
+            <RequireDev>
+              <DevMkStatusPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/funcoes"
+          element={
+            <RequireDev>
+              <DevFuncoesPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/mk-codigos"
+          element={
+            <RequireDev>
+              <DevMkCodigosPage />
             </RequireDev>
           }
         />

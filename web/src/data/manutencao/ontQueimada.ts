@@ -366,13 +366,91 @@ export const ONT_QUEIMADA_FIELDS: OsTemplateField[] = [
 export function buildOntQueimadaSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { ontQueimadaTextoProtocolo } = buildOntQueimadaTextos(rawValues, operadorPrimeiroNome)
-  const segments = ontQueimadaTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo       = v.tipoSolicitacao || T_TITULAR
+  const cp         = first(upper(v.cliente))
+  const sol        = first(upper(v.solicitante))
+  const solFull    = upper(v.solicitante)
+  const parente    = upper(v.parente)
+  const cargo      = upper(v.cargo)
+  const canal      = upper(v.canal)
+  const contato    = digits(v.contato)
+  const contatoSol = digits(v.contatoSol)
+  const alarme     = v.alarme || ALARME_POWER
+  const onu        = v.onu || 'ONT'
+  const formaPag   = upper(v.formaPag)
+  const dataV      = v.dataVisita || 'XX/XX/XXXX'
+  const horaV      = v.horaVisita || 'XX:XX'
+  const mensal     = v.pagamento === 'MENSALIDADE'
+
+  const isTerceiro = TIPOS_TERCEIRO.includes(tipo)
+  const nome        = tipo === T_PJ || isTerceiro ? sol : cp
+  const contatoOpen = isTerceiro ? contatoSol : contato
+  const abertura    = tipo === T_PJ
+    ? `${sol} (${cargo})`
+    : isTerceiro ? `${sol} (${parente} DE ${cp})` : cp
+
+  const agree = mensal
+    ? `CONCORDOU COM A VISITA E CASO HAJA COBRANCA OPTOU POR LANCAR O VALOR NA PROXIMA MENSALIDADE`
+    : `CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}`
+
+  const visita  = `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA O DIA ${dataV} ${horaV}`
+  const proced  = `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
+
+  const sharedCards = [
+    `QUESTIONADO, DISSE QUE O EQUIPAMENTO DE INTERNET NAO ESTA LIGANDO (${onu}).`,
+    `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONT ${alarme} (SEM SINAL: DYINGGASP). ORIENTEI ${nome} A DESCONECTAR O CABO DE ENERGIA DA ONT E RECONECTA-LOS APOS 30 SEGUNDOS, FEITO, POREM, CONEXAO NAO RESTABELECEU.`,
+    `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+    `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS`,
+    `POREM, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS.`,
+  ]
+
+  const info = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONT SEM SINAL (DYINGGASP).`
+
+  if (tipo === T_TERCEIRO_TERCEIRO) {
+    return {
+      info,
+      comentarios: [
+        ...sharedCards,
+        `${sol} ${agree}.`,
+        `${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    return {
+      info,
+      comentarios: [
+        ...sharedCards,
+        `${sol} ${agree}.`,
+        `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TITULAR_TERCEIRO) {
+    return {
+      info,
+      comentarios: [
+        ...sharedCards,
+        `${cp} ${agree},${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  // T_TITULAR / T_PJ
+  return {
+    info,
+    comentarios: [
+      ...sharedCards,
+      `${nome} ${agree},DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutOntQueimadaDefaults(): OsTemplatePresetPayload {

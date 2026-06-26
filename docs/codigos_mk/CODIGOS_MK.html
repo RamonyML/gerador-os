@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Códigos MK Solutions — MZ NET</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3347;
+    --text: #e8eaf0;
+    --muted: #8b91a8;
+    --primary: #4f8ef7;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --radius: 10px;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #4f8ef7, #8b5cf6);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 16px; color: #fff;
+  }
+  h1 { font-size: 17px; font-weight: 700; }
+  .subtitle { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; padding: 3px 9px;
+    border-radius: 20px; background: rgba(79,142,247,0.15); color: var(--primary);
+    border: 1px solid rgba(79,142,247,0.3);
+  }
+
+  /* ── Search ── */
+  .search-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    min-width: 260px;
+  }
+  .search-wrap svg { color: var(--muted); flex-shrink: 0; }
+  .search-wrap input {
+    background: none; border: none; outline: none;
+    color: var(--text); font-size: 13px; width: 100%;
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+
+  /* ── Tabs ── */
+  .tabs-bar {
+    display: flex; gap: 2px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 11px 16px;
+    background: none; border: none;
+    color: var(--muted); font-size: 13px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    background: var(--surface2); border-radius: 20px;
+    font-size: 10px; font-weight: 700; margin-left: 5px; color: var(--muted);
+  }
+  .tab-btn.active .tab-count { background: rgba(79,142,247,0.2); color: var(--primary); }
+
+  /* ── Content ── */
+  main { padding: 24px 28px; max-width: 1300px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .panel-header { margin-bottom: 20px; }
+  .panel-header h2 { font-size: 20px; font-weight: 700; }
+  .panel-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Info box ── */
+  .info-box {
+    background: rgba(79,142,247,0.08);
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #93c5fd;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .info-box strong { color: #bfdbfe; }
+
+  /* ── Table ── */
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface); }
+  tbody tr.hidden { display: none; }
+  td {
+    padding: 9px 14px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .code {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .code:hover .copy-icon { opacity: 1; }
+  .copy-icon { opacity: 0; font-size: 11px; color: var(--muted); transition: opacity 0.15s; }
+  .code.copied { color: var(--green); }
+  .code.copied .copy-icon { opacity: 1; color: var(--green); }
+
+  /* ── Badges ── */
+  .badge-enc-sim {
+    display: inline-block; padding: 2px 8px;
+    background: rgba(239,68,68,0.12); color: #fca5a5;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+    border: 1px solid rgba(239,68,68,0.25);
+  }
+  .badge-enc-nao {
+    display: inline-block; padding: 2px 8px;
+    background: rgba(34,197,94,0.12); color: #86efac;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+    border: 1px solid rgba(34,197,94,0.25);
+  }
+  .badge-ativo {
+    display: inline-block; padding: 2px 8px;
+    background: rgba(34,197,94,0.12); color: #86efac;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .badge-inativo {
+    display: inline-block; padding: 2px 8px;
+    background: rgba(107,114,128,0.2); color: #9ca3af;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .login {
+    font-family: var(--mono); font-size: 12px;
+    color: #c4b5fd;
+    background: rgba(139,92,246,0.1);
+    padding: 2px 7px; border-radius: 4px;
+  }
+
+  /* ── Referência rápida ── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .ref-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .ref-card h3 {
+    font-size: 13px; font-weight: 700; margin-bottom: 12px;
+    color: var(--text); display: flex; align-items: center; gap: 8px;
+  }
+  .ref-card h3 .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary); flex-shrink: 0;
+  }
+  .ref-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .ref-row:last-child { border-bottom: none; }
+  .ref-label { color: var(--muted); }
+  .ref-val {
+    font-family: var(--mono); font-weight: 700;
+    color: var(--primary); font-size: 13px;
+    cursor: pointer;
+  }
+  .ref-val:hover { color: #93c5fd; }
+
+  /* ── Empty state ── */
+  .empty {
+    text-align: center; padding: 48px 20px;
+    color: var(--muted); font-size: 13px;
+  }
+  .empty svg { margin-bottom: 12px; opacity: 0.4; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #052e16;
+    font-size: 12px; font-weight: 700;
+    padding: 8px 18px; border-radius: 20px;
+    pointer-events: none; opacity: 0;
+    transition: opacity 0.2s; z-index: 999;
+  }
+  #toast.show { opacity: 1; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 48px; padding: 20px 28px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-left">
+    <div class="logo">MZ</div>
+    <div>
+      <h1>Códigos MK Solutions</h1>
+      <div class="subtitle">Referência de integração via Webservice — atualizado 26/06/2026</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span class="badge">MZ NET</span>
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar código ou nome…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<!-- Tabs -->
+<div class="tabs-bar">
+  <button class="tab-btn active" data-tab="classificacoes">Classificações<span class="tab-count">43</span></button>
+  <button class="tab-btn" data-tab="processos">Processos<span class="tab-count">32</span></button>
+  <button class="tab-btn" data-tab="tipos-os">Tipos de O.S.<span class="tab-count">21</span></button>
+  <button class="tab-btn" data-tab="grupos">Grupos<span class="tab-count">9</span></button>
+  <button class="tab-btn" data-tab="origem">Origem de Contato<span class="tab-count">15</span></button>
+  <button class="tab-btn" data-tab="tecnicos">Técnicos<span class="tab-count">48</span></button>
+  <button class="tab-btn" data-tab="planos">Planos<span class="tab-count">48</span></button>
+  <button class="tab-btn" data-tab="referencia">Referência Rápida</button>
+</div>
+
+<main>
+
+<!-- ────────────────────────── CLASSIFICAÇÕES ── -->
+<div class="tab-panel active" id="tab-classificacoes">
+  <div class="panel-header">
+    <h2>Classificações de atendimento</h2>
+    <p>Campo <code>classificacaoId</code> nos endpoints de protocolo e O.S.</p>
+  </div>
+  <div class="info-box">
+    ⚠️ <strong>Regra de abertura:</strong> use sempre <strong>3 (NORMAL)</strong> ou <strong>4 (EMERGENCIAL)</strong> para abrir atendimento.<br>
+    Classificações marcadas como <strong>Encerramento = SIM</strong> são exclusivas para fechar — se usadas na abertura o MK retorna erro.
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-classificacoes">
+      <thead><tr><th>Código</th><th>Nome</th><th>Encerramento</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'2')">2<span class="copy-icon">⎘</span></span></td><td>ADESAO</td><td><span class="badge-enc-nao">NÃO</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>NORMAL</td><td><span class="badge-enc-nao">NÃO</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>EMERGENCIAL</td><td><span class="badge-enc-nao">NÃO</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'5')">5<span class="copy-icon">⎘</span></span></td><td>FINALIZADO</td><td><span class="badge-enc-nao">NÃO</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'6')">6<span class="copy-icon">⎘</span></span></td><td>DEFEITO-EQUIPAMENTO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'7')">7<span class="copy-icon">⎘</span></span></td><td>ROTEADOR-RESETADO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8')">8<span class="copy-icon">⎘</span></span></td><td>ONU-SEM-LUZ</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'9')">9<span class="copy-icon">⎘</span></span></td><td>LIBERACAO-CONFIANCA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'10')">10<span class="copy-icon">⎘</span></span></td><td>SEGUNDA-VIA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'11')">11<span class="copy-icon">⎘</span></span></td><td>ALTERACAO-PLANO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'12')">12<span class="copy-icon">⎘</span></span></td><td>ALTERACAO-DATA-VENCIMENTO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'14')">14<span class="copy-icon">⎘</span></span></td><td>EQUIPAMENTO-TRAVADO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'15')">15<span class="copy-icon">⎘</span></span></td><td>ABERTURA-PORTAS</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'16')">16<span class="copy-icon">⎘</span></span></td><td>ALTERACAO SENHA WI-FI</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'17')">17<span class="copy-icon">⎘</span></span></td><td>CONFIGURACAO-INSTRUCAO-CLIENTE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'18')">18<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-EQUIPAMENTO-CLIENTE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'19')">19<span class="copy-icon">⎘</span></span></td><td>AFERICAO-VELOCIDADE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'20')">20<span class="copy-icon">⎘</span></span></td><td>TROCA-DE-ROTEADOR</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'21')">21<span class="copy-icon">⎘</span></span></td><td>TROCA-DE-ONU</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'22')">22<span class="copy-icon">⎘</span></span></td><td>TROCA-ONU-ROTEADOR</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'23')">23<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-EXTERNO-FIBRA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'24')">24<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-EXTERNO-CONECTOR-CTOE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'25')">25<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-INTERNO-FIBRA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'26')">26<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-INTERNO-CONECTOR-ONU</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'27')">27<span class="copy-icon">⎘</span></span></td><td>ALTERACAO-ENDERECO-INSTALACAO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'28')">28<span class="copy-icon">⎘</span></span></td><td>CONFIG-CONEXAO-EQUIPAMENTO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'31')">31<span class="copy-icon">⎘</span></span></td><td>PROBLEMA-SERVICO-ESPECIFICO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'32')">32<span class="copy-icon">⎘</span></span></td><td>NENHUM-PROBLEMA-ENCONTRADO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'33')">33<span class="copy-icon">⎘</span></span></td><td>MASSIVA-ROMPIMENTO-FIBRA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'34')">34<span class="copy-icon">⎘</span></span></td><td>MENSALIDADE-EM-ATRASO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'35')">35<span class="copy-icon">⎘</span></span></td><td>REINSTALACAO-DE-EQUIPAMENTO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'36')">36<span class="copy-icon">⎘</span></span></td><td>MUDANCA-PONTO-INTERNO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'37')">37<span class="copy-icon">⎘</span></span></td><td>MUDANCA-ENDERECO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'38')">38<span class="copy-icon">⎘</span></span></td><td>CLIENTE-COBERTURA-WIFI</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'39')">39<span class="copy-icon">⎘</span></span></td><td>MASSIVA-OPERADORA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'40')">40<span class="copy-icon">⎘</span></span></td><td>MASSIVA-EQUIPAMENTO-BACKBONE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'41')">41<span class="copy-icon">⎘</span></span></td><td>INTERVENCAO-N3</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'42')">42<span class="copy-icon">⎘</span></span></td><td>INST. ITTV PLUS APP OU STB</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'43')">43<span class="copy-icon">⎘</span></span></td><td>ENCERRAMENTO VIA APLICATIVO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'44')">44<span class="copy-icon">⎘</span></span></td><td>INSTALAÇÃO EXECUTADA</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'45')">45<span class="copy-icon">⎘</span></span></td><td>FONTE QUEIMADA (ONU-ROTEADOR)</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'66')">66<span class="copy-icon">⎘</span></span></td><td>CHIP MOVEL NOVO NUMERO</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'67')">67<span class="copy-icon">⎘</span></span></td><td>CHIP MOVEL PORTABILIDADE</td><td><span class="badge-enc-sim">SIM</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── PROCESSOS ── -->
+<div class="tab-panel" id="tab-processos">
+  <div class="panel-header">
+    <h2>Processos de atendimento</h2>
+    <p>Campo <code>processoId</code> nos endpoints de protocolo e O.S.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-processos">
+      <thead><tr><th>Código</th><th>Nome</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'2')">2<span class="copy-icon">⎘</span></span></td><td>SUPORTE TÉCNICO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-COBRANÇA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'5')">5<span class="copy-icon">⎘</span></span></td><td>PROC-ALTERA-PLANO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'7')">7<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'12')">12<span class="copy-icon">⎘</span></span></td><td>TECNICO-SEM-CONEXAO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13')">13<span class="copy-icon">⎘</span></span></td><td>TECNICO-CONEXAO-LENTA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'14')">14<span class="copy-icon">⎘</span></span></td><td>TECNICO-ALTERAR-WIFI</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'15')">15<span class="copy-icon">⎘</span></span></td><td>TECNICO-LIBERACAO-PORTAS</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'16')">16<span class="copy-icon">⎘</span></span></td><td>PROC-MUDANCA-ENDERECO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'17')">17<span class="copy-icon">⎘</span></span></td><td>TECNICO-FALHA-EM-SERVIÇO-ESPECIFICO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'18')">18<span class="copy-icon">⎘</span></span></td><td>TECNICO-OUTRAS-SOLICITAÇOES</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'19')">19<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-SEGUNDA-VIA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'20')">20<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-MUDANCA-VENCIMENTO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'21')">21<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-TROCA-TITULARIDADE</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'22')">22<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-NF</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'23')">23<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-CANCELAMENTO (POR PARTE DO CLIENTE)</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'24')">24<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-SUSPENSAO-CONTRATO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'25')">25<span class="copy-icon">⎘</span></span></td><td>TECNICO-DOCUMENTOS</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'26')">26<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-OUTRAS-SOLICITACOES</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'27')">27<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-DESBLOQUEIO-CONFIANCA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'28')">28<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO-RETIRADA-INADIMPLENTE</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'29')">29<span class="copy-icon">⎘</span></span></td><td>PROCESSO-ADESAO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'30')">30<span class="copy-icon">⎘</span></span></td><td>PROC_INSTALACAO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'31')">31<span class="copy-icon">⎘</span></span></td><td>PLANTAO-DESBLOQUEIO-CONFIANCA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'32')">32<span class="copy-icon">⎘</span></span></td><td>PLANTAO-SEGUNDA-VIA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'33')">33<span class="copy-icon">⎘</span></span></td><td>PLANTAO-SEM-CONEXAO</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'34')">34<span class="copy-icon">⎘</span></span></td><td>PLANTAO-CONEXAO-LENTA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'35')">35<span class="copy-icon">⎘</span></span></td><td>PLANTAO-OUTROS-ASSUNTOS</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'36')">36<span class="copy-icon">⎘</span></span></td><td>PLANTAO-VIABILIDADE</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'37')">37<span class="copy-icon">⎘</span></span></td><td>SOLICITACAO-N3</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'38')">38<span class="copy-icon">⎘</span></span></td><td>TECNICO-TERMO-RESPONSABILIDADE</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'39')">39<span class="copy-icon">⎘</span></span></td><td>CHIP MOVEL 5G - ADESAO</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── TIPOS OS ── -->
+<div class="tab-panel" id="tab-tipos-os">
+  <div class="panel-header">
+    <h2>Tipos de O.S.</h2>
+    <p>Campo <code>tipoOS</code> no endpoint <code>criar_os</code>.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-tipos-os">
+      <thead><tr><th>Código</th><th>Nome</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'2')">2<span class="copy-icon">⎘</span></span></td><td>OS DE INSTALACAO / ATIVACAO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>MANUTENCAO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>DESLIGAMENTO DE CLIENTE</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'5')">5<span class="copy-icon">⎘</span></span></td><td>SOLICITACAO DE CANCELAMENTO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'6')">6<span class="copy-icon">⎘</span></span></td><td>MUDANCA DE ENDERECO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'7')">7<span class="copy-icon">⎘</span></span></td><td>ALTERAÇÃO DE PLANO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8')">8<span class="copy-icon">⎘</span></span></td><td>MUDANÇA DE TITULARIDADE</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'9')">9<span class="copy-icon">⎘</span></span></td><td>RECOLHIMENTO DE EQUIPAMENTOS</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'10')">10<span class="copy-icon">⎘</span></span></td><td>OS DE MANUTENCAO DE INFRAESTRUTURA</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'11')">11<span class="copy-icon">⎘</span></span></td><td>NEGOCIAÇÃO DE DEBITO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'12')">12<span class="copy-icon">⎘</span></span></td><td>TERMO DE RESPONSABILIDADE</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13')">13<span class="copy-icon">⎘</span></span></td><td>OS DE PONTO ADICIONAL (COMPRA DE EQUIPAMENTO)</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'14')">14<span class="copy-icon">⎘</span></span></td><td>MZ PLAY PLUS - ITTV</td><td><span class="badge-inativo">Inativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'16')">16<span class="copy-icon">⎘</span></span></td><td>O.S TIPO DE ACESSO "IP"</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'17')">17<span class="copy-icon">⎘</span></span></td><td>MUD END + ALT PLANO</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'18')">18<span class="copy-icon">⎘</span></span></td><td>ALTERAÇÃO DE PLANO + WI-FI EXTEND</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'19')">19<span class="copy-icon">⎘</span></span></td><td>OS DE INSTALACAO + WI-FI EXTEND</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'20')">20<span class="copy-icon">⎘</span></span></td><td>SETUP BOX (STB)</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'21')">21<span class="copy-icon">⎘</span></span></td><td>ROKU TV</td><td><span class="badge-ativo">Ativo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'22')">22<span class="copy-icon">⎘</span></span></td><td>RETORNO EM GARANTIA (07 DIAS)</td><td><span class="badge-ativo">Ativo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── GRUPOS ── -->
+<div class="tab-panel" id="tab-grupos">
+  <div class="panel-header">
+    <h2>Grupos / Equipes</h2>
+    <p>Campo <code>grupoServico</code> no endpoint <code>criar_os</code>.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-grupos">
+      <thead><tr><th>Código</th><th>Nome da equipe</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'2')">2<span class="copy-icon">⎘</span></span></td><td>EQUIPE PRONET</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>EQUIPE MARCOS</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>NOC - MZ NET</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'6')">6<span class="copy-icon">⎘</span></span></td><td>SUPORTE TÉCNICO - MZ NET</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'7')">7<span class="copy-icon">⎘</span></span></td><td>FINANCEIRO - MZ NET</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8')">8<span class="copy-icon">⎘</span></span></td><td>EQUIPE-TERCEIRIZADA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'9')">9<span class="copy-icon">⎘</span></span></td><td>EQUIPE VB</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'10')">10<span class="copy-icon">⎘</span></span></td><td>EQUIPE MZ NET</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'11')">11<span class="copy-icon">⎘</span></span></td><td>INSTALAÇÃO - MZ NET</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── ORIGEM ── -->
+<div class="tab-panel" id="tab-origem">
+  <div class="panel-header">
+    <h2>Origem de contato</h2>
+    <p>Campo <code>origemId</code> — canal pelo qual o cliente abriu o atendimento.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-origem">
+      <thead><tr><th>Código</th><th>Canal</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'1')">1<span class="copy-icon">⎘</span></span></td><td>Email</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'2')">2<span class="copy-icon">⎘</span></span></td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>Presencial</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>SAC</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'5')">5<span class="copy-icon">⎘</span></span></td><td>Site</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'6')">6<span class="copy-icon">⎘</span></span></td><td>Telefônico</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'7')">7<span class="copy-icon">⎘</span></span></td><td>Através de um técnico</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8')">8<span class="copy-icon">⎘</span></span></td><td>CRM</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'9')">9<span class="copy-icon">⎘</span></span></td><td>WhatsApp</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'10')">10<span class="copy-icon">⎘</span></span></td><td>Facebook</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'11')">11<span class="copy-icon">⎘</span></span></td><td>Instagram</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'12')">12<span class="copy-icon">⎘</span></span></td><td>Messenger</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13')">13<span class="copy-icon">⎘</span></span></td><td>MKBot Assistant</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'14')">14<span class="copy-icon">⎘</span></span></td><td>Monitoramento</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'15')">15<span class="copy-icon">⎘</span></span></td><td>Reclame aqui</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── TÉCNICOS ── -->
+<div class="tab-panel" id="tab-tecnicos">
+  <div class="panel-header">
+    <h2>Técnicos</h2>
+    <p>Campo <code>tecnicoId</code> no endpoint <code>criar_os</code>. Login = credencial de acesso ao ERP MK.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-tecnicos">
+      <thead><tr><th>Código MK</th><th>Nome</th><th>Login ERP</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>LEANDRO RODRIGUES COELHO DE SOUZA</td><td><span class="login">mz.leandro</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'443')">443<span class="copy-icon">⎘</span></span></td><td>BRUNO TANNUS MATIAS</td><td><span class="login">tec.bruno</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'1403')">1403<span class="copy-icon">⎘</span></span></td><td>RENATO HONORATO DOS SANTOS CARMO</td><td><span class="login">tec.renatohonorato</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'1535')">1535<span class="copy-icon">⎘</span></span></td><td>MARCELO MACHADO DE SOUZA</td><td><span class="login">tec.marcelo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'2215')">2215<span class="copy-icon">⎘</span></span></td><td>LUIZ RENATO DE NASCIMENTO SANTOS</td><td><span class="login">tec.luizrenato</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'2900')">2900<span class="copy-icon">⎘</span></span></td><td>FRANKLIM CARDOSO DA SILVA</td><td><span class="login">tec.franklim</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8448')">8448<span class="copy-icon">⎘</span></span></td><td>THALISSON RAMOS DA COSTA</td><td><span class="login">tec.thalisson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8508')">8508<span class="copy-icon">⎘</span></span></td><td>FLAVIO DA COSTA FERNANDES</td><td><span class="login">mz.flavio</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'8620')">8620<span class="copy-icon">⎘</span></span></td><td>MAYKOLL FERNANDES RODRIGUES SILVA</td><td><span class="login">tec.maykoll</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'12277')">12277<span class="copy-icon">⎘</span></span></td><td>KAROLAYNE PEREIRA DE SOUZA</td><td><span class="login">mz.karolayne</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13028')">13028<span class="copy-icon">⎘</span></span></td><td>LEANDRO SILVA ARANTES</td><td><span class="login">tec.arantes</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13061')">13061<span class="copy-icon">⎘</span></span></td><td>JAILSON DA ROCHA DE OLIVEIRA</td><td><span class="login">tec.jailson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13795')">13795<span class="copy-icon">⎘</span></span></td><td>MANOEL ALVES NASCIMENTO NETO</td><td><span class="login">tec.manoel</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'13914')">13914<span class="copy-icon">⎘</span></span></td><td>LUCAS SILVA CARREIRO</td><td><span class="login">tec.carreiro</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'16102')">16102<span class="copy-icon">⎘</span></span></td><td>JUNIOR SOARES DE OLIVEIRA</td><td><span class="login">tec.junior</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'18328')">18328<span class="copy-icon">⎘</span></span></td><td>ALEX BERNARDES BARCELOS</td><td><span class="login">tec.alex</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'19816')">19816<span class="copy-icon">⎘</span></span></td><td>THIAGO MEDEIROS GARCIA</td><td><span class="login">tec.thiagomedeiros</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'20503')">20503<span class="copy-icon">⎘</span></span></td><td>KELSON OLIVEIRA SILVA</td><td><span class="login">tec.kelson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'25055')">25055<span class="copy-icon">⎘</span></span></td><td>OTAVIO PAIVA COSTA</td><td><span class="login">tec.otavio</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'26801')">26801<span class="copy-icon">⎘</span></span></td><td>ALYSSON SOARES SILVA</td><td><span class="login">tec.alysson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'29418')">29418<span class="copy-icon">⎘</span></span></td><td>DANILO PESSOA DE ANDRADE</td><td><span class="login">tec.danilo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'30142')">30142<span class="copy-icon">⎘</span></span></td><td>MAICON DOUGLAS MENDES DANTAS</td><td><span class="login">mz.pa</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'30275')">30275<span class="copy-icon">⎘</span></span></td><td>JOELSON BASILIO SANTOS FERREIRA</td><td><span class="login">tec.joelson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'31475')">31475<span class="copy-icon">⎘</span></span></td><td>WANDERSON CUSTODIO MARTINS</td><td><span class="login">tec.wanderson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'31653')">31653<span class="copy-icon">⎘</span></span></td><td>HUGO HENRIQUE MOREIRA ANDRADE OLIVEIRA</td><td><span class="login">tec.hugo</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'32928')">32928<span class="copy-icon">⎘</span></span></td><td>GABRIEL ALVES SILVA</td><td><span class="login">tec.gabrielalves</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'33046')">33046<span class="copy-icon">⎘</span></span></td><td>WAGNER RIBEIRO DOS REIS</td><td><span class="login">tec.wagner</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'35099')">35099<span class="copy-icon">⎘</span></span></td><td>LEANDRO FERREIRA</td><td><span class="login">tec.leandroferreira</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'38459')">38459<span class="copy-icon">⎘</span></span></td><td>PEDRO HENRIQUE VILARINHO DE MORAES</td><td><span class="login">tec.pedro</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'38461')">38461<span class="copy-icon">⎘</span></span></td><td>JOAO GABRIEL BELINA LEAO</td><td><span class="login">mz.joaobelina</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'39289')">39289<span class="copy-icon">⎘</span></span></td><td>VALDIR FELIPE DA SILVA</td><td><span class="login">tec.valdir</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'42500')">42500<span class="copy-icon">⎘</span></span></td><td>ISMAEL DE ALMEIDA MOTA</td><td><span class="login">tec.ismael</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'42951')">42951<span class="copy-icon">⎘</span></span></td><td>JOAO VITOR LIMA MENDONCA</td><td><span class="login">tec.joaovitor</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'44331')">44331<span class="copy-icon">⎘</span></span></td><td>RICHARD MARQUES DE OLIVEIRA</td><td><span class="login">tec.richard</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'44414')">44414<span class="copy-icon">⎘</span></span></td><td>SALATIEL DA SILVA OLIVEIRA</td><td><span class="login">tec.salatiel</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'44649')">44649<span class="copy-icon">⎘</span></span></td><td>EDSON MARTINS NETO</td><td><span class="login">tec.edson</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'46671')">46671<span class="copy-icon">⎘</span></span></td><td>MATHEUS AUGUSTO BELIZARIO LEITE</td><td><span class="login">tec.matheusaugusto</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'47521')">47521<span class="copy-icon">⎘</span></span></td><td>LUCAS BRESSANI CASTRO</td><td><span class="login">tec.bressani</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'51279')">51279<span class="copy-icon">⎘</span></span></td><td>HEMILLY DE OLIVEIRA TOLENTINO TORRES</td><td><span class="login">tec.tolentino</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'51441')">51441<span class="copy-icon">⎘</span></span></td><td>ERICLES SOUZA DE ARAUJO</td><td><span class="login">tec.ericles</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'52582')">52582<span class="copy-icon">⎘</span></span></td><td>EVERTON DO NASCIMENTO BUSSOLARO</td><td><span class="login">tec.everton</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'52836')">52836<span class="copy-icon">⎘</span></span></td><td>MATHAUS SILVA RODRIGUES BORGES</td><td><span class="login">tec.mathaus</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'54156')">54156<span class="copy-icon">⎘</span></span></td><td>THALYTA DA SILVA SANTOS</td><td><span class="login">mz.thalyta</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'54307')">54307<span class="copy-icon">⎘</span></span></td><td>HALEN EUSTAQUIO CHAVES OLIVEIRA</td><td><span class="login">mz.halen</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'58151')">58151<span class="copy-icon">⎘</span></span></td><td>PAULO CÉSAR ALVES SILVA JÚNIOR</td><td><span class="login">tec.paulocesar</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'60074')">60074<span class="copy-icon">⎘</span></span></td><td>BRUNO KENNEDY MARTINS REBELLO</td><td><span class="login">tec.brunokenned</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'61157')">61157<span class="copy-icon">⎘</span></span></td><td>GUSTAVO BARCELOS DE SA</td><td><span class="login">tec.gustavobarcelos</span></td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'62176')">62176<span class="copy-icon">⎘</span></span></td><td>ANTONIO DHIONES DA SILVA VIANA</td><td><span class="login">tec.antoniodhiones</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── PLANOS ── -->
+<div class="tab-panel" id="tab-planos">
+  <div class="panel-header">
+    <h2>Planos / Contratos</h2>
+    <p>Campo <code>contratoId</code> — lista de planos ativos no sistema MK.</p>
+  </div>
+  <div class="table-wrap">
+    <table id="tbl-planos">
+      <thead><tr><th>Código</th><th>Nome do plano</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code" onclick="copyCode(this,'3')">3<span class="copy-icon">⎘</span></span></td><td>500 MEGA - PRE PAGO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'4')">4<span class="copy-icon">⎘</span></span></td><td>MZ BASIC 100 MB - SEM COMBO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'52')">52<span class="copy-icon">⎘</span></span></td><td>500MB-FUNCIONARIOS</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'57')">57<span class="copy-icon">⎘</span></span></td><td>MZ ULTRA 1GB - SEM COMBO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'58')">58<span class="copy-icon">⎘</span></span></td><td>MZ ULTRA AX 1GB + COMBO + MZPLAY PLUS</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'78')">78<span class="copy-icon">⎘</span></span></td><td>MZ ULTRA 1GB + COMBO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'79')">79<span class="copy-icon">⎘</span></span></td><td>MZPLAYplus - STB</td><td>TV/OTT</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'80')">80<span class="copy-icon">⎘</span></span></td><td>MZPLAYplus - (ITTV)</td><td>TV/OTT</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'83')">83<span class="copy-icon">⎘</span></span></td><td>MZ ULTRA + COMBO + MZ PLAY PLUS (APP)</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'85')">85<span class="copy-icon">⎘</span></span></td><td>1GB - 2023</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'86')">86<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-25</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'87')">87<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-20</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'88')">88<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-15</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'98')">98<span class="copy-icon">⎘</span></span></td><td>1000MB + IP</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'99')">99<span class="copy-icon">⎘</span></span></td><td>400MB + IP</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'102')">102<span class="copy-icon">⎘</span></span></td><td>100 MEGA - PRE PAGO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'110')">110<span class="copy-icon">⎘</span></span></td><td>DEEZER</td><td>TV/OTT</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'121')">121<span class="copy-icon">⎘</span></span></td><td>250 MEGA - 2023</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'122')">122<span class="copy-icon">⎘</span></span></td><td>500 MEGA - 2023</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'126')">126<span class="copy-icon">⎘</span></span></td><td>WI-FI EX 100</td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'127')">127<span class="copy-icon">⎘</span></span></td><td>03 - WI-FI EXTEND</td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'128')">128<span class="copy-icon">⎘</span></span></td><td>02 - WI-FI EXTEND</td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'129')">129<span class="copy-icon">⎘</span></span></td><td>01 - WI-FI EXTEND</td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'158')">158<span class="copy-icon">⎘</span></span></td><td>150 MEGA - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'159')">159<span class="copy-icon">⎘</span></span></td><td>300 MEGA - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'160')">160<span class="copy-icon">⎘</span></span></td><td>600 MEGA - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'161')">161<span class="copy-icon">⎘</span></span></td><td>1000 MEGA - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'172')">172<span class="copy-icon">⎘</span></span></td><td>MZPLAY Gold Completo SVOD</td><td>TV/OTT</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'175')">175<span class="copy-icon">⎘</span></span></td><td>150 MEGA + IP DIN - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'176')">176<span class="copy-icon">⎘</span></span></td><td>1000 MEGA + IP DIN - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'177')">177<span class="copy-icon">⎘</span></span></td><td>300 MEGA + IP DIN - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'178')">178<span class="copy-icon">⎘</span></span></td><td>600 MEGA + IP DIN - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'179')">179<span class="copy-icon">⎘</span></span></td><td>1000 MEGA + IP FIXO - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'184')">184<span class="copy-icon">⎘</span></span></td><td>600 MEGA + IP FIXO - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'195')">195<span class="copy-icon">⎘</span></span></td><td>LINK DEDICADO 1000 MB</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'198')">198<span class="copy-icon">⎘</span></span></td><td>600 MEGA + WI-FI EXTEND - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'199')">199<span class="copy-icon">⎘</span></span></td><td>1000 MEGA + WI-FI EXTEND - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'200')">200<span class="copy-icon">⎘</span></span></td><td>300 MEGA + WI-FI EXTEND - 2024</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'210')">210<span class="copy-icon">⎘</span></span></td><td>TRANSPORTE</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'212')">212<span class="copy-icon">⎘</span></span></td><td>TRANSPORTE + LINK DEDICADO</td><td>Internet</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'213')">213<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-15 - FUNCIONARIOS</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'214')">214<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-20 - FUNCIONARIOS</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'215')">215<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G PRE-25 - FUNCIONARIOS</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'216')">216<span class="copy-icon">⎘</span></span></td><td>04 - WI-FI EXTEND</td><td>Outros</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'220')">220<span class="copy-icon">⎘</span></span></td><td>MOVEL 5G POS-15</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'221')">221<span class="copy-icon">⎘</span></span></td><td>14 LINHAS CHIP MOVEL 15G - PRE PAGO</td><td>SVA</td></tr>
+        <tr><td><span class="code" onclick="copyCode(this,'223')">223<span class="copy-icon">⎘</span></span></td><td>150 MEGA - PRE PAGO</td><td>Internet</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ────────────────────────── REFERÊNCIA RÁPIDA ── -->
+<div class="tab-panel" id="tab-referencia">
+  <div class="panel-header">
+    <h2>Referência rápida — combinações em produção</h2>
+    <p>Valores usados nos formulários de protocolo e O.S. do gerador MZ NET.</p>
+  </div>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <h3><span class="dot"></span>Suporte remoto — Sem conexão</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'12')">12</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-label">— (só protocolo)</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Suporte remoto — Conexão lenta</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'13')">13</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-label">— (só protocolo)</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Roteador resetado / Configuração Wi-Fi</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'14')">14</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-label">— (só protocolo)</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Abertura de portas</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'15')">15</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-label">— (só protocolo)</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Alteração de plano</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'5')">5</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-val" onclick="copyVal(this,'7')">7</span></div>
+      <div class="ref-row"><span class="ref-label">grupoServico</span><span class="ref-val" onclick="copyVal(this,'6')">6</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Mudança de endereço</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'16')">16</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-val" onclick="copyVal(this,'6')">6</span></div>
+      <div class="ref-row"><span class="ref-label">grupoServico</span><span class="ref-val" onclick="copyVal(this,'11')">11</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Manutenção (visita técnica)</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'2')">2</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-val" onclick="copyVal(this,'3')">3</span></div>
+      <div class="ref-row"><span class="ref-label">grupoServico</span><span class="ref-val" onclick="copyVal(this,'6')">6</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Instalação nova</h3>
+      <div class="ref-row"><span class="ref-label">processoId</span><span class="ref-val" onclick="copyVal(this,'30')">30</span></div>
+      <div class="ref-row"><span class="ref-label">classificacaoId (abertura)</span><span class="ref-val" onclick="copyVal(this,'2')">2</span></div>
+      <div class="ref-row"><span class="ref-label">tipoOS</span><span class="ref-val" onclick="copyVal(this,'2')">2</span></div>
+      <div class="ref-row"><span class="ref-label">grupoServico</span><span class="ref-val" onclick="copyVal(this,'11')">11</span></div>
+    </div>
+    <div class="ref-card">
+      <h3><span class="dot"></span>Grupos mais usados</h3>
+      <div class="ref-row"><span class="ref-label">Suporte Técnico MZ NET</span><span class="ref-val" onclick="copyVal(this,'6')">6</span></div>
+      <div class="ref-row"><span class="ref-label">Equipe MZ NET</span><span class="ref-val" onclick="copyVal(this,'10')">10</span></div>
+      <div class="ref-row"><span class="ref-label">Instalação MZ NET</span><span class="ref-val" onclick="copyVal(this,'11')">11</span></div>
+      <div class="ref-row"><span class="ref-label">Financeiro MZ NET</span><span class="ref-val" onclick="copyVal(this,'7')">7</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  MZ NET · Gerador de O.S. · Referência MK Solutions · 26/06/2026 · Clique em qualquer código para copiar
+</footer>
+
+<div id="toast">✓ Copiado!</div>
+
+<script>
+  // ── Tabs ──
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      document.getElementById('searchInput').value = '';
+      filterAll('');
+    });
+  });
+
+  // ── Search ──
+  document.getElementById('searchInput').addEventListener('input', e => {
+    filterAll(e.target.value.trim().toLowerCase());
+  });
+
+  function filterAll(q) {
+    const activePanel = document.querySelector('.tab-panel.active');
+    if (!activePanel) return;
+    const tbody = activePanel.querySelector('tbody');
+    if (!tbody) return;
+    let visible = 0;
+    tbody.querySelectorAll('tr').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      row.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    // Empty state
+    let empty = activePanel.querySelector('.empty-state');
+    if (!visible && q) {
+      if (!empty) {
+        empty = document.createElement('div');
+        empty.className = 'empty empty-state';
+        empty.innerHTML = '<div>Nenhum resultado para <strong>"' + q + '"</strong></div>';
+        activePanel.querySelector('.table-wrap').after(empty);
+      }
+    } else if (empty) {
+      empty.remove();
+    }
+  }
+
+  // ── Copy ──
+  let toastTimer;
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1200);
+  }
+
+  function copyCode(el, val) {
+    navigator.clipboard.writeText(val).then(() => {
+      el.classList.add('copied');
+      el.querySelector('.copy-icon').textContent = '✓';
+      showToast();
+      setTimeout(() => {
+        el.classList.remove('copied');
+        el.querySelector('.copy-icon').textContent = '⎘';
+      }, 1500);
+    });
+  }
+
+  function copyVal(el, val) {
+    navigator.clipboard.writeText(val).then(() => {
+      const orig = el.textContent;
+      el.textContent = '✓ ' + val;
+      el.style.color = 'var(--green)';
+      showToast();
+      setTimeout(() => {
+        el.textContent = orig;
+        el.style.color = '';
+      }, 1200);
+    });
+  }
+</script>
+</body>
+</html>

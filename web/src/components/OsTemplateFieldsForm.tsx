@@ -53,6 +53,8 @@ type Props = {
   accent?: 'green' | 'red'
   /** IDs de campos com valor vazio que devem ser destacados em vermelho. */
   errorFieldIds?: ReadonlySet<string>
+  /** IDs de campos que devem ficar desabilitados (ex: protocolo preenchido pelo MK). */
+  disabledFieldIds?: ReadonlySet<string>
   /** Conteúdo extra (já envolto em Grid item) inserido no final da última seção. */
   appendToLastSection?: ReactNode
 }
@@ -226,6 +228,7 @@ export function OsTemplateFieldsForm({
   onPatchValues,
   accent = 'green',
   errorFieldIds,
+  disabledFieldIds,
   appendToLastSection,
 }: Props) {
   const sectionColor = accent === 'red' ? 'error.main' : 'primary.main'
@@ -264,7 +267,7 @@ export function OsTemplateFieldsForm({
           <Grid container spacing={2}>
             {block.fields.map((f) => {
               const g = resolveFieldGridSize(f)
-              const disabled = isFieldDisabled(f, values)
+              const disabled = isFieldDisabled(f, values) || (disabledFieldIds?.has(f.id) ?? false)
               const fieldOnChange =
                 f.id === 'ctoType'
                   ? (id: string, v: string) => {

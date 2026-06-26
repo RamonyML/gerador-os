@@ -184,6 +184,7 @@ export function OsGeneratorPage() {
   )
   const [selectedId, setSelectedId] = useState<string>('')
   const [values, setValues] = useState<Record<string, string>>({})
+  const [mkProtocoloGerado, setMkProtocoloGerado] = useState('')
   const [copyOk, setCopyOk] = useState(false)
   const [previewTab, setPreviewTab] = useState(0)
   const [attempted, setAttempted] = useState(false)
@@ -262,6 +263,7 @@ export function OsGeneratorPage() {
     setSelectedId(next.id)
     setPreviewTab(0)
     setAttempted(false)
+    setMkProtocoloGerado('')
 
     const pending = historyStateRef.current
     if (pending?.historyValues && pending.historySlug === next.slug) {
@@ -988,6 +990,7 @@ export function OsGeneratorPage() {
                   setValues((prev) => ({ ...prev, ...patch }))
                 }
                 errorFieldIds={errorFieldIds}
+                disabledFieldIds={mkEntry && mkProtocoloGerado ? new Set(['protocolo']) : undefined}
                 appendToLastSection={
                   (selected.slug in AGENDA_CONTEXT_KEY || selected.slug.startsWith('inst-')) &&
                   !isCadastroDemand &&
@@ -1158,6 +1161,10 @@ export function OsGeneratorPage() {
                   classificacaoId={mkEntry.classificacaoId}
                   segmentos={mkSegmentos}
                   disabled={emptyFields.length > 0}
+                  onProtocoloGerado={(prot) => {
+                    setMkProtocoloGerado(prot)
+                    setValues((prev) => ({ ...prev, protocolo: prot }))
+                  }}
                 />
                 {previewSections.slice(1).map((sec) => (
                   <Accordion key={sec.id} disableGutters variant="outlined" sx={{ borderRadius: '8px !important', '&:before': { display: 'none' } }}>

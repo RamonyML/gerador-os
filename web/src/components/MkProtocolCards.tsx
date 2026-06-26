@@ -14,6 +14,7 @@ import {
   Select,
   Snackbar,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -50,6 +51,7 @@ type Props = {
   classificacaoId: number
   segmentos: { info: string; comentarios: string[] }
   disabled: boolean
+  onProtocoloGerado?: (protocolo: string) => void
 }
 
 type CardItemProps = {
@@ -280,6 +282,7 @@ export function MkProtocolCards({
   classificacaoId,
   segmentos,
   disabled,
+  onProtocoloGerado,
 }: Props) {
   const cards = [segmentos.info, ...segmentos.comentarios]
   const total = cards.length
@@ -289,9 +292,16 @@ export function MkProtocolCards({
   const [buscaState, setBuscaState] = useState<CardState>('idle')
   const [buscaError, setBuscaError] = useState('')
   const [clienteNome, setClienteNome] = useState('')
+  const [clienteCodigo, setClienteCodigo] = useState<number | null>(null)
   const [conexoes, setConexoes] = useState<ConexaoOption[]>([])
   const [conexaoSelecionada, setConexaoSelecionada] = useState<number | ''>('')
   const [contratoSelecionado, setContratoSelecionado] = useState<number | null>(null)
+
+  // ---- override de cadastro MK ----
+  const [overrideVisible, setOverrideVisible] = useState(false)
+  const [overrideInput, setOverrideInput] = useState('')
+  const [overrideLoading, setOverrideLoading] = useState(false)
+  const [overrideError, setOverrideError] = useState('')
 
   // ---- protocolo ----
   const [atendimentoId, setAtendimentoId] = useState<number | null>(null)
@@ -308,6 +318,7 @@ export function MkProtocolCards({
     setBuscaState('idle')
     setBuscaError('')
     setClienteNome('')
+    setClienteCodigo(null)
     setConexoes([])
     setConexaoSelecionada('')
     setContratoSelecionado(null)
@@ -317,12 +328,17 @@ export function MkProtocolCards({
     setCard0Error('')
     setCommentStates({})
     setCommentErrors({})
+    setOverrideVisible(false)
+    setOverrideInput('')
+    setOverrideLoading(false)
+    setOverrideError('')
   }, [cpf])
 
   const resetAll = useCallback(() => {
     setBuscaState('idle')
     setBuscaError('')
     setClienteNome('')
+    setClienteCodigo(null)
     setConexoes([])
     setConexaoSelecionada('')
     setContratoSelecionado(null)
@@ -332,6 +348,10 @@ export function MkProtocolCards({
     setCard0Error('')
     setCommentStates({})
     setCommentErrors({})
+    setOverrideVisible(false)
+    setOverrideInput('')
+    setOverrideLoading(false)
+    setOverrideError('')
   }, [])
 
   const handleBuscarConexao = useCallback(async () => {
@@ -342,6 +362,7 @@ export function MkProtocolCards({
       const res = await fn({ action: 'buscar_conexao', cpf: cpf.replace(/\D/g, '') })
       const data = res.data as MkBuscarConexaoResult
       setClienteNome(data.clienteNome ?? '')
+      setClienteCodigo(data.clienteCodigo ?? null)
       const lista = data.conexoes ?? []
       setConexoes(lista)
       if (lista.length === 1) {
@@ -354,6 +375,35 @@ export function MkProtocolCards({
       setBuscaState('error')
     }
   }, [cpf])
+
+  const handleBuscarPorCodigo = useCallback(async () => {
+    const codigo = parseInt(overrideInput.replace(/\D/g, ''), 10)
+    if (!codigo) return
+    setOverrideLoading(true)
+    setOverrideError('')
+    try {
+      const fn = httpsCallable(getFirebaseFunctions(), 'mkSuporte')
+      const res = await fn({ action: 'buscar_conexao', cpf: cpf.replace(/\D/g, ''), clienteCodigo: codigo })
+      const data = res.data as MkBuscarConexaoResult
+      setClienteNome(data.clienteNome ?? `Cadastro MK #${codigo}`)
+      setClienteCodigo(data.clienteCodigo ?? codigo)
+      const lista = data.conexoes ?? []
+      setConexoes(lista)
+      if (lista.length === 1) {
+        setConexaoSelecionada(lista[0].codigo)
+        setContratoSelecionado(lista[0].contrato)
+      } else {
+        setConexaoSelecionada('')
+        setContratoSelecionado(null)
+      }
+      setOverrideVisible(false)
+      setOverrideInput('')
+    } catch (e) {
+      setOverrideError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setOverrideLoading(false)
+    }
+  }, [cpf, overrideInput])
 
   const handleSendFirst = useCallback(async () => {
     setCard0State('loading')
@@ -369,16 +419,18 @@ export function MkProtocolCards({
         info: cards[0],
         conexaoAssociada: conexaoSelecionada || undefined,
         contratoId: contratoSelecionado || undefined,
+        clienteCodigo: clienteCodigo || undefined,
       })
       const data = res.data as MkCriarProtocoloResult
       setAtendimentoId(data.atendimentoId ?? null)
       setProtocolo(data.protocolo ?? '')
+      if (data.protocolo) onProtocoloGerado?.(data.protocolo)
       setCard0State('ok')
     } catch (e) {
       setCard0Error(e instanceof Error ? e.message : String(e))
       setCard0State('error')
     }
-  }, [slug, cpf, processoId, classificacaoId, cards, conexaoSelecionada, contratoSelecionado])
+  }, [slug, cpf, processoId, classificacaoId, cards, conexaoSelecionada, contratoSelecionado, clienteCodigo])
 
   const handleSendComment = useCallback(async (index: number, text: string) => {
     if (!atendimentoId) return
@@ -495,6 +547,55 @@ export function MkProtocolCards({
                       Nenhuma conexão encontrada — prosseguindo sem vincular
                     </Typography>
                   )}
+
+                  {/* Override de cadastro MK */}
+                  {!overrideVisible ? (
+                    <Button
+                      size="small"
+                      variant="text"
+                      onClick={() => setOverrideVisible(true)}
+                      sx={{ fontSize: 10, py: 0, px: 0.5, mt: 0.25, color: 'warning.main', minWidth: 0, textTransform: 'none' }}
+                    >
+                      Outro cadastro MK?
+                    </Button>
+                  ) : (
+                    <Box sx={{ mt: 0.75, display: 'flex', alignItems: 'center', gap: 0.75, flexWrap: 'wrap' }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                        Código MK conforme Pessoas ou Empresas:
+                      </Typography>
+                      <TextField
+                        size="small"
+                        placeholder="Ex: 18195"
+                        value={overrideInput}
+                        onChange={(e) => setOverrideInput(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') void handleBuscarPorCodigo() }}
+                        disabled={overrideLoading}
+                        sx={{ width: 100, '& .MuiInputBase-input': { py: 0.4, px: 1, fontSize: 12 } }}
+                      />
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => void handleBuscarPorCodigo()}
+                        disabled={overrideLoading || !overrideInput.trim()}
+                        sx={{ fontSize: 11, py: 0.3, px: 1, minWidth: 0 }}
+                      >
+                        {overrideLoading ? <CircularProgress size={10} /> : 'Buscar'}
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="text"
+                        onClick={() => { setOverrideVisible(false); setOverrideInput(''); setOverrideError('') }}
+                        sx={{ fontSize: 10, py: 0.3, px: 0.5, color: 'text.disabled', minWidth: 0, textTransform: 'none' }}
+                      >
+                        Cancelar
+                      </Button>
+                      {overrideError && (
+                        <Typography variant="caption" color="error" sx={{ width: '100%' }}>
+                          {overrideError}
+                        </Typography>
+                      )}
+                    </Box>
+                  )}
                 </Box>
 
                 <Button
@@ -539,16 +640,17 @@ export function MkProtocolCards({
 
       {cards.map((text, i) => {
         const isFirst = i === 0
-        // Comentários: habilitados para inserção assim que card 0 registrou atendimento.
-        // Não há dependência entre cards de comentário entre si.
+        // Cada card só habilita depois do anterior confirmado (sequential).
+        const prevState = i === 0 ? 'ok' : i === 1 ? card0State : (commentStates[i - 1] ?? 'idle')
+        const prevDone = prevState === 'ok'
         const enabled = isFirst
           ? !disabled && conexaoOk && !pendingCodes
-          : !disabled && card0Done
+          : !disabled && prevDone
         const cardState = isFirst ? card0State : (commentStates[i] ?? 'idle')
         const cardError = isFirst ? card0Error : (commentErrors[i] ?? '')
         const onSend = isFirst
           ? () => void handleSendFirst()
-          : card0Done ? () => void handleSendComment(i, text) : undefined
+          : prevDone ? () => void handleSendComment(i, text) : undefined
 
         return (
           <CardItem

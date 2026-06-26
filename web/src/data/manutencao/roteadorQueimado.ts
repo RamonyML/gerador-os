@@ -314,7 +314,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
       { value: M_COBRADA, label: 'Com visita cobrada (dano ocasionado)', icon: 'plug' },
       { value: M_ISENTO, label: 'Instalacao no padrao (isento do roteador)', icon: 'plug' },
     ],
-    layout: { md: 6 },
+    layout: { md: 12 },
   },
   {
     id: 'tipoSolicitacao',
@@ -341,7 +341,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
         icon: 'user-round',
       },
     ],
-    layout: { md: 6 },
+    layout: { md: 12 },
   },
   {
     id: 'solicitante',
@@ -496,13 +496,108 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
 export function buildRoteadorQueimadoSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { roteadorQueimadoTextoProtocolo } = buildRoteadorQueimadoTextos(rawValues, operadorPrimeiroNome)
-  const segments = roteadorQueimadoTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const modo      = v.modoCusto || M_COBRADA
+  const tipo      = v.tipoSolicitacao || T_TITULAR
+  const isento    = modo === M_ISENTO
+  const cp        = first(upper(v.cliente))
+  const sol       = first(upper(v.solicitante))
+  const solFull   = upper(v.solicitante)
+  const parente   = upper(v.parente)
+  const cargo     = upper(v.cargo)
+  const canal     = upper(v.canal)
+  const contato   = digits(v.contato)
+  const contatoSol = digits(v.contatoSol)
+  const sinalONU  = upper(v.sinalONU)
+  const roteador  = v.roteador || ''
+  const formaPag  = upper(v.formaPag)
+  const dataV     = v.dataVisita || 'XX/XX/XXXX'
+  const horaV     = v.horaVisita || 'XX:XX'
+  const horaCobrada = v.horaCobrada || 'XX:XX'
+  const mensal    = !isento && v.pagamento === 'MENSALIDADE'
+
+  const isTerceiro  = TIPOS_TERCEIRO.includes(tipo)
+  const nome        = tipo === T_PJ || isTerceiro ? sol : cp
+  const contatoOpen = isTerceiro ? contatoSol : contato
+  const abertura    = tipo === T_PJ
+    ? `${sol} (${cargo})`
+    : isTerceiro ? `${sol} (${parente} DE ${cp})` : cp
+
+  const visitaProto = isento
+    ? `VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS`
+    : `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA O DIA ${dataV} ${horaCobrada}`
+
+  const agree = isento
+    ? `CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}`
+    : mensal
+      ? `CONCORDOU COM A VISITA E CASO HAJA COBRANCA OPTOU POR LANCAR O VALOR NA PROXIMA MENSALIDADE`
+      : `CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}`
+
+  const disseConn = isento ? ', ' : ','
+  const proced = `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E`
+
+  const info = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`
+
+  const sharedBase = isento
+    ? [
+        `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO.`,
+        `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ESTA ACESA (SINAL ${sinalONU}). ORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E RECONECTA-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU.`,
+        `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+        `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE DEVIDO ${nome} CONECTAR O EQUIPAMENTO A ENERGIA CONFORME RECOMENDACAO DA MZNET, ESTARA ISENTO DO CUSTO DO ROTEADOR.`,
+        `FICANDO APENAS A COBRANCA DO DESLOCAMENTO DO TECNICO COM O CUSTO DE R$50,00.`,
+      ]
+    : [
+        `QUESTIONADO, DISSE QUE UM DOS EQUIPAMENTOS DE INTERNET NAO ESTA LIGANDO (${roteador}).`,
+        `REMOTAMENTE VERIFIQUEI QUE USUARIO ESTA DESCONECTADO E ONU ESTA ONLINE COM SINAL ${sinalONU}.\nORIENTEI ${nome} A DESCONECTAR OS CABOS DE ENERGIA DA ONU E ROTEADOR E INVERTE-LOS, FEITO, POREM, CONEXAO NAO RESTABELECEU.`,
+        `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+        `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS`,
+        `POREM, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS.`,
+      ]
+
+  if (tipo === T_TERCEIRO_TERCEIRO) {
+    return {
+      info,
+      comentarios: [
+        ...sharedBase,
+        `${sol} ${agree}.`,
+        `${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    return {
+      info,
+      comentarios: [
+        ...sharedBase,
+        `${sol} ${agree}.`,
+        `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TITULAR_TERCEIRO) {
+    return {
+      info,
+      comentarios: [
+        ...sharedBase,
+        `${cp} ${agree}${disseConn}${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  // T_TITULAR / T_PJ
+  return {
+    info,
+    comentarios: [
+      ...sharedBase,
+      `${nome} ${agree}${disseConn}DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutRoteadorQueimadoDefaults(): OsTemplatePresetPayload {

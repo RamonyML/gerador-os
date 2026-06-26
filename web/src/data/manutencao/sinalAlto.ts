@@ -492,13 +492,95 @@ export const SINAL_ALTO_FIELDS: OsTemplateField[] = [
 export function buildSinalAltoSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { sinalAltoTextoProtocolo } = buildSinalAltoTextos(rawValues, operadorPrimeiroNome)
-  const segments = sinalAltoTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo       = v.tipoSolicitacao || T_TITULAR
+  const cp         = first(upper(v.cliente))
+  const solUpper   = upper(v.solicitante)
+  const sp_        = first(solUpper)
+  const parente    = upper(v.parente)
+  const cargo      = upper(v.cargo)
+  const canal      = upper(v.canal)
+  const contato    = digits(v.contato)
+  const contatoSol = digits(v.contatoSol)
+  const onu        = upper(v.onu)
+  const op         = first(onu)
+  const sinalONU   = upper(v.sinalONU)
+  const sinalONUan = upper(v.sinalONUan)
+  const oscila     = upper(v.oscila)
+  const formaPag   = upper(v.formaPag)
+  const dataV      = v.dataVisita || 'XX/XX/XXXX'
+  const horaV      = v.horaVisita || 'XX:XX'
+
+  const nome = tipo === T_TITULAR || tipo === T_TITULAR_TERCEIRO ? cp : sp_
+  const comSinal = tipo === T_TITULAR || tipo === T_PJ
+
+  const sharedCards = [
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ${comSinal ? 'SINAL ' : ''}${op} ${sinalONU} ${oscila}.`,
+    `QUESTIONADO ${nome} DISSE QUE ESTA SOFRENDO DESCONEXOES REPETIDAS EM SUA REDE, ALEGA QUE OS DISPOSITIVOS ESTAO CONECTADOS COM MENSAGEM DE CONECTADO SEM INTERNET OU APRESENTAM EXTREMA LENTIDAO.`,
+    `VERIFIQUEI REMOTAMENTE ${op} ESTA COM SINAL ALTO FORA DO PADRAO. REGISTRO DE ULTIMA MANUTENCAO ERA ${sinalONUan}, SINAL ATUAL ${sinalONU} ${oscila}.`,
+    `ORIENTEI ${nome} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU.`,
+    `PERGUNTEI A ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+    `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS`,
+    `POREM, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS.`,
+  ]
+
+  if (tipo === T_PJ) {
+    return {
+      info: `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      comentarios: [
+        ...sharedCards,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TERCEIRO) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      comentarios: [
+        ...sharedCards,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER.`,
+        `VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      comentarios: [
+        ...sharedCards,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER.`,
+        `VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TITULAR_TERCEIRO) {
+    return {
+      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      comentarios: [
+        ...sharedCards,
+        `${cp} CONCORDOU COM A VISITA E CASO HAJA COBRANCA SOLICITOU PAGAR NO ATO COM ${formaPag}. ${cp} NAO ESTARA PRESENTE, MAS AUTORIZOU ${solUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  // T_TITULAR (padrão)
+  return {
+    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+    comentarios: [
+      ...sharedCards,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutSinalAltoDefaults(): OsTemplatePresetPayload {

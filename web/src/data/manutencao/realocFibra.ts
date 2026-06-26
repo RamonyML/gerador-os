@@ -395,13 +395,85 @@ export const REALOC_FIBRA_FIELDS: OsTemplateField[] = [
 export function buildRealocFibraSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { realocFibraTextoProtocolo } = buildRealocFibraTextos(rawValues, operadorPrimeiroNome)
-  const segments = realocFibraTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo           = v.tipoSolicitacao || T_TITULAR
+  const cp             = first(upper(v.cliente))
+  const solUpper       = upper(v.solicitante)
+  const sp_            = first(solUpper)
+  const parente        = upper(v.parente)
+  const cargo          = upper(v.cargo)
+  const canal          = upper(v.canal)
+  const contato        = digits(v.contato)
+  const contatoSol     = digits(v.contatoSol)
+  const sinalONU       = upper(v.sinalONU)
+  const motivo         = upper(v.motivo)
+  const valor          = v.valor || ''
+  const formaPag       = upper(v.formaPag)
+  const dataV          = v.dataVisita || 'XX/XX/XXXX'
+  const horaV          = v.horaVisita || 'XX:XX'
+
+  if (tipo === T_PJ) {
+    return {
+      info: `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TITULAR_TERCEIRO) {
+    return {
+      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
+        `${valor}`,
+        `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}. ${cp} NAO ESTARA PRESENTE, MAS AUTORIZOU ${solUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TERCEIRO) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    return {
+      info: `${sp_} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+      comentarios: [
+        `QUESTIONADO ${sp_} DISSE QUE ${motivo}.`,
+        `${valor}`,
+        `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}.`,
+        `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
+        `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
+      ],
+    }
+  }
+
+  // T_TITULAR (padrão)
+  return {
+    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
+    comentarios: [
+      `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
+      `${valor}`,
+      `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
+    ],
+  }
 }
 
 export function getManutRealocFibraDefaults(): OsTemplatePresetPayload {

@@ -21,7 +21,10 @@ import { HeroIllustration } from '../components/HeroIllustration'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
+import { TUTORIAL_ROT_RESET_MODELS } from '../data/tutorialRotReset'
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
+
+const TUTORIAL_COUNT = TUTORIAL_ROT_RESET_MODELS.length
 
 export function SupportHomePage() {
   const theme = useTheme()
@@ -185,8 +188,15 @@ export function SupportHomePage() {
                   'wifi-extend': '/suporte/wifi-extend',
                   'termo-docs': '/suporte/termos-documentos',
                   feedback: '/suporte/feedback',
+                  geral: '/suporte/tutoriais',
                 }
                 const to = hubRoute[d.id] ?? `/suporte/demanda/${d.id}`
+
+                const isTutoriais = d.id === 'geral'
+                const badgeCount = isTutoriais ? TUTORIAL_COUNT : n
+                const badgeLabel = isTutoriais
+                  ? `${badgeCount} tutorial${badgeCount === 1 ? '' : 'ais'}`
+                  : `${badgeCount} modelo${badgeCount === 1 ? '' : 's'}`
 
                 return (
                   <NavCard
@@ -199,7 +209,7 @@ export function SupportHomePage() {
                     badge={
                       <Chip
                         size="small"
-                        label={`${n} modelo${n === 1 ? '' : 's'}`}
+                        label={badgeLabel}
                         sx={{
                           height: 24,
                           fontWeight: 600,

@@ -262,13 +262,33 @@ export const LUZ_VERMELHA_PJ_FIELDS: OsTemplateField[] = [
 export function buildLuzVermelhaPjSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { luzVmPjTextoProtocolo } = buildLuzVermelhaPjTextos(rawValues, operadorPrimeiroNome)
-  const segments = luzVmPjTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const solicitante = first(upper(v.solicitante))
+  const cargo       = upper(v.cargo)
+  const onu         = upper(v.onu) || 'ONU'
+  const op          = first(onu)
+  const alarmeUp    = upper(v.alarme) || 'LUZ VERMELHA ACESA'
+  const canal       = upper(v.canal)
+  const contato     = digits(v.contato)
+  const formaPag    = upper(v.formaPag)
+  const dataV       = v.dataVisita || 'XX/XX/XXXX'
+  const horaV       = v.horaVisita || 'XX:XX'
+
+  return {
+    info: `${solicitante} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
+    comentarios: [
+      `QUESTIONADO, DISSE QUE A ${op} ESTA COM ${alarmeUp}.\nREMOTAMENTE VERIFIQUEI QUE ${op} ESTA DESCONECTADO/APAGADA.`,
+      `ORIENTEI ${solicitante} A DESCONECTAR EQUIPAMENTOS (${onu}) DA REDE ELETRICA E RECONECTA-LOS APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU.`,
+      `PERGUNTEI A ${solicitante} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+      `INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS`,
+      `MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E CASO OS EQUIPAMENTOS TENHAM DEFEITOS OCASIONADOS, SERA COBRADO O VALOR REFERENTE AOS MESMOS.`,
+      `${solicitante} CONCORDOU COM OS TERMOS DA VISITA TECNICA E CASO HAJA CUSTOS PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutLuzVermelhaPjDefaults(): OsTemplatePresetPayload {

@@ -309,13 +309,53 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
 export function buildRoteadorResetSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const operadorPrimeiroNome = String(rawValues.operadorPrimeiroNome ?? '')
-  const { roteadorResetTextoProtocolo } = buildRoteadorResetTextos(rawValues, operadorPrimeiroNome)
-  const segments = roteadorResetTextoProtocolo
-    .split(/^[=*]{5,}$/gm)
-    .map((s) => s.trim())
-    .filter(Boolean)
-  return { info: segments[0] ?? '', comentarios: segments.slice(1) }
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const modo     = v.tipoSolicitacao || M_VISITA
+  const cp       = first(upper(v.cliente))
+  const canal    = upper(v.canal)
+  const contato  = digits(v.contato)
+  const sinalONU = upper(v.sinalONU)
+  const oscila   = upper(v.oscila)
+  const roteador = upper(v.roteador)
+
+  const sharedCards = [
+    `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} ${oscila}.`,
+    `QUESTIONADO ${cp} DISSE QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NAO ESTA APARECENDO MAIS.`,
+    `REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL.`,
+    `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER.`,
+    `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+    `INFORMEI QUE O ROTEADOR ESTA RESETADO, E REPASSEI AO CLIENTE 2 OPCOES PARA SOLUCAO DO PROBLEMA.`,
+    `1ª. AGENDAMENTO DE UMA VISITA TECNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,00 REFERENTE O DESLOCAMENTO TECNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTAO.`,
+    `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURA-LO. ESTA OPCAO NAO TERA CUSTOS.`,
+  ]
+
+  if (modo === M_LOJA) {
+    const [dataLoja = '', horaLoja = ''] = v.dataLigacao.split(' ')
+    return {
+      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      comentarios: [
+        ...sharedCards,
+        `${cp} OPTOU POR TRAZER O ROTEADOR NA LOJA EM ${dataLoja} AS ${horaLoja}.\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  // M_VISITA
+  const formaPag = upper(v.formaPag)
+  const dataV    = v.dataVisita || 'XX/XX/XXXX'
+  const horaV    = v.horaVisita || 'XX:XX'
+
+  return {
+    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+    comentarios: [
+      ...sharedCards,
+      `${cp} OPTOU PELA VISITA TECNICA, CONCORDOU COM OS TERMOS REPASSADOS E SOLICITOU PAGAR EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
+    ],
+  }
 }
 
 export function getManutRoteadorResetDefaults(): OsTemplatePresetPayload {
