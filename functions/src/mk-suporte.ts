@@ -264,7 +264,11 @@ function mkEstimatedLength(text: string): number {
 
 const HTML_RED_PREFIX = '<font color="#FF0000">'
 const HTML_RED_SUFFIX = '</font>'
-const HTML_RED_OVERHEAD = HTML_RED_PREFIX.length + HTML_RED_SUFFIX.length // 28
+// MK HTML-encoda < " > antes de gravar no varchar(300):
+//   <font color="#FF0000">  →  &lt;font color=&quot;#FF0000&quot;&gt;  (+16 chars)
+//   </font>                →  &lt;/font&gt;                           (+6 chars)
+// Overhead armazenado real: 29 raw + 22 de encoding = 51 chars
+const HTML_RED_STORED_OVERHEAD = 51
 
 async function mkInserirComentario(
   cfg: MkConfig,
@@ -274,8 +278,9 @@ async function mkInserirComentario(
   mkLogin?: string,
   tipo = 1,
 ): Promise<void> {
-  // tipo 1 = vermelho/privado: wrapper HTML consome 28 chars do varchar(300)
-  const contentMax = 290 - (tipo === 1 ? HTML_RED_OVERHEAD : 0)
+  const contentMax = tipo === 1
+    ? 300 - HTML_RED_STORED_OVERHEAD - 5  // 244: conteúdo + 51 overhead ≤ 295
+    : 285
   const normalized = comentario
     .replace(/\r\n/g, '\n')
     .split('\n')

@@ -106,8 +106,7 @@ function CardItem({
       sx={{
         borderRadius: 2,
         borderColor,
-        opacity: !enabled && state === 'idle' ? 0.5 : 1,
-        transition: 'border-color 0.2s, opacity 0.2s',
+        transition: 'border-color 0.2s',
         overflow: 'hidden',
       }}
     >
@@ -168,7 +167,7 @@ function CardItem({
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             lineHeight: 1.55,
-            color: !enabled && state === 'idle' ? 'text.disabled' : 'text.primary',
+            color: 'text.primary',
           }}
         >
           {text || '—'}
@@ -194,7 +193,7 @@ function CardItem({
             <IconButton
               size="small"
               onClick={() => void handleCopy()}
-              disabled={!text || (!isFirst && !enabled)}
+              disabled={!text}
             >
               <ContentCopyRoundedIcon sx={{ fontSize: 14 }} />
             </IconButton>
@@ -404,9 +403,6 @@ export function MkProtocolCards({
   const anyStarted = card0State !== 'idle'
   const conexaoOk = buscaState === 'ok' && (conexoes.length === 0 || conexaoSelecionada !== '')
 
-  const isCardDone = (i: number) =>
-    i === 0 ? card0State === 'ok' : commentStates[i] === 'ok'
-
   return (
     <Stack spacing={1.5}>
 
@@ -543,7 +539,11 @@ export function MkProtocolCards({
 
       {cards.map((text, i) => {
         const isFirst = i === 0
-        const enabled = !disabled && conexaoOk && !pendingCodes && (isFirst ? true : isCardDone(i - 1))
+        // Comentários: habilitados para inserção assim que card 0 registrou atendimento.
+        // Não há dependência entre cards de comentário entre si.
+        const enabled = isFirst
+          ? !disabled && conexaoOk && !pendingCodes
+          : !disabled && card0Done
         const cardState = isFirst ? card0State : (commentStates[i] ?? 'idle')
         const cardError = isFirst ? card0Error : (commentErrors[i] ?? '')
         const onSend = isFirst
