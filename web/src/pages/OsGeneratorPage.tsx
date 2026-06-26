@@ -105,6 +105,8 @@ import { isKnownCadastroDemandCategory } from '../data/cadastroDemands'
 import { INSTALACAO_DEMANDS, isKnownInstalacaoDemandCategory } from '../data/instalacaoDemands'
 import { db } from '../lib/firebase'
 import { saveOsHistory } from '../lib/osHistoryFirestore'
+import { useUsersPublic } from '../hooks/useUsersPublic'
+import { deriveOperadorNome } from '../lib/operadorNome'
 
 const LAST_OS_TEMPLATE_KEY = 'gerador-os:lastOsTemplateId'
 
@@ -174,6 +176,7 @@ export function OsGeneratorPage() {
   const theme = useTheme()
   const { user, profile, profileMissing } = useAuth()
   const state = useOsTemplates(profile)
+  const usersPublicMap = useUsersPublic()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const historyStateRef = useRef(
@@ -407,12 +410,10 @@ export function OsGeneratorPage() {
       nome: profile?.displayName ?? '',
       email: user?.email ?? profile?.email ?? '',
     }
-    base.operadorPrimeiroNome =
-      (profile?.displayName ?? '')
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)[0]
-        ?.toUpperCase() ?? ''
+    const allDisplayNames = Object.values(usersPublicMap)
+      .map((p) => p.displayName ?? '')
+      .filter(Boolean)
+    base.operadorPrimeiroNome = deriveOperadorNome(profile?.displayName ?? '', allDisplayNames)
 
     if (selected?.slug === 'mud-end-padrao') {
       Object.assign(
@@ -629,7 +630,7 @@ export function OsGeneratorPage() {
     }
 
     return base
-  }, [values, profile, user, selected?.slug])
+  }, [values, profile, user, selected?.slug, usersPublicMap])
 
   const mkEntry = selected ? (MK_PROTOCOL_REGISTRY[selected.slug] ?? null) : null
 
