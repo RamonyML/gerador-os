@@ -233,7 +233,7 @@ export function buildMudEndAltplanPropostaTextos(
 
   const autorizacaoProto =
     tipo === T_TITULAR_TERCEIRO
-      ? `\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO.\n${clientePrimeiro} INFORMOU O NÚMERO DE CONTATO (${contatoAut}) PARA CASO SEJA NECESSÁRIO FALAR COM ${first(upper(v.autorizado))}.`
+      ? `\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR E ASSINAR O.S.\n${clientePrimeiro} INFORMOU O NÚMERO DE CONTATO (${contatoAut}) PARA CASO SEJA NECESSÁRIO FALAR COM ${first(upper(v.autorizado))}.`
       : ''
 
   const protocolo = `${primeiroContato} ENTROU EM CONTATO POR ${v.canal ?? ''} (${contatoUsado}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.
@@ -293,7 +293,7 @@ NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})${protocoloExtra}`
       : `${clientePrimeiro} ENTROU EM CONTATO VIA ${v.canal ?? ''} (${contato})`
   const osPresenca =
     tipo === T_TITULAR_TERCEIRO
-      ? `${clientePrimeiro} AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR, ASSINAR O.S E CONTRATO. CONTATO DO AUTORIZADO: (${contatoAut}).`
+      ? `${clientePrimeiro} AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR E ASSINAR O.S. CONTATO DO AUTORIZADO: (${contatoAut}).`
       : `${clientePrimeiro} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR, ASSINAR O.S E CONTRATO.`
 
   const os = `${osPrefix} E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". VALOR DO SERVIÇO: R$100,00. SOLICITOU TAMBÉM A RENOVAÇÃO DO SEU CONTRATO E UPGRADE DE PLANO, PLANO ATUAL: ${v.planoAtual ?? ''}. PLANO OFERTADO: ${v.planoEscolhido ?? ''}. COM A ALTERACAO DE PLANO O SERVICO DE MUDANÇA DE ENDEREÇO FOI ISENTO, E COM ESSE BENEFICIO RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. ${osPresenca} VISITA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.
