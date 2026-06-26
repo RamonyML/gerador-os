@@ -252,12 +252,17 @@ async function mkCriarAtendimento(cfg: MkConfig, session: MkSession, payload: Mk
   return { id, protocolo: data.Protocolo ?? '' }
 }
 
-// MK grava acentos como entidades HTML (&Aacute; etc.) antes do varchar(300).
-// Cada char não-ASCII custa ~8 chars. Estimamos o tamanho real para não ultrapassar.
+// MK HTML-encoda chars antes de gravar no varchar(300):
+//   Não-ASCII (acentos): &Aacute; etc. → até 8 chars
+//   ASCII especiais (()/$ etc.): &#xx;  → 5 chars
+//   Demais ASCII: 1 char
+const MK_HTML_SPECIALS = new Set(['(', ')', '/', '$', '#', '&', '<', '>', '"', "'"])
 function mkEstimatedLength(text: string): number {
   let len = 0
   for (const ch of text) {
-    len += ch.charCodeAt(0) > 127 ? 8 : 1
+    if (ch.charCodeAt(0) > 127) len += 8
+    else if (MK_HTML_SPECIALS.has(ch)) len += 5
+    else len += 1
   }
   return len
 }
