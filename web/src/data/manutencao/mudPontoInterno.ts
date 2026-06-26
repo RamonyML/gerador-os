@@ -115,9 +115,9 @@ export function buildMudPontoIntTextos(
   if (tipo === T_PJ) {
     protocoloTxt = [
       `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
-      '---',
+      SEP_STAR,
       `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
-      '---',
+      SEP_STAR,
       `QUESTIONADO ${sp_} DISSE QUE ${motivo}.`,
       '',
       `AMBIENTE ATUAL: ${ambienteAtual}`,
@@ -135,9 +135,9 @@ export function buildMudPontoIntTextos(
   } else if (tipo === T_TITULAR_TERCEIRO) {
     protocoloTxt = [
       `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
-      '---',
+      SEP_STAR,
       `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
-      '---',
+      SEP_STAR,
       `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
       sp(4),
       `AMBIENTE ATUAL: ${ambienteAtual}`,
@@ -208,9 +208,9 @@ export function buildMudPontoIntTextos(
     // T_TITULAR (padrao)
     protocoloTxt = [
       `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) SOLICITANDO INFORMACOES SOBRE MUDANCA DE PONTO INTERNO`,
-      '---',
+      SEP_STAR,
       `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
-      '---',
+      SEP_STAR,
       `QUESTIONADO ${cp} DISSE QUE ${motivo}.`,
       '',
       `AMBIENTE ATUAL: ${ambienteAtual}`,
