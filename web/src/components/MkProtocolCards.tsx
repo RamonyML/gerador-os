@@ -52,6 +52,8 @@ type Props = {
   segmentos: { info: string; comentarios: string[] }
   disabled: boolean
   onProtocoloGerado?: (protocolo: string) => void
+  tipoOS?: number
+  grupoServico?: number
 }
 
 type CardItemProps = {
@@ -283,7 +285,10 @@ export function MkProtocolCards({
   segmentos,
   disabled,
   onProtocoloGerado,
+  tipoOS,
+  grupoServico,
 }: Props) {
+  const theme = useTheme()
   const cards = [segmentos.info, ...segmentos.comentarios]
   const total = cards.length
   const pendingCodes = processoId === 0 || classificacaoId === 0
@@ -313,6 +318,11 @@ export function MkProtocolCards({
   const [commentStates, setCommentStates] = useState<Record<number, CardState>>({})
   const [commentErrors, setCommentErrors] = useState<Record<number, string>>({})
 
+  // ---- OS ----
+  const [osState, setOsState] = useState<CardState>('idle')
+  const [osError, setOsError] = useState('')
+  const [osNumero, setOsNumero] = useState<number | null>(null)
+
   // Resetar quando CPF muda
   useEffect(() => {
     setBuscaState('idle')
@@ -328,6 +338,9 @@ export function MkProtocolCards({
     setCard0Error('')
     setCommentStates({})
     setCommentErrors({})
+    setOsState('idle')
+    setOsError('')
+    setOsNumero(null)
     setOverrideVisible(false)
     setOverrideInput('')
     setOverrideLoading(false)
@@ -348,6 +361,9 @@ export function MkProtocolCards({
     setCard0Error('')
     setCommentStates({})
     setCommentErrors({})
+    setOsState('idle')
+    setOsError('')
+    setOsNumero(null)
     setOverrideVisible(false)
     setOverrideInput('')
     setOverrideLoading(false)
@@ -431,6 +447,30 @@ export function MkProtocolCards({
       setCard0State('error')
     }
   }, [slug, cpf, processoId, classificacaoId, cards, conexaoSelecionada, contratoSelecionado, clienteCodigo])
+
+  const handleCriarOS = useCallback(async () => {
+    if (!atendimentoId || !clienteCodigo) return
+    setOsState('loading')
+    setOsError('')
+    try {
+      const fn = httpsCallable(getFirebaseFunctions(), 'mkSuporte')
+      const res = await fn({
+        action: 'criar_os_vinculada',
+        slug,
+        atendimentoId,
+        codigoCliente: clienteCodigo,
+        descricaoProblema: cards[0],
+        tipoOS,
+        grupoServico,
+      })
+      const data = res.data as { osNumero?: number }
+      setOsNumero(data.osNumero ?? null)
+      setOsState('ok')
+    } catch (e) {
+      setOsError(e instanceof Error ? e.message : String(e))
+      setOsState('error')
+    }
+  }, [atendimentoId, clienteCodigo, slug, cards, tipoOS, grupoServico])
 
   const handleSendComment = useCallback(async (index: number, text: string) => {
     if (!atendimentoId) return
@@ -630,6 +670,88 @@ export function MkProtocolCards({
             Reiniciar
           </Button>
         </Box>
+      )}
+
+      {tipoOS !== undefined && card0Done && (
+        <Paper
+          variant="outlined"
+          sx={{
+            borderRadius: 2,
+            borderColor:
+              osState === 'ok' ? 'success.main'
+              : osState === 'error' ? 'error.main'
+              : 'primary.light',
+            transition: 'border-color 0.2s',
+            overflow: 'hidden',
+          }}
+        >
+          <Box
+            sx={{
+              px: 2, pt: 1.25, pb: 0.75,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              bgcolor: osState === 'ok' ? alpha(theme.palette.success.main, 0.06) : alpha(theme.palette.background.default, 0.5),
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: 0.5, textTransform: 'uppercase' }}
+            >
+              Criar O.S. de Manutenção
+            </Typography>
+            {osState === 'ok' && osNumero && (
+              <Chip
+                size="small"
+                icon={<CheckCircleRoundedIcon sx={{ fontSize: 12, '&&': { ml: '6px' } }} />}
+                label={`O.S. #${osNumero}`}
+                color="success"
+                variant="outlined"
+                sx={{ fontSize: 11, height: 22 }}
+              />
+            )}
+          </Box>
+          <Divider />
+          <Box sx={{ px: 2, py: 1.25 }}>
+            <Box
+              component="pre"
+              sx={{
+                m: 0, fontSize: 12.5,
+                fontFamily: theme.typography.fontFamily,
+                whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                lineHeight: 1.55, color: 'text.primary',
+              }}
+            >
+              {cards[0] || '—'}
+            </Box>
+          </Box>
+          <Divider />
+          <Box sx={{ px: 1.5, py: 0.75, display: 'flex', alignItems: 'center', gap: 1, bgcolor: alpha(theme.palette.background.default, 0.4), flexWrap: 'wrap' }}>
+            {osState === 'ok' ? (
+              <Typography variant="caption" color="success.main" sx={{ fontWeight: 600 }}>
+                O.S. #{osNumero} criada com sucesso
+              </Typography>
+            ) : (
+              <>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  startIcon={osState === 'loading' ? <CircularProgress size={12} color="inherit" /> : <SendRoundedIcon sx={{ fontSize: 14 }} />}
+                  onClick={() => void handleCriarOS()}
+                  disabled={osState === 'loading'}
+                  sx={{ fontSize: 12, py: 0.35, px: 1.25, lineHeight: 1.4 }}
+                >
+                  {osState === 'loading' ? 'Criando…' : 'Criar O.S. no MK'}
+                </Button>
+                {osState === 'error' && (
+                  <Typography variant="caption" color="error" sx={{ flex: 1, minWidth: 0, wordBreak: 'break-word' }}>
+                    {osError}
+                  </Typography>
+                )}
+              </>
+            )}
+          </Box>
+        </Paper>
       )}
 
       {!anyStarted && disabled && (

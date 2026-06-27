@@ -1161,6 +1161,8 @@ export function OsGeneratorPage() {
                   classificacaoId={mkEntry.classificacaoId}
                   segmentos={mkSegmentos}
                   disabled={emptyFields.length > 0}
+                  tipoOS={mkEntry.tipoOS}
+                  grupoServico={mkEntry.grupoServico}
                   onProtocoloGerado={(prot) => {
                     setMkProtocoloGerado(prot)
                     setValues((prev) => ({ ...prev, protocolo: prot }))

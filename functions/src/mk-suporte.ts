@@ -331,7 +331,10 @@ async function mkCriarOS(cfg: MkConfig, session: MkSession, payload: MkOsPayload
     if (v !== undefined && v !== null) params[k] = v as string | number
   }
   const { data } = await mkRequest<MkOsResponse>(cfg.baseUrl, '/mk/WSMKCriarOrdemServico.rule', params, session.jsessionid)
-  const codigoOs = data.codigo_os ?? (data as Record<string, unknown>).CodigoOS ?? (data as Record<string, unknown>).Codigo
+  // API retorna {"mensagem":"OS 234736 criada com sucesso.","status":"OK"} — número embutido na string
+  const fromMensagem = data.mensagem ? /OS (\d+) criada/i.exec(data.mensagem)?.[1] : undefined
+  const codigoOs = fromMensagem ? parseInt(fromMensagem, 10)
+    : data.codigo_os ?? (data as Record<string, unknown>).CodigoOS ?? (data as Record<string, unknown>).Codigo
   if (!codigoOs) throw new Error(`MK não retornou código da OS: ${data.erro ?? data.mensagem ?? JSON.stringify(data)}`)
   return codigoOs as number
 }
@@ -397,6 +400,15 @@ export type MkSuporteRequest =
       grupoServico?: number
       tecnicoId?: number
       codigoConexao?: number  // se omitido, buscado automaticamente via WSMKConexoesPorCliente
+    }
+  | {
+      action: 'criar_os_vinculada'
+      slug: string
+      atendimentoId: number
+      codigoCliente: number
+      descricaoProblema: string
+      tipoOS: number
+      grupoServico?: number
     }
 
 export type MkConexaoPublic = {
@@ -675,6 +687,45 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         protocolo: atendimento.protocolo,
         osNumero,
       }
+    }
+
+    // ---- criar_os_vinculada: vincula OS a atendimento já existente ----
+    if (action === 'criar_os_vinculada') {
+      const { slug, atendimentoId, codigoCliente, descricaoProblema, tipoOS, grupoServico } = req.data
+
+      if (!descricaoProblema?.trim()) throw new HttpsError('invalid-argument', 'Descrição do problema é obrigatória.')
+      if (!atendimentoId) throw new HttpsError('invalid-argument', 'ID do atendimento é obrigatório.')
+      if (!codigoCliente) throw new HttpsError('invalid-argument', 'Código do cliente é obrigatório.')
+
+      const payload = { slug, atendimentoId, codigoCliente, descricaoProblema, tipoOS, grupoServico }
+
+      if (cfg.shadow) {
+        console.log('[MK shadow] criar_os_vinculada payload:', JSON.stringify(payload))
+        await salvarLog({ uid, slug, shadow: true, payload })
+        return { shadow: true }
+      }
+
+      let osNumero: number
+      try {
+        const session = await mkAuth(cfg)
+        osNumero = await mkCriarOS(cfg, session, {
+          token: session.token,
+          CodigoCliente: codigoCliente,
+          DescricaoProblema: descricaoProblema,
+          CodigoTipoOS: tipoOS,
+          CodigoGrupoServico: grupoServico,
+          CodigoTecnico: 3,  // placeholder — gerência reatribui via rota/agenda
+          CodigoAtendimento: atendimentoId,
+          categoria: 1,
+        })
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e)
+        await salvarLog({ uid, slug, shadow: false, payload, erro: msg })
+        throw new HttpsError('internal', `Falha ao criar O.S.: ${msg}`)
+      }
+
+      await salvarLog({ uid, slug, shadow: false, payload, resultado: { atendimentoId, osNumero } })
+      return { shadow: false, atendimentoId, osNumero }
     }
 
     throw new HttpsError('invalid-argument', `Ação desconhecida: ${String(action)}`)
