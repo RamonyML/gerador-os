@@ -714,7 +714,6 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           DescricaoProblema: descricaoProblema,
           CodigoTipoOS: tipoOS,
           CodigoGrupoServico: grupoServico,
-          CodigoTecnico: 3,  // placeholder — gerência reatribui via rota/agenda
           CodigoAtendimento: atendimentoId,
           categoria: 1,
         })

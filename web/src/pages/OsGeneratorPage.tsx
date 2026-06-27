@@ -1163,6 +1163,7 @@ export function OsGeneratorPage() {
                   disabled={emptyFields.length > 0}
                   tipoOS={mkEntry.tipoOS}
                   grupoServico={mkEntry.grupoServico}
+                  osTexto={previewSections[1]?.body}
                   onProtocoloGerado={(prot) => {
                     setMkProtocoloGerado(prot)
                     setValues((prev) => ({ ...prev, protocolo: prot }))

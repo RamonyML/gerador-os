@@ -54,6 +54,7 @@ type Props = {
   onProtocoloGerado?: (protocolo: string) => void
   tipoOS?: number
   grupoServico?: number
+  osTexto?: string
 }
 
 type CardItemProps = {
@@ -287,6 +288,7 @@ export function MkProtocolCards({
   onProtocoloGerado,
   tipoOS,
   grupoServico,
+  osTexto,
 }: Props) {
   const theme = useTheme()
   const cards = [segmentos.info, ...segmentos.comentarios]
@@ -459,7 +461,7 @@ export function MkProtocolCards({
         slug,
         atendimentoId,
         codigoCliente: clienteCodigo,
-        descricaoProblema: cards[0],
+        descricaoProblema: osTexto ?? cards[0],
         tipoOS,
         grupoServico,
       })
@@ -756,7 +758,7 @@ export function MkProtocolCards({
                 lineHeight: 1.55, color: 'text.primary',
               }}
             >
-              {cards[0] || '—'}
+              {(osTexto ?? cards[0]) || '—'}
             </Box>
           </Box>
           <Divider />
