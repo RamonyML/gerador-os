@@ -672,6 +672,42 @@ export function MkProtocolCards({
         </Box>
       )}
 
+      {!anyStarted && disabled && (
+        <Alert severity="warning" icon={false} sx={{ py: 0.5, px: 1.5, borderRadius: 1.5, fontSize: 12 }}>
+          Preencha todos os campos antes de registrar no MK.
+        </Alert>
+      )}
+
+      {cards.map((text, i) => {
+        const isFirst = i === 0
+        // Cada card só habilita depois do anterior confirmado (sequential).
+        const prevState = i === 0 ? 'ok' : i === 1 ? card0State : (commentStates[i - 1] ?? 'idle')
+        const prevDone = prevState === 'ok'
+        const enabled = isFirst
+          ? !disabled && conexaoOk && !pendingCodes
+          : !disabled && prevDone
+        const cardState = isFirst ? card0State : (commentStates[i] ?? 'idle')
+        const cardError = isFirst ? card0Error : (commentErrors[i] ?? '')
+        const onSend = isFirst
+          ? () => void handleSendFirst()
+          : prevDone ? () => void handleSendComment(i, text) : undefined
+
+        return (
+          <CardItem
+            key={i}
+            index={i}
+            total={total}
+            text={text}
+            state={cardState}
+            error={cardError}
+            enabled={enabled}
+            protocolo={protocolo}
+            atendimentoId={atendimentoId ?? undefined}
+            onSend={onSend}
+          />
+        )
+      })}
+
       {tipoOS !== undefined && card0Done && (
         <Paper
           variant="outlined"
@@ -753,42 +789,6 @@ export function MkProtocolCards({
           </Box>
         </Paper>
       )}
-
-      {!anyStarted && disabled && (
-        <Alert severity="warning" icon={false} sx={{ py: 0.5, px: 1.5, borderRadius: 1.5, fontSize: 12 }}>
-          Preencha todos os campos antes de registrar no MK.
-        </Alert>
-      )}
-
-      {cards.map((text, i) => {
-        const isFirst = i === 0
-        // Cada card só habilita depois do anterior confirmado (sequential).
-        const prevState = i === 0 ? 'ok' : i === 1 ? card0State : (commentStates[i - 1] ?? 'idle')
-        const prevDone = prevState === 'ok'
-        const enabled = isFirst
-          ? !disabled && conexaoOk && !pendingCodes
-          : !disabled && prevDone
-        const cardState = isFirst ? card0State : (commentStates[i] ?? 'idle')
-        const cardError = isFirst ? card0Error : (commentErrors[i] ?? '')
-        const onSend = isFirst
-          ? () => void handleSendFirst()
-          : prevDone ? () => void handleSendComment(i, text) : undefined
-
-        return (
-          <CardItem
-            key={i}
-            index={i}
-            total={total}
-            text={text}
-            state={cardState}
-            error={cardError}
-            enabled={enabled}
-            protocolo={protocolo}
-            atendimentoId={atendimentoId ?? undefined}
-            onSend={onSend}
-          />
-        )
-      })}
     </Stack>
   )
 }
