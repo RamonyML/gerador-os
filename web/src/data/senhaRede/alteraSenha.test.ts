@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import alteraSenhaHtml from '../../../../legado-exemplo/suporte/altera-senha/altera-senha.html?raw'
-import { ALTERA_SENHA_OUTPUT, buildAlteraSenhaTextos } from './alteraSenha'
+import { ALTERA_SENHA_OUTPUT, buildAlteraSenhaTextos, buildAlteraSenhaSegmentos } from './alteraSenha'
 import { renderTemplate } from '../../lib/renderTemplate'
 
 type Inputs = Record<string, string>
@@ -86,5 +86,47 @@ describe('Alteração de SSID / Senha', () => {
     const rendered = renderTemplate(ALTERA_SENHA_OUTPUT, built)
     expect(rendered).toContain('=== Texto Protocolo ===')
     expect(rendered).toContain('ALTERAÇÃO DA SSID E SENHA DO WI-FI')
+  })
+})
+
+describe('buildAlteraSenhaSegmentos', () => {
+  it('SSID E SENHA: produz info + 2 comentarios', () => {
+    const result = buildAlteraSenhaSegmentos({ ...BASE, solicitacao: 'SSID E SENHA' })
+    expect(result.comentarios).toHaveLength(2)
+    expect(result.info).toContain('SOLICITOU A ALTERACAO DA SSID E SENHA DO WI-FI.')
+    expect(result.comentarios[0]).toContain('SEM REDUCAO')
+    expect(result.comentarios[0]).toContain('SEM OSCILACAO')
+    expect(result.comentarios[1]).toContain('SSID ATUAL:')
+    expect(result.comentarios[1]).toContain('SENHA ATUAL:')
+    expect(result.comentarios[1]).toContain('SSID E SENHA ALTERADA COM SUCESSO')
+    expect(result.comentarios[1]).toContain('CONFIRMOU CONEXAO.')
+  })
+
+  it('SSID: comentarios[1] tem SSID mas nao tem SENHA', () => {
+    const result = buildAlteraSenhaSegmentos({ ...BASE, solicitacao: 'SSID' })
+    expect(result.comentarios[1]).toContain('SSID ATUAL:')
+    expect(result.comentarios[1]).not.toContain('SENHA ATUAL:')
+    expect(result.comentarios[1]).toContain('SSID ALTERADA COM SUCESSO')
+  })
+
+  it('SENHA: comentarios[1] tem SENHA mas nao tem SSID', () => {
+    const result = buildAlteraSenhaSegmentos({ ...BASE, solicitacao: 'SENHA' })
+    expect(result.comentarios[1]).not.toContain('SSID ATUAL:')
+    expect(result.comentarios[1]).toContain('SENHA ATUAL:')
+    expect(result.comentarios[1]).toContain('SENHA ALTERADA COM SUCESSO')
+  })
+
+  it('preserva SSID/senha case-sensitive no registro', () => {
+    const result = buildAlteraSenhaSegmentos({ ...BASE, solicitacao: 'SSID E SENHA' })
+    expect(result.comentarios[1]).toContain(`SSID NOVA: ${BASE.novoSSID}`)
+    expect(result.comentarios[1]).toContain(`SENHA NOVA: ${BASE.novaSenha}`)
+  })
+
+  it('texto MK nao contém acentos nos campos de template', () => {
+    const result = buildAlteraSenhaSegmentos({ ...BASE, solicitacao: 'SSID E SENHA' })
+    expect(result.info).not.toContain('ALTERAÇÃO')
+    expect(result.comentarios[0]).not.toContain('REDUÇÃO')
+    expect(result.comentarios[0]).not.toContain('OSCILAÇÃO')
+    expect(result.comentarios[1]).not.toContain('CONEXÃO')
   })
 })

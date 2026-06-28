@@ -112,9 +112,11 @@ type MkOsPayload = {
   token: string
   CodigoCliente: number
   DescricaoProblema: string
+  Indicacoes?: string
   CodigoTipoOS: number
   CodigoGrupoServico?: number
   CodigoTecnico?: number
+  CodigoConexao?: number
   CodigoAtendimento?: number
   categoria?: number  // 1=Cliente, 2=Fornecedor
 }
@@ -290,15 +292,19 @@ async function mkInserirComentario(
     .replace(/\r\n/g, '\n')
     .split('\n')
     .map(l => l.trim())
-    .filter(Boolean)
-    .join(' ')
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 
   const chunks: string[] = []
   let remaining = normalized
   while (mkEstimatedLength(remaining) > contentMax) {
     let i = remaining.length
     while (i > 0 && mkEstimatedLength(remaining.slice(0, i)) > contentMax) i--
-    const cut = remaining.slice(0, i).lastIndexOf(' ')
+    const sliceForCut = remaining.slice(0, i)
+    const cutNl = sliceForCut.lastIndexOf('\n')
+    const cutSp = sliceForCut.lastIndexOf(' ')
+    const cut = cutNl > 0 ? cutNl : cutSp
     if (cut > 0) {
       chunks.push(remaining.slice(0, cut))
       remaining = remaining.slice(cut + 1)
@@ -331,6 +337,7 @@ async function mkCriarOS(cfg: MkConfig, session: MkSession, payload: MkOsPayload
     if (v !== undefined && v !== null) params[k] = v as string | number
   }
   const { data } = await mkRequest<MkOsResponse>(cfg.baseUrl, '/mk/WSMKCriarOrdemServico.rule', params, session.jsessionid)
+  console.log('[MK] criar OS resposta completa:', JSON.stringify(data))
   // API retorna {"mensagem":"OS 234736 criada com sucesso.","status":"OK"} — número embutido na string
   const fromMensagem = data.mensagem ? /OS (\d+) criada/i.exec(data.mensagem)?.[1] : undefined
   const codigoOs = fromMensagem ? parseInt(fromMensagem, 10)
@@ -367,6 +374,7 @@ export type MkSuporteRequest =
   | { action: 'buscar_cliente'; cpf: string }
   | { action: 'listar_tipos_os' }
   | { action: 'listar_grupos' }
+  | { action: 'listar_tecnicos' }
   | { action: 'listar_processos' }
   | { action: 'listar_classificacoes'; processoId?: number }
   | {
@@ -407,8 +415,10 @@ export type MkSuporteRequest =
       atendimentoId: number
       codigoCliente: number
       descricaoProblema: string
+      indicacoes?: string
       tipoOS: number
       grupoServico?: number
+      tecnicoId?: number
     }
 
 export type MkConexaoPublic = {
@@ -476,6 +486,14 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       if (cfg.shadow) return { shadow: true, raw: [] }
       const session = await mkAuth(cfg)
       const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKConsultaEquipes.rule', { sys: 'MK0', token: session.token }, session.jsessionid)
+      return { shadow: false, raw }
+    }
+
+    // ---- listar_tecnicos ----
+    if (action === 'listar_tecnicos') {
+      if (cfg.shadow) return { shadow: true, raw: [] }
+      const session = await mkAuth(cfg)
+      const { data: raw } = await mkRequest(cfg.baseUrl, '/mk/WSMKOSListaTecnicos.rule', { sys: 'MK0', token: session.token }, session.jsessionid)
       return { shadow: false, raw }
     }
 
@@ -669,6 +687,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           CodigoTipoOS: tipoOS,
           CodigoGrupoServico: grupoServico,
           CodigoTecnico: tecnicoId,
+          CodigoConexao: conexao,
           CodigoAtendimento: atendimento.id,
           categoria: 1,  // 1=cliente OS, 2=provedor OS — obrigatório a partir da release 74
         })
@@ -691,13 +710,13 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
     // ---- criar_os_vinculada: vincula OS a atendimento já existente ----
     if (action === 'criar_os_vinculada') {
-      const { slug, atendimentoId, codigoCliente, descricaoProblema, tipoOS, grupoServico } = req.data
+      const { slug, atendimentoId, codigoCliente, descricaoProblema, indicacoes, tipoOS, grupoServico, tecnicoId } = req.data
 
       if (!descricaoProblema?.trim()) throw new HttpsError('invalid-argument', 'Descrição do problema é obrigatória.')
       if (!atendimentoId) throw new HttpsError('invalid-argument', 'ID do atendimento é obrigatório.')
       if (!codigoCliente) throw new HttpsError('invalid-argument', 'Código do cliente é obrigatório.')
 
-      const payload = { slug, atendimentoId, codigoCliente, descricaoProblema, tipoOS, grupoServico }
+      const payload = { slug, atendimentoId, codigoCliente, descricaoProblema, tipoOS, grupoServico, tecnicoId }
 
       if (cfg.shadow) {
         console.log('[MK shadow] criar_os_vinculada payload:', JSON.stringify(payload))
@@ -707,13 +726,26 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       let osNumero: number
       try {
+        // Sessão A: só para buscar conexão (chamada intermediária contamina o contexto MK)
+        let conexao: number | undefined
+        try {
+          const sessionLookup = await mkAuth(cfg)
+          conexao = await mkBuscarConexaoCliente(cfg, sessionLookup, codigoCliente)
+        } catch {
+          console.warn('[MK] criar_os_vinculada: conexão do cliente não encontrada — OS sem CodigoConexao')
+        }
+
+        // Sessão B: limpa, só para criar OS (contexto puro → operador atribuído corretamente pelo MK)
         const session = await mkAuth(cfg)
         osNumero = await mkCriarOS(cfg, session, {
           token: session.token,
           CodigoCliente: codigoCliente,
           DescricaoProblema: descricaoProblema,
+          Indicacoes: indicacoes,
           CodigoTipoOS: tipoOS,
           CodigoGrupoServico: grupoServico,
+          CodigoTecnico: tecnicoId,
+          CodigoConexao: conexao,
           CodigoAtendimento: atendimentoId,
           categoria: 1,
         })

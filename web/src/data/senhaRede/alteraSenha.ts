@@ -193,22 +193,49 @@ export const ALTERA_SENHA_FIELDS: OsTemplateField[] = [
   },
 ]
 
-/**
- * Divide o texto do protocolo nos blocos separados por `***` para envio ao MK:
- * - `info`: primeiro bloco (usado na criação do atendimento)
- * - `comentarios`: blocos seguintes (cada um vira um comentário separado)
- */
 export function buildAlteraSenhaSegmentos(
   rawValues: Record<string, unknown>,
 ): { info: string; comentarios: string[] } {
-  const { alteraSenhaTextoProtocolo } = buildAlteraSenhaTextos(rawValues)
-  const segments = alteraSenhaTextoProtocolo
-    .split(SEP)
-    .map((s) => s.trim())
-    .filter(Boolean)
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const cp = first(upper(v.cliente))
+  const canal = v.canal
+  const contato = digits(v.contato)
+  const sinalONU = upper(v.sinalONU)
+  const solicitacao = upper(v.solicitacao)
+  const atualSSID = v.atualSSID
+  const novoSSID = v.novoSSID
+  const atualSenha = v.atualSenha
+  const novaSenha = v.novaSenha
+
+  const showSsid = solicitacao === SOL_SSID || solicitacao === SOL_AMBOS
+  const showSenha = solicitacao === SOL_SENHA || solicitacao === SOL_AMBOS
+
+  const info = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU A ALTERACAO DA ${solicitacao} DO WI-FI.`
+
+  const onu = `CLIENTE SEM BLOQUEIO, SEM REDUCAO, E ONU ${sinalONU} SEM OSCILACAO.`
+
+  const registroLines: string[] = [
+    `QUESTIONADO ${cp} DESEJA ALTERAR A ${solicitacao} DE SUA REDE WI-FI POR MOTIVO PESSOAL.`,
+    '    ',
+  ]
+  if (showSsid) {
+    registroLines.push(`SSID ATUAL: ${atualSSID}`, `SSID NOVA: ${novoSSID}`)
+  }
+  if (showSsid && showSenha) {
+    registroLines.push('')
+  }
+  if (showSenha) {
+    registroLines.push(`SENHA ATUAL: ${atualSenha}`, `SENHA NOVA: ${novaSenha}`)
+  }
+  registroLines.push('', '    ', `${solicitacao} ALTERADA COM SUCESSO E ${cp} CONFIRMOU CONEXAO.`)
+
   return {
-    info: segments[0] ?? '',
-    comentarios: segments.slice(1),
+    info,
+    comentarios: [onu, registroLines.join('\n')],
   }
 }
 

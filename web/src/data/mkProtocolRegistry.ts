@@ -26,9 +26,15 @@ export type MkProtocolNewEntry = {
   mode: 'new'
   processoId: number
   classificacaoId: number
-  buildSegmentos: (v: Record<string, unknown>) => { info: string; comentarios: string[] }
+  buildSegmentos: (v: Record<string, unknown>) => {
+    info: string
+    comentarios: string[]
+    osDescricao?: string    // texto para DescricaoProblema (Relato do problema no MK)
+    osIndicacoes?: string   // texto para Indicacoes (campo Indicações no MK)
+  }
   tipoOS?: number
   grupoServico?: number
+  tecnicoId?: number  // CodigoTecnico no MK (sistema separado de Colaborador — usar 1 como padrão para grupo 10)
 }
 
 export type MkProtocolCommentEntry = {
@@ -61,7 +67,7 @@ export const MK_PROTOCOL_REGISTRY: Record<string, MkProtocolEntry> = {
   // processo 17 (TECNICO-FALHA-EM-SERVIÇO-ESPECIFICO)
   'manut-fonte-queimada':      { mode: 'new', processoId: 17, classificacaoId: 3, buildSegmentos: buildFonteQueimadaSegmentos },
   'manut-roteador-queimado':   { mode: 'new', processoId: 17, classificacaoId: 3, buildSegmentos: buildRoteadorQueimadoSegmentos },
-  'manut-ont-queimada':        { mode: 'new', processoId: 17, classificacaoId: 3, buildSegmentos: buildOntQueimadaSegmentos, tipoOS: 3, grupoServico: 6 },
+  'manut-ont-queimada':        { mode: 'new', processoId: 17, classificacaoId: 3, buildSegmentos: buildOntQueimadaSegmentos, tipoOS: 3, grupoServico: 10, tecnicoId: 1 },
   'manut-onu-queimada':        { mode: 'new', processoId: 17, classificacaoId: 3, buildSegmentos: buildOnuQueimadaSegmentos },
   // processo 14 (TECNICO-ALTERAR-WIFI)
   'manut-roteador-reset':      { mode: 'new', processoId: 14, classificacaoId: 3, buildSegmentos: buildRoteadorResetSegmentos },

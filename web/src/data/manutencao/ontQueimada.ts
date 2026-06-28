@@ -365,7 +365,7 @@ export const ONT_QUEIMADA_FIELDS: OsTemplateField[] = [
 
 export function buildOntQueimadaSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
@@ -411,6 +411,22 @@ export function buildOntQueimadaSegmentos(
 
   const info = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONT SEM SINAL (DYINGGASP).`
 
+  // Texto para os campos da O.S. no MK (separados: Relato do problema + Indicações)
+  let osClose: string
+  if (tipo === T_TITULAR_TERCEIRO) {
+    osClose = `${cp} ${agree}, ${cp} NAO ESTARA PRESENTE MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`
+  } else if (tipo === T_TERCEIRO_TERCEIRO) {
+    osClose = `${sol} ${agree}. ${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.`
+  } else if (tipo === T_TERCEIRO_TITULAR) {
+    osClose = `${sol} ${agree}. ${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.`
+  } else {
+    osClose = `${nome} ${agree}. ${visita}.`
+  }
+
+  const osDescricao = `${abertura} ENTROU EM CONTATO POR ${canal} (${contatoOpen}) E DISSE QUE ESTA SEM CONEXAO COM A INTERNET. QUESTIONADO, ${nome} DISSE "QUE ONT ${alarme}". REMOTAMENTE VERIFIQUEI QUE ONT ESTA DESCONECTADO/APAGADA. ORIENTEI ${nome} A RETIRAR A FONTE DE ENERGIA DA TOMADA ELETRICA E RECONECTAR APOS 30 SEGUNDOS. FEZ, POREM CONEXAO NAO RESTABELECEU. PERGUNTEI ${nome} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. INFORMEI QUE E NECESSARIO VISITA TECNICA PARA VERIFICAR A FONTE DO PROBLEMA E QUE HAVENDO PROBLEMA DA RESPONSABILIDADE DO PROVEDOR VISITA NAO TERA CUSTOS, MAS, SENDO PROBLEMA OCASIONADO (ESPONTANEO OU NAO), SERA COBRADA VISITA TECNICA DE R$50,00 E ATE MESMO EQUIPAMENTOS SE DANIFICADOS. ${osClose}`
+
+  const osIndicacoes = `TECNICO: CONFERIR A TOMADA, T , ETC. ONDE ESTA LIGADA ONT. CONFERIR FONTE DO EQUIPAMENTO E CONFERIR ONT (APARENCIA FISICA). SE NAO FOR PROBLEMAS NA TOMADA, NA FONTE E ONT ESTIVER SEM AVARIAS, SUBSTITUIR ${onu} POR OUTRA SIMILAR. EFETUAR TESTES PADROES, FILMAR E FOTOGRAFAR. VERIFICAR ATUALIZACAO DO FIRMWARE DA ONT. CASO PROBLEMA SEJA NA TOMADA, T , FONTES OU ONT AVARIADA: FILMAR E ENCAMINHAR PARA SUPORTE QUE LIGARA DE IMEDIATO PARA CLIENTE. SANAR TODAS AS DUVIDAS DE ${nome}. TEMPO ESTIMADO 40 MINUTOS.`
+
   if (tipo === T_TERCEIRO_TERCEIRO) {
     return {
       info,
@@ -419,6 +435,8 @@ export function buildOntQueimadaSegmentos(
         `${sol} ${agree}.`,
         `${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -430,6 +448,8 @@ export function buildOntQueimadaSegmentos(
         `${sol} ${agree}.`,
         `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -440,6 +460,8 @@ export function buildOntQueimadaSegmentos(
         ...sharedCards,
         `${cp} ${agree},${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -450,6 +472,8 @@ export function buildOntQueimadaSegmentos(
       ...sharedCards,
       `${nome} ${agree},DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

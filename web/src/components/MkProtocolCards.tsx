@@ -54,7 +54,10 @@ type Props = {
   onProtocoloGerado?: (protocolo: string) => void
   tipoOS?: number
   grupoServico?: number
-  osTexto?: string
+  tecnicoId?: number
+  osTexto?: string       // texto completo para exibição no card
+  osDescricao?: string   // texto para DescricaoProblema no MK (Relato do problema)
+  osIndicacoes?: string  // texto para Indicacoes no MK (campo Indicações)
 }
 
 type CardItemProps = {
@@ -288,7 +291,10 @@ export function MkProtocolCards({
   onProtocoloGerado,
   tipoOS,
   grupoServico,
+  tecnicoId,
   osTexto,
+  osDescricao,
+  osIndicacoes,
 }: Props) {
   const theme = useTheme()
   const cards = [segmentos.info, ...segmentos.comentarios]
@@ -461,9 +467,11 @@ export function MkProtocolCards({
         slug,
         atendimentoId,
         codigoCliente: clienteCodigo,
-        descricaoProblema: osTexto ?? cards[0],
+        descricaoProblema: osDescricao ?? osTexto ?? cards[0],
+        indicacoes: osIndicacoes,
         tipoOS,
         grupoServico,
+        tecnicoId,
       })
       const data = res.data as { osNumero?: number }
       setOsNumero(data.osNumero ?? null)
@@ -472,7 +480,7 @@ export function MkProtocolCards({
       setOsError(e instanceof Error ? e.message : String(e))
       setOsState('error')
     }
-  }, [atendimentoId, clienteCodigo, slug, cards, tipoOS, grupoServico])
+  }, [atendimentoId, clienteCodigo, slug, osDescricao, osTexto, osIndicacoes, cards, tipoOS, grupoServico, tecnicoId])
 
   const handleSendComment = useCallback(async (index: number, text: string) => {
     if (!atendimentoId) return
