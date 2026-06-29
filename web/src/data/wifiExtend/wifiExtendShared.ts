@@ -358,6 +358,63 @@ export const WIFI_EXTEND_OUTPUT = [
   '{{wifiExtendTextoAgenda}}',
 ].join('\n')
 
+export function buildExtendSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  const isPJ = String(rawValues.segmento ?? SEGMENTO_PF) === SEGMENTO_PJ
+  const isOfertado = String(rawValues.origem ?? ORIGEM_SOLICITADO) === ORIGEM_OFERTADO
+  const troca = String(rawValues.troca ?? TROCA_NAO) === TROCA_SIM
+
+  const cliente = upper(rawValues.cliente)
+  const cp = first(cliente)
+  const solicitante = upper(rawValues.solicitante)
+  const solicCp = first(solicitante)
+  const cargo = upper(rawValues.cargo)
+  const canal = String(rawValues.canal ?? '')
+  const contato = digits(rawValues.contato)
+  const sinalONU = upper(rawValues.sinalONU)
+  const planoAtual = String(rawValues.planoAtual ?? '')
+  const planoEscolhido = String(rawValues.planoEscolhido ?? '')
+  const roteador = String(rawValues.roteador ?? '')
+  const roteadorAtual = String(rawValues.roteadorAtual ?? '')
+  const dataContrato = String(rawValues.dataContrato ?? '')
+  const dataVisita = String(rawValues.dataVisita ?? '')
+  const horaVisita = String(rawValues.horaVisita ?? '')
+
+  const introSubject = isPJ ? `${solicCp} (${cargo})` : cp
+  const personSubject = isPJ ? solicCp : cp
+
+  const intro = isOfertado
+    ? `POR ${canal} (${contato}) OFERTEI À ${introSubject} ALTERAÇÃO DE PLANO COM WI-FI EXTEND.`
+    : `${introSubject} ENTROU EM CONTATO VIA ${canal} (${contato}) SOLICITANDO INFORMAÇÕES SOBRE WI-FI EXTEND.`
+
+  const clienteSem = `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sinalONU}`
+  const questionado = `QUESTIONADO, ${personSubject} INFORMOU QUE SUA ${
+    isPJ ? 'EMPRESA' : 'RESIDÊNCIA'
+  } É GRANDE E A REDE WI-FI NÃO ABRANGE TODA A ÁREA DE SUA RESIDENCIA.`
+  const informeiAo =
+    'INFORMEI AO CLIENTE QUE PARA CASOS COMO ESTE (RESIDENCIA GRANDE, SOBRADO, AREA DE LAZER ETC) TRABALHAMOS COM OS PLANOS QUE POSSUEM O WI-FI EXTEND.'
+  const emResumo =
+    'EM RESUMO EXPLIQUEI QUE WI-FI EXTEND CONSISTE NUM SEGUNDO ROTEADOR ADICIONAL QUE TRABALHA NA REDE MESH. ESTE EM SI UTILIZA O MESMO NOME DE REDE E SENHA DO ROTEADOR PRINCIPAL SENDO COMO UM ESCRAVO.\nESTE 2° ROTEADOR FICA EMPRESTADO EM REGIME DE COMODATO.'
+  const planoAtualLn = `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${troca ? roteadorAtual : roteador}`
+  const planoEscLn = `PLANO ${isOfertado ? 'OFERTADO' : 'ESCOLHIDO'}: ${planoEscolhido};\nFIDELIDADE DE 12 MESES`
+  const informeiNec =
+    'INFORMEI A NECESSIDADE DO AGENDAMENTO DE VISITA TÉCNICA PARA INSTALAÇÃO E CONFIGURAÇÃO DO ROTEADOR ADICIONAL, REALIZAR OS TESTES DE ABRANGÊNCIA, QUALIDADE, VELOCIDADE E SANAR TODAS AS DÚVIDAS QUE CLIENTE/USUÁRIOS POSSAM TER. \nVISITA ISENTA DE CUSTOS.'
+  const ciente = `${personSubject} ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE POR 12 MESES E CONCORDOU COM OS TERMOS, E VISITA TÉCNICA ISENTA DE CUSTOS FOI AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO.`
+
+  return {
+    info: `${intro}\n\n${clienteSem}`,
+    comentarios: [
+      `${questionado}\n${informeiAo}`,
+      emResumo,
+      planoAtualLn,
+      planoEscLn,
+      informeiNec,
+      ciente,
+    ],
+  }
+}
+
 /** Campos comuns aos fluxos ZTE e TP-Link (o roteador é injetado por família). */
 export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boolean): OsTemplateField[] {
   const fields: OsTemplateField[] = [
@@ -412,6 +469,14 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       section: S_ID,
       layout: { md: 4 },
       showWhen: { field: 'segmento', equals: SEGMENTO_PJ },
+    },
+    {
+      id: 'cpf',
+      label: 'CPF / CNPJ',
+      control: 'text',
+      placeholder: '000.000.000-00',
+      section: S_ID,
+      layout: { md: 4 },
     },
     {
       id: 'cliente',
@@ -527,6 +592,22 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       placeholder: '123.456',
       section: S_AGE,
       layout: { md: 3 },
+    },
+    {
+      id: 'dataVisita',
+      label: 'Data da visita',
+      control: 'text',
+      placeholder: 'dd/mm/aaaa',
+      section: S_AGE,
+      layout: { md: 3 },
+    },
+    {
+      id: 'horaVisita',
+      label: 'Horário',
+      control: 'select',
+      section: S_AGE,
+      layout: { md: 3 },
+      options: HORA_VISITA_OPTS,
     },
   )
 

@@ -3,6 +3,7 @@ import {
   WIFI_EXTEND_OUTPUT,
   buildExtendFields,
   buildExtendTextos,
+  buildExtendSegmentos,
   ROTEADOR_TPLINK_OPTS,
 } from './wifiExtendShared'
 
@@ -15,6 +16,12 @@ export function buildWifiExtendTplinkTextos(
   operadorPrimeiroNome: string,
 ): Record<string, string> {
   return buildExtendTextos(rawValues, operadorPrimeiroNome, 'TPLINK')
+}
+
+export function buildWifiExtendTplinkSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  return buildExtendSegmentos(rawValues)
 }
 
 export function getWifiExtendTplinkDefaults(): OsTemplatePresetPayload {

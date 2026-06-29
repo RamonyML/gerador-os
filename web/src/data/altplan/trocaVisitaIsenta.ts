@@ -223,6 +223,83 @@ export function buildAltplanTrocaVisitaIsentaTextos(
   return finaliza(textoProtocolo, os)
 }
 
+export function buildAltplanTrocaVisitaIsentaSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo     = v.tipoSolicitacao || TVI_TITULAR
+  const ofertado = isOfertado(rawValues)
+  const sig      = (() => {
+    const s = formatSinalFibraSaida(v.sinalONU ?? '')
+    return v.semSinal === 'sim' || !s ? 'SEM SINAL' : s
+  })()
+
+  const cp        = (v.cliente ?? '').trim().toUpperCase().split(/\s+/).filter(Boolean)[0] ?? ''
+  const sp        = (v.solicitante ?? '').trim().toUpperCase().split(/\s+/).filter(Boolean)[0] ?? ''
+  const solicitante = (v.solicitante ?? '').trim().toUpperCase()
+  const autorizado  = (v.autorizado ?? '').trim().toUpperCase()
+  const parente     = (v.parente ?? '').trim().toUpperCase()
+  const canal       = v.canal ?? ''
+  const contato     = (v.contato ?? '').replace(/\D/g, '')
+  const contatoSol  = (v.contatoSol ?? '').replace(/\D/g, '')
+  const motivo      = (v.motivo ?? '').trim().toUpperCase()
+  const planoAtual     = v.planoAtual ?? ''
+  const planoEscolhido = v.planoEscolhido ?? ''
+  const roteador       = v.roteador ?? ''
+  const dataContrato   = v.dataContrato ?? ''
+  const compat         = (v.compat ?? '').trim().toUpperCase()
+  const dataVisita     = v.dataVisita ?? ''
+  const horaVisita     = v.horaVisita ?? ''
+
+  const isThird          = tipo === TVI_TERCEIRO_TITULAR || tipo === TVI_TERCEIRO_TERCEIRO
+  const contatoRemetente = isThird ? contatoSol : contato
+  const preposicao       = isThird ? `${sp} (${parente} DE ${cp})` : cp
+
+  const abertura = ofertado
+    ? `OFERTEI A ${preposicao} VIA ${canal} (${contatoRemetente}) ALTERAÇÃO DE PLANO.`
+    : `${preposicao} ENTROU EM CONTATO VIA ${canal} (${contatoRemetente}) SOLICITANDO ALTERAÇÃO DE PLANO.`
+
+  const info = `${abertura}\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sig}`
+
+  const planoLabel = ofertado ? 'PLANO OFERTADO' : 'PLANO SOLICITADO'
+  const planoCard  = `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}\n\n${planoLabel}: ${planoEscolhido}\n\nACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE.`
+
+  const isSim = compat === COMPAT_SIM
+  const informei1 = isSim
+    ? `INFORMEI QUE O ROTEADOR ATUAL EMPRESTADO (${roteador}) É COMPATÍVEL COM A NOVA VELOCIDADE SOLICITADA, PORÉM FAREMOS O AGENDAMENTO DE VISITA TÉCNICA PARA INSTALAÇÃO DE UM NOVO ROTEADOR COM VERSÃO ATUALIZADA.`
+    : `INFORMEI QUE O ROTEADOR ATUAL EMPRESTADO (${roteador}) NÃO É COMPATÍVEL COM A NOVA VELOCIDADE SOLICITADA, E ASSIM SE FAZ NECESSÁRIO O AGENDAMENTO DE VISITA TÉCNICA PARA SUBSTITUIÇÃO DO ROTEADOR PARA UM MODELO COMPATÍVEL COM TAL VELOCIDADE,`
+  const informei2 = isSim
+    ? `APÓS INSTALADO, FAREMOS OS TESTES DE ABRANGÊNCIA, QUALIDADE, VELOCIDADE E SANAR TODAS AS DÚVIDAS QUE CLIENTE/USUÁRIOS POSSAM TER. VISITA ISENTA DE CUSTOS.`
+    : `REALIZAR OS TESTES DE ABRANGÊNCIA, QUALIDADE, VELOCIDADE E SANAR TODAS AS DÚVIDAS QUE CLIENTE/USUÁRIOS POSSAM TER. VISITA ISENTA DE CUSTOS.`
+
+  let fechamento: string
+  if (tipo === TVI_TITULAR_TERCEIRO) {
+    fechamento = `${cp} CONCORDOU COM A VISITA E DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${autorizado} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. VISITA ISENTA DE CUSTOS AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataVisita} ÀS ${horaVisita} HRS.\n\nCLIENTE SEM DUVIDAS.`
+  } else if (tipo === TVI_TERCEIRO_TITULAR) {
+    fechamento = `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU A VISITA. ${cp} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES. DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO E ASSINAR O.S.VISITA ISENTA DE CUSTOS AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.\n\nCLIENTE SEM DUVIDAS.`
+  } else if (tipo === TVI_TERCEIRO_TERCEIRO) {
+    fechamento = `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR O TÉCNICO E ASSINAR O.S. ${cp} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES. VISITA AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS.\n\nCLIENTE SEM DUVIDAS.`
+  } else {
+    fechamento = `${cp} ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE POR 12 MESES E CONCORDOU COM OS TERMOS, E VISITA TÉCNICA ISENTA DE CUSTOS FOI AGENDADA PARA O DIA ${dataVisita} ÀS ${horaVisita} HRS, DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR O TÉCNICO.`
+  }
+
+  const comentarios: string[] = []
+  if (!ofertado) comentarios.push(`QUESTIONADO, CLIENTE DISSE QUE "${motivo}".`)
+  comentarios.push(planoCard, informei1, informei2, fechamento)
+
+  const { altplanTrocaVisitaIsentaTextoOS } = buildAltplanTrocaVisitaIsentaTextos(rawValues, '')
+  const sep = `\n\n${'*'.repeat(35)}\n\nINDICAÇÃO TÉCNICA:\n\n`
+  const splitAt = altplanTrocaVisitaIsentaTextoOS.indexOf(sep)
+  const osDescricao = splitAt >= 0 ? altplanTrocaVisitaIsentaTextoOS.slice(0, splitAt) : altplanTrocaVisitaIsentaTextoOS
+  const osIndicacoes = splitAt >= 0 ? altplanTrocaVisitaIsentaTextoOS.slice(splitAt + sep.length) : ''
+
+  return { info, comentarios, osDescricao, osIndicacoes }
+}
+
 const CANAL_OPTS = [
   { value: 'LIGAÇÃO', label: 'Telefone' },
   { value: 'WHATSAPP', label: 'WhatsApp' },
@@ -278,6 +355,14 @@ export const ALTPLAN_TROCA_VISITA_ISENTA_FIELDS: OsTemplateField[] = [
     defaultValue: ORIGEM_PADRAO,
     options: ORIGEM_OPTS,
     layout: { md: 12 },
+  },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ do titular',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 4 },
   },
   {
     id: 'cliente',

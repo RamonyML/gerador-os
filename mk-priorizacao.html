@@ -400,6 +400,7 @@
     .status-card.ok h3 { color: #22c55e; }
     .status-card.blocked h3 { color: #f59e0b; }
     .status-card.next h3 { color: #38bdf8; }
+    .status-card.next { border-color: #1e3a5f; }
     .status-item {
       display: flex;
       align-items: flex-start;
@@ -452,10 +453,10 @@
 <body>
 
   <div class="header">
-    <div class="badge">MZ NET × MK Solutions — Integração de API</div>
+    <div class="badge">MZ NET × MK Solutions — Integração de API · ✅ CONCLUÍDA</div>
     <h1>Guarda-chuvas &amp; Priorização</h1>
     <p class="meta">
-      <strong>186 variantes</strong> · <strong>8 categorias</strong> · última atualização 24/06/2026
+      <strong>186 variantes</strong> · <strong>8 categorias</strong> · última atualização 29/06/2026
       &nbsp;·&nbsp; clique em um card para ver as subdemandas
     </p>
   </div>
@@ -510,20 +511,22 @@
   <!-- Status atual -->
   <div class="status-section">
     <div class="status-card ok">
-      <h3>✓ Funcionando em produção</h3>
+      <h3>✓ Integração concluída — em produção</h3>
       <div class="status-item"><span class="icon">🔐</span> WSAutenticacao.rule</div>
       <div class="status-item"><span class="icon">🔍</span> WSMKConsultaDoc.rule — busca por CPF/CNPJ</div>
-      <div class="status-item"><span class="icon">🔗</span> WSMKConexoesPorCliente.rule</div>
+      <div class="status-item"><span class="icon">🔗</span> WSMKConexoesPorCliente.rule — duas sessões independentes</div>
       <div class="status-item"><span class="icon">📋</span> WSMKContratosPorCliente.rule</div>
       <div class="status-item"><span class="icon">📋</span> WSMKListaPlanoAcesso.rule</div>
-      <div class="status-item"><span class="icon">🎫</span> WSMKNovoAtendimento.rule — atend. #268168 validado</div>
+      <div class="status-item"><span class="icon">🎫</span> WSMKNovoAtendimento.rule — protocolo criado com op_abertura</div>
+      <div class="status-item"><span class="icon">💬</span> WSMKAtendimentoComentario.rule — chunking automático varchar(300)</div>
+      <div class="status-item"><span class="icon">🛠️</span> WSMKCriarOrdemServico.rule — OS vinculada ao CodigoConexao do cliente</div>
     </div>
-    <div class="status-card blocked">
-      <h3>⚑ Aguardando MK Solutions</h3>
-      <div class="status-item"><span class="icon">🔴</span> WSMKCriarOrdemServico.rule — base ou especial? (~135 var. travadas)</div>
-      <div class="status-item"><span class="icon">🔴</span> WSMKAtendimentoComentario.rule — HTTP 500 (11 var. travadas)</div>
-      <div class="status-item"><span class="icon">❓</span> Endpoint para buscar atendimento por protocolo (feedback)</div>
-      <div class="status-item"><span class="icon">👤</span> Mapeamento operadores Firebase → login MK ERP</div>
+    <div class="status-card next">
+      <h3>→ Melhorias futuras (não bloqueantes)</h3>
+      <div class="status-item"><span class="icon">👤</span> "Op. abertura" mostra "master" — depende das credenciais do Secret Manager, não de parâmetro na API</div>
+      <div class="status-item"><span class="icon">❓</span> Busca de atendimento por número de protocolo visível — melhoria solicitada ao MK Solutions</div>
+      <div class="status-item"><span class="icon">📂</span> Mover MK_USER_MAP para Firestore (campo mkLogin no cadastro de usuário)</div>
+      <div class="status-item"><span class="icon">🗺️</span> Mudança de Endereço — integração ainda pendente (buildSegmentos a implementar)</div>
     </div>
   </div>
 
@@ -531,104 +534,109 @@
     const umbrellas = [
       {
         id: 1, title: 'Manutenção', count: 77, priority: 'p1',
-        status: 'proto_ok', readyCount: 0,
-        flow: 'cliente → atendimento → OS técnica',
-        blocker: 'WSMKCriarOrdemServico',
-        note: 'Maior volume e impacto. Prioridade máxima.',
+        status: 'ready', readyCount: 77,
+        flow: 'cliente → atendimento → comentários → OS técnica',
+        blocker: null,
+        note: '15 formulários em produção. tipoOS 3 (MANUTENÇÃO) em todos; exceto luz-vermelha-isento → tipoOS 22 (RETORNO EM GARANTIA 07 DIAS).',
         subcats: [
-          { name: 'Equipamento queimado', count: 6, ready: false },
-          { name: 'Visita instrutiva', count: 1, ready: false },
-          { name: 'Lentidão', count: 6, ready: false },
-          { name: 'Luz vermelha', count: 23, ready: false },
-          { name: 'Luz vermelha 7 dias', count: 23, ready: false },
-          { name: 'Monitoramento', count: 1, ready: false },
-          { name: 'Mudança de ponto interno', count: 5, ready: false },
-          { name: 'Realocação de fibra', count: 5, ready: false },
-          { name: 'Reset de roteador', count: 2, ready: false },
-          { name: 'Sinal alto', count: 5, ready: false },
+          { name: 'Equipamento queimado (ONT/ONU/Fonte/Roteador)', count: 8, ready: true },
+          { name: 'Visita de testes', count: 1, ready: true },
+          { name: 'Luz vermelha — PF', count: 23, ready: true },
+          { name: 'Luz vermelha — PJ', count: 23, ready: true },
+          { name: 'Luz vermelha — garantia 7 dias (isento)', count: 23, ready: true },
+          { name: 'Mudança de ponto interno', count: 5, ready: true },
+          { name: 'Realocação de fibra', count: 5, ready: true },
+          { name: 'Reset de roteador', count: 2, ready: true },
+          { name: 'Sinal alto', count: 5, ready: true },
+          { name: 'Fibra externa / Conector / Fibra interna / Sinal', count: 7, ready: true },
         ]
       },
       {
-        id: 2, title: 'Alteração de Plano', count: 58, priority: 'p1',
-        status: 'partial', readyCount: 10,
-        flow: 'cliente → atendimento [→ OS de visita]',
-        blocker: 'WSMKCriarOrdemServico (com visita)',
-        note: '10 variantes remotas prontas para implementação.',
+        id: 2, title: 'Alteração de Plano', count: 52, priority: 'p1',
+        status: 'partial', readyCount: 46,
+        flow: 'cliente → atendimento → OS de alteração [→ OS de visita]',
+        blocker: 'mud-end + altplan (aguarda integração mud-end)',
+        note: '6 formulários prontos com OS (tipoOS 7). Mudança de endereço + altplan aguarda fase mud-end.',
         subcats: [
           { name: 'Remoto — catálogo principal', count: 5, ready: true },
           { name: 'Remoto — ofertado / retenção', count: 5, ready: true },
-          { name: 'Sem troca — visita isenta', count: 5, ready: false },
-          { name: 'Sem troca — visita paga', count: 5, ready: false },
-          { name: 'Com troca — visita isenta', count: 10, ready: false },
-          { name: 'Com troca — visita paga', count: 8, ready: false },
-          { name: 'Wi-Fi Extend + altplan', count: 11, ready: false },
+          { name: 'Sem troca — visita isenta', count: 5, ready: true },
+          { name: 'Sem troca — visita paga', count: 5, ready: true },
+          { name: 'Com troca — visita isenta', count: 10, ready: true },
+          { name: 'Com troca — visita paga', count: 8, ready: true },
+          { name: 'Encerramentos / Feedback de altplan', count: 3, ready: true },
           { name: 'Mudança de endereço + altplan', count: 6, ready: false },
-          { name: 'Encerramentos / Feedback de altplan', count: 3, ready: false },
         ]
       },
       {
         id: 3, title: 'Mudança de Endereço', count: 15, priority: 'p1',
-        status: 'proto_ok_all', readyCount: 0,
-        flow: 'cliente → atendimento → OS técnica → novo endereço',
-        blocker: 'WSMKAtendimentoComentario + WSMKCriarOrdemServico',
-        note: 'Fluxo complexo — requer dados do novo endereço.',
+        status: 'blocked', readyCount: 0,
+        flow: 'cliente → atendimento → comentários → OS técnica → novo endereço',
+        blocker: 'buildSegmentos e registry ainda não implementados',
+        note: 'Fluxo complexo — requer dados do novo endereço. Fase futura.',
         subcats: [
           { name: 'Padrão', count: 9, ready: false },
           { name: 'Inviabilidade de cobertura', count: 6, ready: false },
         ]
       },
       {
-        id: 4, title: 'Mídia / TV', count: 10, priority: 'p2',
-        status: 'proto_ok', readyCount: 0,
-        flow: 'cliente → atendimento → OS técnica',
-        blocker: 'WSMKCriarOrdemServico',
-        note: 'Ativação de serviço com OS técnica vinculada.',
+        id: 4, title: 'Mídia / TV', count: 4, priority: 'p2',
+        status: 'ready', readyCount: 4,
+        flow: 'cliente → atendimento → comentários → OS técnica',
+        blocker: null,
+        note: 'Roku integrado (2 formulários). tipoOS 21 (ROKU TV). STB/ITTV: fora do escopo desta integração.',
         subcats: [
-          { name: 'Roku', count: 2, ready: true },
-          { name: 'STB (Set-top Box)', count: 6, ready: true },
-          { name: 'ITTV', count: 2, ready: true },
+          { name: 'Roku — padrão', count: 2, ready: true },
+          { name: 'Roku — presencial', count: 2, ready: true },
         ]
       },
       {
         id: 5, title: 'Wi-Fi Extend', count: 10, priority: 'p2',
-        status: 'blocked', readyCount: 0,
+        status: 'ready', readyCount: 10,
         flow: 'cliente → atendimento → OS de instalação',
-        blocker: 'WSMKCriarOrdemServico',
-        note: null,
+        blocker: null,
+        note: 'ZTE e TP-Link: tipoOS 18 (ALT. PLANO + WI-FI EXTEND). Ponto adicional: tipoOS 13 (OS DE PONTO ADICIONAL).',
         subcats: [
-          { name: 'Ponto adicional — migração', count: 2, ready: false },
-          { name: 'TP-Link', count: 4, ready: false },
-          { name: 'Ponto adicional', count: 4, ready: false },
+          { name: 'ZTE H-199A', count: 4, ready: true },
+          { name: 'TP-Link', count: 4, ready: true },
+          { name: 'Ponto adicional (compra de roteador)', count: 2, ready: true },
         ]
       },
       {
         id: 6, title: 'Feedback', count: 8, priority: 'p3',
-        status: 'comment_blocked', readyCount: 0,
+        status: 'ready', readyCount: 8,
         flow: 'localizar protocolo aberto → inserir comentário de encerramento',
-        blocker: 'WSMKAtendimentoComentario',
-        note: 'Só usa comentário — sem OS. Bloqueado pelo endpoint de comentário (HTTP 500).',
+        blocker: null,
+        note: '8 formulários em modo comentário (inserem em atendimento existente). WSMKAtendimentoComentario funcional.',
         subcats: [
-          { name: 'Feedback de visita técnica', count: 8, ready: false },
+          { name: 'Sem sucesso', count: 1, ready: true },
+          { name: 'Manutenção externa', count: 1, ready: true },
+          { name: 'Manutenção ocasionada pelo cliente', count: 1, ready: true },
+          { name: 'Troca de equipamento', count: 1, ready: true },
+          { name: 'Mudança de ponto', count: 1, ready: true },
+          { name: 'Alteração de plano', count: 1, ready: true },
+          { name: 'STB / Roku', count: 1, ready: true },
+          { name: 'Wi-Fi Extend', count: 1, ready: true },
         ]
       },
       {
         id: 7, title: 'Termo de responsabilidade', count: 3, priority: 'p4',
-        status: 'proto_ok_comment', readyCount: 0,
-        flow: 'cliente → atendimento + comentário',
-        blocker: 'WSMKAtendimentoComentario',
-        note: 'Protocolo disponível — aguardando endpoint de comentário.',
+        status: 'ready', readyCount: 3,
+        flow: 'cliente → atendimento → comentários',
+        blocker: null,
+        note: 'Em produção. Sem OS vinculada (acesso remoto ao roteador — sem visita técnica).',
         subcats: [
           { name: 'Termo de responsabilidade', count: 3, ready: true },
         ]
       },
       {
         id: 8, title: 'Senha de Rede', count: 1, priority: 'p4',
-        status: 'proto_ok_comment', readyCount: 0,
-        flow: 'cliente → atendimento + comentário',
-        blocker: 'WSMKAtendimentoComentario',
-        note: 'Protocolo em produção (atend. #268168) — aguardando comentário.',
+        status: 'ready', readyCount: 1,
+        flow: 'cliente → atendimento → comentários',
+        blocker: null,
+        note: 'Em produção. Sem OS vinculada (alteração remota — sem visita técnica).',
         subcats: [
-          { name: 'Alteração de senha Wi-Fi', count: 1, ready: true },
+          { name: 'Alteração de SSID / Senha Wi-Fi', count: 1, ready: true },
         ]
       },
     ]

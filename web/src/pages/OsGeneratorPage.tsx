@@ -667,6 +667,9 @@ export function OsGeneratorPage() {
   const activePreviewBody =
     previewSections[previewTab]?.body ?? previewSections[0]?.body ?? ''
 
+  const mkOsTexto = previewSections.find(s => /O\.S/i.test(s.label))?.body
+  const mkAgendaTexto = previewSections.find(s => /agenda/i.test(s.label))?.body
+
   const isMudEndComAnalise =
     selected?.slug?.startsWith('mud-end-') && selected.slug !== 'mud-end-inviabilidade'
 
@@ -759,6 +762,7 @@ export function OsGeneratorPage() {
   const emptyFields = useMemo(() => {
     if (!selected) return []
     return selected.fields.filter((f) => {
+      if (f.id === 'protocolo') return false
       if (f.control === 'select' || f.control === 'radio') return false
       if (isFieldDisabled(f, values)) return false
       if (f.showWhen) {
@@ -994,7 +998,7 @@ export function OsGeneratorPage() {
                 appendToLastSection={
                   (selected.slug in AGENDA_CONTEXT_KEY || selected.slug.startsWith('inst-')) &&
                   !isCadastroDemand &&
-                  !(selected.slug === 'manut-roteador-reset' && values.tipoSolicitacao === 'loja') ? (
+                  !(selected.slug === 'manut-roteador-reset' && ['loja', 'remoto'].includes(String(values.tipoSolicitacao))) ? (
                     <Grid size={{ xs: 12, md: 8 }} sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <Button
                         fullWidth
@@ -1164,40 +1168,18 @@ export function OsGeneratorPage() {
                   tipoOS={mkEntry.tipoOS}
                   grupoServico={mkEntry.grupoServico}
                   tecnicoId={mkEntry.tecnicoId}
-                  osTexto={previewSections[1]?.body}
+                  osTexto={mkOsTexto}
                   osDescricao={mkSegmentos.osDescricao}
                   osIndicacoes={mkSegmentos.osIndicacoes}
+                  agendaTexto={mkAgendaTexto}
+                  avisoCard={mkSegmentos.avisoCard}
+                  avisoObservacao={mkSegmentos.avisoObservacao}
+                  extraTab={mkSegmentos.clienteTexto ? { label: 'Termo para o cliente', content: mkSegmentos.clienteTexto } : undefined}
                   onProtocoloGerado={(prot) => {
                     setMkProtocoloGerado(prot)
                     setValues((prev) => ({ ...prev, protocolo: prot }))
                   }}
                 />
-                {previewSections.slice(1).map((sec) => (
-                  <Accordion key={sec.id} disableGutters variant="outlined" sx={{ borderRadius: '8px !important', '&:before': { display: 'none' } }}>
-                    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ minHeight: 40, '& .MuiAccordionSummary-content': { my: 0.75 } }}>
-                      <Typography variant="caption" sx={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, color: 'text.secondary' }}>
-                        {sec.label}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ pt: 0, pb: 1.5 }}>
-                      <Box
-                        component="pre"
-                        sx={{ m: 0, fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 1.55, color: 'text.primary', fontFamily: 'inherit' }}
-                      >
-                        {sec.body}
-                      </Box>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        startIcon={<ContentCopy sx={{ fontSize: 13 }} />}
-                        onClick={() => { void navigator.clipboard.writeText(sec.body) }}
-                        sx={{ mt: 1, fontSize: 12 }}
-                      >
-                        Copiar
-                      </Button>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
               </>
             ) : showMkCards && mkEntry && mkEntry.mode === 'comment' && mkFeedbackText !== null ? (
               <MkFeedbackCards

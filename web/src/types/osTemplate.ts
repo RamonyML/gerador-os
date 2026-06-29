@@ -13,6 +13,8 @@ export type FieldControl =
   | 'phone'
   /** Sinal da fibra com máscara 00.00 (saída -00.00DBM). */
   | 'signal'
+  /** Endereço MAC com máscara XX:XX:XX:XX:XX:XX. */
+  | 'mac'
 
 export interface FieldOption {
   value: string
@@ -103,6 +105,7 @@ export function getFieldControl(f: OsTemplateField): FieldControl {
   if (f.control === 'datetime') return 'datetime'
   if (f.control === 'phone') return 'phone'
   if (f.control === 'signal') return 'signal'
+  if (f.control === 'mac') return 'mac'
   return f.multiline === true ? 'textarea' : 'text'
 }
 

@@ -55,6 +55,9 @@ import { DevChatAuditPage } from './pages/DevChatAuditPage'
 import { DevMkStatusPage } from './pages/DevMkStatusPage'
 import { DevFuncoesPage } from './pages/DevFuncoesPage'
 import { DevMkCodigosPage } from './pages/DevMkCodigosPage'
+import { DevBugsPage } from './pages/DevBugsPage'
+import { DevHomePage } from './pages/DevHomePage'
+import { BugReportsPage } from './pages/BugReportsPage'
 import { TutoriaisHomePage } from './pages/TutoriaisHomePage'
 import { TutorialRoteadorResetadoPage } from './pages/TutorialRoteadorResetadoPage'
 
@@ -289,6 +292,14 @@ export default function App() {
           }
         />
         <Route
+          path="/dev"
+          element={
+            <RequireDev>
+              <DevHomePage />
+            </RequireDev>
+          }
+        />
+        <Route
           path="/dev/seed-validacao"
           element={
             <RequireDev>
@@ -344,6 +355,15 @@ export default function App() {
             </RequireDev>
           }
         />
+        <Route
+          path="/dev/bugs"
+          element={
+            <RequireDev>
+              <DevBugsPage />
+            </RequireDev>
+          }
+        />
+        <Route path="/bugs" element={<BugReportsPage />} />
         <Route
           path="/admin/usuarios"
           element={

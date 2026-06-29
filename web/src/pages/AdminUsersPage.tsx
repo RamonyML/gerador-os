@@ -101,6 +101,7 @@ export function AdminUsersPage() {
   const [flagDev, setFlagDev] = useState(false)
   const [flagTi, setFlagTi] = useState(false)
   const [flagValidacao, setFlagValidacao] = useState(false)
+  const [mkLogin, setMkLogin] = useState('')
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filterSector, setFilterSector] = useState<Sector | ''>('')
@@ -188,6 +189,8 @@ export function AdminUsersPage() {
     setFlagAdmin(false)
     setFlagDev(false)
     setFlagTi(false)
+    setFlagValidacao(false)
+    setMkLogin('')
     setDialogOpen(true)
   }
 
@@ -205,6 +208,7 @@ export function AdminUsersPage() {
     setFlagDev(row.isDev === true)
     setFlagTi(row.isTi === true)
     setFlagValidacao(row.isValidacao === true)
+    setMkLogin(row.mkLogin ?? '')
     setDialogOpen(true)
   }
 
@@ -237,6 +241,7 @@ export function AdminUsersPage() {
           ...(isDev ? { isDev: flagDev } : {}),
           ...(canEditAdminFlag ? { isTi: flagTi } : {}),
           isValidacao: flagValidacao,
+          ...(mkLogin.trim() ? { mkLogin: mkLogin.trim() } : {}),
         })
         void upsertMyPublicProfile(db, created.uid, {
           displayName: displayName.trim(),
@@ -257,11 +262,13 @@ export function AdminUsersPage() {
         if (isDev) payload.isDev = flagDev
         if (canEditAdminFlag) payload.isTi = flagTi
         payload.isValidacao = flagValidacao
+        payload.mkLogin = mkLogin.trim() || undefined
         await manageUsersUpdate(payload)
         void upsertMyPublicProfile(db, editing.uid, {
           displayName: displayName.trim(),
           sector,
           hierarchy,
+          active,
         }).catch(() => {})
       }
       setDialogOpen(false)
@@ -633,6 +640,15 @@ export function AdminUsersPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               required
               fullWidth
+            />
+            <TextField
+              label="Usuário MK"
+              value={mkLogin}
+              onChange={(e) => setMkLogin(e.target.value)}
+              fullWidth
+              autoComplete="off"
+              placeholder="mz.fulano"
+              helperText="Login no MK Solutions ERP. Deixe vazio se o colaborador não usa o gerador de O.S."
             />
 
             <FormControl fullWidth disabled={!canPickSector}>

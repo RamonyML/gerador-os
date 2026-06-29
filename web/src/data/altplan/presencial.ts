@@ -169,6 +169,75 @@ export function buildAltplanPresencialTextos(
   }
 }
 
+export function buildAltplanPresencialSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo               = v.tipoSolicitacao || P_TITULAR
+  const sig                = sinalSaida(rawValues)
+  const clientePrimeiro    = first(upper(v.cliente))
+  const solicitantePrimeiro = first(upper(v.solicitante))
+  const parente            = upper(v.parente)
+  const canal              = v.canal ?? ''
+  const contato            = digits(v.contato)
+  const motivo             = upper(v.motivo)
+  const planoAtual         = v.planoAtual ?? ''
+  const planoEscolhido     = v.planoEscolhido ?? ''
+  const roteador           = v.roteador ?? ''
+  const dataContrato       = v.dataContrato ?? ''
+  const protocolo          = v.protocolo ?? ''
+  const [dataLig, horaLig] = splitDataHora(v.dataLigacao)
+  const [dataAte, horaAte] = splitDataHora(v.dataAtendimento)
+
+  // ── info (abertura) ──
+  const isTerceiro = tipo === P_TERCEIRO
+  const remetente  = isTerceiro
+    ? `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})`
+    : clientePrimeiro
+  const onuLinha   = isTerceiro
+    ? `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sig} SEM OSCILAÇÃO.`
+    : `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sig}`
+  const info = `${remetente} COMPARECEU À LOJA E SOLICITOU ALTERAÇÃO DE PLANO.\n\n${onuLinha}`
+
+  // ── card: plano ──
+  const beneficioLinha = isTerceiro
+    ? 'ACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE.'
+    : 'APLICATIVOS DISPONÍVEIS PARA SMARTPHONE OU SMART-TV QUE POSSUA COMPATIBILIDADE.'
+  const planoCard = [
+    `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}`,
+    `PLANO SOLICITADO: ${planoEscolhido}`,
+    beneficioLinha,
+  ].join('\n')
+
+  // ── card: roteador compatível ──
+  const roteadorCard =
+    `INFORMEI QUE O ROTEADOR ATUAL EMPRESTADO (${roteador}) É COMPATÍVEL COM A NOVA VELOCIDADE SOLICITADA.\n${L_HEAD2}`
+
+  // ── card: fechamento ──
+  const fechamento = isTerceiro
+    ? `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO COM ${clientePrimeiro} (ASSINANTE) POR ${canal} QUE CONFIRMOU E AUTORIZOU O UPGRADE, ACORDO FIRMADO POR ${canal} (${contato}) SOB PROTOCOLO ${protocolo} EM ${dataLig} ÀS ${horaLig}. ${clientePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, SOLICITOU PROSSEGUIR COM O PROCESSO DE FORMA REMOTA E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES.\nCLIENTE NÃO TEM DÚVIDAS.`
+    : `${clientePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, SOLICITOU PROSSEGUIR COM O PROCESSO DE FORMA REMOTA E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES. VALIDAÇÃO FEITA PRESENCIALMENTE DIA ${dataAte} ÀS ${horaAte} HRS`
+
+  const { altplanPresencialTextoOS: osDescricao } = buildAltplanPresencialTextos(rawValues)
+  return {
+    info,
+    comentarios: [
+      `QUESTIONADO, CLIENTE DISSE QUE "${motivo}".`,
+      planoCard,
+      roteadorCard,
+      L_O1,
+      L_O2,
+      `${L_PROC}\n${L_CIENTE}`,
+      fechamento,
+    ],
+    osDescricao,
+  }
+}
+
 const CANAL_OPTS = [
   { value: 'LIGAÇÃO', label: 'Telefone' },
   { value: 'WHATSAPP', label: 'WhatsApp' },
@@ -201,6 +270,14 @@ export const ALTPLAN_PRESENCIAL_FIELDS: OsTemplateField[] = [
       },
     ],
     layout: { md: 12 },
+  },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ do titular',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 4 },
   },
   {
     id: 'solicitante',

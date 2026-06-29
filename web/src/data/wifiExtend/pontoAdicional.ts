@@ -196,6 +196,18 @@ const PONTO_FIELDS: OsTemplateField[] = [
   },
 ]
 
+export function buildPontoAdicionalSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const textos = buildPontoAdicionalTextos(rawValues, '')
+  const os = textos.pontoTextoOS
+  const sep = `\n\n${'*'.repeat(35)}\n\nINDICAÇÃO TÉCNICA:\n\n`
+  const splitAt = os.indexOf(sep)
+  const osDescricao = splitAt >= 0 ? os.slice(0, splitAt) : os
+  const osIndicacoes = splitAt >= 0 ? os.slice(splitAt + sep.length) : ''
+  return { info: osDescricao, comentarios: [], osDescricao, osIndicacoes }
+}
+
 export function getPontoAdicionalDefaults(): OsTemplatePresetPayload {
   return {
     slug: 'wifi-extend-ponto',

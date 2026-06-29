@@ -1,21 +1,21 @@
-﻿import type { OsTemplateField } from '../../types/osTemplate'
+import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 
 /**
- * Roteador resetado — fluxo com duas saidas legadas:
- * - index-roteador-reset.html: Protocolo + O.S + Agenda (visita tecnica paga)
- * - rot-reset-loja/rot-reset-loja.html: apenas Protocolo (cliente traz na loja)
- *
- * Reproduz os separadores `*`×19/42 e os espacamentos/trailing spaces do legado.
+ * Roteador resetado — três modos de resolução:
+ * - visita:  Protocolo + O.S + Agenda (visita técnica paga)
+ * - loja:    apenas Protocolo (cliente traz na loja)
+ * - remoto:  apenas Protocolo (operador orienta o cliente remotamente)
  */
 
 export const M_VISITA = 'visita'
-export const M_LOJA = 'loja'
+export const M_LOJA   = 'loja'
+export const M_REMOTO = 'remoto'
 
 const SEP19 = '*'.repeat(19)
 const SEP42 = '*'.repeat(42)
 
-const S_ID = 'IDENTIFICACAO DO CLIENTE'
+const S_ID  = 'IDENTIFICACAO DO CLIENTE'
 const S_DET = 'DETALHES DA CONEXAO'
 const S_AGE = 'AGENDAMENTO'
 
@@ -46,14 +46,14 @@ export function buildRoteadorResetTextos(
     v[key] = String(value ?? '')
   }
 
-  const modo = v.tipoSolicitacao || M_VISITA
+  const modo       = v.tipoSolicitacao || M_VISITA
   const clienteUpper = upper(v.cliente)
-  const cp = first(clienteUpper)
-  const canal = v.canal
-  const contato = digits(v.contato)
-  const sinalONU = upper(v.sinalONU)
-  const oscila = v.oscila
-  const roteador = v.roteador
+  const cp         = first(clienteUpper)
+  const canal      = v.canal
+  const contato    = digits(v.contato)
+  const sinalONU   = upper(v.sinalONU)
+  const oscila     = v.oscila
+  const roteador   = v.roteador
 
   let protocoloTxt = ''
   let os = ''
@@ -93,12 +93,46 @@ export function buildRoteadorResetTextos(
       '',
       `CLIENTE SEM DUVIDAS.`,
     ].join('\n')
+
+  } else if (modo === M_REMOTO) {
+    const ssid      = v.ssid?.trim() ?? ''
+    const senhaWifi = v.senhaWifi?.trim() ?? ''
+    protocoloTxt = [
+      `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      '',
+      SEP19,
+      '',
+      `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} ${oscila}.`,
+      '',
+      SEP19,
+      sp(4),
+      `QUESTIONADO ${cp} DISSE QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NAO ESTA APARECENDO MAIS.`,
+      sp(4),
+      `REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL. `,
+      sp(4),
+      SEP19,
+      sp(4),
+      `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER. `,
+      sp(4),
+      `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO. `,
+      sp(4),
+      SEP19,
+      sp(4),
+      `INFORMEI ${cp} QUE O ROTEADOR ESTA RESETADO E ORIENTEI O MESMO A REALIZAR O PROCESSO DE RECONFIGURACAO REMOTA CONFORME TUTORIAL DA MZNET. ${cp} SEGUIU AS ORIENTACOES, CONFIGUROU O ROTEADOR E CONFIRMOU QUE A REDE WI-FI VOLTOU NORMALMENTE.`,
+      '',
+      `SSID: ${ssid}`,
+      `SENHA: ${senhaWifi}`,
+      '',
+      `CLIENTE SEM DUVIDAS.`,
+    ].join('\n')
+
   } else {
-    const bairro = upper(v.bairro)
+    // M_VISITA
+    const bairro    = upper(v.bairro)
     const dataVisita = v.dataVisita
     const horaVisita = v.horaVisita
-    const protocolo = v.protocolo
-    const formaPag = v.formaPag
+    const protocolo  = v.protocolo
+    const formaPag   = v.formaPag
 
     protocoloTxt = [
       `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
@@ -148,7 +182,7 @@ ${tecnico}`
   }
 
   const saida =
-    modo === M_LOJA
+    modo === M_LOJA || modo === M_REMOTO
       ? ['=== Texto Protocolo ===', protocoloTxt].join('\n')
       : [
           '=== Texto Protocolo ===',
@@ -170,7 +204,8 @@ ${tecnico}`
 }
 
 const COM_VISITA = [M_VISITA]
-const SO_LOJA = [M_LOJA]
+const SO_LOJA    = [M_LOJA]
+const SO_REMOTO  = [M_REMOTO]
 
 const ROTEADOR_OPTIONS = [
   'MULTILASER',
@@ -197,8 +232,9 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     highlight: true,
     defaultValue: M_VISITA,
     options: [
-      { value: M_VISITA, label: 'Visita tecnica', icon: 'router' },
-      { value: M_LOJA, label: 'Trazer roteador na loja', icon: 'router' },
+      { value: M_VISITA, label: 'Visita tecnica',           icon: 'router' },
+      { value: M_LOJA,   label: 'Trazer roteador na loja',  icon: 'router' },
+      { value: M_REMOTO, label: 'Orientação remota',        icon: 'router' },
     ],
     layout: { md: 12 },
   },
@@ -225,8 +261,8 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
     options: [
-      { value: 'LIGACAO', label: 'Telefone' },
-      { value: 'WHATSAPP', label: 'WhatsApp' },
+      { value: 'LIGACAO',   label: 'Telefone' },
+      { value: 'WHATSAPP',  label: 'WhatsApp' },
     ],
   },
   {
@@ -274,6 +310,24 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     options: ROTEADOR_OPTIONS,
   },
   {
+    id: 'ssid',
+    label: 'SSID (nome da rede)',
+    control: 'text',
+    placeholder: 'Ex: MinhaRede_2G',
+    section: S_DET,
+    showWhen: { field: 'tipoSolicitacao', equals: SO_REMOTO },
+    layout: { md: 4 },
+  },
+  {
+    id: 'senhaWifi',
+    label: 'Senha Wi-Fi',
+    control: 'text',
+    placeholder: 'Ex: senha123',
+    section: S_DET,
+    showWhen: { field: 'tipoSolicitacao', equals: SO_REMOTO },
+    layout: { md: 4 },
+  },
+  {
     id: 'dataLigacao',
     label: 'Quando o cliente vira a loja?',
     control: 'datetime',
@@ -290,9 +344,9 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     showWhen: { field: 'tipoSolicitacao', equals: COM_VISITA },
     layout: { md: 3 },
     options: [
-      { value: 'CARTAO', label: 'Cartao' },
+      { value: 'CARTAO',   label: 'Cartao' },
       { value: 'DINHEIRO', label: 'Dinheiro' },
-      { value: 'PIX', label: 'Pix' },
+      { value: 'PIX',      label: 'Pix' },
     ],
   },
   {
@@ -322,12 +376,30 @@ export function buildRoteadorResetSegmentos(
   const oscila   = upper(v.oscila)
   const roteador = upper(v.roteador)
 
+  const info = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`
+
   const sharedCards = [
     `CLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU} ${oscila}.`,
     `QUESTIONADO ${cp} DISSE QUE ESTA SEM CONEXAO DE INTERNET EM TODOS OS DISPOSITIVOS DA CASA E QUE O NOME DE SUA REDE WIFI NAO ESTA APARECENDO MAIS.`,
     `REMOTAMENTE, VERIFIQUEI QUE ONU ESTA ACESA (SINAL ${sinalONU}) ${oscila} E ROTEADOR (${roteador}) ESTA INACESSIVEL.`,
     `ORIENTEI ${cp} A DESCONECTAR AS FONTES DE ENERGIA DA ONU E ROTEADOR DA TOMADA E RECONECTA-LAS APOS 30 SEGUNDOS. FEZ POREM REDE WI-FI NAO VOLTOU A APARECER.`,
     `PERGUNTEI A ${cp} SE EFETUOU ALGUMA MODIFICACAO/INTERVENCAO NA INSTALACAO E CLIENTE DISSE QUE NAO.`,
+  ]
+
+  if (modo === M_REMOTO) {
+    const ssid      = v.ssid?.trim() ?? ''
+    const senhaWifi = v.senhaWifi?.trim() ?? ''
+    return {
+      info,
+      comentarios: [
+        ...sharedCards,
+        `INFORMEI ${cp} QUE O ROTEADOR ESTA RESETADO E ORIENTEI O MESMO A REALIZAR O PROCESSO DE RECONFIGURACAO REMOTA CONFORME TUTORIAL DA MZNET.`,
+        `${cp} SEGUIU AS ORIENTACOES, CONFIGUROU O ROTEADOR E CONFIRMOU QUE A REDE WI-FI VOLTOU NORMALMENTE.\n\nSSID: ${ssid}\nSENHA: ${senhaWifi}\n\nCLIENTE SEM DUVIDAS.`,
+      ],
+    }
+  }
+
+  const twoOptions = [
     `INFORMEI QUE O ROTEADOR ESTA RESETADO, E REPASSEI AO CLIENTE 2 OPCOES PARA SOLUCAO DO PROBLEMA.`,
     `1ª. AGENDAMENTO DE UMA VISITA TECNICA PARA RECONFIGURAR O ROTEADOR, NO QUAL ESSA VISITA POSSUI UM CUSTO DE R$50,00 REFERENTE O DESLOCAMENTO TECNICO. ESTE VALOR PODE SER PAGO NO ATO EM DINHEIRO, PIX OU CARTAO.`,
     `2ª. TRAZER O ROTEADOR NA LOJA PARA RECONFIGURA-LO. ESTA OPCAO NAO TERA CUSTOS.`,
@@ -336,9 +408,10 @@ export function buildRoteadorResetSegmentos(
   if (modo === M_LOJA) {
     const [dataLoja = '', horaLoja = ''] = v.dataLigacao.split(' ')
     return {
-      info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+      info,
       comentarios: [
         ...sharedCards,
+        ...twoOptions,
         `${cp} OPTOU POR TRAZER O ROTEADOR NA LOJA EM ${dataLoja} AS ${horaLoja}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
     }
@@ -350,9 +423,10 @@ export function buildRoteadorResetSegmentos(
   const horaV    = v.horaVisita || 'XX:XX'
 
   return {
-    info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`,
+    info,
     comentarios: [
       ...sharedCards,
+      ...twoOptions,
       `${cp} OPTOU PELA VISITA TECNICA, CONCORDOU COM OS TERMOS REPASSADOS E SOLICITOU PAGAR EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
     ],
   }

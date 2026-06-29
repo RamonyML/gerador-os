@@ -42,6 +42,7 @@ import {
 } from '../lib/dateFieldValue'
 import { formatPhoneBrMask } from '../lib/phoneBrFormat'
 import { formatSinalFibraMask } from '../lib/sinalFibraMask'
+import { formatMacMask } from '../lib/macMask'
 
 type Props = {
   fields: OsTemplateField[]
@@ -799,6 +800,28 @@ function FieldInput({
           htmlInput: {
             inputMode: 'decimal',
             maxLength: 5,
+          },
+        }}
+      />
+    )
+  }
+
+  if (kind === 'mac') {
+    return (
+      <TextField
+        label={f.label}
+        placeholder={f.placeholder ?? 'XX:XX:XX:XX:XX:XX'}
+        value={value}
+        onChange={(e) => onChange(f.id, formatMacMask(e.target.value))}
+        fullWidth
+        size="small"
+        disabled={disabled}
+        error={hasError}
+        slotProps={{
+          htmlInput: {
+            inputMode: 'text',
+            maxLength: 17,
+            style: { textTransform: 'uppercase', fontFamily: 'monospace' },
           },
         }}
       />

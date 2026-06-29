@@ -3,6 +3,7 @@ import {
   WIFI_EXTEND_OUTPUT,
   buildExtendFields,
   buildExtendTextos,
+  buildExtendSegmentos,
   ROTEADOR_ZTE_OPTS,
 } from './wifiExtendShared'
 
@@ -15,6 +16,12 @@ export function buildWifiExtendZteTextos(
   operadorPrimeiroNome: string,
 ): Record<string, string> {
   return buildExtendTextos(rawValues, operadorPrimeiroNome, 'ZTE')
+}
+
+export function buildWifiExtendZteSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  return buildExtendSegmentos(rawValues)
 }
 
 export function getWifiExtendZteDefaults(): OsTemplatePresetPayload {

@@ -221,6 +221,7 @@ export const manageUsersList = onCall(CALLABLE_HTTP_OPTS, async (request) => {
       isTi: prof?.isTi === true,
       isValidacao: prof?.isValidacao === true,
       profileMissing,
+      mkLogin: typeof prof?.mkLogin === 'string' ? prof.mkLogin : null,
     })
   }
 
@@ -378,6 +379,8 @@ export const manageUsersCreate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   if (wantIsDev) profile.isDev = true
   if (wantIsTi) profile.isTi = true
   if (request.data?.isValidacao === true) profile.isValidacao = true
+  const mkLoginCreate = typeof request.data?.mkLogin === 'string' ? request.data.mkLogin.trim() : ''
+  if (mkLoginCreate) profile.mkLogin = mkLoginCreate
 
   await getFirestore().doc(`users/${userRecord.uid}`).set(profile)
 
@@ -559,6 +562,10 @@ export const manageUsersUpdate = onCall(CALLABLE_HTTP_OPTS, async (request) => {
   }
   if (request.data?.isValidacao !== undefined) {
     profileUpdate.isValidacao = request.data.isValidacao === true
+  }
+  if (request.data?.mkLogin !== undefined) {
+    const mkLoginVal = typeof request.data.mkLogin === 'string' ? request.data.mkLogin.trim() : ''
+    profileUpdate.mkLogin = mkLoginVal || FieldValue.delete()
   }
 
   await db.doc(`users/${uid}`).set(profileUpdate, { merge: true })

@@ -212,6 +212,93 @@ export function buildAltplanRemotoTextos(
   return finaliza(protocoloTexto, os)
 }
 
+export function buildAltplanRemotoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo               = v.tipoSolicitacao || R_TITULAR
+  const ofertado           = isOfertado(rawValues)
+  const sig                = sinalSaida(rawValues)
+  const clientePrimeiro    = first(upper(v.cliente))
+  const solicitantePrimeiro = first(upper(v.solicitante))
+  const parente            = upper(v.parente)
+  const cargo              = upper(v.cargo)
+  const canal              = v.canal ?? ''
+  const contato            = digits(v.contato)
+  const contatoSol         = digits(v.contatoSol)
+  const motivo             = upper(v.motivo)
+  const planoAtual         = v.planoAtual ?? ''
+  const planoEscolhido     = v.planoEscolhido ?? ''
+  const roteador           = v.roteador ?? ''
+  const dataContrato       = v.dataContrato ?? ''
+  const protocolo          = v.protocolo ?? ''
+  const [dataLig, horaLig] = splitDataHora(v.dataLigacao)
+
+  // ── info (abertura) ──
+  let remetente: string
+  let contatoRemetente: string
+  let preposicao: string
+  if (tipo === R_TERCEIRO) {
+    remetente = `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})`
+    contatoRemetente = contatoSol
+    preposicao = 'POR'
+  } else if (tipo === R_PJ) {
+    remetente = `${solicitantePrimeiro} (${cargo})`
+    contatoRemetente = contato
+    preposicao = 'VIA'
+  } else {
+    remetente = clientePrimeiro
+    contatoRemetente = contato
+    preposicao = 'VIA'
+  }
+
+  const abertura = ofertado
+    ? `OFERTEI A ${remetente} VIA ${canal} (${contatoRemetente}) ALTERAÇÃO DE PLANO.`
+    : `${remetente} ENTROU EM CONTATO ${preposicao} ${canal} (${contatoRemetente}) SOLICITANDO ALTERAÇÃO DE PLANO.`
+
+  const info = `${abertura}\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${sig}`
+
+  // ── card: plano ──
+  const planoLabel = ofertado ? 'PLANO OFERTADO' : 'PLANO SOLICITADO'
+  const semAcesso  = tipo === R_PJ
+  const planoCard  = [
+    `PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}`,
+    `${planoLabel}: ${planoEscolhido}`,
+    ...(semAcesso ? [] : ['ACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE.']),
+  ].join('\n')
+
+  // ── card: roteador compatível + cabeçalho das 2 opções ──
+  const roteadorCard =
+    `INFORMEI QUE O ROTEADOR ATUAL EMPRESTADO (${roteador}) É COMPATÍVEL COM A NOVA VELOCIDADE SOLICITADA.\n${L_HEAD2}`
+
+  // ── card: proc + ciente ──
+  const procCard = semAcesso ? L_PROC : `${L_PROC}\n${L_CIENTE}`
+
+  // ── card: fechamento ──
+  let fechamento: string
+  if (tipo === R_TERCEIRO) {
+    fechamento =
+      `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO COM ${clientePrimeiro} (ASSINANTE) POR ${canal} QUE CONFIRMOU E AUTORIZOU O UPGRADE, ACORDO FIRMADO POR ${canal} (${contato}) SOB PROTOCOLO Nº${protocolo} EM ${dataLig} ÀS ${horaLig}HRS.\n\n` +
+      `${clientePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, SOLICITOU PROSSEGUIR COM O PROCESSO DE FORMA REMOTA E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES.\n\n` +
+      `CLIENTE NÃO TEM DÚVIDAS`
+  } else {
+    const quem = tipo === R_PJ ? solicitantePrimeiro : clientePrimeiro
+    fechamento =
+      `${quem} CONCORDOU COM OS TERMOS DE ALTERAÇÃO DE PLANO, SOLICITOU PROSSEGUIR COM O PROCESSO DE FORMA REMOTA E VALIDOU SOBRE A RENOVAÇÃO DA FIDELIDADE POR 12 MESES. VALIDAÇÃO FEITA POR ${canal} (${contatoRemetente}) DIA ${dataLig} ÀS ${horaLig} HRS.`
+  }
+
+  const comentarios: string[] = []
+  if (!ofertado) comentarios.push(`QUESTIONADO, CLIENTE DISSE QUE "${motivo}".`)
+  comentarios.push(planoCard, roteadorCard, L_O1, L_O2, procCard, fechamento)
+
+  const { altplanRemotoTextoOS: osDescricao } = buildAltplanRemotoTextos(rawValues)
+  return { info, comentarios, osDescricao }
+}
+
 /** Opções de plano/roteador — espelham os <select> do legado (reusadas no presencial). */
 export const ALTPLAN_PLANO_ATUAL_OPTS = [
   { value: '100 MEGA/59,90', label: '100MB/59,90' },
@@ -364,6 +451,14 @@ export const ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     defaultValue: ORIGEM_PADRAO,
     options: ORIGEM_OPTS,
     layout: { md: 12 },
+  },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ do titular',
+    control: 'text',
+    placeholder: 'Somente números',
+    section: S_ID,
+    layout: { md: 4 },
   },
   {
     id: 'solicitante',

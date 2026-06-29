@@ -635,6 +635,48 @@ service cloud.firestore {
       allow delete: if isActiveUser() && userData().isDev == true;
     }
 
+    /**
+     * Horários de pausa permanentes por usuário. Doc ID: uid.
+     * Campos: uid, displayName, horarioAgendado.
+     *
+     * Leitura: qualquer usuário ativo.
+     * Escrita: gerente/admin/dev.
+     */
+    match /pausaSchedule/{uid} {
+      allow read: if request.auth != null;
+      allow write: if isPausaManager();
+    }
+
+    /**
+     * Relatos de bugs enviados pelos usuários.
+     *
+     * Leitura: autor do relato ou dev.
+     * Criação: qualquer usuário ativo (status deve ser 'aberto', authorUid = próprio uid).
+     * Atualização: somente dev (status, devNote).
+     * Exclusão: somente dev.
+     */
+    match /bugReports/{reportId} {
+      allow read: if isActiveUser()
+        && (resource.data.authorUid == request.auth.uid || userData().isDev == true);
+
+      allow create: if isActiveUser()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.status == 'aberto'
+        && request.resource.data.title is string
+        && request.resource.data.description is string;
+
+      allow update: if isActiveUser() && userData().isDev == true;
+      allow delete: if isActiveUser() && userData().isDev == true;
+    }
+
+    /**
+     * Contador de relatos de bugs.
+     */
+    match /counters/bugReports {
+      allow read: if isActiveUser();
+      allow write: if isActiveUser();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,5 +1,5 @@
 # Guia de Refatoração — Integração MK nos Geradores de Suporte
-> Documento de trabalho interno. Atualizado em 2026-06-26.
+> Documento de trabalho interno. Atualizado em 2026-06-29.
 
 ---
 
@@ -60,21 +60,40 @@ O formulário de Alteração de SSID / Senha é o único já refatorado. Ele ser
 [Preview do texto da aba selecionada — copy/paste manual]
 ```
 
-**Painel direito alvo (Fase 1):**
+**Painel direito alvo (Fase 1 — layout atual em produção):**
 ```
 [Título]  [Salvar O.S.]
 [Alert: campos ok/faltando]
-[MkProtocolCards]            ← protocolo automatizado no MK
-  ├── Buscar cliente / selecionar conexão
-  ├── Card 0: Abertura do atendimento → botão "Abrir atendimento no MK"
-  ├── Card 1: Comentário privado → botão "Inserir no MK"
-  └── Card N: Comentários públicos → botão "Inserir no MK"
-──────────────────────────────────────────────────────────
-[Accordion: Texto O.S.]      ← só para formulários que têm O.S.; copy-only
-[Accordion: Texto Agenda]    ← só para formulários que têm Agenda; copy-only
+┌──────────────────────────────────────────────────────┐
+│  [Protocolo]  [O.S.]  [Agenda]   ← abas              │
+├──────────────────────────────────────────────────────┤
+│  ABA PROTOCOLO:                                       │
+│    [Buscar cliente / selecionar conexão]              │
+│                                                       │
+│  ←  ┌─────────────────────────────────┐  →           │
+│     │ COMENTÁRIO 2 DE 5               │              │
+│     │ texto do card atual             │              │
+│     │ [📋 Copiar] [📤 Inserir no MK]  │              │
+│     └─────────────────────────────────┘              │
+│     ████████░░░░░░░  2 de 5 enviados    [Reiniciar]  │
+│                                                       │
+│  ABA O.S.:                                            │
+│    Texto da O.S. (copy-only)                          │
+│    [Criar O.S. no MK] ← só se tipoOS configurado     │
+│                                                       │
+│  ABA AGENDA:                                          │
+│    Texto da Agenda (copy-only)                        │
+│    [Copiar texto da agenda]                           │
+└──────────────────────────────────────────────────────┘
 ```
 
-Para formulários que são **apenas protocolo** (ex: senha-altera-senha, feedback, termo-docs), o painel fica só com `MkProtocolCards` — sem accordions abaixo.
+**Comportamento das setas e progresso:**
+- As setas `←` / `→` navegam entre os cards (Card 0 = Abertura, Card 1..N = Comentários).
+- A barra de progresso avança conforme os cards são enviados ao MK.
+- Após enviar um card com sucesso, o sistema avança automaticamente para o próximo (600 ms de delay).
+- Ao enviar o último comentário, muda automaticamente para a aba **O.S.** (se o formulário tiver `tipoOS` configurado).
+
+Para formulários que são **apenas protocolo** (ex: senha-altera-senha, feedback, termo-docs), o `MkProtocolCards` exibe somente a aba Protocolo — sem abas O.S. nem Agenda.
 
 ---
 
@@ -84,26 +103,29 @@ Para formulários que são **apenas protocolo** (ex: senha-altera-senha, feedbac
 
 Cada formulário precisa de dois códigos do MK:
 - `processoId` — código do processo no MK para aquela categoria
-- `classificacaoId` — código da classificação do atendimento
+- `classificacaoId` — código da classificação do atendimento (abertura = NORMAL = 3 na maioria)
 
-Atualmente todos estão `null` em `docs/documentacao_mk/mznet-integrations-main/suporte/mk-codigos.json`.
+> **Referência consolidada:** `docs/codigos_mk/CODIGOS_MK_REFERENCIA.md`
+> Sempre que precisar verificar ou confirmar um `processoId`, `classificacaoId`, `tipoOS` ou `grupoServico`, **consulte esse arquivo primeiro** antes de usar `0` como placeholder.
+> Ele contém a tabela "Combinações em produção" com todos os valores já levantados com o admin MK.
 
-O **administrador MK da MZ NET** precisa levantar os valores no painel e preencher o arquivo antes de implementar qualquer formulário da categoria correspondente.
+**Códigos confirmados (extraídos do CODIGOS_MK_REFERENCIA.md):**
 
-> **Cada categoria usa códigos distintos no MK.** O `processoId` e `classificacaoId` de "Alteração de Senha" (14 / 3) NÃO se aplicam às demais. Para manutenção, o processo seria algo como "Sem Conexão / Suporte Técnico". O admin MK deve fornecer o código correto por categoria.
+| Categoria | processoId | classificacaoId | tipoOS | Estado |
+|---|---|---|---|---|
+| Senha/SSID Wi-Fi | 14 | 3 | — | ✅ Em produção |
+| Manutenção (sem conexão) | 12 | 3 | — | ✅ Em produção |
+| Manutenção (falha específica) | 17 | 3 | 3 (ONT queimada) | ✅ Em produção |
+| Manutenção (outras solicitações) | 18 | 3 | — | ✅ Em produção |
+| Manutenção (alterar Wi-Fi) | 14 | 3 | — | ✅ Em produção |
+| Alteração de plano | 5 | 3 | 7 | ✅ Em produção |
+| Mudança de endereço | 16 | 3 | — | ⏳ processoId levantado, pendente refatoração |
+| Mídia TV (Roku) | 18 | 3 | 21 | ✅ Em produção |
+| Wi-Fi Extend | — | — | — | ❌ pendente admin MK |
+| Feedback | — | — | — | ❌ não mapeado |
+| Termo de responsabilidade | 38 | 3 | 12 | ✅ Em produção |
 
-| Categoria | Chave em mk-codigos.json | Estado |
-|---|---|---|
-| Senha/SSID Wi-Fi | — | ✅ Já em produção (`processoId: 14, classificacaoId: 3`) |
-| Manutenção | `classificacoesAtendimento.manutencao` | ❌ null — formulários registrados com `0` (pendente) |
-| Alteração de plano | `classificacoesAtendimento.alteracao_plano` | ❌ null |
-| Mudança de endereço | `classificacoesAtendimento.mudanca_endereco` | ❌ null |
-| Mídia TV | `classificacoesAtendimento.midia_tv` | ❌ null |
-| Wi-Fi Extend | `classificacoesAtendimento.wifi_extend` | ❌ null |
-| Feedback | — | ❌ não mapeado |
-| Termo de responsabilidade | — | ❌ não mapeado |
-
-> **Nota:** `processoId` e `classificacaoId` podem variar dentro da mesma categoria (ex: manutenção ocasionada vs não-ocasionada podem ter classificações diferentes). Confirmar com o admin MK se há granularidade por tipo ou se é único por categoria.
+> **Nunca registrar `processoId: 0` ou `classificacaoId: 0` se o código já constar no CODIGOS_MK_REFERENCIA.md.** Valores `0` ativam o banner "Integração pendente" no `MkProtocolCards` e indicam que a integração não está pronta para uso em produção.
 
 ---
 
@@ -198,6 +220,8 @@ Quando o Card 0 confirma a abertura do atendimento no MK, o número de protocolo
 
 O operador não precisa copiar/colar o número — ele aparece no campo já preenchido e travado.
 
+> **Protocolo não é pré-requisito para geração de texto.** O campo `protocolo` é excluído da validação de `emptyFields` em `OsGeneratorPage` — ou seja, o preview dos textos e os MK cards ficam habilitados mesmo antes do protocolo ser gerado. Isso permite que o operador veja e revise os textos enquanto preenche os demais campos, sem travar o fluxo.
+
 ```typescript
 // OsGeneratorPage.tsx
 <MkProtocolCards
@@ -288,7 +312,7 @@ Migração mais simples: painel fica só com MkProtocolCards.
 | `termo-resp-padrao` | termo-docs |
 
 ### Grupo 2 — Protocolo + O.S. + Agenda (maioria das manutenções)
-Painel fica com MkProtocolCards + Accordion O.S. + Accordion Agenda.
+Painel fica com `MkProtocolCards` em três abas: **Protocolo** (paginado), **O.S.** e **Agenda**.
 
 | Slug | Categoria |
 |---|---|
@@ -314,7 +338,7 @@ Painel fica com MkProtocolCards + Accordion O.S. + Accordion Agenda.
 | `midia-roku-presencial` | midia-tv |
 
 ### Grupo 3 — Protocolo + O.S. + Agenda (alteração de plano / mudança de endereço)
-Complexidade adicional: alguns desses têm botões especiais (ex: `Encerrar O.S.`, `Análise 90 dias`) que precisam ser preservados.
+Mesmo layout de três abas do Grupo 2. Complexidade adicional: alguns desses têm botões especiais (ex: `Encerrar O.S.`, `Análise 90 dias`) no header do painel que precisam ser preservados.
 
 | Slug | Observação |
 |---|---|
@@ -346,13 +370,20 @@ Complexidade adicional: alguns desses têm botões especiais (ex: `Encerrar O.S.
 
 ## Fase 2 — Automação da O.S. (esboço)
 
-Quando os códigos internos MK estiverem disponíveis (`CodigoTipoOS`, `CodigoGrupoServico`, `CodigoTecnico`), a Fase 2 adiciona um card extra no `MkProtocolCards` após a abertura do atendimento:
+Quando os códigos internos MK estiverem disponíveis (`CodigoTipoOS`, `CodigoGrupoServico`, `CodigoTecnico`), a Fase 2 habilita o botão **"Criar O.S. no MK"** na aba **O.S.** do `MkProtocolCards`:
 
 ```
-Card 0: Abertura do atendimento   → "Abrir atendimento no MK"  ✅ (Fase 1)
-Card 1..N: Comentários privados   → "Inserir no MK"             ✅ (Fase 1)
-── divider ──
-Card OS: Ordem de Serviço         → "Criar O.S. no MK"          ⏳ (Fase 2)
+ABA PROTOCOLO:
+  Card 0: Abertura do atendimento   → "Abrir atendimento no MK"  ✅ (Fase 1)
+  Card 1..N: Comentários            → "Inserir no MK"             ✅ (Fase 1)
+  Barra de progresso
+
+ABA O.S.:
+  Texto da O.S. (copy-only)
+  [Criar O.S. no MK]                → ativo quando card0Done      ⏳ (Fase 2 — já impl. para manut-ont-queimada)
+
+ABA AGENDA:
+  Texto da Agenda + [Copiar]        ✅ (Fase 1)
 ```
 
 Para a Fase 2, o `MkProtocolEntry` precisará de dois campos extras:
@@ -374,11 +405,13 @@ type MkProtocolEntry = {
 
 Para cada formulário do Grupo 2/3, executar em ordem:
 
-- [ ] Confirmar que o texto do protocolo usa `'*'.repeat(23)` como separador entre blocos
-- [ ] Adicionar `buildXxxSegmentos()` no arquivo de dados
+- [ ] Garantir que o formulário tenha um campo com `id: 'cpf'` visível para todos os tipos de solicitação — sem ele o botão "Buscar cliente" do `MkProtocolCards` não funciona
+- [ ] Adicionar `buildXxxSegmentos()` no arquivo de dados (construção direta de cards, sem split)
 - [ ] Obter `processoId` e `classificacaoId` corretos do admin MK
 - [ ] Adicionar entrada no `MK_PROTOCOL_REGISTRY`
-- [ ] Testar no formulário: busca de cliente → abertura → comentários
+- [ ] Para formulários com O.S.: verificar que o template emite uma seção `=== Texto O.S ===` (localizada por label em `mkOsTexto`)
+- [ ] Para formulários com Agenda: verificar que o template emite uma seção cujo label não contém "Protocolo" nem "O.S" (localizada por label em `mkAgendaTexto`)
+- [ ] Testar no formulário: busca de cliente → abertura (aba Protocolo) → comentários paginados → aba O.S. → aba Agenda
 - [ ] Deploy
 
 ---

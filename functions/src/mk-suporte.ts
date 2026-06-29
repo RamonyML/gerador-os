@@ -22,34 +22,10 @@ function getMkConfig(): MkConfig {
   }
 }
 
-// Mapeamento Firebase UID → login MK ERP
-// Cada colaborador aparece com seu próprio nome nos tickets e comentários do MK
-const MK_USER_MAP: Record<string, string> = {
-  'daqWkAW8gNZjUZBX5O9iDYk7U9D3': 'mz.ramony',
-  '0UvfKTsWMWg51OfmhKe9jSjN7zq2': 'mz.victorhugo',
-  'esHXTraWEwQ4s0jdPFDJIY8cVRk2': 'mz.hiorranna',
-  'smlrMVGkeqZfKcHfsKwd8Kezb1h2': 'mz.halyson',
-  'qo9FJdO3hyUEInOdA6n0m1wICxk1': 'mz.izabela',
-  '14U120GV9IUnIkvGSHOgZG823Pj1': 'mz.brunacristina',
-  'kqLoVLuP1UhPxaPiZ26wKmd5Eul2': 'mz.jhonatan',
-  'Ff0IBg4gquX1Q7CQxW4fonjg2jy1': 'mz.joseramos',
-  'R4QXtKbIySNiLMKb9j0Lu6Q3pxB3': 'mz.lauren',
-  'pFgE8jEtsreUuxvywISFXdlOBxN2': 'mz.eduardohenrique',
-  'LraqF5iRVDM98MdS5StezC6kTzj2': 'mz.renatasaraiva',
-  'SVMua6jWatVt3wmPhSHJOuZVg5h1': 'mz.gabrielmartins',
-  'rTvjrujWRvUtJVw4LtTdkX7Ny4k2': 'mz.andreza',
-  'ecJLm1beorbfM51IApqwzRtE3wx2': 'mz.pedrohenrique',
-  'Iq67U4vLKpWY7HsLa8V2RVpuVz72': 'mz.vagner',
-  'bjO17WJAsJdsZ2hfKorEvaugxIP2': 'mz.hiagoalves',
-  'RAqfy5tThwQNzJzcbLnXHxzV81O2': 'mz.vitormanoel',
-  'cYldsb3BkogRPG9dQRbEcPjJKIc2': 'mz.vitorsilva',
-  'EzcVPkrbnKZqG1Xqfravbp26cEv1': 'mz.luis',
-  'dZGecnIydSbOSCDfkwH4bwJZilc2': 'mz.ronald',
-  'kV7VX6qkQObt5cZcF0cb2VRzDBn2': 'mz.karolayne',
-}
-
-function mkLoginByUid(uid: string): string | undefined {
-  return MK_USER_MAP[uid]
+async function mkLoginByUid(uid: string): Promise<string | undefined> {
+  const snap = await getFirestore().doc(`users/${uid}`).get()
+  const val = snap.data()?.mkLogin
+  return typeof val === 'string' && val.trim() ? val.trim() : undefined
 }
 
 // ---- Tipos de resposta da API MK ----
@@ -562,7 +538,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
       let session: MkSession
       let cliente: MkCliente
       let resultado: { id: number; protocolo: string }
-      const mkLogin = mkLoginByUid(uid)
+      const mkLogin = await mkLoginByUid(uid)
 
       try {
         session = await mkAuth(cfg)
@@ -627,7 +603,7 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
 
       try {
         const session = await mkAuth(cfg)
-        const mkLogin = mkLoginByUid(uid)
+        const mkLogin = await mkLoginByUid(uid)
         await mkInserirComentario(cfg, session, atendimentoId, comentario.trim(), mkLogin, tipo ?? 1)
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
@@ -652,6 +628,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         await salvarLog({ uid, slug, cpf, shadow: true, payload })
         return { shadow: true }
       }
+
+      const mkLogin = await mkLoginByUid(uid)
 
       let session: MkSession
       let cliente: MkCliente
@@ -691,6 +669,14 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           CodigoAtendimento: atendimento.id,
           categoria: 1,  // 1=cliente OS, 2=provedor OS — obrigatório a partir da release 74
         })
+
+        if (mkLogin) {
+          try {
+            await mkInserirComentario(cfg, session, atendimento.id, `Uma nova O.S foi gerada por ${mkLogin}`, mkLogin, 2)
+          } catch {
+            console.warn('[MK] criar_os: falha ao inserir comentário de identificação — OS criada com sucesso')
+          }
+        }
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         await salvarLog({ uid, slug, cpf, shadow: false, payload, erro: msg })
@@ -724,6 +710,8 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
         return { shadow: true }
       }
 
+      const mkLogin = await mkLoginByUid(uid)
+
       let osNumero: number
       try {
         // Sessão A: só para buscar conexão (chamada intermediária contamina o contexto MK)
@@ -749,6 +737,14 @@ export const mkSuporte = onCall<MkSuporteRequest, Promise<MkSuporteResponse>>(
           CodigoAtendimento: atendimentoId,
           categoria: 1,
         })
+
+        if (mkLogin) {
+          try {
+            await mkInserirComentario(cfg, session, atendimentoId, `Uma nova O.S foi gerada por ${mkLogin}`, mkLogin, 2)
+          } catch {
+            console.warn('[MK] criar_os_vinculada: falha ao inserir comentário de identificação — OS criada com sucesso')
+          }
+        }
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         await salvarLog({ uid, slug, shadow: false, payload, erro: msg })

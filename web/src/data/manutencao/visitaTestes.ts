@@ -318,6 +318,18 @@ export const VISITA_TESTES_FIELDS: OsTemplateField[] = [
   },
 ]
 
+export function buildVisitaTestesSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const textos = buildVisitaTestesTextos(rawValues, '')
+  const os = textos.visitaTestesTextoOS
+  const sep = `\n\n${'*'.repeat(42)}\n\nINDICACAO TECNICA:\n\n`
+  const splitAt = os.indexOf(sep)
+  const osDescricao = splitAt >= 0 ? os.slice(0, splitAt) : os
+  const osIndicacoes = splitAt >= 0 ? os.slice(splitAt + sep.length) : ''
+  return { info: osDescricao, comentarios: [], osDescricao, osIndicacoes }
+}
+
 export function getManutVisitaTestesDefaults(): OsTemplatePresetPayload {
   return {
     slug: 'manut-visita-testes',

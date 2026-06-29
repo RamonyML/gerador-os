@@ -86,6 +86,7 @@ export function AppLayout() {
   const showUpgrades = profile != null && canAccessUpgrades(profile)
   const showValidacao = profile != null && canAccessValidacao(profile)
   const showNotes = profile != null && canAccessNotes(profile)
+  const showDev = profile?.isDev === true
   const { mode, isDark, setMode } = useColorMode()
   const { totalUnread: chatUnread } = useChat()
   const [themeMenuAnchor, setThemeMenuAnchor] = useState<HTMLElement | null>(null)
@@ -153,8 +154,8 @@ export function AppLayout() {
   }
 
   const navItems = useMemo(
-    () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao, showNotes }),
-    [showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao, showNotes],
+    () => buildNavItems({ showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao, showNotes, showDev }),
+    [showSupport, showCadastro, showInstalacao, showUsers, showCondominios, showAgenda, showUpgrades, showValidacao, showNotes, showDev],
   )
 
   const openNoticeMenu = (el: HTMLElement) => setNoticeAnchor(el)

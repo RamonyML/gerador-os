@@ -192,6 +192,37 @@ export function buildRokuPadraoTextos(
   }
 }
 
+export function buildRokuSegmentos(
+  rawValues: Record<string, unknown>,
+  variant: 'PADRAO' | 'PRESENCIAL',
+): { info: string; comentarios: string[] } {
+  const v = parseRokuValues(rawValues)
+  const canal = String(rawValues.canal ?? '')
+  const contato = digits(rawValues.contato)
+
+  const intro = variant === 'PRESENCIAL'
+    ? `${v.cp} COMPARECEU NA LOJA E SOLICITOU A COMPRA DO ROKU-TV (CONVERSOR DE MÍDIA).`
+    : `${v.cp} SOLICITOU POR ${canal} (${contato}) A COMPRA DO ROKU-TV (CONVERSOR DE MÍDIA).`
+
+  const clienteSem = `CLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ONU ${v.sinalONU} SEM OSCILAÇÃO.`
+  const questionado = `QUESTIONADO, ${v.cp} INFORMOU QUE CONTRATOU PLANO DE INTERNET QUE TEM SERVIÇO DE CANAIS VIA STREAMING GRATUITAMENTE, MAS NÃO TEM SMART-TV (TV COM ACESSO À INTERNET).`
+  const valores = 'VALOR DO ROKU-TV: R$200,00, SE PAGO À VISTA, OU R$230,00 SE PARCELADO EM ATÉ 3X NO CARTÃO DE CRÉDITO.\nPAGAMENTO PODE SER REALIZADO EM DINHEIRO, PIX OU CARTÃO.'
+  const informeiVisita = 'INFORMEI QUE É NECESSÁRIO VISITA TÉCNICA (ISENTA DE CUSTOS) PARA INSTALAÇÃO DO APARELHO ROKU-TV (CONVERSOR DE MÍDIA).'
+  const concordou = `INFORMEI A ${v.cp} QUE UMA VEZ QUE REALIZAR A COMPRA DO ROKU-TV, O MESMO PASSA A SER SEU, NÃO HAVENDO DEVOLUÇÃO DO EQUIPAMENTO (ROKU) NEM RESTITUIÇÃO DO VALOR PAGO. ${v.cp} CONCORDOU COM OS TERMOS DA VISITA E PAGARÁ O ROKU-TV EM ${v.formaPag}.`
+  const agendada = `VISITA TÉCNICA ISENTA DE CUSTOS AGENDADA PARA ${v.dataVisita} ÀS ${v.horaVisita} HORAS.\nGARANTIA DO APARELHO ADQUIRIDO É DE 90 DIAS PARA DEFEITOS DE FABRICAÇÃO.`
+
+  return {
+    info: `${intro}\n\n${clienteSem}`,
+    comentarios: [
+      questionado,
+      valores,
+      informeiVisita,
+      concordou,
+      agendada,
+    ],
+  }
+}
+
 export function buildRokuPresencialTextos(
   rawValues: Record<string, unknown>,
   operadorPrimeiroNome: string,

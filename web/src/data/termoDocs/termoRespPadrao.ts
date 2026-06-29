@@ -39,6 +39,50 @@ function first(value: string): string {
   return value.split(/\s+/).filter(Boolean)[0] ?? ''
 }
 
+export function buildTermoRespPadraoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; avisoCard?: string; avisoObservacao?: string; clienteTexto?: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const cliente = upper(v.cliente)
+  const cp = first(cliente)
+  const canal = v.canal
+  const contato = digits(v.contato)
+  const sinalONU = upper(v.sinalONU) || 'SEM SINAL'
+  const roteador = v.roteador
+  const mac = upper(v.mac)
+  const protocolo = v.protocolo
+  const user = v.user
+  const senha = v.senha
+  const testouSenha = v.testouSenha
+
+  const avisoCard = testouSenha === TESTOU_SIM && (user || senha)
+    ? `REPASSEI O ACESSO A ${cp}:\n\nUSUÁRIO: ${user}\nSENHA: ${senha}\n\n${cp} CONFIRMOU ACESSO E NÃO TEM DÚVIDAS.`
+    : undefined
+
+  const avisoObservacao = `CLIENTE TEM ACESSO AO ROTEADOR.\nPROTOCOLO Nº ${protocolo}`
+
+  const clienteTexto = `${cp} ENTROU EM CONTATO VIA WHATSAPP (${contato}) E SOLICITOU DESBLOQUEIO E LIBERAÇÃO PARA ACESSO AO ROTEADOR DA EMPRESA, QUE É EMPRESTADO EM REGIME DE COMODATO (MODELO: ${roteador} / MAC Nº: ${mac}). MOTIVO: DISSE QUE QUER TER O ACESSO AS CONFIGURAÇÕES PARA FAZER ALTERAÇÕES EM NOME DE REDE, SENHA, ATUALIZAÇÃO DO FIRMWARE, ETC, POR CONTA PRÓPRIA SEM PRECISAR DO SUPORTE DA EMPRESA. EXPLIQUEI E DEIXEI ${cp} CIENTE DE QUE ALTERANDO A CONFIGURAÇÃO PADRÃO DO EQUIPAMENTO QUE É REALIZADO PELO PROVEDOR, PERDEMOS O ACESSO REMOTO IMPEDINDO SUPORTE TÉCNICO REMOTO QUANDO SOLICITADO, OU SEJA, TODA INTERVENÇÃO AO EQUIPAMENTO POR PARTE DO PROVEDOR, PASSARÁ A SER POR VISITA TÉCNICA PRESENCIAL COM COBRANÇA DO SERVIÇO PRESTADO OU, CLIENTE OU QUEM ELE DESIGNAR TRAZER O EQUIPAMENTO À EMPRESA ISENTANDO ASSIM DE CUSTOS DE VISITAS. EXPLIQUEI E DEIXEI ${cp} CIENTE DE QUE QUALQUER ALTERAÇÃO DE CONFIGURAÇÃO, ATUALIZAÇÃO DE FIRMWARE, ETC. QUE VIER A DANIFICAR O EQUIPAMENTO, ESTE SERÁ INUTILIZADO PELO PROVEDOR E CLIENTE TERÁ QUE ARCAR COM SEU VALOR ATUAL, PASSANDO ASSIM A SER DONO DO ROTEADOR E CASO ACONTEÇA, A EMPRESA PODERÁ INSTALAR OUTRO ROTEADOR EM REGIME DE COMODATO. ${cp} DISSE ESTAR CIENTE DE SUAS RESPONSABILIDADES COM REFERIDO EQUIPAMENTO, E SOLICITOU LIBERAÇÃO E DESBLOQUEIO.\n\n*ESTANDO DE ACORDO, RESPONDA: SIM ou CORCORDO.*`
+
+  return {
+    info: `${cp} ${canal} ${contato} E SOLICITOU ACESSO AO ROTEADOR EM COMODATO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ONU ${sinalONU}.`,
+    clienteTexto,
+    comentarios: [
+      `QUESTIONADO, ${cp} DISSE QUE DESEJA O ACESSO AO ROTEADOR QUE É EMPRESTADO EM REGIME DE COMODATO (MODELO: ${roteador} / MAC Nº: ${mac} ).`,
+      'DISSE QUE QUER TER O ACESSO ÀS CONFIGURAÇÕES PARA FAZER ALTERAÇÕES EM NOME DE REDE, SENHA, ATUALIZAÇÃO DO FIRMWARE, ETC, POR CONTA PRÓPRIA SEM PRECISAR DO SUPORTE DA EMPRESA.',
+      `EXPLIQUEI E DEIXEI ${cp} CIENTE DE QUE, A PARTIR DO MOMENTO EM QUE A SENHA FOR INFORMADA, O CLIENTE ASSUME TOTAL RESPONSABILIDADE PELO EQUIPAMENTO.`,
+      'DESTAQUEI QUE O ACESSO FORNECIDO É DE ADMINISTRADOR E RECOMENDEI QUE NÃO SEJAM REALIZADAS ATUALIZAÇÕES DE FIRMWARE NEM O BLOQUEIO DO NOSSO ACESSO REMOTO, A FIM DE GARANTIR QUE A MZNET POSSA FORNECER O SUPORTE NECESSÁRIO NO FUTURO.',
+      'INFORMEI TAMBÉM QUE, CASO O EQUIPAMENTO SOFRA QUALQUER DESCONFIGURAÇÃO (ESPONTÂNEA OU POR OUTRA RAZÃO), E SEJA NECESSÁRIO O ENVIO DE UM TÉCNICO AO LOCAL, SERÁ COBRADA UMA TAXA DE DESLOCAMENTO TÉCNICO NO VALOR DE R$50,00.',
+      `FOI ENCAMINHADO TERMO DE RESPONSABILIDADE, E ${cp} CONCORDOU, E SENDO ASSIM ESTÁ CIENTE DE SUAS RESPONSABILIDADES PARA COM O REFERIDO EQUIPAMENTO EM COMODATO.\n\nSEGUE PRINT EM ANEXO.`,
+    ],
+    avisoCard,
+    avisoObservacao,
+  }
+}
+
 export function buildTermoRespPadraoTextos(
   rawValues: Record<string, unknown>,
 ): Record<string, string> {
@@ -155,10 +199,18 @@ export const TERMO_RESP_PADRAO_FIELDS: OsTemplateField[] = [
     layout: { md: 3 },
   },
   {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: '000.000.000-00',
+    section: S_ID,
+    layout: { md: 3 },
+  },
+  {
     id: 'mac',
     label: 'MAC',
-    control: 'text',
-    placeholder: 'Ex: A1:B2:C3:D4:E5:F6',
+    control: 'mac',
+    placeholder: 'A1:B2:C3:D4:E5:F6',
     section: S_EQUIP,
     layout: { md: 4 },
   },

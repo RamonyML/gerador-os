@@ -22,7 +22,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { db } from '../lib/firebase'
 import { subscribePresence } from '../lib/presenceFirestore'
-import { setHorarioPausa, subscribePausasDia } from '../lib/pausaFirestore'
+import { setHorarioPausa, subscribePausasDia, subscribePausaSchedules } from '../lib/pausaFirestore'
 import { subscribeUsersDirectory, type PublicProfile } from '../lib/usersPublic'
 import {
   elapsedMs,
@@ -317,6 +317,7 @@ export function PausaTeamCard({ profile }: { profile: UserProfile }) {
   const [expanded, setExpanded] = useState(false)
   const [directory, setDirectory] = useState<PublicProfile[]>([])
   const [pausas, setPausas] = useState<PausaEntry[]>([])
+  const [scheduleMap, setScheduleMap] = useState<Map<string, string | null>>(new Map())
 
   const isGlobal = profile.isDev === true || profile.isAdmin === true
 
@@ -325,6 +326,7 @@ export function PausaTeamCard({ profile }: { profile: UserProfile }) {
   useEffect(() => subscribeUsersDirectory(db, setDirectory), [])
   useEffect(() => subscribePresence(setPresenceData), [])
   useEffect(() => subscribePausasDia(today, setPausas), [today])
+  useEffect(() => subscribePausaSchedules(setScheduleMap), [])
 
   const pausaMap = useMemo(
     () => new Map(pausas.map((p) => [p.uid, p])),
@@ -354,8 +356,26 @@ export function PausaTeamCard({ profile }: { profile: UserProfile }) {
   const allRows: RowUser[] = useMemo(
     () => filteredDirectory
       .filter((u): u is PublicProfile & { uid: string } => Boolean(u.uid))
-      .map((u) => ({ ...u, pausaEntry: pausaMap.get(u.uid) ?? null })),
-    [filteredDirectory, pausaMap],
+      .map((u) => {
+        const dailyEntry = pausaMap.get(u.uid) ?? null
+        const scheduledHorario = scheduleMap.get(u.uid) ?? null
+        // Merge: horarioAgendado from schedule (permanent) takes precedence over daily doc
+        const pausaEntry: PausaEntry | null =
+          dailyEntry
+            ? { ...dailyEntry, horarioAgendado: dailyEntry.horarioAgendado ?? scheduledHorario }
+            : scheduledHorario
+              ? {
+                  uid: u.uid,
+                  displayName: u.displayName ?? '',
+                  date: today,
+                  horarioAgendado: scheduledHorario,
+                  inicioEfetivo: null,
+                  fimEfetivo: null,
+                }
+              : null
+        return { ...u, pausaEntry }
+      }),
+    [filteredDirectory, pausaMap, scheduleMap, today],
   )
 
   // Para dev/admin: agrupar por setor

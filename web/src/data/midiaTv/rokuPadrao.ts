@@ -3,6 +3,7 @@ import type { OsTemplatePresetPayload } from '../osTemplatePresets'
 import {
   ROKU_AGENDAMENTO_FIELDS,
   ROKU_COMPRA_FIELDS,
+  buildRokuSegmentos,
 } from './rokuCompraShared'
 
 /**
@@ -69,9 +70,23 @@ export const ROKU_PADRAO_FIELDS: OsTemplateField[] = [
     section: S_ID,
     layout: { md: 4 },
   },
+  {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: '000.000.000-00',
+    section: S_ID,
+    layout: { md: 4 },
+  },
   ...ROKU_COMPRA_FIELDS,
   ...ROKU_AGENDAMENTO_FIELDS,
 ]
+
+export function buildRokuPadraoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[] } {
+  return buildRokuSegmentos(rawValues, 'PADRAO')
+}
 
 export function getMidiaRokuPadraoDefaults(): OsTemplatePresetPayload {
   return {

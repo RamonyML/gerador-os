@@ -21,6 +21,8 @@ export type PublicProfile = {
   hierarchy: string
   /** Formato MM-DD, ex.: "07-15" para 15 de julho. */
   birthday?: string
+  /** false = conta desativada; ausente ou true = ativa. */
+  active?: boolean
 }
 
 const COLLECTION = 'usersPublic'
@@ -37,6 +39,7 @@ export async function upsertMyPublicProfile(
     photoURL?: string | null
     sector?: string
     hierarchy?: string
+    active?: boolean
   },
 ): Promise<void> {
   const payload: Record<string, unknown> = {
@@ -46,6 +49,7 @@ export async function upsertMyPublicProfile(
   }
   if (data.sector !== undefined) payload.sector = data.sector
   if (data.hierarchy !== undefined) payload.hierarchy = data.hierarchy
+  if (data.active !== undefined) payload.active = data.active
   await setDoc(doc(db, COLLECTION, uid), payload, { merge: true })
 }
 
@@ -96,17 +100,20 @@ export function subscribeUsersDirectory(
   return onSnapshot(
     collection(db, COLLECTION),
     (snap) => {
-      const users: PublicProfile[] = snap.docs.map((d) => {
-        const data = d.data() as Record<string, unknown>
-        return {
-          uid: d.id,
-          displayName: typeof data.displayName === 'string' ? data.displayName : null,
-          photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
-          sector: typeof data.sector === 'string' ? data.sector : '',
-          hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
-          birthday: typeof data.birthday === 'string' ? data.birthday : undefined,
-        }
-      })
+      const users: PublicProfile[] = snap.docs
+        .map((d) => {
+          const data = d.data() as Record<string, unknown>
+          return {
+            uid: d.id,
+            displayName: typeof data.displayName === 'string' ? data.displayName : null,
+            photoURL: typeof data.photoURL === 'string' ? data.photoURL : null,
+            sector: typeof data.sector === 'string' ? data.sector : '',
+            hierarchy: typeof data.hierarchy === 'string' ? data.hierarchy : '',
+            birthday: typeof data.birthday === 'string' ? data.birthday : undefined,
+            active: data.active !== false,
+          }
+        })
+        .filter((u) => u.active !== false)
       onNext(users)
     },
     (err) => onError?.(err),
