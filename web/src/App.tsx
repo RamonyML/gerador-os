@@ -59,6 +59,7 @@ import { DevMkCodigosPage } from './pages/DevMkCodigosPage'
 import { DevBugsPage } from './pages/DevBugsPage'
 import { DevLogsPage } from './pages/DevLogsPage'
 import { DevHomePage } from './pages/DevHomePage'
+import { DevHealthPage } from './pages/DevHealthPage'
 import { BugReportsPage } from './pages/BugReportsPage'
 import { TutoriaisHomePage } from './pages/TutoriaisHomePage'
 import { TutorialRoteadorResetadoPage } from './pages/TutorialRoteadorResetadoPage'
@@ -378,6 +379,14 @@ export default function App() {
           element={
             <RequireDev>
               <DevLogsPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/health"
+          element={
+            <RequireDev>
+              <DevHealthPage />
             </RequireDev>
           }
         />

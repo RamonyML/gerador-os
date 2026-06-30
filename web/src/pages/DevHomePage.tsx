@@ -6,6 +6,7 @@ import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined'
 import StorageOutlinedIcon from '@mui/icons-material/StorageOutlined'
 import RadarOutlinedIcon from '@mui/icons-material/RadarOutlined'
+import NetworkCheckOutlinedIcon from '@mui/icons-material/NetworkCheckOutlined'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
 
@@ -23,6 +24,13 @@ const INTEGRATION_CARDS = [
     icon: <RadarOutlinedIcon sx={{ fontSize: 26 }} />,
     title: 'Sentry',
     description: 'Monitoramento e Log\'s — Logs, erros e alertas do sistema capturados em produção via Sentry. Inclui ferramentas de teste de captura.',
+  },
+  {
+    to: '/dev/health',
+    accent: '#10b981',
+    icon: <NetworkCheckOutlinedIcon sx={{ fontSize: 26 }} />,
+    title: 'Health Check',
+    description: 'Estado dos serviços em tempo real — Firestore, Auth, API MK Solutions e Sentry.',
   },
 ]
 
@@ -117,7 +125,7 @@ export function DevHomePage() {
                 sx={{
                   display: 'grid',
                   gap: 2,
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
                 }}
               >
                 {INTEGRATION_CARDS.map((c) => (
