@@ -24,7 +24,9 @@ export function CondominiosPage() {
     return (
       c.nome.toLowerCase().includes(q) ||
       c.bairro.toLowerCase().includes(q) ||
-      c.rua.toLowerCase().includes(q)
+      c.rua.toLowerCase().includes(q) ||
+      c.numero.toLowerCase().includes(q) ||
+      c.cep.toLowerCase().includes(q)
     )
   })
 
@@ -54,7 +56,7 @@ export function CondominiosPage() {
         <input
           className="reg-search"
           type="text"
-          placeholder="Buscar condomínio, bairro, rua…"
+          placeholder="Buscar condomínio, bairro, rua, número, CEP…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
