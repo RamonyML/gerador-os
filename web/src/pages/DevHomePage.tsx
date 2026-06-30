@@ -1,8 +1,6 @@
 import { Box, Container, Divider, Typography } from '@mui/material'
 import { ILLUSTRATIONS } from '../data/illustrations'
-import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined'
-import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
-import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined'
+import ApiOutlinedIcon from '@mui/icons-material/ApiOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined'
@@ -11,27 +9,20 @@ import RadarOutlinedIcon from '@mui/icons-material/RadarOutlined'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
 
-const MK_CARDS = [
+const INTEGRATION_CARDS = [
   {
     to: '/dev/mk',
-    accent: '#3b82f6',
-    icon: <ScienceOutlinedIcon sx={{ fontSize: 26 }} />,
-    title: 'Testes MK',
-    description: 'Dispare chamadas diretas à API MK Solutions e inspecione respostas em tempo real.',
-  },
-  {
-    to: '/dev/mk-status',
     accent: '#0ea5e9',
-    icon: <BarChartOutlinedIcon sx={{ fontSize: 26 }} />,
-    title: 'Status da Integração',
-    description: 'Monitore o estado da comunicação com o MK e verifique o histórico de erros.',
+    icon: <ApiOutlinedIcon sx={{ fontSize: 26 }} />,
+    title: 'MK Solutions',
+    description: 'Integração REST com a API MK Solutions — testes, status, códigos de referência e funções em nuvem.',
   },
   {
-    to: '/dev/mk-codigos',
-    accent: '#6366f1',
-    icon: <DataObjectOutlinedIcon sx={{ fontSize: 26 }} />,
-    title: 'Códigos e Parâmetros',
-    description: 'Referência rápida dos processoId, tipoOS e demais constantes usados nos formulários.',
+    to: '/dev/logs',
+    accent: '#f97316',
+    icon: <RadarOutlinedIcon sx={{ fontSize: 26 }} />,
+    title: 'Sentry',
+    description: 'Monitoramento e Log\'s — Logs, erros e alertas do sistema capturados em produção via Sentry. Inclui ferramentas de teste de captura.',
   },
 ]
 
@@ -63,16 +54,6 @@ const TOOL_CARDS = [
     icon: <StorageOutlinedIcon sx={{ fontSize: 26 }} />,
     title: 'Seed — Validação',
     description: 'Popula o Firestore com dados de teste para o módulo de Validação de Mudança de Endereço.',
-  },
-]
-
-const MONITOR_CARDS = [
-  {
-    to: '/dev/logs',
-    accent: '#f97316',
-    icon: <RadarOutlinedIcon sx={{ fontSize: 26 }} />,
-    title: 'Monitoramento',
-    description: 'Logs, erros e alertas do sistema capturados em produção via Sentry. Inclui ferramentas de teste de captura.',
   },
 ]
 
@@ -130,44 +111,16 @@ export function DevHomePage() {
           <Reveal>
             <Box>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-                Integração MK Solutions
+                Integrações
               </Typography>
               <Box
                 sx={{
                   display: 'grid',
                   gap: 2,
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
                 }}
               >
-                {MK_CARDS.map((c) => (
-                  <NavCard
-                    key={c.to}
-                    to={c.to}
-                    accent={c.accent}
-                    icon={c.icon}
-                    title={c.title}
-                    description={c.description}
-                  />
-                ))}
-              </Box>
-            </Box>
-          </Reveal>
-
-          <Divider />
-
-          <Reveal>
-            <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-                Monitoramento
-              </Typography>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gap: 2,
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-                }}
-              >
-                {MONITOR_CARDS.map((c) => (
+                {INTEGRATION_CARDS.map((c) => (
                   <NavCard
                     key={c.to}
                     to={c.to}

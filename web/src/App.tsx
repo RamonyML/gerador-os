@@ -43,6 +43,7 @@ import { EncerramentosInstHubPage } from './pages/EncerramentosInstHubPage'
 import { RequireInstalacao } from './components/RequireInstalacao'
 import { HistoricoPage } from './pages/HistoricoPage'
 import { MkTestesPage } from './pages/MkTestesPage'
+import { MkSolutionsPage } from './pages/MkSolutionsPage'
 import { RequireDev } from './components/RequireDev'
 import { ValidacaoPage } from './pages/ValidacaoPage'
 import { ValidacaoDetalhe } from './pages/ValidacaoDetalhe'
@@ -310,6 +311,14 @@ export default function App() {
         />
         <Route
           path="/dev/mk"
+          element={
+            <RequireDev>
+              <MkSolutionsPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/mk-testes"
           element={
             <RequireDev>
               <MkTestesPage />
