@@ -6,6 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
 import { initAnalytics } from './lib/firebase'
+import { initSentry } from './lib/sentry'
 import { AuthProvider } from './contexts/AuthContext'
 import { ChatProvider } from './contexts/ChatContext'
 import { ColorModeProvider } from './contexts/ColorModeContext'
@@ -17,6 +18,7 @@ import App from './App.tsx'
 
 dayjs.locale('pt-br')
 
+initSentry()
 void initAnalytics()
 
 createRoot(document.getElementById('root')!).render(

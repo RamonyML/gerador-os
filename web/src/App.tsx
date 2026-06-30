@@ -56,6 +56,7 @@ import { DevMkStatusPage } from './pages/DevMkStatusPage'
 import { DevFuncoesPage } from './pages/DevFuncoesPage'
 import { DevMkCodigosPage } from './pages/DevMkCodigosPage'
 import { DevBugsPage } from './pages/DevBugsPage'
+import { DevLogsPage } from './pages/DevLogsPage'
 import { DevHomePage } from './pages/DevHomePage'
 import { BugReportsPage } from './pages/BugReportsPage'
 import { TutoriaisHomePage } from './pages/TutoriaisHomePage'
@@ -360,6 +361,14 @@ export default function App() {
           element={
             <RequireDev>
               <DevBugsPage />
+            </RequireDev>
+          }
+        />
+        <Route
+          path="/dev/logs"
+          element={
+            <RequireDev>
+              <DevLogsPage />
             </RequireDev>
           }
         />

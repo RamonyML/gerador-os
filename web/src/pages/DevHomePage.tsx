@@ -6,6 +6,7 @@ import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
 import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined'
 import StorageOutlinedIcon from '@mui/icons-material/StorageOutlined'
+import RadarOutlinedIcon from '@mui/icons-material/RadarOutlined'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
 
@@ -64,6 +65,16 @@ const TOOL_CARDS = [
   },
 ]
 
+const MONITOR_CARDS = [
+  {
+    to: '/dev/logs',
+    accent: '#f97316',
+    icon: <RadarOutlinedIcon sx={{ fontSize: 26 }} />,
+    title: 'Monitoramento',
+    description: 'Logs, erros e alertas do sistema capturados em produção via Sentry. Inclui ferramentas de teste de captura.',
+  },
+]
+
 export function DevHomePage() {
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
@@ -105,6 +116,34 @@ export function DevHomePage() {
                 }}
               >
                 {MK_CARDS.map((c) => (
+                  <NavCard
+                    key={c.to}
+                    to={c.to}
+                    accent={c.accent}
+                    icon={c.icon}
+                    title={c.title}
+                    description={c.description}
+                  />
+                ))}
+              </Box>
+            </Box>
+          </Reveal>
+
+          <Divider />
+
+          <Reveal>
+            <Box>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
+                Monitoramento
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gap: 2,
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+                }}
+              >
+                {MONITOR_CARDS.map((c) => (
                   <NavCard
                     key={c.to}
                     to={c.to}
