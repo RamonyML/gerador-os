@@ -19,9 +19,7 @@ import { app, db } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { NavCard } from '../components/NavCard'
-import { HeroIllustration } from '../components/HeroIllustration'
 import { Reveal } from '../components/Reveal'
-import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
@@ -325,6 +323,25 @@ export function HomePage() {
             }}
           >
             <Box
+              component="img"
+              src="/illustrations/illus-hero2.png"
+              alt=""
+              aria-hidden="true"
+              sx={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                height: '100%',
+                width: 'auto',
+                opacity: isDark ? 0.28 : 1,
+                maskImage: isDark ? undefined : 'linear-gradient(to right, transparent 0%, black 30%)',
+                WebkitMaskImage: isDark ? undefined : 'linear-gradient(to right, transparent 0%, black 30%)',
+                pointerEvents: 'none',
+                userSelect: 'none',
+                display: { xs: 'none', md: 'block' },
+              }}
+            />
+            <Box
               sx={{
                 display: 'flex',
                 flexDirection: { xs: 'column', md: 'row' },
@@ -390,16 +407,6 @@ export function HomePage() {
                 </Box>
               </Box>
 
-              <Box
-                sx={{
-                  display: { xs: 'none', md: 'block' },
-                  width: { md: 300, lg: 340 },
-                  flexShrink: 0,
-                  filter: isDark ? `drop-shadow(0 12px 30px ${alpha('#000', 0.4)})` : undefined,
-                }}
-              >
-                <HeroIllustration src={ILLUSTRATIONS.operations} alt="Operações" />
-              </Box>
             </Box>
           </Paper>
           </Reveal>
