@@ -15,7 +15,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded'
-import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import TerminalOutlinedIcon from '@mui/icons-material/TerminalOutlined'
 
 export type NavItem = {
@@ -162,12 +161,6 @@ export function buildNavItems({
       to: '/avisos',
       icon: CampaignOutlinedIcon,
       isActive: startsWith('/avisos'),
-    },
-    {
-      label: 'Reportar Problema',
-      to: '/bugs',
-      icon: BugReportOutlinedIcon,
-      isActive: startsWith('/bugs'),
     },
     showDev
       ? {

@@ -49,6 +49,7 @@ export type TicketCategory =
   | 'acesso_senhas'
   | 'instalacao_software'
   | 'telefonia'
+  | 'falha_gerador'
   | 'outros'
 
 export const TICKET_CATEGORIES: TicketCategory[] = [
@@ -57,6 +58,7 @@ export const TICKET_CATEGORIES: TicketCategory[] = [
   'acesso_senhas',
   'instalacao_software',
   'telefonia',
+  'falha_gerador',
   'outros',
 ]
 
@@ -66,6 +68,7 @@ export const TICKET_CATEGORY_LABELS: Record<TicketCategory, string> = {
   acesso_senhas: 'Acessos e senhas',
   instalacao_software: 'Instalação/atualização de software',
   telefonia: 'Telefonia / ramal',
+  falha_gerador: 'Falha/Erro/Sugestão no Gerador de O.S',
   outros: 'Outros',
 }
 
