@@ -7,6 +7,10 @@ import type { Sector, UserProfile } from '../types/profile'
 /** Versão embutida no bundle — incrementar ao alterar campos/texto de um fluxo. */
 const DEFAULT_TEMPLATE_VERSION = 1
 
+// Categorias de templates classificados como 'suporte' que também são
+// acessíveis pelo setor 'cadastro' (demandas compartilhadas entre os dois hubs).
+const DEMAND_CATEGORIES_ALSO_FOR_CADASTRO = new Set<string>(['midia-tv'])
+
 function sectorFromDemand(demandCategory: string): Sector {
   if (isKnownCadastroDemandCategory(demandCategory)) return 'cadastro'
   if (isKnownInstalacaoDemandCategory(demandCategory)) return 'instalacao'
@@ -46,8 +50,12 @@ export function getOsTemplatesForProfile(
   profile: UserProfile | null,
 ): OsTemplate[] {
   if (!profile) return []
-  const list = profile.isDev
+  const list = profile.isDev || profile.isAdmin
     ? OS_TEMPLATES
-    : OS_TEMPLATES.filter((t) => t.sector === profile.sector)
+    : OS_TEMPLATES.filter((t) => {
+        if (t.sector === profile.sector) return true
+        if (profile.sector === 'cadastro' && DEMAND_CATEGORIES_ALSO_FOR_CADASTRO.has(t.demandCategory)) return true
+        return false
+      })
   return [...list].sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'))
 }
