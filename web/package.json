@@ -36,6 +36,7 @@
     "@tmcw/togeojson": "^7.1.2",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.20",
+    "emoji-picker-element": "^1.29.1",
     "firebase": "^12.12.0",
     "jspdf": "^4.2.1",
     "leaflet": "^1.9.4",
