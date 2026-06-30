@@ -226,7 +226,7 @@ export function CondominiosPage() {
       .filter((i) => {
         if (!term) return true
         const haystack = normalize(
-          [i.nome, i.bairro, i.rua, i.cep, i.tecnicoResponsavel].join(' '),
+          [i.nome, i.bairro, i.rua, i.numero, i.cep, i.tecnicoResponsavel].join(' '),
         )
         return haystack.includes(term)
       })
@@ -535,7 +535,7 @@ export function CondominiosPage() {
               <TextField
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar por nome, bairro, rua, CEP…"
+                placeholder="Buscar por nome, bairro, rua, número, CEP…"
                 fullWidth
                 size="small"
                 slotProps={{
