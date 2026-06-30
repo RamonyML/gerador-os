@@ -178,10 +178,11 @@ export function MkSolutionsPage() {
 
           {/* Stats */}
           <Reveal>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' }, gap: 2 }}>
-              <StatCard label="Classificações"    value={MK_CLASSIFICACOES.length} />
-              <StatCard label="Processos"         value={MK_PROCESSOS.length} />
-              <StatCard label="Tipos de O.S."     value={MK_TIPOS_OS.length} />
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(5, 1fr)' }, gap: 2 }}>
+              <StatCard label="Variantes"          value={149} />
+              <StatCard label="Classificações"     value={MK_CLASSIFICACOES.length} />
+              <StatCard label="Processos"          value={MK_PROCESSOS.length} />
+              <StatCard label="Tipos de O.S."      value={MK_TIPOS_OS.length} />
               <StatCard label="Origens de Contato" value={MK_ORIGEM_CONTATO.length} />
             </Box>
           </Reveal>
