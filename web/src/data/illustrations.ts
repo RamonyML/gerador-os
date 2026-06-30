@@ -28,6 +28,7 @@ export const ILLUSTRATIONS = {
   historico: '/illustrations/illus-historico.png',
   responsabilidade: '/illustrations/illus-responsabilidade.png',
   tutoriais: '/illustrations/illus-tutoriais.png',
+  dev: '/illustrations/illus-dev.png',
 } as const
 
 export type IllustrationKey = keyof typeof ILLUSTRATIONS
