@@ -33,6 +33,7 @@ import { endOfMonth, format, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../lib/firebase'
+import { logger } from '../lib/logger'
 import { useAuth } from '../contexts/AuthContext'
 import {
   calcularComissaoAtivos,
@@ -121,7 +122,7 @@ export function UpgradesCommissionsPage() {
       )
       setComissoes(list)
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setLoading(false)
     }
@@ -168,7 +169,7 @@ export function UpgradesCommissionsPage() {
         emailOperador: user?.email ?? undefined,
       })
     } catch (e) {
-      console.error(e)
+      logger.error(e)
       alert('Falha ao gerar PDF.')
     } finally {
       setExporting(false)

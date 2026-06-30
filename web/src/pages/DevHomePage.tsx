@@ -83,34 +83,48 @@ export function DevHomePage() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
 
           <Reveal>
-            <Box>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ letterSpacing: '0.08em', fontWeight: 600 }}
-              >
-                Painel de desenvolvimento
-              </Typography>
-              <Typography
-                variant="h4"
-                component="h1"
-                sx={{ fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 }}
-              >
-                Área Dev
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 0.75, maxWidth: 580 }}>
-                Ferramentas internas, diagnósticos e integrações. Acesso restrito ao desenvolvedor.
-              </Typography>
-            </Box>
-          </Reveal>
-
-          <Reveal>
             <Box
-              component="img"
-              src={ILLUSTRATIONS.dev}
-              alt="Área Dev"
-              sx={{ width: '100%', maxWidth: 680, display: 'block', mx: 'auto', borderRadius: 2 }}
-            />
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                alignItems: { xs: 'flex-start', md: 'center' },
+                gap: { xs: 2, md: 3 },
+              }}
+            >
+              <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: '0.08em', fontWeight: 600 }}
+                >
+                  Painel de desenvolvimento
+                </Typography>
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{ fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 }}
+                >
+                  Área Dev
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mt: 0.75 }}>
+                  Ferramentas internas, diagnósticos e integrações.<br />
+                  Acesso restrito ao desenvolvedor.
+                </Typography>
+              </Box>
+
+              <Box
+                component="img"
+                src={ILLUSTRATIONS.dev}
+                alt="Área Dev"
+                sx={{
+                  width: '100%',
+                  maxWidth: 680,
+                  flexShrink: 0,
+                  display: { xs: 'none', md: 'block' },
+                  borderRadius: 2,
+                }}
+              />
+            </Box>
           </Reveal>
 
           <Reveal>

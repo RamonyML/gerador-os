@@ -31,6 +31,7 @@ import {
 import { format, endOfMonth, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { db } from '../../lib/firebase'
+import { logger } from '../../lib/logger'
 import type { Upgrade } from '../../types/upgrades'
 import { MonthNavigator } from './MonthNavigator'
 
@@ -60,7 +61,7 @@ export function UpgradeAnalyticsDashboard() {
       })) as Upgrade[]
       setUpgrades(rows)
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setLoading(false)
     }

@@ -29,6 +29,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { PatternFormat } from 'react-number-format'
 import { subMonths } from 'date-fns'
 import { db } from '../../lib/firebase'
+import { logger } from '../../lib/logger'
 import { useAuth } from '../../contexts/AuthContext'
 import { useUpgradeLogger } from '../../hooks/useUpgradeLogger'
 import {
@@ -119,7 +120,7 @@ export function UpgradeForm({
       })
       if (isRoku) setActiveTab('roku')
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setLoading(false)
     }
@@ -150,7 +151,7 @@ export function UpgradeForm({
         return docIsRoku === isRoku
       })
     } catch (e) {
-      console.error(e)
+      logger.error(e)
       return false
     }
   }
@@ -235,7 +236,7 @@ export function UpgradeForm({
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : 'Erro ao salvar upgrade.'
-      console.error(err)
+      logger.error(err)
       alert(msg)
     } finally {
       setLoading(false)

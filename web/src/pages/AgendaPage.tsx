@@ -51,6 +51,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { canManageAgendaTecnicos } from '../lib/permissions'
 import { AppPageChrome } from '../components/AppPageChrome'
 import { db } from '../lib/firebase'
+import { logger } from '../lib/logger'
 import {
   getTecnicosFromPreviousDay,
   saveDia,
@@ -247,7 +248,7 @@ export function AgendaPage() {
   useEffect(() => {
     setColorSettings({ overrides: {} })
     return subscribeColorSettings(db, area, setColorSettings, (e) => {
-      console.error('color settings:', e)
+      logger.error(e, { context: 'color settings' })
     })
   }, [area])
 

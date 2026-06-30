@@ -3,6 +3,7 @@ import { Alert, Box, Button, LinearProgress, Typography } from '@mui/material'
 import { Timestamp } from 'firebase/firestore'
 import { useAuth } from '../contexts/AuthContext'
 import { criarMudancaEndereco } from '../lib/validacaoFirestore'
+import { logger } from '../lib/logger'
 import seedData from '../data/seedValidacao.json'
 import type { TipoMudanca, FormaPagamento, ValorMudanca } from '../types/validacao'
 
@@ -46,7 +47,7 @@ export function SeedValidacaoPage() {
         await criarMudancaEndereco(payload)
         setDone((n) => n + 1)
       } catch (e) {
-        console.error('Erro no registro', item.nomeCliente, e)
+        logger.error(e, { context: 'Erro no registro', nomeCliente: item.nomeCliente })
         setErrors((n) => n + 1)
       }
     }

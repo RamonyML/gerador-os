@@ -1,6 +1,7 @@
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
+import { logger } from '../lib/logger'
 
 type LogAction = 'create' | 'update' | 'delete'
 
@@ -25,7 +26,7 @@ export function useUpgradeLogger() {
         details: payload.details,
       })
     } catch (e) {
-      console.error('Erro ao registrar log:', e)
+      logger.error(e, { context: 'Erro ao registrar log' })
     }
   }
 

@@ -47,6 +47,7 @@ import { endOfMonth, format, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import * as XLSX from 'xlsx'
 import { db } from '../../lib/firebase'
+import { logger } from '../../lib/logger'
 import { useAuth } from '../../contexts/AuthContext'
 import { useUpgradeLogger } from '../../hooks/useUpgradeLogger'
 import { canViewAllUpgradesInRegistry } from '../../lib/permissions'
@@ -147,7 +148,7 @@ export function UpgradeTable() {
 
       setRawUpgrades(rows)
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setLoading(false)
     }
@@ -264,7 +265,7 @@ export function UpgradeTable() {
       setDeleteOne(null)
       void loadUpgrades()
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     }
   }
 
@@ -283,7 +284,7 @@ export function UpgradeTable() {
       setDeleteMultiOpen(false)
       void loadUpgrades()
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setLoading(false)
     }
