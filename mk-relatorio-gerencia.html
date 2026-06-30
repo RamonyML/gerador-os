@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>MZ NET — Gerador de O.S. · Integração MK Solutions · Relatório de Progresso</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Ubuntu', 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 56px 64px;
+    }
+
+    /* ─── Cabeçalho ─── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid #22c55e;
+      padding-bottom: 22px;
+      margin-bottom: 30px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .header-logo img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+    .header-divider {
+      width: 1px;
+      height: 36px;
+      background: #d1fae5;
+    }
+    .header-title h1 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #15803d;
+      letter-spacing: -.02em;
+      line-height: 1.3;
+    }
+    .header-title .sub {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 1px;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.7;
+    }
+    .header-right strong { color: #1a1a2e; font-size: 12px; }
+    .header-right .badge-conf {
+      display: inline-block;
+      margin-top: 4px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #15803d;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* ─── Bloco destinatário ─── */
+    .addressee {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 32px;
+      font-size: 13px;
+    }
+    .addressee strong {
+      display: block;
+      color: #15803d;
+      font-size: 10.5px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      font-weight: 700;
+    }
+    .addressee strong + strong { margin-top: 8px; }
+    .addressee .exec-summary {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #d1fae5;
+      color: #374151;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    /* ─── Seções ─── */
+    h2 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #15803d;
+      margin: 34px 0 12px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #d1fae5;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    h2 .num {
+      background: #22c55e;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #14532d;
+      margin: 20px 0 8px;
+    }
+    p { margin-bottom: 10px; color: #374151; }
+
+    ul.body-list {
+      margin: 6px 0 12px 20px;
+      color: #374151;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    ul.body-list li::marker { color: #22c55e; }
+
+    /* ─── Métricas ─── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 20px 0 28px;
+    }
+    .metric-card {
+      border: 1px solid #d1fae5;
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center;
+      background: #f0fdf4;
+    }
+    .metric-card .metric-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #16a34a;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .metric-card .metric-lbl {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .metric-card.alt {
+      background: #fff;
+      border-color: #e2e8f0;
+    }
+    .metric-card.alt .metric-num { color: #334155; }
+
+    /* ─── Comparativo antes/depois ─── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0 20px;
+    }
+    .compare-card {
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 13px;
+    }
+    .compare-card.before {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+    }
+    .compare-card.after {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+    .compare-card .cc-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .compare-card.before .cc-label { color: #c2410c; }
+    .compare-card.after  .cc-label { color: #15803d; }
+    .compare-card .cc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 4px 0;
+      color: #374151;
+      line-height: 1.5;
+    }
+    .compare-card .cc-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+
+    /* ─── Fluxo de processo ─── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 14px 0 18px;
+    }
+    .flow-step {
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+    .flow-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: -2px;
+      width: 2px;
+      background: #d1fae5;
+    }
+    .flow-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: #22c55e;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+      position: relative;
+      z-index: 1;
+    }
+    .flow-icon.done  { background: #16a34a; }
+    .flow-icon.pend  { background: #d97706; }
+    .flow-content {
+      padding-bottom: 18px;
+      flex: 1;
+    }
+    .flow-content .step-title {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #14532d;
+      margin-bottom: 3px;
+    }
+    .flow-content .step-desc {
+      font-size: 12.5px;
+      color: #64748b;
+      line-height: 1.55;
+    }
+    .flow-content code {
+      font-family: 'Ubuntu Mono', 'Consolas', monospace;
+      font-size: 11.5px;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    /* ─── Tabelas ─── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin: 12px 0 18px;
+    }
+    th {
+      background: #f0fdf4;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #15803d;
+      padding: 8px 12px;
+      border: 1px solid #d1fae5;
+    }
+    td {
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      color: #374151;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #fafafa; }
+
+    /* ─── Badges de status ─── */
+    .ok     { color: #14532d; background: #dcfce7; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .pend   { color: #78350f; background: #fef3c7; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .block  { color: #991b1b; background: #fee2e2; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 700; white-space: nowrap; display: inline-block; }
+
+    /* ─── Caixas de destaque ─── */
+    .green-box {
+      border: 1px solid #bbf7d0;
+      background: #f0fdf4;
+      border-radius: 8px;
+      padding: 15px 18px;
+      margin: 14px 0 18px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .green-box .title {
+      font-weight: 700;
+      color: #15803d;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 7px;
+    }
+
+    .amber-box {
+      border: 1px solid #fcd34d;
+      background: #fffbeb;
+      border-radius: 8px;
+      padding: 15px 18px;
+      margin: 14px 0 18px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .amber-box .title {
+      font-weight: 700;
+      color: #92400e;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 7px;
+    }
+
+    /* ─── Potencial section ─── */
+    .potential-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0 18px;
+    }
+    .potential-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: #fafafa;
+    }
+    .potential-card .pc-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #1e3a5f;
+      margin-bottom: 5px;
+    }
+    .potential-card .pc-desc {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.55;
+    }
+
+    /* ─── Próximos passos ─── */
+    .next-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 16px;
+    }
+    .next-list li {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.55;
+    }
+    .next-list li:last-child { border-bottom: none; }
+    .next-num {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      height: fit-content;
+      margin-top: 2px;
+    }
+    .next-num.amber {
+      background: #fffbeb;
+      border-color: #fcd34d;
+      color: #92400e;
+    }
+
+    /* ─── Assinatura ─── */
+    .signature-block {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .sig-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .sig-line {
+      border-bottom: 1px solid #94a3b8;
+      margin: 24px 0 8px;
+    }
+    .sig-name { font-weight: 700; font-size: 13px; color: #1a1a2e; }
+    .sig-role { font-size: 11.5px; color: #64748b; }
+
+    /* ─── Rodapé ─── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 18px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer .footer-logo img {
+      height: 20px;
+      opacity: .4;
+    }
+
+    /* ─── Print / PDF ─── */
+    @media print {
+      body { font-size: 12px; }
+      .page { padding: 28px 36px 40px; }
+      h2 { margin: 26px 0 10px; page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .flow-step { page-break-inside: avoid; }
+      .compare-grid { page-break-inside: avoid; }
+      .metrics-grid { page-break-inside: avoid; }
+      .signature-block { page-break-inside: avoid; }
+      .pdf-banner { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Banner de instrução (some no PDF) -->
+<div class="pdf-banner" style="position:fixed;top:0;left:0;right:0;background:#16a34a;color:#fff;text-align:center;padding:8px;font-size:13px;font-family:Ubuntu,system-ui;z-index:9999;">
+  📄 Para salvar como PDF: <strong>Ctrl+P</strong> → Selecione "Salvar como PDF" → desmarque "Cabeçalhos e rodapés" → <strong>Salvar</strong>
+  &nbsp;&nbsp;<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,.25);border:none;color:#fff;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:12px;">✕</button>
+</div>
+
+<div class="page" style="margin-top:42px;">
+
+  <!-- ══════════════════════════════════════════════
+       CABEÇALHO
+  ══════════════════════════════════════════════ -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-logo">
+        <img src="web/public/brand/mzlogo-padrao-fundoclaro.png" alt="MZ NET" />
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-title">
+        <h1>Gerador de O.S. — Plataforma de Suporte Digital</h1>
+        <div class="sub">Integração com ERP MK Solutions · Relatório de Progresso Técnico</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>29 de junho de 2026</strong><br>
+      Versão 1.0<br>
+      <span class="badge-conf">Uso interno</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       DESTINATÁRIO
+  ══════════════════════════════════════════════ -->
+  <div class="addressee">
+    <strong>Para</strong>
+    Gerência de Suporte e Diretoria — MZ NET
+    <strong>Elaborado por</strong>
+    Suporte N3 · Ramony Lima
+    <div class="exec-summary">
+      Este documento apresenta o projeto <strong>Gerador de O.S.</strong>, a plataforma de suporte digital
+      utilizada diariamente pelo setor de suporte técnico da MZ NET, e detalha a conquista mais
+      relevante do período: a <strong>integração completa com o ERP MK Solutions</strong>, que automatizou
+      o ciclo de abertura de atendimentos, inserção de comentários e criação de Ordens de Serviço —
+      eliminando o trabalho manual repetitivo e elevando a produtividade e a padronização da equipe.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 1 — O PROJETO
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">1</span> O Projeto — Gerador de O.S.</h2>
+
+  <p>
+    O <strong>Gerador de O.S.</strong> é a plataforma operacional interna da MZ NET, desenvolvida
+    sob medida para o suporte técnico da empresa. Ela centraliza em um único sistema todos os fluxos
+    de atendimento: desde o registro de chamados e a geração de Ordens de Serviço até a escala de
+    equipe, o controle de upgrades, o gerenciamento de usuários e, mais recentemente, a automação
+    direta de atendimentos no ERP MK Solutions.
+  </p>
+  <p>
+    A plataforma é acessada diariamente por toda a equipe de suporte e está hospedada em
+    infraestrutura Google (Firebase Hosting + Cloud Functions), garantindo disponibilidade,
+    segurança e rastreabilidade de cada operação realizada.
+  </p>
+
+  <!-- Métricas do projeto -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-num">37</div>
+      <div class="metric-lbl">formulários de atendimento</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">170</div>
+      <div class="metric-lbl">variantes de O.S. geradas</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">8</div>
+      <div class="metric-lbl">categorias de demanda</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">149</div>
+      <div class="metric-lbl">variantes prontas e integradas ao MK</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 2 — IMPORTÂNCIA PARA O SETOR
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">2</span> Importância para o Setor de Suporte</h2>
+
+  <p>
+    Antes do Gerador de O.S., cada operador precisava copiar manualmente os dados do atendimento
+    no ERP, digitar os comentários do protocolo e criar a Ordem de Serviço em etapas separadas.
+    Esse processo era lento, sujeito a erros de digitação e gerava documentação inconsistente
+    entre os operadores.
+  </p>
+
+  <div class="compare-grid">
+    <div class="compare-card before">
+      <div class="cc-label">❌ Antes — Processo manual</div>
+      <div class="cc-item"><span class="cc-icon">⏱</span> 10–15 minutos por atendimento</div>
+      <div class="cc-item"><span class="cc-icon">✏️</span> Digitação manual no ERP passo a passo</div>
+      <div class="cc-item"><span class="cc-icon">📋</span> Textos inconsistentes entre operadores</div>
+      <div class="cc-item"><span class="cc-icon">❓</span> Campos esquecidos ou preenchidos errado</div>
+      <div class="cc-item"><span class="cc-icon">🔄</span> Copiar e colar entre sistemas manualmente</div>
+      <div class="cc-item"><span class="cc-icon">📛</span> Onboarding demorado para novos colaboradores</div>
+    </div>
+    <div class="compare-card after">
+      <div class="cc-label">✅ Agora — Fluxo automatizado</div>
+      <div class="cc-item"><span class="cc-icon">⚡</span> Menos de 2 minutos por atendimento</div>
+      <div class="cc-item"><span class="cc-icon">🤖</span> Protocolo, comentários e O.S. criados com 1 clique</div>
+      <div class="cc-item"><span class="cc-icon">📐</span> Padronização total — textos validados pela gerência</div>
+      <div class="cc-item"><span class="cc-icon">✔️</span> Todos os campos preenchidos automaticamente</div>
+      <div class="cc-item"><span class="cc-icon">🔗</span> Integração direta com o MK ERP via API</div>
+      <div class="cc-item"><span class="cc-icon">🎓</span> Operador novo produz igual ao veterano no 1.º dia</div>
+    </div>
+  </div>
+
+  <div class="green-box">
+    <div class="title">✓ Resultado direto para a empresa</div>
+    Com a integração concluída, o operador dedica seu tempo ao atendimento ao cliente — e não
+    mais à digitação repetitiva no ERP. Cada atendimento com Ordem de Serviço que antes levava
+    até 15 minutos de trabalho manual agora é concluído em menos de 2 minutos, com zero
+    possibilidade de erro de preenchimento ou esquecimento de campo.
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 3 — A INTEGRAÇÃO MK SOLUTIONS
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">3</span> Integração com o ERP MK Solutions</h2>
+
+  <p>
+    A principal conquista técnica do período foi a integração completa da plataforma com as
+    APIs do <strong>MK Solutions</strong>. A partir de um formulário preenchido pelo operador,
+    o sistema executa automaticamente todo o ciclo de atendimento no ERP sem intervenção humana.
+  </p>
+
+  <h3>3.1 Como funciona — Fluxo automático</h3>
+
+  <div class="flow">
+
+    <div class="flow-step">
+      <div class="flow-icon done">1</div>
+      <div class="flow-content">
+        <div class="step-title">Operador preenche o formulário no Gerador de O.S.</div>
+        <div class="step-desc">
+          Seleciona o tipo de atendimento (manutenção, altplan, Wi-Fi Extend, etc.) e insere
+          os dados do cliente. O sistema localiza automaticamente o CPF/CNPJ e as conexões
+          ativas do cliente no MK ERP.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon done">2</div>
+      <div class="flow-content">
+        <div class="step-title">Sistema abre o atendimento e insere os comentários no MK</div>
+        <div class="step-desc">
+          Com um único clique, a plataforma autentica na API do MK, abre o protocolo de
+          atendimento com o operador identificado e insere cada comentário padronizado em
+          sequência — incluindo divisão automática de texto quando o limite de caracteres
+          do ERP é atingido.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-icon done">3</div>
+      <div class="flow-content">
+        <div class="step-title">Ordem de Serviço criada e vinculada ao protocolo</div>
+        <div class="step-desc">
+          A O.S. técnica é aberta automaticamente, vinculada à conexão correta do cliente
+          e ao protocolo de atendimento — com o tipo de O.S. e todos os parâmetros definidos
+          conforme o fluxo selecionado. Nenhuma etapa precisa ser feita manualmente no ERP.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>3.2 Endpoints integrados — APIs MK Solutions em produção</h3>
+
+  <table>
+    <tr>
+      <th>Endpoint MK Solutions</th>
+      <th>Função no fluxo</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td><code>WSAutenticacao.rule</code></td>
+      <td>Autenticação com o ERP antes de cada operação</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKConsultaDoc.rule</code></td>
+      <td>Busca e validação do cliente por CPF ou CNPJ</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKConexoesPorCliente.rule</code></td>
+      <td>Lista as conexões ativas do cliente para seleção</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKContratosPorCliente.rule</code></td>
+      <td>Lista os contratos ativos (usado no fluxo de altplan)</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKListaPlanoAcesso.rule</code></td>
+      <td>Catálogo de planos disponíveis para alteração</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKNovoAtendimento.rule</code></td>
+      <td>Abre o protocolo de atendimento com operador identificado</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKAtendimentoComentario.rule</code></td>
+      <td>Insere comentários padronizados no atendimento (chunking automático)</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+    <tr>
+      <td><code>WSMKCriarOrdemServico.rule</code></td>
+      <td>Cria a O.S. técnica vinculada ao protocolo e à conexão do cliente</td>
+      <td><span class="ok">✓ Produção</span></td>
+    </tr>
+  </table>
+
+  <h3>3.3 Infraestrutura técnica</h3>
+  <p>
+    A integração opera por meio de uma <strong>Cloud Function segura</strong> hospedada nos
+    servidores Google (região São Paulo), que recebe as requisições da plataforma, autentica no
+    MK Solutions e executa as operações de forma sequencial. As credenciais de acesso ao ERP
+    são gerenciadas pelo <strong>Google Cloud Secret Manager</strong> — nenhuma senha ou token
+    fica exposto no código da aplicação. A comunicação é criptografada de ponta a ponta e
+    cada operação é registrada com identificação do operador.
+  </p>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 4 — COBERTURA POR CATEGORIA
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">4</span> Cobertura atual da integração por categoria</h2>
+
+  <p>
+    Das 8 categorias de atendimento mapeadas no suporte técnico, 7 estão com integração
+    completa em produção. A tabela abaixo apresenta o status detalhado:
+  </p>
+
+  <table>
+    <tr>
+      <th>Categoria</th>
+      <th>Formulários</th>
+      <th>Variantes</th>
+      <th>Tipo de O.S.</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td><strong>Manutenção</strong></td>
+      <td>15</td>
+      <td>77</td>
+      <td>tipoOS 3 (Manutenção) / tipoOS 22 (Garantia)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Alteração de Plano</strong></td>
+      <td>6</td>
+      <td>46</td>
+      <td>tipoOS 7 (Alteração de Plano)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Wi-Fi Extend</strong></td>
+      <td>3</td>
+      <td>10</td>
+      <td>tipoOS 18 / tipoOS 13 (Ponto adicional)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Feedback pós-O.S.</strong></td>
+      <td>8</td>
+      <td>8</td>
+      <td>Comentário em atendimento existente</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Mídia / TV (Roku)</strong></td>
+      <td>2</td>
+      <td>4</td>
+      <td>tipoOS 21 (Roku TV)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Termo de Responsabilidade</strong></td>
+      <td>1</td>
+      <td>3</td>
+      <td>Sem O.S. (acesso remoto)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Senha de Rede</strong></td>
+      <td>1</td>
+      <td>1</td>
+      <td>Sem O.S. (alteração remota)</td>
+      <td><span class="ok">✓ Integrado</span></td>
+    </tr>
+    <tr>
+      <td><strong>Mudança de Endereço</strong></td>
+      <td>—</td>
+      <td>21</td>
+      <td>tipoOS 3 + novo endereço</td>
+      <td><span class="pend">⏳ Próxima fase</span></td>
+    </tr>
+  </table>
+
+  <div class="green-box">
+    <div class="title">✓ Cobertura atual</div>
+    <strong>149 das 170 variantes</strong> (87,6% do total) já estão com integração completa
+    e operando em produção. Isso representa <strong>36 dos 37 formulários</strong> disponíveis
+    na plataforma. A única categoria pendente (Mudança de Endereço) envolve um fluxo mais
+    complexo com atualização de endereço no ERP e está planejada para a próxima fase.
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 5 — POTENCIAL DE EXPANSÃO
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">5</span> Potencial de expansão para outros setores</h2>
+
+  <p>
+    A infraestrutura de integração com o MK Solutions já está construída e testada em
+    produção. A mesma arquitetura pode ser reutilizada para automatizar fluxos de outros
+    setores da empresa com baixo custo de desenvolvimento adicional:
+  </p>
+
+  <div class="potential-grid">
+    <div class="potential-card">
+      <div class="pc-title">📋 Setor de Análise — Captação de clientes</div>
+      <div class="pc-desc">
+        O fluxo de análise de ficha (criação de lead, cadastro de cliente, contrato, O.S. de
+        instalação) pode ser automatizado com as mesmas APIs já mapeadas. A infra está
+        pronta — falta contratação dos módulos adicionais junto ao MK Solutions.
+      </div>
+    </div>
+    <div class="potential-card">
+      <div class="pc-title">🔧 Equipe Técnica de Campo</div>
+      <div class="pc-desc">
+        Encerramento de O.S., inserção de relatório de visita e atualização de status de
+        atendimento podem ser feitos pelo técnico diretamente no sistema, sem acesso ao
+        painel ERP.
+      </div>
+    </div>
+    <div class="potential-card">
+      <div class="pc-title">📊 Relatórios Gerenciais</div>
+      <div class="pc-desc">
+        Com os dados já rastreados na plataforma (operador, tipo de atendimento, data, O.S.),
+        é possível gerar dashboards de produtividade por operador, por tipo de demanda e
+        por período.
+      </div>
+    </div>
+    <div class="potential-card">
+      <div class="pc-title">🏢 Outros setores da empresa</div>
+      <div class="pc-desc">
+        Qualquer setor que hoje acessa o MK ERP manualmente para abrir atendimentos pode
+        ter seu fluxo automatizado com a mesma infraestrutura. A plataforma já suporta
+        múltiplos setores e hierarquias de acesso.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SEÇÃO 6 — PRÓXIMOS PASSOS
+  ══════════════════════════════════════════════ -->
+  <h2><span class="num">6</span> Próximos passos</h2>
+
+  <ul class="next-list">
+    <li>
+      <span class="next-num">P1</span>
+      <span>
+        <strong>Integração da categoria "Mudança de Endereço"</strong><br>
+        Implementar o fluxo de atualização de endereço no MK ERP via API, cobrindo as
+        21 variantes restantes e atingindo 100% das categorias de suporte integradas.
+      </span>
+    </li>
+    <li>
+      <span class="next-num">P2</span>
+      <span>
+        <strong>Identificação do operador no ERP</strong><br>
+        Atualmente o operador que abre o atendimento aparece como "master" no campo
+        <em>Op. abertura</em> do ERP. Isso é uma limitação das credenciais do Secret Manager,
+        não da API. Avaliar com o MK Solutions se é possível criar uma credencial por usuário
+        ou usar um parâmetro de identificação.
+      </span>
+    </li>
+    <li>
+      <span class="next-num amber">P3</span>
+      <span>
+        <strong>Expansão para o Setor de Análise</strong><br>
+        Avaliar contratação dos módulos adicionais do MK Solutions (criação de cadastro,
+        lead, contrato, conexão e O.S. de instalação) para automatizar o fluxo completo
+        de captação de novos clientes pelo Setor de Análise.
+      </span>
+    </li>
+    <li>
+      <span class="next-num amber">P4</span>
+      <span>
+        <strong>Dashboard de produtividade por operador</strong><br>
+        Aproveitando os dados já registrados na plataforma, criar um painel de acompanhamento
+        de atendimentos por operador, por tipo de O.S. e por período, exportável para
+        relatório gerencial.
+      </span>
+    </li>
+  </ul>
+
+  <div class="amber-box">
+    <div class="title">⚠ Ponto de atenção</div>
+    A expansão para o Setor de Análise depende da contratação de módulos de webservice
+    adicionais junto ao <strong>MK Solutions</strong>. Um documento de levantamento técnico
+    já foi preparado e enviado ao suporte MK solicitando informações sobre disponibilidade
+    e valores desses módulos.
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ASSINATURA
+  ══════════════════════════════════════════════ -->
+  <div class="signature-block">
+    <div class="sig-card">
+      <div class="sig-role" style="margin-bottom: 4px;">Elaborado por</div>
+      <div class="sig-line"></div>
+      <div class="sig-name">Ramony Lima</div>
+      <div class="sig-role">Suporte N3 — MZ NET</div>
+    </div>
+    <div class="sig-card">
+      <div class="sig-role" style="margin-bottom: 4px;">Aprovado por</div>
+      <div class="sig-line"></div>
+      <div class="sig-name">&nbsp;</div>
+      <div class="sig-role">Gerência de Suporte — MZ NET</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       RODAPÉ
+  ══════════════════════════════════════════════ -->
+  <div class="footer">
+    <div class="footer-logo">
+      <img src="web/public/brand/mzlogo-padrao-fundoclaro.png" alt="MZ NET" />
+    </div>
+    <span>Gerador de O.S. · Integração MK Solutions · Junho 2026</span>
+    <span>Documento de uso interno — confidencial</span>
+  </div>
+
+</div>
+
+<script>
+  // Esconde o banner no print
+  window.matchMedia('print').addEventListener('change', e => {
+    const b = document.querySelector('.pdf-banner')
+    if (b) b.style.display = e.matches ? 'none' : ''
+  })
+</script>
+
+</body>
+</html>
