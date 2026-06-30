@@ -23,7 +23,6 @@ import { HeroIllustration } from '../components/HeroIllustration'
 import { Reveal } from '../components/Reveal'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
-import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined'
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
@@ -302,13 +301,6 @@ export function HomePage() {
             to: '/dev',
             icon: <DevIconSvg />,
             accent: '#22c55e',
-          } satisfies QuickAction,
-          {
-            key: 'mk-testes',
-            title: 'Laboratório MK',
-            description: 'Teste a integração com a API do MK Solutions — auth, busca, criação de OS.',
-            to: '/dev/mk',
-            icon: <BiotechOutlinedIcon sx={{ fontSize: 28 }} />,
           } satisfies QuickAction,
         ]
       : []),
