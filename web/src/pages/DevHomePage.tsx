@@ -1,6 +1,4 @@
-import { Box, Container, Divider, Paper, Typography } from '@mui/material'
-import { alpha } from '@mui/material/styles'
-import { useColorMode } from '../contexts/ColorModeContext'
+import { Box, Container, Divider, Typography } from '@mui/material'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined'
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
@@ -79,71 +77,40 @@ const MONITOR_CARDS = [
 ]
 
 export function DevHomePage() {
-  const { isDark } = useColorMode()
-
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, px: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
 
           <Reveal>
-            <Paper
-              elevation={0}
-              sx={{
-                position: 'relative',
-                overflow: 'hidden',
-                borderRadius: 4,
-                border: 1,
-                borderColor: 'divider',
-                minHeight: { xs: 180, sm: 240, md: 280 },
-              }}
-            >
-              <Box
-                component="img"
-                src={ILLUSTRATIONS.dev}
-                alt=""
-                aria-hidden="true"
-                loading="eager"
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                  userSelect: 'none',
-                }}
-              />
-              <Box
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: isDark
-                    ? `linear-gradient(100deg, ${alpha('#000', 0.78)} 0%, ${alpha('#000', 0.45)} 55%, ${alpha('#000', 0.1)} 100%)`
-                    : `linear-gradient(100deg, ${alpha('#fff', 0.92)} 0%, ${alpha('#fff', 0.65)} 55%, ${alpha('#fff', 0)} 100%)`,
-                }}
-              />
-              <Box sx={{ position: 'relative', p: { xs: 3, sm: 4 } }}>
-                <Typography
-                  variant="overline"
-                  color="text.secondary"
-                  sx={{ letterSpacing: '0.08em', fontWeight: 600 }}
-                >
-                  Painel de desenvolvimento
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{ fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 }}
-                >
-                  Área Dev
-                </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 0.75, maxWidth: 480 }}>
-                  Ferramentas internas, diagnósticos e integrações. Acesso restrito ao desenvolvedor.
-                </Typography>
-              </Box>
-            </Paper>
+            <Box>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ letterSpacing: '0.08em', fontWeight: 600 }}
+              >
+                Painel de desenvolvimento
+              </Typography>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{ fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 }}
+              >
+                Área Dev
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mt: 0.75, maxWidth: 580 }}>
+                Ferramentas internas, diagnósticos e integrações. Acesso restrito ao desenvolvedor.
+              </Typography>
+            </Box>
+          </Reveal>
+
+          <Reveal>
+            <Box
+              component="img"
+              src={ILLUSTRATIONS.dev}
+              alt="Área Dev"
+              sx={{ width: '100%', display: 'block', mx: 'auto', borderRadius: 2 }}
+            />
           </Reveal>
 
           <Reveal>
