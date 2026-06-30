@@ -72,10 +72,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     [pushPresence],
   )
 
-  // Presença: online ao logar, offline ao fechar/esconder aba
+  // Presença: dev inicia offline por padrão; demais usuários iniciam online
   useEffect(() => {
     if (!user || !profile) return
-    pushPresence('online')
+    const initialStatus: UserStatus = profile.isDev ? 'offline' : 'online'
+    statusRef.current = initialStatus
+    setMyStatusState(initialStatus)
+    pushPresence(initialStatus)
 
     const handleBeforeUnload = () => pushPresence('offline')
     window.addEventListener('beforeunload', handleBeforeUnload)
