@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Badge, Box, IconButton, Paper, Slide, Tooltip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import ChatRoundedIcon from '@mui/icons-material/ChatRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
+import NotificationsOffRoundedIcon from '@mui/icons-material/NotificationsOffRounded'
 import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
 import { STATUS_CONFIG } from '../../types/chat'
@@ -12,9 +14,29 @@ import { ChatStatusMenu } from './ChatStatusMenu'
 import { ChatUserList } from './ChatUserList'
 import { ChatConversation } from './ChatConversation'
 
+const PANEL_MIN_H = 360
+const PANEL_MAX_H = 700
+const PANEL_DEFAULT_H = 460
+
+function readStoredHeight(): number {
+  try {
+    const stored = localStorage.getItem('chat_panel_height')
+    if (stored) {
+      const n = parseInt(stored, 10)
+      if (!isNaN(n) && n >= PANEL_MIN_H && n <= PANEL_MAX_H) return n
+    }
+  } catch {}
+  return PANEL_DEFAULT_H
+}
+
 export function ChatWidget() {
   const { user, profile } = useAuth()
-  const { isWidgetOpen, setWidgetOpen, totalUnread, myStatus, presence, openChat, closeChat, activeConvUid, setActiveConvUid } = useChat()
+  const {
+    isWidgetOpen, setWidgetOpen, totalUnread,
+    myStatus, presence, openChat, closeChat,
+    activeConvUid, setActiveConvUid,
+    isMuted, toggleMute,
+  } = useChat()
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
@@ -22,11 +44,42 @@ export function ChatWidget() {
   const [statusAnchor, setStatusAnchor] = useState<HTMLElement | null>(null)
   const todaysBirthdays = useTodaysBirthdays()
   const [birthdayDismissed, setBirthdayDismissed] = useState(false)
+  const [panelHeight, setPanelHeight] = useState<number>(readStoredHeight)
+  const draggingRef = useRef(false)
+  const startYRef = useRef(0)
+  const startHRef = useRef(0)
 
   // Reaparece toda vez que o chat é aberto
   useEffect(() => {
     if (isWidgetOpen) setBirthdayDismissed(false)
   }, [isWidgetOpen])
+
+  const handleDragStart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    draggingRef.current = true
+    startYRef.current = e.clientY
+    startHRef.current = panelHeight
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      if (!draggingRef.current) return
+      const delta = startYRef.current - ev.clientY
+      const newH = Math.min(PANEL_MAX_H, Math.max(PANEL_MIN_H, startHRef.current + delta))
+      setPanelHeight(newH)
+    }
+
+    const handleMouseUp = () => {
+      draggingRef.current = false
+      setPanelHeight((h) => {
+        try { localStorage.setItem('chat_panel_height', String(h)) } catch {}
+        return h
+      })
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+  }
 
   // Se o usuário não está autenticado, não renderiza
   if (!user || !profile) return null
@@ -78,20 +131,49 @@ export function ChatWidget() {
           elevation={8}
           sx={{
             width: 320,
-            height: 460,
+            height: panelHeight,
             borderRadius: 1.5,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
             border: 1,
             borderColor: 'divider',
+            transition: draggingRef.current ? 'none' : undefined,
           }}
         >
+          {/* Alça de redimensionamento */}
+          <Box
+            onMouseDown={handleDragStart}
+            sx={{
+              height: 6,
+              cursor: 'ns-resize',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              bgcolor: 'transparent',
+              '&:hover': { bgcolor: alpha(primary, 0.08) },
+              '&:hover > span': { bgcolor: alpha(primary, 0.45) },
+              userSelect: 'none',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                width: 32,
+                height: 3,
+                borderRadius: 999,
+                bgcolor: alpha(isDark ? '#fff' : '#000', 0.15),
+                transition: 'background-color 0.15s',
+              }}
+            />
+          </Box>
+
           {/* Header do painel */}
           <Box
             sx={{
               px: 1.5,
-              py: 1,
+              py: 0.875,
               display: 'flex',
               alignItems: 'center',
               gap: 1,
@@ -105,6 +187,21 @@ export function ChatWidget() {
             <Typography variant="subtitle2" sx={{ fontWeight: 700, flex: 1 }}>
               Chat Interno
             </Typography>
+
+            {/* Botão mute */}
+            <Tooltip title={isMuted ? 'Ativar notificações' : 'Silenciar notificações'} placement="top">
+              <IconButton
+                size="small"
+                onClick={toggleMute}
+                aria-label={isMuted ? 'Ativar notificações' : 'Silenciar notificações'}
+                sx={{ color: isMuted ? 'text.disabled' : 'text.secondary', p: 0.5 }}
+              >
+                {isMuted
+                  ? <NotificationsOffRoundedIcon sx={{ fontSize: 16 }} />
+                  : <NotificationsRoundedIcon sx={{ fontSize: 16 }} />
+                }
+              </IconButton>
+            </Tooltip>
 
             {/* Indicador + seletor de status */}
             <Tooltip title={`Status: ${myCfg.label}`}>
@@ -132,7 +229,7 @@ export function ChatWidget() {
               </Box>
             </Tooltip>
 
-            <IconButton size="small" onClick={handleClose} aria-label="Fechar chat">
+            <IconButton size="small" onClick={handleClose} aria-label="Fechar chat" sx={{ p: 0.5 }}>
               <CloseRoundedIcon sx={{ fontSize: 16 }} />
             </IconButton>
           </Box>

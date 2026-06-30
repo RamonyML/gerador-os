@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Tooltip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
+import { Undo2 } from 'lucide-react'
 import type { ChatMessage } from '../../types/chat'
 
 type Props = {
   messages: ChatMessage[]
   myUid: string
   otherRead?: boolean
+  onReply?: (msg: ChatMessage) => void
 }
 
 function formatTime(date: Date): string {
@@ -53,13 +55,14 @@ function DateSeparator({ label }: { label: string }) {
   )
 }
 
-export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
+export function ChatMessages({ messages, myUid, otherRead = false, onReply }: Props) {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
   const bottomRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [showScrollBtn, setShowScrollBtn] = useState(false)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -73,7 +76,6 @@ export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
 
   const scrollToBottom = () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
 
-  // Índice da última mensagem enviada por mim (para read receipt)
   const lastMineIndex = messages.reduce((acc, msg, i) => msg.senderId === myUid ? i : acc, -1)
 
   if (messages.length === 0) {
@@ -108,10 +110,9 @@ export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
         const showDateSep = !prevMsg || dayKey(prevMsg.createdAt) !== dayKey(msg.createdAt)
         const groupedWithPrev = !showDateSep && !!prevMsg && sameGroup(msg, prevMsg)
         const groupedWithNext = !!nextMsg && sameGroup(msg, nextMsg)
-        // Mostra timestamp apenas na última mensagem do grupo (ou mensagem solo)
         const showTime = !groupedWithNext
+        const isHovered = hoveredId === msg.id
 
-        // Raio da bolha: remove o "rabo" em mensagens intermediárias do grupo
         const br = isMine
           ? (groupedWithPrev && groupedWithNext ? '12px 4px 4px 12px'
             : groupedWithPrev ? '12px 4px 2px 12px'
@@ -123,7 +124,12 @@ export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
             : '12px 12px 12px 2px')
 
         return (
-          <Box key={msg.id} sx={{ mt: groupedWithPrev ? 0.25 : 0 }}>
+          <Box
+            key={msg.id}
+            sx={{ mt: groupedWithPrev ? 0.25 : 0 }}
+            onMouseEnter={() => setHoveredId(msg.id)}
+            onMouseLeave={() => setHoveredId(null)}
+          >
             {showDateSep && <DateSeparator label={formatDateLabel(msg.createdAt)} />}
             <Box
               sx={{
@@ -132,22 +138,99 @@ export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
                 alignItems: isMine ? 'flex-end' : 'flex-start',
               }}
             >
+              {/* Linha da bolha + botão reply */}
               <Box
                 sx={{
-                  maxWidth: '80%',
-                  px: 1.25,
-                  py: 0.625,
-                  borderRadius: br,
-                  bgcolor: isMine
-                    ? primary
-                    : (isDark ? alpha('#fff', 0.1) : alpha('#000', 0.06)),
-                  color: isMine ? '#fff' : 'text.primary',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  flexDirection: isMine ? 'row-reverse' : 'row',
+                  maxWidth: '90%',
                 }}
               >
-                <Typography variant="body2" sx={{ lineHeight: 1.45, wordBreak: 'break-word', whiteSpace: 'pre-wrap', color: 'inherit' }}>
-                  {msg.text}
-                </Typography>
+                {/* Botão reply — aparece no hover */}
+                {onReply && (
+                  <Tooltip title="Responder" placement={isMine ? 'left' : 'right'}>
+                    <IconButton
+                      size="small"
+                      onClick={() => onReply(msg)}
+                      sx={{
+                        opacity: isHovered ? 1 : 0,
+                        transition: 'opacity 0.15s',
+                        p: 0.375,
+                        color: 'text.secondary',
+                        flexShrink: 0,
+                        '&:hover': { color: 'primary.main' },
+                      }}
+                    >
+                      <Undo2 size={14} />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
+                {/* Bolha */}
+                <Box
+                  sx={{
+                    maxWidth: '100%',
+                    px: 1.25,
+                    py: 0.625,
+                    borderRadius: br,
+                    bgcolor: isMine
+                      ? primary
+                      : (isDark ? alpha('#fff', 0.1) : alpha('#000', 0.06)),
+                    color: isMine ? '#fff' : 'text.primary',
+                  }}
+                >
+                  {/* Bloco de citação (reply) */}
+                  {msg.replyTo && (
+                    <Box
+                      sx={{
+                        mb: 0.5,
+                        pl: 1,
+                        borderLeft: '3px solid',
+                        borderColor: isMine ? alpha('#fff', 0.5) : alpha(primary, 0.6),
+                        borderRadius: '2px 6px 6px 2px',
+                        bgcolor: isMine ? alpha('#000', 0.15) : alpha(primary, 0.07),
+                        py: 0.25,
+                        pr: 0.5,
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: 700,
+                          display: 'block',
+                          lineHeight: 1.3,
+                          color: isMine ? alpha('#fff', 0.85) : 'primary.main',
+                          fontSize: 10,
+                        }}
+                      >
+                        {msg.replyTo.senderName}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          lineHeight: 1.35,
+                          color: isMine ? alpha('#fff', 0.7) : 'text.secondary',
+                          fontSize: 11,
+                          whiteSpace: 'pre-wrap',
+                        }}
+                      >
+                        {msg.replyTo.text}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  <Typography variant="body2" sx={{ lineHeight: 1.45, wordBreak: 'break-word', whiteSpace: 'pre-wrap', color: 'inherit' }}>
+                    {msg.text}
+                  </Typography>
+                </Box>
               </Box>
+
               {showTime && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.25, px: 0.5 }}>
                   <Typography variant="caption" color="text.disabled" sx={{ fontSize: 10 }}>
@@ -175,7 +258,6 @@ export function ChatMessages({ messages, myUid, otherRead = false }: Props) {
       <div ref={bottomRef} />
     </Box>
 
-    {/* Botão rolar para o fim */}
     {showScrollBtn && (
       <IconButton
         size="small"

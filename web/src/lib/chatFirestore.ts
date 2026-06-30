@@ -14,7 +14,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from './firebase'
-import type { Chat, ChatMessage } from '../types/chat'
+import type { Chat, ChatMessage, ReplyRef } from '../types/chat'
 
 export function getChatId(uid1: string, uid2: string): string {
   return [uid1, uid2].sort().join('_')
@@ -26,9 +26,9 @@ export async function sendMessage(
   otherUid: string,
   senderName: string,
   text: string,
+  replyTo?: ReplyRef,
 ): Promise<void> {
   const chatRef = doc(db, 'chats', chatId)
-  // setDoc cria o documento se não existir (sem dot-notation)
   await setDoc(
     chatRef,
     {
@@ -38,16 +38,17 @@ export async function sendMessage(
     },
     { merge: true },
   )
-  // updateDoc interpreta dot-notation como caminho aninhado — necessário para increment
   await updateDoc(chatRef, {
     [`unreadCount.${otherUid}`]: increment(1),
   })
-  await addDoc(collection(db, 'chats', chatId, 'messages'), {
+  const msgData: Record<string, unknown> = {
     senderId: myUid,
     senderName,
     text,
     createdAt: serverTimestamp(),
-  })
+  }
+  if (replyTo) msgData.replyTo = replyTo
+  await addDoc(collection(db, 'chats', chatId, 'messages'), msgData)
 }
 
 export async function markAsRead(chatId: string, myUid: string): Promise<void> {
@@ -71,11 +72,15 @@ export function subscribeMessages(
     callback(
       snap.docs.map((d) => {
         const data = d.data()
+        const replyRaw = data.replyTo as Record<string, unknown> | undefined
         return {
           id: d.id,
           senderId: data.senderId ?? '',
           senderName: data.senderName ?? '',
           text: data.text ?? '',
+          replyTo: replyRaw
+            ? { id: String(replyRaw.id ?? ''), senderName: String(replyRaw.senderName ?? ''), text: String(replyRaw.text ?? '') }
+            : undefined,
           createdAt: data.createdAt?.toDate() ?? new Date(),
         }
       }),

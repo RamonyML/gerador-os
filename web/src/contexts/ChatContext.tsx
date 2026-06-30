@@ -30,6 +30,8 @@ type ChatContextValue = {
   setWidgetOpen: (v: boolean) => void
   activeConvUid: string | null
   setActiveConvUid: (uid: string | null) => void
+  isMuted: boolean
+  toggleMute: () => void
 }
 
 const STALE_MS     = 3 * 60 * 1000  // considera offline após 3 min sem heartbeat
@@ -47,12 +49,25 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [isWidgetOpen, setWidgetOpen] = useState(false)
   const [activeConvUid, setActiveConvUid] = useState<string | null>(null)
   const [tick, setTick] = useState(0)
+  const [isMuted, setIsMuted] = useState<boolean>(() => {
+    try { return localStorage.getItem('chat_muted') === 'true' } catch { return false }
+  })
+  const isMutedRef = useRef(isMuted)
   const statusRef = useRef<UserStatus>('online')
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const prevChatsRef = useRef<Chat[]>([])
   const chatInitializedRef = useRef(false)
   const isWidgetOpenRef = useRef(false)
   const activeConvUidRef = useRef<string | null>(null)
+
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => {
+      const next = !prev
+      isMutedRef.current = next
+      try { localStorage.setItem('chat_muted', String(next)) } catch {}
+      return next
+    })
+  }, [])
 
   const pushPresence = useCallback(
     (status: UserStatus) => {
@@ -205,12 +220,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    if (shouldPlay && audioRef.current) {
+    if (shouldPlay && !isMutedRef.current && audioRef.current) {
       audioRef.current.currentTime = 0
       void audioRef.current.play().catch(() => {})
     }
 
-    if (shouldPlay && notifSender && Notification.permission === 'granted' && document.visibilityState === 'hidden') {
+    if (shouldPlay && !isMutedRef.current && notifSender && Notification.permission === 'granted' && document.visibilityState === 'hidden') {
       new Notification(notifSender, { body: notifText, icon: '/favicon.ico' })
     }
 
@@ -262,6 +277,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setWidgetOpen,
         activeConvUid,
         setActiveConvUid,
+        isMuted,
+        toggleMute,
       }}
     >
       {children}

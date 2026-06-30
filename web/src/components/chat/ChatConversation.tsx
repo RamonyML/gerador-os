@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useChat } from '../../contexts/ChatContext'
 import { clearTyping, getChatId, markAsRead, sendMessage, setTyping, subscribeMessages, subscribeTyping } from '../../lib/chatFirestore'
 import { STATUS_CONFIG } from '../../types/chat'
-import type { ChatMessage, UserPresence } from '../../types/chat'
+import type { ChatMessage, ReplyRef, UserPresence } from '../../types/chat'
 import { ChatMessages } from './ChatMessages'
 import { ChatInput } from './ChatInput'
 
@@ -29,6 +29,7 @@ export function ChatConversation({ other, onBack }: Props) {
   const isDark = theme.palette.mode === 'dark'
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [otherTyping, setOtherTyping] = useState(false)
+  const [replyTo, setReplyTo] = useState<ReplyRef | null>(null)
 
   const chatId = user ? getChatId(user.uid, other.uid) : ''
   const cfg = STATUS_CONFIG[other.status]
@@ -41,19 +42,16 @@ export function ChatConversation({ other, onBack }: Props) {
     return subscribeMessages(chatId, setMessages)
   }, [chatId])
 
-  // Marca como lido ao abrir
   useEffect(() => {
     if (!chatId || !user) return
     void markAsRead(chatId, user.uid)
   }, [chatId, user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Assina status de digitação do outro
   useEffect(() => {
     if (!chatId) return
     return subscribeTyping(chatId, other.uid, setOtherTyping)
   }, [chatId, other.uid])
 
-  // Limpa o indicador de digitação próprio ao desmontar
   useEffect(() => {
     if (!chatId || !user) return
     return () => { void clearTyping(chatId, user.uid) }
@@ -65,10 +63,15 @@ export function ChatConversation({ other, onBack }: Props) {
     else void clearTyping(chatId, user.uid)
   }, [chatId, user?.uid])  // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSend = async (text: string) => {
+  const handleReply = useCallback((msg: ChatMessage) => {
+    setReplyTo({ id: msg.id, senderName: msg.senderName, text: msg.text })
+  }, [])
+
+  const handleSend = async (text: string, reply?: ReplyRef) => {
     if (!user || !profile) return
     const senderName = profile.displayName?.trim() || user.email || 'Usuário'
-    await sendMessage(chatId, user.uid, other.uid, senderName, text)
+    await sendMessage(chatId, user.uid, other.uid, senderName, text, reply)
+    setReplyTo(null)
   }
 
   return (
@@ -132,10 +135,20 @@ export function ChatConversation({ other, onBack }: Props) {
       </Box>
 
       {/* Mensagens */}
-      <ChatMessages messages={messages} myUid={user?.uid ?? ''} otherRead={otherRead} />
+      <ChatMessages
+        messages={messages}
+        myUid={user?.uid ?? ''}
+        otherRead={otherRead}
+        onReply={handleReply}
+      />
 
       {/* Input */}
-      <ChatInput onSend={(text) => void handleSend(text)} onTypingChange={handleTypingChange} />
+      <ChatInput
+        onSend={(text, reply) => void handleSend(text, reply)}
+        onTypingChange={handleTypingChange}
+        replyTo={replyTo}
+        onCancelReply={() => setReplyTo(null)}
+      />
     </Box>
   )
 }

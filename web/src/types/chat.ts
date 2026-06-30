@@ -9,11 +9,18 @@ export type UserPresence = {
   updatedAt: Date
 }
 
+export type ReplyRef = {
+  id: string
+  senderName: string
+  text: string
+}
+
 export type ChatMessage = {
   id: string
   senderId: string
   senderName: string
   text: string
+  replyTo?: ReplyRef
   createdAt: Date
 }
 
