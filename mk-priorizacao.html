@@ -454,9 +454,9 @@
 
   <div class="header">
     <div class="badge">MZ NET × MK Solutions — Integração de API · ✅ CONCLUÍDA</div>
-    <h1>Guarda-chuvas &amp; Priorização</h1>
+    <h1>Status da Integração MK</h1>
     <p class="meta">
-      <strong>186 variantes</strong> · <strong>8 categorias</strong> · última atualização 29/06/2026
+      <strong>170 variantes</strong> · <strong>8 categorias</strong> · última atualização 29/06/2026
       &nbsp;·&nbsp; clique em um card para ver as subdemandas
     </p>
   </div>
@@ -552,11 +552,11 @@
         ]
       },
       {
-        id: 2, title: 'Alteração de Plano', count: 52, priority: 'p1',
-        status: 'partial', readyCount: 46,
+        id: 2, title: 'Alteração de Plano', count: 46, priority: 'p1',
+        status: 'ready', readyCount: 46,
         flow: 'cliente → atendimento → OS de alteração [→ OS de visita]',
-        blocker: 'mud-end + altplan (aguarda integração mud-end)',
-        note: '6 formulários prontos com OS (tipoOS 7). Mudança de endereço + altplan aguarda fase mud-end.',
+        blocker: null,
+        note: '6 formulários prontos com OS (tipoOS 7). Todos os fluxos de altplan integrados.',
         subcats: [
           { name: 'Remoto — catálogo principal', count: 5, ready: true },
           { name: 'Remoto — ofertado / retenção', count: 5, ready: true },
@@ -565,11 +565,10 @@
           { name: 'Com troca — visita isenta', count: 10, ready: true },
           { name: 'Com troca — visita paga', count: 8, ready: true },
           { name: 'Encerramentos / Feedback de altplan', count: 3, ready: true },
-          { name: 'Mudança de endereço + altplan', count: 6, ready: false },
         ]
       },
       {
-        id: 3, title: 'Mudança de Endereço', count: 15, priority: 'p1',
+        id: 3, title: 'Mudança de Endereço', count: 21, priority: 'p1',
         status: 'blocked', readyCount: 0,
         flow: 'cliente → atendimento → comentários → OS técnica → novo endereço',
         blocker: 'buildSegmentos e registry ainda não implementados',
@@ -577,6 +576,7 @@
         subcats: [
           { name: 'Padrão', count: 9, ready: false },
           { name: 'Inviabilidade de cobertura', count: 6, ready: false },
+          { name: 'Mudança de endereço + altplan', count: 6, ready: false },
         ]
       },
       {
@@ -713,8 +713,10 @@
 
     // Totals
     const PROTO_OK_STATUSES = ['proto_ok', 'proto_ok_comment', 'proto_ok_all']
-    // prontas agora = somente altplan remoto (partial.readyCount)
-    const totalReadyNow = umbrellas.filter(u => u.status === 'partial').reduce((s, u) => s + u.readyCount, 0)
+    // prontas agora = todos os ready (count) + parciais prontos (readyCount)
+    const totalReadyNow =
+      umbrellas.filter(u => u.status === 'ready').reduce((s, u) => s + u.count, 0) +
+      umbrellas.filter(u => u.status === 'partial').reduce((s, u) => s + u.readyCount, 0)
     // protocolo ok = funciona parcialmente (protocolo disponível, falta OS e/ou comentário)
     const totalProtoOk = umbrellas.filter(u => PROTO_OK_STATUSES.includes(u.status)).reduce((s, u) => s + u.count, 0)
     // bloqueadas = sem endpoint disponível (altplan com visita + wifi-extend + feedback)

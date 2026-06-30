@@ -4,175 +4,197 @@ import { useEffect, useRef, useState } from 'react'
 import { Box, Chip, Container, Paper, Tooltip, Typography } from '@mui/material'
 import { alpha, useTheme } from '@mui/material/styles'
 import {
+  ArrowLeftRight,
+  Bug,
   Building2,
   CalendarDays,
   CheckCircle2,
   ClipboardCheck,
   Clock,
+  Coffee,
+  FileText,
   FolderTree,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
+  Link2,
   MapPin,
   MessageSquare,
   MousePointerClick,
-  PlusCircle,
   Rocket,
   ShieldAlert,
-  ShieldCheck,
   Sparkles,
   TrendingUp,
   Users,
   Wrench,
   Workflow,
+  Zap,
 } from 'lucide-react'
 import { useColorMode } from '../contexts/ColorModeContext'
 import { HeroIllustration } from '../components/HeroIllustration'
 import { ILLUSTRATIONS } from '../data/illustrations'
 
-/** Padrão decorativo discreto (equivalente ao SVG do legado). */
 const SUBTLE_PATTERN =
   'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%2322c55e\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
 
-/** O que a plataforma oferece hoje (recursos efetivamente disponíveis). */
 const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
+  {
+    icon: Zap,
+    title: 'Integração MK Solutions',
+    desc: 'Cada formulário abre o atendimento, insere os comentários e cria a O.S. automaticamente no MK ERP — sem copiar e colar.',
+  },
   {
     icon: LayoutDashboard,
     title: 'Hub de Suporte',
-    desc: 'Centralização dos fluxos operacionais utilizados pelo suporte técnico.',
+    desc: 'Centralização dos fluxos operacionais utilizados pelo suporte técnico, organizados por categoria de demanda.',
   },
   {
     icon: FolderTree,
-    title: 'Demandas por Categoria',
-    desc: 'Modelos de atendimento organizados por área e tipo de operação.',
+    title: 'Gerador de O.S.',
+    desc: 'Modelos padronizados de atendimento com painel lateral integrado ao MK ERP — protocolo gerado em segundos.',
   },
   {
     icon: LifeBuoy,
     title: 'Chamados Internos',
-    desc: 'Registro e acompanhamento das demandas internas da equipe.',
+    desc: 'Sistema estilo GLPI para registro, acompanhamento e encerramento de demandas internas da equipe.',
   },
   {
     icon: TrendingUp,
     title: 'Registro de Upgrades',
-    desc: 'Controle operacional dos upgrades realizados e suas comissões.',
+    desc: 'Controle operacional dos upgrades realizados e das comissões correspondentes.',
   },
   {
     icon: CalendarDays,
     title: 'Escala de Trabalho',
-    desc: 'Organização dos turnos e plantões da equipe.',
+    desc: 'Organização dos turnos e plantões da equipe com visão por período.',
   },
   {
     icon: MapPin,
     title: 'Agenda de Visitas',
-    desc: 'Grade colaborativa da equipe técnica, com acompanhamento em tempo real.',
+    desc: 'Grade colaborativa da equipe técnica para instalações e manutenções, com acompanhamento em tempo real.',
   },
   {
     icon: Building2,
     title: 'Condomínios',
-    desc: 'Consulta de viabilidade de fibra e registros de inviabilidade.',
+    desc: 'Consulta de viabilidade de fibra e registros de inviabilidade por condomínio.',
   },
   {
     icon: Users,
     title: 'Gestão de Usuários',
-    desc: 'Controle de contas, perfis e permissões de acesso.',
+    desc: 'Controle de contas, perfis, setores, hierarquia e permissões de acesso por papel.',
+  },
+  {
+    icon: Bug,
+    title: 'Relatório de Bugs',
+    desc: 'Canal interno para que operadores registrem falhas e acompanhem o status de correção.',
+  },
+  {
+    icon: Coffee,
+    title: 'Pausa da Equipe',
+    desc: 'Widget de controle de pausas por equipe, com visibilidade em tempo real de quem está disponível.',
   },
   {
     icon: ClipboardCheck,
     title: 'Padronização de Processos',
-    desc: 'Uniformidade na documentação e nos procedimentos.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Autenticação Segura',
-    desc: 'Controle de acesso através do Firebase Authentication.',
+    desc: 'Uniformidade na documentação e nos procedimentos validados pela gerência.',
   },
 ]
 
-/** Resultados obtidos com a plataforma. */
+const MK_STEPS: { icon: LucideIcon; label: string; desc: string }[] = [
+  {
+    icon: FileText,
+    label: '1. Preenche o formulário',
+    desc: 'Operador insere os dados do atendimento normalmente no gerador de O.S.',
+  },
+  {
+    icon: Link2,
+    label: '2. Protocolo automático',
+    desc: 'O sistema abre o atendimento no MK ERP e insere cada comentário em sequência com um clique.',
+  },
+  {
+    icon: Zap,
+    label: '3. O.S. criada no MK',
+    desc: 'A Ordem de Serviço é gerada vinculada ao protocolo — sem copiar, sem colar, sem erro manual.',
+  },
+]
+
 const RESULTS: { icon: LucideIcon; title: string; desc: string }[] = [
   {
     icon: Clock,
-    title: 'Redução de tempo',
-    desc: 'De 10–15 minutos para cerca de 3–5 minutos por documento.',
+    title: 'Muito mais rápido',
+    desc: 'De 10–15 minutos de trabalho manual para menos de 2 minutos com a integração MK.',
   },
   {
     icon: CheckCircle2,
-    title: 'Padronização',
-    desc: 'Documentação uniforme e aprovada pela gerência.',
+    title: 'Padronização total',
+    desc: 'Documentação uniforme e aprovada pela gerência em todos os formulários.',
   },
   {
     icon: ShieldAlert,
-    title: 'Menos erros',
-    desc: 'Geração assistida que minimiza falhas humanas.',
+    title: 'Zero erros manuais',
+    desc: 'Geração e envio automático eliminam falhas de digitação e campos esquecidos.',
   },
   {
     icon: Rocket,
     title: 'Mais produtividade',
-    desc: 'Equipe focada no atendimento, não na digitação repetitiva.',
+    desc: 'Equipe focada no atendimento ao cliente, não na digitação repetitiva no ERP.',
   },
   {
     icon: GraduationCap,
-    title: 'Melhor treinamento',
-    desc: 'Onboarding mais claro e rápido para novos colaboradores.',
+    title: 'Onboarding rápido',
+    desc: 'Novos colaboradores seguem os modelos prontos desde o primeiro dia.',
   },
 ]
 
-/** Desenvolvimento contínuo: o sistema é um produto vivo. */
+const TECHNOLOGIES = [
+  'React 19',
+  'TypeScript',
+  'Vite',
+  'Material UI v9',
+  'Emotion',
+  'React Router v7',
+  'Firebase Authentication',
+  'Cloud Firestore',
+  'Cloud Functions (Node 20)',
+  'Google Cloud Secret Manager',
+  'Firebase Hosting',
+  'MK Solutions API',
+  'Recharts',
+  'Lucide Icons',
+  'jsPDF',
+  'Vitest',
+  'Playwright',
+]
+
 const CONTINUOUS: { icon: LucideIcon; title: string; desc: string }[] = [
   {
     icon: MessageSquare,
     title: 'Feedback dos operadores',
-    desc: 'A equipe sugere melhorias e reporta falhas no dia a dia.',
+    desc: 'A equipe reporta falhas e sugere melhorias pelo canal de Bug Reports integrado.',
   },
   {
     icon: Wrench,
     title: 'Correções contínuas',
-    desc: 'Ajustes constantes de estabilidade e qualidade.',
+    desc: 'Ajustes constantes de estabilidade, qualidade e comportamento dos formulários.',
   },
   {
-    icon: PlusCircle,
-    title: 'Novas funcionalidades',
-    desc: 'Recursos novos conforme a operação evolui.',
+    icon: ArrowLeftRight,
+    title: 'Expansão da integração MK',
+    desc: 'Novos fluxos conectados ao ERP conforme as demandas operacionais crescem.',
   },
   {
     icon: MousePointerClick,
     title: 'Melhorias de usabilidade',
-    desc: 'Interface cada vez mais simples e agradável.',
+    desc: 'Interface cada vez mais simples e eficiente para o dia a dia do suporte.',
   },
   {
     icon: Workflow,
-    title: 'Expansão dos fluxos',
-    desc: 'Novos processos operacionais integrados à plataforma.',
+    title: 'Novos módulos',
+    desc: 'Recursos novos conforme a operação da MZ NET evolui e novas necessidades surgem.',
   },
 ]
 
-/**
- * Tecnologias efetivamente presentes no projeto (stack real).
- * Reflete as dependências reais do app — não inclui itens que não são usados.
- */
-const TECHNOLOGIES = [
-  'React',
-  'TypeScript',
-  'Vite',
-  'Material UI',
-  'Emotion',
-  'Firebase Authentication',
-  'Cloud Firestore',
-  'Firebase Storage',
-  'Firebase Hosting',
-  'React Router',
-  'Recharts',
-  'Lucide Icons',
-  'jsPDF',
-]
-
-function FadeInSection({
-  children,
-  delayMs = 0,
-}: {
-  children: ReactNode
-  delayMs?: number
-}) {
+function FadeInSection({ children, delayMs = 0 }: { children: ReactNode; delayMs?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
@@ -180,9 +202,7 @@ function FadeInSection({
     const el = ref.current
     if (!el) return
     const io = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) setVisible(true)
-      },
+      (entries) => { if (entries[0]?.isIntersecting) setVisible(true) },
       { threshold: 0.1, rootMargin: '0px 0px -48px 0px' },
     )
     io.observe(el)
@@ -313,15 +333,8 @@ export function SobrePage() {
 
   return (
     <Box sx={{ flex: 1, width: '100%' }}>
-      {/* Hero + parallax */}
-      <Box
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          borderBottom: 1,
-          borderColor: 'divider',
-        }}
-      >
+      {/* Hero */}
+      <Box sx={{ position: 'relative', overflow: 'hidden', borderBottom: 1, borderColor: 'divider' }}>
         <Box
           aria-hidden
           sx={{
@@ -386,14 +399,14 @@ export function SobrePage() {
                     }}
                   />
                   <Chip
-                    label="v4.0.1"
+                    label="MK Solutions integrado"
                     size="small"
                     sx={{
                       fontWeight: 700,
-                      color: 'text.secondary',
-                      bgcolor: alpha(theme.palette.grey[500], isDark ? 0.18 : 0.1),
+                      color: isDark ? '#4ade80' : '#16a34a',
+                      bgcolor: alpha('#22c55e', isDark ? 0.18 : 0.1),
                       border: 1,
-                      borderColor: alpha(theme.palette.grey[500], 0.25),
+                      borderColor: alpha('#22c55e', 0.3),
                     }}
                   />
                 </Box>
@@ -420,15 +433,17 @@ export function SobrePage() {
                     lineHeight: 1.4,
                   }}
                 >
-                  Plataforma de apoio operacional para o suporte técnico da MZ NET.
+                  Plataforma operacional da MZ NET — do formulário ao MK ERP com um clique.
                 </Typography>
                 <Typography
                   variant="body1"
                   color="text.secondary"
                   sx={{ mt: 2, maxWidth: 560, lineHeight: 1.7 }}
                 >
-                  Muito além de gerar ordens de serviço: centraliza fluxos, organiza
-                  demandas e aumenta a eficiência das equipes no dia a dia.
+                  O sistema centraliza os fluxos do suporte técnico e está integrado
+                  diretamente ao ERP MK Solutions: cada atendimento abre o protocolo,
+                  insere os comentários e cria a Ordem de Serviço automaticamente —
+                  sem copiar e colar.
                 </Typography>
               </Box>
               <Box
@@ -452,7 +467,8 @@ export function SobrePage() {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: { xs: 5, md: 7 }, px: { xs: 2, sm: 3 } }}>
-        {/* Evolução do Projeto */}
+
+        {/* Evolução */}
         <FadeInSection delayMs={40}>
           <Paper
             elevation={0}
@@ -481,14 +497,127 @@ export function SobrePage() {
               <Box component="strong" sx={{ color: 'text.primary' }}>
                 plataforma operacional utilizada diariamente pelo suporte técnico da MZ NET
               </Box>
-              . Hoje ela reúne, em um só lugar, os fluxos, as demandas e as ferramentas que
-              sustentam a operação da equipe.
+              . Hoje ela reúne, em um só lugar, os fluxos, as demandas, as ferramentas e —
+              com a integração completa ao MK Solutions — a automação total do ciclo de atendimento.
             </Typography>
           </Paper>
         </FadeInSection>
 
-        {/* O que a plataforma oferece */}
+        {/* Integração MK Solutions — destaque */}
         <FadeInSection delayMs={60}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Integração ERP"
+              title="Integração MK Solutions"
+              subtitle="A principal evolução da plataforma: cada formulário de suporte está conectado diretamente ao ERP MK Solutions, automatizando o ciclo completo de atendimento."
+            />
+
+            {/* Fluxo em 3 passos */}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' },
+                gap: 2,
+                mb: 3,
+              }}
+            >
+              {MK_STEPS.map(({ icon: Icon, label, desc }) => (
+                <Paper
+                  key={label}
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: 1,
+                    borderColor: alpha('#22c55e', isDark ? 0.3 : 0.2),
+                    bgcolor: alpha('#22c55e', isDark ? 0.08 : 0.04),
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1.5,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      placeItems: 'center',
+                      width: 44,
+                      height: 44,
+                      borderRadius: 2,
+                      bgcolor: alpha('#22c55e', isDark ? 0.22 : 0.12),
+                      border: 1,
+                      borderColor: alpha('#22c55e', isDark ? 0.35 : 0.2),
+                      color: isDark ? '#4ade80' : '#16a34a',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={22} />
+                  </Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    {label}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                    {desc}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+
+            {/* Detalhes técnicos */}
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, md: 4 },
+                borderRadius: 3,
+                border: 1,
+                borderColor: alpha('#22c55e', isDark ? 0.3 : 0.2),
+                bgcolor: alpha('#22c55e', isDark ? 0.06 : 0.03),
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2, color: isDark ? '#4ade80' : '#16a34a' }}>
+                Cobertura atual da integração
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' },
+                  gap: 2,
+                }}
+              >
+                {[
+                  { num: '37', label: 'formulários integrados' },
+                  { num: '170', label: 'variantes de atendimento' },
+                  { num: '8', label: 'categorias cobertas' },
+                  { num: '100%', label: 'das O.S. automatizadas' },
+                ].map(({ num, label }) => (
+                  <Box key={label} sx={{ textAlign: 'center', py: 1 }}>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 800, color: isDark ? '#4ade80' : '#16a34a', lineHeight: 1 }}
+                    >
+                      {num}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      {label}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2.5, lineHeight: 1.7 }}>
+                Categorias integradas:{' '}
+                <Box component="span" sx={{ color: 'text.primary', fontWeight: 500 }}>
+                  Manutenção (15 formulários) · Alteração de Plano (6) · Wi-Fi Extend (3) ·
+                  Mídia/TV — Roku (2) · Senha de Rede · Termo de Responsabilidade · Feedback pós-O.S. (8)
+                </Box>
+                . A integração cobre autenticação, busca de cliente por CPF/CNPJ, seleção de
+                conexão ativa, criação de atendimento com operador identificado, inserção de
+                comentários em sequência e criação de Ordem de Serviço vinculada ao protocolo.
+              </Typography>
+            </Paper>
+          </Box>
+        </FadeInSection>
+
+        {/* Funcionalidades */}
+        <FadeInSection delayMs={80}>
           <Box sx={{ mt: 7 }}>
             <SectionHeading
               overline="Recursos"
@@ -498,11 +627,7 @@ export function SobrePage() {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: '1fr 1fr',
-                  lg: '1fr 1fr 1fr',
-                },
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: '1fr 1fr 1fr' },
                 gap: 2.5,
               }}
             >
@@ -539,22 +664,18 @@ export function SobrePage() {
           </Box>
         </FadeInSection>
 
-        {/* Resultados Obtidos */}
-        <FadeInSection delayMs={80}>
+        {/* Resultados */}
+        <FadeInSection delayMs={100}>
           <Box sx={{ mt: 7 }}>
             <SectionHeading
               overline="Impacto"
               title="Resultados obtidos"
-              subtitle="Ganhos concretos percebidos no dia a dia do suporte técnico."
+              subtitle="Ganhos concretos percebidos no dia a dia do suporte técnico desde a integração com o MK Solutions."
             />
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: '1fr 1fr',
-                  lg: 'repeat(5, 1fr)',
-                },
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(5, 1fr)' },
                 gap: 2.5,
               }}
             >
@@ -588,8 +709,8 @@ export function SobrePage() {
           </Box>
         </FadeInSection>
 
-        {/* História do Projeto */}
-        <FadeInSection delayMs={100}>
+        {/* História */}
+        <FadeInSection delayMs={120}>
           <Box sx={{ mt: 7 }}>
             <SectionHeading
               overline="Origem"
@@ -619,11 +740,12 @@ export function SobrePage() {
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
                   O Gerador de O.S foi idealizado e desenvolvido por{' '}
-                  <TooltipName title="Idealizador & Desenvolvedor Back/Front-End">
+                  <TooltipName title="Idealizador & Desenvolvedor">
                     Ramony Lima
                   </TooltipName>
                   , a partir da necessidade de agilizar e padronizar a abertura de protocolos e
-                  ordens de serviço no suporte técnico.
+                  ordens de serviço no suporte técnico — e evoluiu até a integração completa
+                  com o ERP MK Solutions.
                 </Typography>
               </Paper>
 
@@ -642,20 +764,19 @@ export function SobrePage() {
                   Supervisão e Validação
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
-                  Todos os modelos são padronizados e validados pela gerência, sob supervisão de{' '}
-                  <TooltipName title="Gerente de Suporte">Deivit Rafael</TooltipName> e{' '}
-                  <TooltipName title="Sub-gerente">Hiago Alves</TooltipName>, com grande
+                  Todos os modelos são padronizados e validados pela gerência, com supervisão de{' '}
+                  <TooltipName title="Sub-gerente de Suporte">Hiago Alves</TooltipName> e grande
                   contribuição de{' '}
                   <TooltipName title="Revisão e Formatação">Karolayne Pereira</TooltipName> na
-                  revisão e formatação textual.
+                  revisão e formatação textual dos protocolos.
                 </Typography>
               </Paper>
             </Box>
           </Box>
         </FadeInSection>
 
-        {/* Tecnologias Utilizadas */}
-        <FadeInSection delayMs={120}>
+        {/* Tecnologias */}
+        <FadeInSection delayMs={140}>
           <Box sx={{ mt: 7 }}>
             <SectionHeading
               overline="Stack"
@@ -695,21 +816,17 @@ export function SobrePage() {
         </FadeInSection>
 
         {/* Desenvolvimento Contínuo */}
-        <FadeInSection delayMs={140}>
+        <FadeInSection delayMs={160}>
           <Box sx={{ mt: 7 }}>
             <SectionHeading
               overline="Produto vivo"
               title="Desenvolvimento contínuo"
-              subtitle="O sistema está em evolução constante, guiado pela rotina real da equipe."
+              subtitle="O sistema está em evolução constante, guiado pela rotina real da equipe e pela expansão da integração MK."
             />
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: '1fr 1fr',
-                  lg: 'repeat(5, 1fr)',
-                },
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(5, 1fr)' },
                 gap: 2.5,
               }}
             >
@@ -787,13 +904,13 @@ export function SobrePage() {
             sx={{ textAlign: 'center', lineHeight: 1.8, color: '#bdbdbd' }}
           >
             <Box component="span" sx={{ opacity: 0.5, fontSize: 11, letterSpacing: '0.06em', color: '#bdbdbd' }}>
-              GERADOR DE O.S · v4.0.1
+              GERADOR DE O.S · MZ NET
             </Box>
             <br />
             © <strong style={{ color: '#e0e0e0' }}>2026 Ramony Lima – Todos os direitos reservados.</strong>
             <br />
             <Box component="em" sx={{ display: 'block', mt: 1, opacity: 0.9, color: '#bdbdbd' }}>
-              Esta aplicação ( Gerador de O.S ) está protegida pela Lei nº 9.609/1998
+              Esta aplicação está protegida pela Lei nº 9.609/1998
               (Lei de Software – Brasil), que assegura os direitos autorais do desenvolvedor.
             </Box>
           </Typography>
