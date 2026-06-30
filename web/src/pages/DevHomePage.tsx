@@ -109,7 +109,7 @@ export function DevHomePage() {
               component="img"
               src={ILLUSTRATIONS.dev}
               alt="Área Dev"
-              sx={{ width: '100%', display: 'block', mx: 'auto', borderRadius: 2 }}
+              sx={{ width: '100%', maxWidth: 680, display: 'block', mx: 'auto', borderRadius: 2 }}
             />
           </Reveal>
 
