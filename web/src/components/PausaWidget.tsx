@@ -15,10 +15,12 @@ import { UtensilsIcon } from './UtensilsIcon'
 import PauseCircleOutlineRoundedIcon from '@mui/icons-material/PauseCircleOutlineRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
 import { useAuth } from '../contexts/AuthContext'
 import {
   encerrarPausa,
   iniciarPausa,
+  retomarPausa,
   subscribeMinhaPausa,
   subscribeMinhaPausaSchedule,
 } from '../lib/pausaFirestore'
@@ -151,6 +153,16 @@ export function PausaWidget() {
     setLoading(true)
     try {
       await encerrarPausa(user.uid, today)
+    } finally {
+      setLoading(false)
+    }
+  }, [user?.uid, today]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleRetomar = useCallback(async () => {
+    if (!user) return
+    setLoading(true)
+    try {
+      await retomarPausa(user.uid, today)
     } finally {
       setLoading(false)
     }
@@ -305,13 +317,27 @@ export function PausaWidget() {
           )}
 
           {status === 'concluida' && (
-            <Typography variant="body2" color="text.secondary">
-              Você já utilizou sua pausa hoje.{' '}
-              <strong style={{ color: theme.palette.success.main }}>
-                {formatElapsed(elapsedMs(mergedEntry!))}
-              </strong>{' '}
-              de {pausaDurationLabel}.
-            </Typography>
+            <>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                Você já utilizou sua pausa hoje.{' '}
+                <strong style={{ color: theme.palette.success.main }}>
+                  {formatElapsed(elapsedMs(mergedEntry!))}
+                </strong>{' '}
+                de {pausaDurationLabel}.
+              </Typography>
+              <Divider sx={{ mb: 1.5 }} />
+              <Button
+                fullWidth
+                variant="outlined"
+                size="small"
+                disabled={loading}
+                onClick={() => void handleRetomar()}
+                startIcon={<ReplayRoundedIcon />}
+                sx={{ borderRadius: 2, fontWeight: 700 }}
+              >
+                Retomar pausa
+              </Button>
+            </>
           )}
         </Box>
       </Popover>

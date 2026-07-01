@@ -612,23 +612,32 @@ service cloud.firestore {
     match /pausas/{pausaId} {
       allow read: if request.auth != null;
 
-      // Gerente/admin/dev criam o documento com horarioAgendado
-      allow create: if isPausaManager()
-        && request.resource.data.uid is string
-        && request.resource.data.date is string
-        && request.resource.data.displayName is string;
+      // Gerente/admin/dev criam o documento com horarioAgendado;
+      // o próprio usuário pode criar o doc diário ao iniciar a pausa,
+      // desde que tenha um schedule cadastrado pelo gerente.
+      allow create: if (
+          isPausaManager()
+          && request.resource.data.uid is string
+          && request.resource.data.date is string
+          && request.resource.data.displayName is string
+        )
+        || (
+          isActiveUser()
+          && request.resource.data.uid == request.auth.uid
+          && exists(/databases/$(database)/documents/pausaSchedule/$(request.auth.uid))
+        );
 
       // Gerente/admin/dev atualizam qualquer campo;
-      // o operador só atualiza o próprio doc (inicioEfetivo / fimEfetivo)
+      // o operador só atualiza o próprio doc (inicioEfetivo / fimEfetivo),
+      // sem poder alterar uid, date, displayName ou horarioAgendado.
       allow update: if isActiveUser()
         && (
           isPausaManager()
           || (
             resource.data.uid == request.auth.uid
-            && request.resource.data.uid == resource.data.uid
-            && request.resource.data.date == resource.data.date
-            && request.resource.data.displayName == resource.data.displayName
-            && request.resource.data.horarioAgendado == resource.data.horarioAgendado
+            && !request.resource.data.diff(resource.data)
+                .affectedKeys()
+                .hasAny(['uid', 'date', 'displayName', 'horarioAgendado'])
           )
         );
 
@@ -675,6 +684,36 @@ service cloud.firestore {
     match /counters/bugReports {
       allow read: if isActiveUser();
       allow write: if isActiveUser();
+    }
+
+    /**
+     * Catálogo centralizado (equipamentos, planos, canais, etc.).
+     * Leitura: qualquer usuário ativo (formulários carregam as opções).
+     * Escrita: gerente, admin ou dev.
+     */
+    match /catalogo/{categoria}/itens/{itemId} {
+      allow read: if isActiveUser();
+      allow write: if isActiveUser()
+        && (
+          userData().isDev == true
+          || userData().isAdmin == true
+          || userData().hierarchy == 'gerente'
+        );
+    }
+
+    /**
+     * Logs da aplicação capturados pelo logger client-side.
+     * Criação: qualquer usuário ativo (erros/avisos gerados por qualquer tela).
+     * Leitura: apenas dev (página DevLogsPage).
+     * Atualização/exclusão: bloqueados.
+     */
+    match /appLogs/{logId} {
+      allow create: if isActiveUser()
+        && request.resource.data.level in ['warn', 'error']
+        && request.resource.data.message is string
+        && request.resource.data.env is string;
+      allow read: if isActiveUser() && userData().isDev == true;
+      allow update, delete: if false;
     }
 
     match /{document=**} {

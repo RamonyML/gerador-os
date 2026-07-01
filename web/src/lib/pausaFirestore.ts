@@ -75,6 +75,14 @@ export async function encerrarPausa(uid: string, date: string): Promise<void> {
   )
 }
 
+export async function retomarPausa(uid: string, date: string): Promise<void> {
+  await setDoc(
+    docRef(date, uid),
+    { fimEfetivo: null },
+    { merge: true },
+  )
+}
+
 export function subscribePausasDia(
   date: string,
   callback: (entries: PausaEntry[]) => void,
