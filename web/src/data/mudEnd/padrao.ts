@@ -294,12 +294,18 @@ export function buildMudEndPadraoSegmentos(
   const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
 
   const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndPadraoTextos(rawValues, '')
+
+  // Split protocol at separator lines (===... or ***...) into individual MK cards
+  const partes = mudEndTextoProtocolo.split(/\n[=*]{8,}\n/g).map(p => p.trim()).filter(Boolean)
+  // partes[0] = abertura (já em info), partes[1] = sinal ONU (já em info)
+  const comentarios = partes.slice(2)
+
   const _mark = 'INDICAÇÃO TÉCNICA:'
   const _midx = mudEndTextoOS.indexOf(_mark)
   const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS
   const osIndicacoes = _midx >= 0 ? mudEndTextoOS.slice(_midx + _mark.length).trimStart() : ''
 
-  return { info, comentarios: [mudEndTextoProtocolo], osDescricao, osIndicacoes }
+  return { info, comentarios, osDescricao, osIndicacoes }
 }
 
 /** Campos e ordem espelham o index-mud-end.html (grid 12 colunas). */
