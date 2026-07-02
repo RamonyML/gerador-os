@@ -21,6 +21,7 @@ import {
   Typography,
 } from '@mui/material'
 import { alpha } from '@mui/material/styles'
+import type { Theme } from '@mui/material/styles'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import MenuOpenRoundedIcon from '@mui/icons-material/MenuOpenRounded'
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
@@ -67,6 +68,16 @@ import { PausaWidget } from './PausaWidget'
 const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
 const SIDEBAR_COLLAPSED_KEY = 'gerador-os:sidebarCollapsed'
+
+/** Sublinhado rabiscado (onda) usado no hover dos itens do menu lateral. */
+function navWaveUnderline(color: string): string {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="390" height="50" viewBox="0 0 390 50">` +
+    `<path fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10" ` +
+    `d="M0,47.585c0,0,97.5,0,130,0c13.75,0,28.74-38.778,46.168-19.416C192.669,46.5,243.603,47.585,260,47.585c31.821,0,130,0,130,0"/>` +
+    `</svg>`
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+}
 
 function initialsFrom(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean)
@@ -310,14 +321,16 @@ export function AppLayout() {
                       position: 'absolute',
                       left: 50,
                       right: 16,
-                      bottom: 7,
-                      height: 2,
-                      borderRadius: 2,
-                      bgcolor: 'primary.main',
-                      opacity: 0.7,
+                      bottom: 2,
+                      height: 11,
+                      backgroundImage: (t: Theme) => navWaveUnderline(t.palette.primary.main),
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundSize: '100% 100%',
+                      opacity: 0.85,
                       transform: 'scaleX(0)',
                       transformOrigin: 'left',
-                      transition: 'transform 0.25s ease',
+                      transition: 'transform 0.45s ease',
                       display: isCollapsed ? 'none' : 'block',
                     },
                     '&:hover::after': { transform: active ? 'scaleX(0)' : 'scaleX(1)' },
