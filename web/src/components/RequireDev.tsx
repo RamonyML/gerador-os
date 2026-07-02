@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
+import { AppLoader } from './AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 
 export function RequireDev({ children }: { children: React.ReactNode }) {
@@ -8,7 +9,7 @@ export function RequireDev({ children }: { children: React.ReactNode }) {
   if (initializing) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <CircularProgress />
+        <AppLoader size={16} />
       </Box>
     )
   }

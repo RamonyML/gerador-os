@@ -35,6 +35,7 @@ import { Add, Edit, Search as SearchIcon } from '@mui/icons-material'
 import { HeroIllustration } from '../components/HeroIllustration'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import {
   callableErrorMessage,
@@ -469,7 +470,7 @@ export function AdminUsersPage() {
               <TableRow>
                 <TableCell colSpan={5} align="center" sx={{ py: 8, border: 'none' }}>
                   <Stack spacing={2} sx={{ alignItems: 'center' }}>
-                    <CircularProgress aria-label="Carregando lista de usuários" />
+                    <AppLoader size={9} bg="background.paper" label="Carregando lista de usuários" />
                     <Typography variant="body2" color="text.secondary">
                       Consultando usuários no banco de dados…
                     </Typography>

@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   Chip,
-  CircularProgress,
   Container,
   Divider,
   Typography,
@@ -20,6 +19,7 @@ import {
 import { HeroIllustration } from '../components/HeroIllustration'
 import { NavCard } from '../components/NavCard'
 import { Reveal } from '../components/Reveal'
+import { AppLoader } from '../components/AppLoader'
 import { ILLUSTRATIONS } from '../data/illustrations'
 import { TUTORIAL_ROT_RESET_MODELS } from '../data/tutorialRotReset'
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
@@ -133,7 +133,7 @@ export function SupportHomePage() {
                 bgcolor: 'background.paper',
               }}
             >
-              <CircularProgress size={22} thickness={5} />
+              <AppLoader size={9} bg="background.paper" />
               <Typography variant="body2" color="text.secondary">
                 Carregando fluxos…
               </Typography>

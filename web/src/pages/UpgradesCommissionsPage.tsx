@@ -41,6 +41,7 @@ import {
 } from '../lib/comissoesRules'
 import { gerarRelatorioComissoesPdf } from '../lib/comissoesPdf'
 import { Reveal } from '../components/Reveal'
+import { AppLoader } from '../components/AppLoader'
 import { TipoUpgrade, type Upgrade } from '../types/upgrades'
 
 type ComissaoOperador = {
@@ -186,7 +187,7 @@ export function UpgradesCommissionsPage() {
           minHeight: 320,
         }}
       >
-        <CircularProgress />
+        <AppLoader size={9} />
       </Box>
     )
   }

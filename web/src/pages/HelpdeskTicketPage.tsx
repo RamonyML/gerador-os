@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -28,6 +27,7 @@ import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined'
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded'
 import { alpha, useTheme } from '@mui/material/styles'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../lib/firebase'
 import { canManageHelpdesk } from '../lib/helpdeskAccess'
@@ -225,7 +225,7 @@ export function HelpdeskTicketPage() {
     return (
       <AppPageChrome overline="T.I" title="Chamado">
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-          <CircularProgress />
+          <AppLoader size={9} />
         </Box>
       </AppPageChrome>
     )

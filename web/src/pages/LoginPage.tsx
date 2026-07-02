@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   FormControlLabel,
   IconButton,
   InputAdornment,
@@ -41,6 +40,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { auth } from '../lib/firebase'
 import { brandLogoSrc } from '../lib/brandAssets'
 import { HeroIllustration } from '../components/HeroIllustration'
+import { AppLoader } from '../components/AppLoader'
 import { ILLUSTRATIONS } from '../data/illustrations'
 
 // A tela de login mantém SEMPRE a fonte padrão (Google Sans Flex), ignorando a
@@ -162,7 +162,7 @@ export function LoginPage() {
           fontFamily: LOGIN_FONT,
         }}
       >
-        <CircularProgress color="primary" />
+        <AppLoader size={16} />
       </Box>
     )
   }

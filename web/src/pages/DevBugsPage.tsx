@@ -5,7 +5,6 @@ import {
   Badge,
   Box,
   Chip,
-  CircularProgress,
   Divider,
   Paper,
   Stack,
@@ -20,6 +19,7 @@ import FiberNewOutlinedIcon from '@mui/icons-material/FiberNewOutlined'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { subscribeAllBugReports } from '../lib/bugReportFirestore'
 import { BugStatusChip } from '../features/bugs/BugStatusChip'
 import { BugModuleChip } from '../features/bugs/BugModuleChip'
@@ -127,7 +127,7 @@ export function DevBugsPage() {
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-            <CircularProgress />
+            <AppLoader size={9} />
           </Box>
         ) : filtered.length === 0 ? (
           <Paper

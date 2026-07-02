@@ -7,7 +7,6 @@ import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -36,6 +35,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined'
 import { AgendarVisitaModal } from '../components/AgendarVisitaModal'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { OsTemplateFieldsForm, isFieldDisabled } from '../components/OsTemplateFieldsForm'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsTemplates } from '../hooks/useOsTemplates'
@@ -874,7 +874,7 @@ export function OsGeneratorPage() {
             bgcolor: 'background.paper',
           }}
         >
-          <CircularProgress size={28} thickness={4} />
+          <AppLoader size={9} bg="background.paper" />
           <Typography variant="body2" color="text.secondary">
             Carregando modelos…
           </Typography>

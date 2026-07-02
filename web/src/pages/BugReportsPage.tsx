@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Paper,
   Stack,
   Typography,
@@ -15,6 +14,7 @@ import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import { subscribeMyBugReports } from '../lib/bugReportFirestore'
 import { BugStatusChip } from '../features/bugs/BugStatusChip'
@@ -72,7 +72,7 @@ export function BugReportsPage() {
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-            <CircularProgress />
+            <AppLoader size={9} />
           </Box>
         ) : reports.length === 0 ? (
           <Paper

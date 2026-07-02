@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Container,
   Dialog,
   DialogActions,
@@ -23,6 +22,7 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded'
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded'
+import { AppLoader } from '../components/AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import { useOsHistory } from '../hooks/useOsHistory'
 import { db } from '../lib/firebase'
@@ -116,7 +116,7 @@ export function HistoricoPage() {
   if (histState.status === 'loading') {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-        <CircularProgress />
+        <AppLoader size={9} />
       </Box>
     )
   }

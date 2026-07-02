@@ -41,6 +41,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import { Reveal } from '../components/Reveal'
+import { AppLoader } from '../components/AppLoader'
 import {
   coverageBounds,
   fetchCoverage,
@@ -729,7 +730,7 @@ export function CoberturaPage() {
                   justifyContent: 'center',
                 }}
               >
-                <CircularProgress size={26} thickness={5} />
+                <AppLoader size={9} bg="background.paper" />
                 <Typography variant="body2" color="text.secondary">
                   Carregando mapa de cobertura…
                 </Typography>

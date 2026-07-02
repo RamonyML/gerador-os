@@ -3,7 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogContent,
   Divider,
@@ -21,6 +20,7 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore'
+import { AppLoader } from '../components/AppLoader'
 import { db } from '../lib/firebase'
 import { subscribeUsersPublic, type PublicProfile } from '../lib/usersPublic'
 import type { Chat, ChatMessage } from '../types/chat'
@@ -234,7 +234,7 @@ export function DevChatAuditPage() {
         <Box sx={{ flex: 1, overflowY: 'auto' }}>
           {chatsLoading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-              <CircularProgress size={24} />
+              <AppLoader size={9} />
             </Box>
           ) : filtered.length === 0 ? (
             <Box sx={{ py: 4, textAlign: 'center' }}>
@@ -346,7 +346,7 @@ export function DevChatAuditPage() {
             <Box sx={{ flex: 1, overflowY: 'auto', px: 2, py: 1.5, display: 'flex', flexDirection: 'column', gap: 0.25 }}>
               {msgsLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-                  <CircularProgress size={24} />
+                  <AppLoader size={9} />
                 </Box>
               ) : messages.length === 0 ? (
                 <Box sx={{ textAlign: 'center', pt: 4 }}>

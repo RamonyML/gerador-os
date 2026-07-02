@@ -36,6 +36,7 @@ import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import MyLocationOutlinedIcon from '@mui/icons-material/MyLocationOutlined'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../lib/firebase'
 import { canManageCondominios } from '../lib/condominiosAccess'
@@ -554,7 +555,7 @@ export function CondominiosPage() {
 
             {loading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-                <CircularProgress />
+                <AppLoader size={9} />
               </Box>
             ) : filtered.length === 0 ? (
               <Box sx={{ px: 2.5, py: 4 }}>

@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
+import { AppLoader } from './AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -16,7 +17,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
           justifyContent: 'center',
         }}
       >
-        <CircularProgress />
+        <AppLoader size={16} />
       </Box>
     )
   }

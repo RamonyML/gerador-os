@@ -50,6 +50,7 @@ import { useColorMode } from '../contexts/ColorModeContext'
 import { useAuth } from '../contexts/AuthContext'
 import { canManageAgendaTecnicos } from '../lib/permissions'
 import { AppPageChrome } from '../components/AppPageChrome'
+import { AppLoader } from '../components/AppLoader'
 import { db } from '../lib/firebase'
 import { logger } from '../lib/logger'
 import {
@@ -688,7 +689,7 @@ export function AgendaPage() {
 
             {loading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-                <CircularProgress />
+                <AppLoader size={9} />
               </Box>
             ) : dia.tecnicos.length === 0 ? (
               <Box sx={{ px: 2.5, py: 5, textAlign: 'center' }}>

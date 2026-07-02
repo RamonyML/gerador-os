@@ -17,6 +17,7 @@ import CakeRoundedIcon from '@mui/icons-material/CakeRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import EditRoundedIcon from '@mui/icons-material/EditRounded'
+import { AppLoader } from '../components/AppLoader'
 import { db } from '../lib/firebase'
 import { subscribeUsersDirectory, setBirthday, type PublicProfile } from '../lib/usersPublic'
 
@@ -112,7 +113,7 @@ export function DevBirthdaysPage() {
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', pt: 6 }}>
-          <CircularProgress size={32} />
+          <AppLoader size={9} />
         </Box>
       ) : (
         <Stack sx={{ gap: 1 }}>

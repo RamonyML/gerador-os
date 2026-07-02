@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { Box, CircularProgress } from '@mui/material'
+import { Box } from '@mui/material'
+import { AppLoader } from './AppLoader'
 import { useAuth } from '../contexts/AuthContext'
 import { canAccessSupportHub } from '../lib/supportAccess'
 
@@ -10,7 +11,7 @@ export function RequireSupport({ children }: { children: ReactNode }) {
   if (profileMissing || !profile) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-        <CircularProgress />
+        <AppLoader size={14} />
       </Box>
     )
   }
