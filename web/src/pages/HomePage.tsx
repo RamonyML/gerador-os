@@ -6,6 +6,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import { alpha, useTheme } from '@mui/material/styles'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined'
 import HomeRepairServiceOutlinedIcon from '@mui/icons-material/HomeRepairServiceOutlined'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
@@ -27,7 +28,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded'
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded'
 import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
-import { canManageUsers, canAccessUpgrades, canManagePausas } from '../lib/permissions'
+import { canManageUsers, canAccessUpgrades, canManagePausas, canManageCatalogo } from '../lib/permissions'
 import { canAccessSupportHub } from '../lib/supportAccess'
 import { canAccessCadastroHub } from '../lib/cadastroAccess'
 import { canAccessInstalacaoHub } from '../lib/instalacaoAccess'
@@ -121,6 +122,7 @@ export function HomePage() {
   const showInstalacaoHub = profile != null && canAccessInstalacaoHub(profile)
   const showUpgrades = profile != null && canAccessUpgrades(profile)
   const showUsers = profile != null && canManageUsers(profile)
+  const showCatalogo = profile != null && canManageCatalogo(profile)
   const showHelpdeskManager = profile != null && canManageHelpdesk(profile)
   const showCondominios = profile != null && canAccessCondominios(profile)
   const showMkTestes = profile?.isDev === true
@@ -287,6 +289,17 @@ export function HomePage() {
             description: 'Gerencie contas no Auth e perfis em users/{uid}.',
             to: '/admin/usuarios',
             icon: <PeopleOutlineOutlinedIcon sx={{ fontSize: 28 }} />,
+          } satisfies QuickAction,
+        ]
+      : []),
+    ...(showCatalogo
+      ? [
+          {
+            key: 'catalogo',
+            title: 'Catálogo',
+            description: 'Gerencie planos, equipamentos, formas de pagamento, canais e vínculos usados nos formulários.',
+            to: '/admin/catalogo',
+            icon: <CategoryOutlinedIcon sx={{ fontSize: 28 }} />,
           } satisfies QuickAction,
         ]
       : []),

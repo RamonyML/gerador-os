@@ -19,20 +19,6 @@ const ONU_OPTIONS = [
   { value: 'ZTE', label: 'ZTE' },
 ]
 
-const ROTEADOR_OPTIONS = [
-  { value: 'TP-LINK 840', label: 'TP-LINK 840' },
-  { value: 'TP LINK C-20', label: 'TP LINK C-20' },
-  { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
-  { value: 'TP LINK C-5', label: 'TP LINK C-5' },
-  { value: 'TP LINK G-5', label: 'TP LINK G-5' },
-  { value: 'TP LINK EX511', label: 'TP LINK EX511' },
-  { value: 'GREATEK', label: 'GREATEK' },
-  { value: 'INTELBRAS', label: 'INTELBRAS' },
-  { value: 'HUAWEI AX2', label: 'HUAWEI AX2' },
-  { value: 'ZTE H196-MESH', label: 'ZTE H196' },
-  { value: 'ZTE H199-A', label: 'ZTE H199-A' },
-  { value: 'PARTICULAR DO CLIENTE', label: 'Particular do cliente' },
-]
 
 const ONT_OPTIONS = [
   { value: 'ONT ZTE F 670-L', label: 'ONT ZTE F 670-L' },
@@ -196,7 +182,7 @@ export const ENCE_PADRAO_CASA_FIELDS: OsTemplateField[] = [
     id: 'roteador',
     label: 'Roteador',
     control: 'select',
-    options: ROTEADOR_OPTIONS,
+    catalogCategoria: 'equipamentos',
     section: S_EQUIP,
     layout: { xs: 12, sm: 6 },
     showWhen: { field: 'tipo_equipamento', equals: 'ONU + Roteador' },

@@ -394,7 +394,7 @@ export const REALOC_FIBRA_FIELDS: OsTemplateField[] = [
 
 export function buildRealocFibraSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
@@ -416,6 +416,12 @@ export function buildRealocFibraSegmentos(
   const dataV          = v.dataVisita || 'XX/XX/XXXX'
   const horaV          = v.horaVisita || 'XX:XX'
 
+  const _osRaw = buildRealocFibraTextos(rawValues, '').realocFibraTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
+
   if (tipo === T_PJ) {
     return {
       info: `${sp_} (${cargo}) ENTROU EM CONTATO POR ${canal} (${contato}) E SOLICITOU SUPORTE.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ONU ${sinalONU}.`,
@@ -424,6 +430,8 @@ export function buildRealocFibraSegmentos(
         `${valor}`,
         `${sp_} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -436,6 +444,8 @@ export function buildRealocFibraSegmentos(
         `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}. ${cp} NAO ESTARA PRESENTE, MAS AUTORIZOU ${solUpper} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
         `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -449,6 +459,8 @@ export function buildRealocFibraSegmentos(
         `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solUpper} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
         `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -462,6 +474,8 @@ export function buildRealocFibraSegmentos(
         `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.`,
         `VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -473,6 +487,8 @@ export function buildRealocFibraSegmentos(
       `${valor}`,
       `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA, PAGAMENTO SERA FEITO NO ATO EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

@@ -153,43 +153,6 @@ export const PLANO_ESCOLHIDO_OPTS: FieldOption[] = [
   },
 ]
 
-export const ROTEADOR_ATUAL_OPTS: FieldOption[] = [
-  { value: 'MULTILASER', label: 'MULTILASER' },
-  { value: 'TP-LINK 840', label: 'TP-LINK 840' },
-  { value: 'TP LINK C-20', label: 'TP LINK C-20' },
-  { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
-  { value: 'TP LINK C-5', label: 'TP LINK C-5' },
-  { value: 'TP LINK G-5', label: 'TP LINK G-5' },
-  { value: 'GREATEK', label: 'GREATEK' },
-  { value: 'INTELBRAS', label: 'INTELBRAS' },
-  { value: 'HUAWEI AX2', label: 'HUAWEI AX2' },
-  { value: 'ZTE H196-MESH', label: 'ZTE H196-MESH' },
-  { value: 'ZTE H199-A', label: 'ZTE H199-A' },
-  { value: 'ONT ZTE F 670-L', label: 'ONT ZTE F 670-L' },
-  { value: 'ONT TP-LINK XC220', label: 'ONT TP-LINK XC220' },
-  { value: 'ONT TP-LINK XC230', label: 'ONT TP-LINK XC230' },
-]
-
-export const ROTEADOR_ZTE_OPTS: FieldOption[] = [
-  { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
-  { value: 'TP LINK C-5', label: 'TP LINK C-5' },
-  { value: 'TP LINK G-5', label: 'TP LINK G-5' },
-  { value: 'GREATEK', label: 'GREATEK' },
-  { value: 'INTELBRAS', label: 'INTELBRAS' },
-  { value: 'HUAWEI AX2', label: 'HUAWEI AX2' },
-  { value: 'ZTE H196-MESH', label: 'ZTE H196-MESH' },
-  { value: 'ZTE H199-A', label: 'ZTE H199-A' },
-  { value: 'ONT ZTE F 670-L', label: 'ONT ZTE F 670-L' },
-  { value: 'ONT TP-LINK XC220', label: 'ONT TP-LINK XC220' },
-  { value: 'ONT TP-LINK XC230', label: 'ONT TP-LINK XC230' },
-]
-
-export const ROTEADOR_TPLINK_OPTS: FieldOption[] = [
-  { value: 'TPLINK 511', label: 'TPLINK 511' },
-  { value: 'ONT TPLINK X220', label: 'ONT TPLINK X220' },
-  { value: 'ONT TPLINK X230', label: 'ONT TPLINK X230' },
-  { value: 'ONT TPLINK X530', label: 'ONT TPLINK X530' },
-]
 
 export const OBS_LOCAL_OUTRO = 'OUTRO'
 export const OBS_LOCAL_OPTS: FieldOption[] = [
@@ -415,8 +378,8 @@ export function buildExtendSegmentos(
   }
 }
 
-/** Campos comuns aos fluxos ZTE e TP-Link (o roteador é injetado por família). */
-export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boolean): OsTemplateField[] {
+/** Campos comuns aos fluxos ZTE e TP-Link. */
+export function buildExtendFields(withOrigem: boolean): OsTemplateField[] {
   const fields: OsTemplateField[] = [
     {
       id: 'segmento',
@@ -557,7 +520,7 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       control: 'select',
       section: S_PLANO,
       layout: { md: 4 },
-      options: roteadorOpts,
+      catalogCategoria: 'equipamentos',
       showWhen: { field: 'troca', equals: TROCA_NAO },
     },
     {
@@ -566,7 +529,7 @@ export function buildExtendFields(roteadorOpts: FieldOption[], withOrigem: boole
       control: 'select',
       section: S_PLANO,
       layout: { md: 4 },
-      options: ROTEADOR_ATUAL_OPTS,
+      catalogCategoria: 'equipamentos',
       showWhen: { field: 'troca', equals: TROCA_SIM },
     },
     {

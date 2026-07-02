@@ -289,19 +289,6 @@ const COM_SOLICITANTE = [T_PJ, T_TITULAR_TERCEIRO, T_TERCEIRO_TERCEIRO, T_TERCEI
 const COM_TERCEIRO = [T_TITULAR_TERCEIRO, T_TERCEIRO_TERCEIRO, T_TERCEIRO_TITULAR]
 const COM_CONTATO_SOL = [T_TERCEIRO_TERCEIRO, T_TERCEIRO_TITULAR]
 
-const ROTEADOR_OPTIONS = [
-  'MULTILASER',
-  'TP-LINK 840',
-  'TP LINK C-20',
-  'D-LINK DIR 842',
-  'TP LINK C-5',
-  'TP LINK G-5',
-  'GREATEK',
-  'INTELBRAS',
-  'HUAWEI AX2',
-  'ZTE H196-MESH',
-  'ZTE H199-A',
-].map((r) => ({ value: r, label: r }))
 
 export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
   {
@@ -436,7 +423,7 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
     control: 'select',
     section: S_DET,
     layout: { md: 6 },
-    options: ROTEADOR_OPTIONS,
+    catalogCategoria: 'equipamentos',
   },
   {
     id: 'protocolo',
@@ -495,11 +482,17 @@ export const ROTEADOR_QUEIMADO_FIELDS: OsTemplateField[] = [
 
 export function buildRoteadorQueimadoSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
   }
+
+  const _osRaw = buildRoteadorQueimadoTextos(rawValues, '').roteadorQueimadoTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
 
   const modo      = v.modoCusto || M_COBRADA
   const tipo      = v.tipoSolicitacao || T_TITULAR
@@ -566,6 +559,8 @@ export function buildRoteadorQueimadoSegmentos(
         `${sol} ${agree}.`,
         `${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -577,6 +572,8 @@ export function buildRoteadorQueimadoSegmentos(
         `${sol} ${agree}.`,
         `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -587,6 +584,8 @@ export function buildRoteadorQueimadoSegmentos(
         ...sharedBase,
         `${cp} ${agree}${disseConn}${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -597,6 +596,8 @@ export function buildRoteadorQueimadoSegmentos(
       ...sharedBase,
       `${nome} ${agree}${disseConn}DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visitaProto}.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

@@ -9,7 +9,6 @@ import {
   L_PROC,
   ALTPLAN_PLANO_ATUAL_OPTS,
   ALTPLAN_PLANO_ESCOLHIDO_OPTS,
-  ALTPLAN_ROTEADOR_OPTS,
 } from './remoto'
 
 /**
@@ -388,7 +387,7 @@ export const ALTPLAN_PRESENCIAL_FIELDS: OsTemplateField[] = [
     label: 'Roteador',
     control: 'select',
     section: S_PLANO,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { md: 6 },
   },
   {

@@ -224,7 +224,7 @@ export function DevHealthPage() {
 
     const checkFirestore = async (): Promise<CheckResult> => {
       const start = Date.now()
-      await getDocs(query(collection(db, 'appLogs'), limit(1)))
+      await getDocs(query(collection(db, 'usersPublic'), limit(1)))
       return { status: 'ok', latency: Date.now() - start, message: 'Leitura bem-sucedida' }
     }
 

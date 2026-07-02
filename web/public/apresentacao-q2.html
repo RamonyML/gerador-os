@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Atendimentos Suporte T&eacute;cnico &mdash; MZ NET 2&ordm; Trimestre 2026</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32-v2.png"/>
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64-v2.png"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#22c55e;--gd:#15803d;--gm:#16a34a;--gl:#d1fae5;--gb:#f0fdf4;
+  --sl:#0f172a;--gy:#64748b;--gy2:#94a3b8;
+  --am:#f59e0b;--aml:#fef3c7;--amdk:#92400e;
+  --rd:#ef4444;
+  --bl:#3b82f6;
+  --bd:#e2e8f0;--bg:#f8fafc;--white:#fff;--r:12px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Google Sans','Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--sl);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Animate helpers */
+.reveal{opacity:0}.reveal.vis{opacity:1}
+.stag>*{opacity:0}.stag.vis>*{opacity:1}
+
+/* Hero */
+.hero{
+  background:linear-gradient(150deg,#071910 0%,#0d2e1a 30%,#14532d 65%,#166534 100%);
+  color:#fff;position:relative;overflow:hidden;
+}
+.hero-mesh{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 70% at 80% 30%,rgba(34,197,94,.14) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 10% 80%,rgba(34,197,94,.08) 0%,transparent 60%);
+}
+.hero-inner{max-width:960px;margin:0 auto;padding:48px 32px 52px;position:relative;z-index:1}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px}
+.hero-logo img{height:40px;width:auto;display:block}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.32);
+  color:#86efac;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  padding:5px 14px;border-radius:99px;
+}
+.hero-dot{width:7px;height:7px;background:var(--g);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+.hero h1{font-size:clamp(26px,4vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1.14;margin-bottom:6px}
+.hero h1 em{color:var(--g);font-style:normal}
+.hero-sis{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:12px}
+.hero-sis span{color:rgba(255,255,255,.85);font-weight:500}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.46);max-width:520px;margin-bottom:38px;line-height:1.75}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);
+  border-radius:var(--r);padding:20px 14px;text-align:center;
+  transition:transform .25s,background .25s;cursor:default;
+}
+.kpi:hover{transform:translateY(-4px);background:rgba(255,255,255,.13)}
+.kn{font-size:44px;font-weight:700;color:var(--g);line-height:1;margin-bottom:7px;letter-spacing:-.02em}
+.kl{font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.5}
+
+/* Layout */
+.page{max-width:960px;margin:0 auto;padding:20px 24px 64px}
+.section{padding:46px 0 42px;border-bottom:1px solid var(--bd)}
+.section:last-of-type{border-bottom:none}
+.sec-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px}
+.sec-num{
+  width:30px;height:30px;border-radius:50%;background:var(--g);color:#fff;
+  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:3px;
+}
+.sec-title{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--sl)}
+.sec-sub{font-size:13px;color:var(--gy);margin-top:3px}
+
+/* Card */
+.card{
+  background:var(--white);border:1px solid var(--bd);border-radius:var(--r);
+  padding:22px 20px;box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.card-title{font-size:13.5px;font-weight:600;color:var(--sl);margin-bottom:3px}
+.card-sub{font-size:12px;color:var(--gy);margin-bottom:18px}
+
+/* Volume row */
+.vol-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:0}
+@media(max-width:560px){.vol-row{grid-template-columns:1fr}}
+.vol-card{background:var(--white);border:1px solid var(--bd);border-radius:var(--r);padding:18px 14px;text-align:center}
+.vol-num{font-size:34px;font-weight:700;color:var(--sl);line-height:1;margin-bottom:6px}
+.vol-lbl{font-size:12px;color:var(--gy);line-height:1.5}
+
+/* Stat 3 */
+.stat3{display:flex;gap:0;border:1.5px solid var(--gl);border-radius:var(--r);overflow:hidden;margin:16px 0}
+.stat3-item{flex:1;text-align:center;padding:18px 12px;border-right:1px solid var(--gl);background:var(--gb)}
+.stat3-item:last-child{border-right:none}
+.stat3-num{font-size:30px;font-weight:700;color:var(--gd);line-height:1;margin-bottom:5px;letter-spacing:-.02em}
+.stat3-lbl{font-size:11.5px;color:var(--gy);line-height:1.5}
+@media(max-width:500px){.stat3{flex-direction:column}.stat3-item{border-right:none;border-bottom:1px solid var(--gl)}.stat3-item:last-child{border-bottom:none}}
+
+/* Tempo cards */
+.tempo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+@media(max-width:600px){.tempo-grid{grid-template-columns:1fr}}
+.tc{border-radius:var(--r);padding:22px 18px;text-align:center}
+.tc.antes{background:#fff7ed;border:1.5px solid #fed7aa}
+.tc.depois{background:var(--gb);border:1.5px solid var(--gl)}
+.tc.eco{background:var(--gb);border:2px solid var(--g)}
+.tc-period{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+.antes .tc-period{color:#c2410c}
+.depois .tc-period,.eco .tc-period{color:var(--gd)}
+.tc-num{font-size:48px;font-weight:700;line-height:1;margin-bottom:7px;letter-spacing:-.02em}
+.antes .tc-num{color:#c2410c}
+.depois .tc-num{color:var(--gm)}
+.eco .tc-num{color:var(--gd)}
+.tc-sub{font-size:12px;color:var(--gy);line-height:1.5}
+
+/* Duo before→after cards */
+.tc-duo{border-radius:var(--r);padding:22px 18px;text-align:center;background:var(--gb);border:1.5px solid var(--gl)}
+.tc-duo .tc-period{color:var(--gd)}
+.tc-duo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:7px}
+.tc-duo-before{font-size:30px;font-weight:700;color:#c2410c;letter-spacing:-.02em;line-height:1}
+.tc-duo-arrow{font-size:18px;color:var(--gy2)}
+.tc-duo-after{font-size:30px;font-weight:700;color:var(--gd);letter-spacing:-.02em;line-height:1}
+.tc-duo .tc-sub{font-size:12px;color:var(--gy);line-height:1.5;margin-top:0}
+
+/* Big comparison */
+.cmp-big{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin:24px 0}
+@media(max-width:620px){.cmp-big{grid-template-columns:1fr;gap:10px}.cmp-arrow{transform:rotate(90deg)}}
+.cmp-side{border-radius:var(--r);padding:28px 22px;text-align:center}
+.cmp-side.antes{background:#fff7ed;border:1.5px solid #fed7aa}
+.cmp-side.depois{background:var(--gb);border:1.5px solid var(--gl)}
+.cmp-tag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.antes .cmp-tag{color:#c2410c}.depois .cmp-tag{color:var(--gd)}
+.cmp-big-num{font-size:58px;font-weight:700;line-height:1;letter-spacing:-.03em;margin-bottom:8px}
+.antes .cmp-big-num{color:#c2410c}.depois .cmp-big-num{color:var(--gm)}
+.cmp-detail{font-size:12.5px;color:var(--gy);line-height:1.6}
+.cmp-arrow{font-size:24px;color:var(--gy2);text-align:center;padding:0 4px}
+
+/* Economia hero */
+.eco-hero{
+  background:linear-gradient(135deg,#14532d 0%,#16a34a 100%);
+  border-radius:var(--r);padding:32px 28px;text-align:center;color:#fff;margin:24px 0;
+}
+.eco-hero-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);margin-bottom:10px}
+.eco-hero-num{font-size:72px;font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1;margin-bottom:8px}
+.eco-hero-sub{font-size:14.5px;color:rgba(255,255,255,.7);line-height:1.7}
+
+/* Prose */
+.prose{font-size:16px;color:#374151;line-height:1.8;max-width:780px;margin-bottom:20px}
+.prose strong{color:var(--sl)}
+
+/* Flow */
+.flow{display:flex;flex-direction:column;gap:0;margin:20px 0 24px}
+.flow-step{display:flex;gap:16px;position:relative}
+.flow-step:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;bottom:-2px;width:2px;background:var(--gl)}
+.flow-icon{width:30px;height:30px;border-radius:50%;background:var(--g);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
+.flow-body{padding-bottom:22px;flex:1}
+.flow-title{font-size:14px;font-weight:700;color:var(--sl);margin-bottom:5px}
+.flow-desc{font-size:13px;color:var(--gy);line-height:1.65}
+
+/* Boxes */
+.green-box{background:var(--gb);border:1.5px solid var(--g);border-radius:var(--r);padding:18px 22px;margin:18px 0}
+.green-box .box-title{font-weight:700;color:var(--gd);margin-bottom:8px;font-size:13.5px}
+.green-box p{font-size:13.5px;color:#374151;line-height:1.7}
+.amber-box{background:var(--aml);border:1.5px solid var(--am);border-radius:var(--r);padding:18px 22px;margin:18px 0}
+.amber-box .box-title{font-weight:700;color:var(--amdk);margin-bottom:8px;font-size:13.5px}
+.amber-box p{font-size:13.5px;color:#374151;line-height:1.7}
+
+/* Pot cards */
+.pot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+@media(max-width:580px){.pot-grid{grid-template-columns:1fr}}
+.pot-card{background:var(--white);border:1px solid var(--bd);border-radius:var(--r);padding:20px 18px;transition:box-shadow .2s,transform .2s}
+.pot-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.07);transform:translateY(-3px)}
+.pot-title{font-size:13.5px;font-weight:700;color:var(--sl);margin-bottom:8px}
+.pot-desc{font-size:13px;color:var(--gy);line-height:1.65}
+
+/* Points */
+.points{list-style:none;display:flex;flex-direction:column;gap:14px}
+.point{display:flex;gap:14px;align-items:flex-start}
+.point-icon{width:30px;height:30px;border-radius:50%;background:var(--gb);border:1px solid var(--gl);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.point-body{flex:1;font-size:14px;color:#374151;line-height:1.7}
+.point-body strong{color:var(--sl)}
+
+/* Footer */
+footer{text-align:center;padding:28px 20px;background:var(--white);border-top:1px solid var(--bd);font-size:12.5px;color:var(--gy)}
+footer img{height:20px;opacity:.45;display:inline-block;vertical-align:middle;margin-right:10px}
+
+@media print{
+  .hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kpi,.card,.tc,.cmp-side,.eco-hero,.pot-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-inner">
+    <div class="hero-top animate__animated animate__fadeInDown">
+      <div class="hero-logo"><img src="/brand/mzlogo-fundoescuro.png" alt="MZ NET"/></div>
+      <div class="hero-badge">
+        <div class="hero-dot"></div>
+        Suporte T&eacute;cnico &nbsp;&bull;&nbsp; 2&ordm; Trimestre de 2026
+      </div>
+    </div>
+    <h1 class="animate__animated animate__fadeInUp" style="animation-delay:.1s">
+      Atendimentos do Suporte T&eacute;cnico<br><em>MZ NET</em>
+    </h1>
+    <p class="hero-sis animate__animated animate__fadeInUp" style="animation-delay:.18s">
+      com o sistema <span>Gerador de O.S.</span>
+    </p>
+    <p class="hero-sub animate__animated animate__fadeInUp" style="animation-delay:.25s">
+      Quanto tempo a equipe gastava com opera&ccedil;&atilde;o manual no ERP
+      e quanto passou a gastar com a automa&ccedil;&atilde;o &mdash; Abril, Maio e Junho de 2026.
+    </p>
+    <div class="kpi-row stag animate__animated animate__fadeInUp" style="animation-delay:.35s">
+      <div class="kpi">
+        <div class="kn">257h</div>
+        <div class="kl">economizadas<br>por m&ecirc;s</div>
+      </div>
+      <div class="kpi">
+        <div class="kn">59h</div>
+        <div class="kl">economizadas<br>por semana</div>
+      </div>
+      <div class="kpi">
+        <div class="kn">8.5h</div>
+        <div class="kl">economizadas<br>por dia</div>
+      </div>
+      <div class="kpi">
+        <div class="kn">770h</div>
+        <div class="kl">economizadas<br>no trimestre</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+<!-- 1. BASE DE CALCULO -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">1</div>
+    <div>
+      <div class="sec-title">Base de c&aacute;lculo &mdash; Volume de atendimentos</div>
+      <div class="sec-sub">Quantidade de O.S. abertas pelo suporte no 2&ordm; Trimestre de 2026</div>
+    </div>
+  </div>
+  <p class="prose">
+    Os c&aacute;lculos de tempo a seguir s&atilde;o baseados no volume real de Ordens de Servi&ccedil;o
+    abertas pelo suporte t&eacute;cnico da MZ NET entre abril e junho de 2026,
+    exportadas diretamente do ERP MK Solutions.
+  </p>
+  <div class="vol-row stag">
+    <div class="vol-card">
+      <div class="vol-num">1.416</div>
+      <div class="vol-lbl">O.S. em Abril</div>
+    </div>
+    <div class="vol-card">
+      <div class="vol-num">1.210</div>
+      <div class="vol-lbl">O.S. em Maio</div>
+    </div>
+    <div class="vol-card">
+      <div class="vol-num">1.224</div>
+      <div class="vol-lbl">O.S. em Junho</div>
+    </div>
+  </div>
+  <div class="stat3 reveal">
+    <div class="stat3-item">
+      <div class="stat3-num">3.850</div>
+      <div class="stat3-lbl">total no trimestre</div>
+    </div>
+    <div class="stat3-item">
+      <div class="stat3-num">1.283</div>
+      <div class="stat3-lbl">m&eacute;dia por m&ecirc;s</div>
+    </div>
+    <div class="stat3-item">
+      <div class="stat3-num">42</div>
+      <div class="stat3-lbl">m&eacute;dia por dia</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. ANTES E DEPOIS -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">2</div>
+    <div>
+      <div class="sec-title">Antes e depois da integra&ccedil;&atilde;o MK API</div>
+      <div class="sec-sub">12 minutos de opera&ccedil;&atilde;o manual no ERP &mdash; zerados pela automa&ccedil;&atilde;o</div>
+    </div>
+  </div>
+  <div class="tempo-grid stag">
+    <div class="tc-duo">
+      <div class="tc-period">Por dia</div>
+      <div class="tc-duo-row">
+        <span class="tc-duo-before">8.5h</span>
+        <span class="tc-duo-arrow">&rarr;</span>
+        <span class="tc-duo-after">0h</span>
+      </div>
+      <div class="tc-sub">42 OS/dia &times; 12 min &rarr; 0 min</div>
+    </div>
+    <div class="tc-duo">
+      <div class="tc-period">Por semana</div>
+      <div class="tc-duo-row">
+        <span class="tc-duo-before">59h</span>
+        <span class="tc-duo-arrow">&rarr;</span>
+        <span class="tc-duo-after">0h</span>
+      </div>
+      <div class="tc-sub">7 dias &times; 8.5h</div>
+    </div>
+    <div class="tc-duo">
+      <div class="tc-period">Por m&ecirc;s</div>
+      <div class="tc-duo-row">
+        <span class="tc-duo-before">257h</span>
+        <span class="tc-duo-arrow">&rarr;</span>
+        <span class="tc-duo-after">0h</span>
+      </div>
+      <div class="tc-sub">m&eacute;dia de 1.283 OS/m&ecirc;s</div>
+    </div>
+  </div>
+  <div class="eco-hero reveal" style="margin-top:20px">
+    <div class="eco-hero-label">Horas economizadas por m&ecirc;s</div>
+    <div class="eco-hero-num">257h</div>
+    <div class="eco-hero-sub">
+      Esse &eacute; o tempo que a equipe <strong>deixou de gastar</strong> com digita&ccedil;&atilde;o manual no ERP
+      a cada m&ecirc;s &mdash; tempo que passou a ser investido no atendimento ao cliente.
+    </div>
+  </div>
+</div>
+
+<!-- 3. COMPARATIVO -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">3</div>
+    <div>
+      <div class="sec-title">A economia real</div>
+      <div class="sec-sub">Comparativo mensal e acumulado &mdash; horas recuperadas pelo setor</div>
+    </div>
+  </div>
+
+  <div class="cmp-big stag">
+    <div class="cmp-side antes">
+      <div class="cmp-tag">&#10060; Antes da integra&ccedil;&atilde;o MK</div>
+      <div class="cmp-big-num">257h</div>
+      <div class="cmp-detail">por m&ecirc;s em opera&ccedil;&atilde;o<br>manual no ERP</div>
+    </div>
+    <div class="cmp-arrow">&#8594;</div>
+    <div class="cmp-side depois">
+      <div class="cmp-tag">&#10003; Com Automa&ccedil;&atilde;o MK</div>
+      <div class="cmp-big-num">0h</div>
+      <div class="cmp-detail">opera&ccedil;&atilde;o manual no MK<br>zerada pela API</div>
+    </div>
+  </div>
+
+  <div class="stat3 reveal">
+    <div class="stat3-item">
+      <div class="stat3-num">8.5h</div>
+      <div class="stat3-lbl">economizadas<br>por dia</div>
+    </div>
+    <div class="stat3-item">
+      <div class="stat3-num">59h</div>
+      <div class="stat3-lbl">economizadas<br>por semana</div>
+    </div>
+    <div class="stat3-item">
+      <div class="stat3-num">770h</div>
+      <div class="stat3-lbl">economizadas<br>no trimestre</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">Antes vs. Com Automa&ccedil;&atilde;o MK &mdash; horas por m&ecirc;s</div>
+    <div class="card-sub">Compara&ccedil;&atilde;o dos tr&ecirc;s meses do trimestre</div>
+    <canvas id="cCmp" height="170"></canvas>
+  </div>
+</div>
+
+<!-- 4. COMO FOI FEITO -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">4</div>
+    <div>
+      <div class="sec-title">Como chegamos aqui</div>
+      <div class="sec-sub">Integra&ccedil;&atilde;o completa do Gerador de O.S. com o ERP MK Solutions via API</div>
+    </div>
+  </div>
+  <p class="prose">
+    A redu&ccedil;&atilde;o de 12 para 2 minutos por atendimento foi poss&iacute;vel com a integra&ccedil;&atilde;o direta
+    do Gerador de O.S. &agrave;s APIs do <strong>MK Solutions</strong>, conclu&iacute;da em junho de 2026.
+    Com <strong>8 endpoints em produ&ccedil;&atilde;o</strong> e <strong>37 formul&aacute;rios completamente integrados</strong>,
+    o sistema executa todo o ciclo do ERP sem que o operador precise acessar o painel do ERP.
+  </p>
+  <div class="flow stag">
+    <div class="flow-step">
+      <div class="flow-icon">1</div>
+      <div class="flow-body">
+        <div class="flow-title">Operador preenche o formul&aacute;rio guiado</div>
+        <div class="flow-desc">Seleciona o tipo de atendimento. O sistema busca automaticamente o cliente e as conex&otilde;es ativas no MK via API &mdash; sem navegar no ERP.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">2</div>
+      <div class="flow-body">
+        <div class="flow-title">1 clique: protocolo + coment&aacute;rios criados no MK</div>
+        <div class="flow-desc">O sistema autentica, abre o protocolo e insere todos os coment&aacute;rios padronizados em sequ&ecirc;ncia, com divis&atilde;o autom&aacute;tica de texto quando necess&aacute;rio.</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">3</div>
+      <div class="flow-body">
+        <div class="flow-title">Ordem de Servi&ccedil;o criada e vinculada automaticamente</div>
+        <div class="flow-desc">A O.S. &eacute; aberta, vinculada &agrave; conex&atilde;o correta e ao protocolo. Processo conclu&iacute;do em menos de 2 minutos desde o primeiro campo preenchido.</div>
+      </div>
+    </div>
+  </div>
+  <div class="green-box reveal">
+    <div class="box-title">&#10003; 37 de 37 formul&aacute;rios integrados em produ&ccedil;&atilde;o</div>
+    <p>
+      Manuten&ccedil;&atilde;o, Altera&ccedil;&atilde;o de Plano, Mudan&ccedil;a de Endere&ccedil;o, Wi-Fi Extend,
+      Feedback p&oacute;s-O.S., M&iacute;dia/Roku, Termo de Responsabilidade e Senha de Rede &mdash;
+      todos 100% automatizados via API MK.
+    </p>
+  </div>
+</div>
+
+<!-- 5. EXPANSAO -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">5</div>
+    <div>
+      <div class="sec-title">Potencial de expans&atilde;o</div>
+      <div class="sec-sub">A infraestrutura j&aacute; existe &mdash; outros setores podem ter os mesmos ganhos</div>
+    </div>
+  </div>
+  <p class="prose">
+    O mesmo ganho de tempo obtido pelo suporte pode ser replicado para outros setores
+    que hoje operam o ERP manualmente, sem custo proporcional de desenvolvimento:
+  </p>
+  <div class="pot-grid stag">
+    <div class="pot-card">
+      <div class="pot-title">1 &mdash; Equipe Financeira</div>
+      <div class="pot-desc">Emiss&atilde;o de cobran&ccedil;as, contratos e registros financeiros integrados ao ERP com as mesmas APIs j&aacute; dispon&iacute;veis na infraestrutura atual.</div>
+    </div>
+    <div class="pot-card">
+      <div class="pot-title">2 &mdash; Equipe de Instala&ccedil;&atilde;o</div>
+      <div class="pot-desc">Abertura de lead, cadastro, contrato e O.S. de instala&ccedil;&atilde;o automatizados com as mesmas APIs j&aacute; mapeadas.</div>
+    </div>
+    <div class="pot-card">
+      <div class="pot-title">3 &mdash; Equipe T&eacute;cnica de Campo</div>
+      <div class="pot-desc">Encerramento de O.S. e relat&oacute;rio de visita diretamente pelo t&eacute;cnico, sem acesso ao painel ERP.</div>
+    </div>
+    <div class="pot-card">
+      <div class="pot-title">4 &mdash; &#128202; Dashboards Gerenciais</div>
+      <div class="pot-desc">Os dados j&aacute; est&atilde;o sendo rastreados. Dashboards de produtividade por operador e per&iacute;odo s&atilde;o poss&iacute;veis agora.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. POR QUE DEV -->
+<div class="section reveal">
+  <div class="sec-header">
+    <div class="sec-num">6</div>
+    <div>
+      <div class="sec-title">Por que justifica um setor de desenvolvimento</div>
+      <div class="sec-sub">Um projeto desenvolvido do zero, mantido e evolu&iacute;do continuamente desde dezembro de 2023</div>
+    </div>
+  </div>
+  <p class="prose">
+    Tudo que foi mostrado neste relat&oacute;rio, o sistema, a integra&ccedil;&atilde;o com o MK Solutions
+    e a economia de <strong>642h horas no trimestre</strong>, foi desenvolvido por mim
+    (<strong>Ramony Lima</strong>), em paralelo com minhas fun&ccedil;&otilde;es operacionais no suporte,
+    desde dezembro de 2023, quando o uso do Gerador de O.S foi autorizado no Suporte T&eacute;cnico.
+  </p>
+  <ul class="points stag" style="margin-bottom:26px">
+    <li class="point">
+      <div class="point-icon">&#128101;</div>
+      <div class="point-body"><strong>Projeto completo, desenvolvido por uma pessoa &mdash;</strong> front-end, back-end, banco de dados, infraestrutura e integra&ccedil;&otilde;es foram todos concebidos e implementados por Ramony Lima, desde a primeira linha de c&oacute;digo.</div>
+    </li>
+    <li class="point">
+      <div class="point-icon">&#9889;</div>
+      <div class="point-body"><strong>Entregas cont&iacute;nuas &mdash;</strong> m&oacute;dulos novos toda semana: cat&aacute;logo de equipamentos, controle de upgrades, agenda de visitas, notifica&ccedil;&otilde;es, chat interno e relat&oacute;rios gerenciais &mdash; sempre em produ&ccedil;&atilde;o.</div>
+    </li>
+    <li class="point">
+      <div class="point-icon">&#9729;&#65039;</div>
+      <div class="point-body"><strong>Tecnologia empresarial &mdash;</strong> Google Cloud, Firebase, Firestore em tempo real, integra&ccedil;&atilde;o de API com Secret Manager e monitoramento de erros com Sentry em produ&ccedil;&atilde;o.</div>
+    </li>
+    <li class="point">
+      <div class="point-icon">&#128202;</div>
+      <div class="point-body"><strong>Impacto mensur&aacute;vel &mdash;</strong> 642h horas economizadas s&oacute; no trimestre. Com dedica&ccedil;&atilde;o integral ao desenvolvimento, esse n&uacute;mero cresceria ainda mais com a expans&atilde;o para outros setores.</div>
+    </li>
+  </ul>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  <img src="/brand/mzlogo-padrao-fundoclaro.png" alt="MZ NET"/>
+  <strong>MZ NET</strong> &nbsp;&bull;&nbsp; Economia de Tempo &mdash; Suporte T&eacute;cnico 2&ordm; Trimestre 2026
+  &nbsp;&bull;&nbsp; Elaborado por Ramony M. Lima &nbsp;&bull;&nbsp; Uso interno
+</footer>
+
+<script>const MESES=["Abril", "Maio", "Junho"];const TOTS=[1416, 1210, 1224];const ANTES_MES=[283.2, 242.0, 244.8];const DEPOIS_MES=[0, 0, 0];const ECO_MES=[283.2, 242.0, 244.8];const TOTAL_Q2=3850;</script>
+<script>
+Chart.register(ChartDataLabels);
+Chart.defaults.font = { family:"'Google Sans','Segoe UI',system-ui,sans-serif", size:12 };
+Chart.defaults.color = '#64748b';
+Chart.defaults.plugins.datalabels = { display: false };
+
+const GD='#15803d',GM='#16a34a',G='#22c55e',SL='#0f172a';
+const fmtH = v => v.toFixed(1)+'h';
+
+new Chart('cCmp',{type:'bar',data:{labels:MESES,datasets:[
+  {label:'Antes (manual no MK)',data:ANTES_MES,backgroundColor:'#fed7aa',borderRadius:6,borderSkipped:false},
+  {label:'Horas economizadas',data:ECO_MES,backgroundColor:G,borderRadius:6,borderSkipped:false}
+]},options:{responsive:true,plugins:{
+  legend:{position:'bottom',labels:{padding:16,boxWidth:12,font:{size:12}}},
+  datalabels:{display:false},
+  tooltip:{callbacks:{label:c=>' '+c.raw.toFixed(1)+'h'}}},
+  scales:{
+    x:{grid:{display:false}},
+    y:{grid:{color:'#f1f5f9'},beginAtZero:true,ticks:{callback:v=>v+'h'}}
+  }}});
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    if (el.classList.contains('reveal')) {
+      el.classList.add('animate__animated','animate__fadeInUp');
+      el.style.opacity='1';
+    }
+    if (el.classList.contains('stag')) {
+      el.style.opacity='1';
+      [...el.children].forEach((c,i)=>{
+        c.style.opacity='1';
+        c.classList.add('animate__animated','animate__fadeInUp');
+        c.style.animationDelay=(i*.09)+'s';
+      });
+    }
+    io.unobserve(el);
+  });
+},{threshold:.07});
+document.querySelectorAll('.reveal,.stag').forEach(el=>io.observe(el));
+</script>
+<script>
+(function(){
+  var fmtBR=function(n){return Math.round(n).toLocaleString('pt-BR');};
+
+  function parseEl(el){
+    var txt=el.textContent.trim();
+    // Formato BR com ponto de milhar: "1.416", "3.850"
+    if(/^\d{1,3}(?:\.\d{3})+$/.test(txt))
+      return{num:parseInt(txt.replace(/\./g,'')),suffix:'',dec:0,br:true};
+    var m=txt.match(/^([\d.]+)(.*)/);
+    if(!m)return null;
+    return{num:parseFloat(m[1]),suffix:m[2],dec:m[1].indexOf('.')>=0?m[1].split('.')[1].length:0,br:false};
+  }
+
+  function runAnim(el,from,parsed,dur){
+    dur=dur||1400;
+    var to=parsed.num,suffix=parsed.suffix,dec=parsed.dec,br=parsed.br;
+    // Para countdown de 1.4, usar 1 casa decimal durante a animação
+    var dispDec=(from>0&&from<2)?1:dec;
+    function fmt(val,final){
+      if(final)return(br?(to===0?'0':fmtBR(to)):(dec>0?to.toFixed(dec):String(Math.round(to))))+suffix;
+      return(br?fmtBR(val):val.toFixed(dispDec))+suffix;
+    }
+    el.textContent=from===0?(br?'0':(dec>0?(0).toFixed(dec):'0'))+suffix:fmt(from,false);
+    var start=performance.now();
+    (function tick(now){
+      var t=Math.min((now-start)/dur,1);
+      var ease=1-Math.pow(1-t,3);
+      el.textContent=fmt(from+(to-from)*ease,t>=1);
+      if(t<1)requestAnimationFrame(tick);
+    })(start);
+  }
+
+  // Valores originais dos cards eco (countdown para 0)
+  var ECO_FROM=[1.4,10,43];
+  var SEL='.kn,.vol-num,.stat3-num,.tc-num,.cmp-big-num,.eco-hero-num,.tc-duo-before';
+
+  var items=Array.from(document.querySelectorAll(SEL)).map(function(el){
+    var parsed=parseEl(el);
+    if(!parsed)return null;
+    var from=0;
+    if(el.classList.contains('tc-num')&&el.closest&&el.closest('.tc.eco')){
+      var grid=el.closest('.tempo-grid');
+      var idx=Array.from(grid.querySelectorAll('.tc.eco .tc-num')).indexOf(el);
+      from=ECO_FROM[idx]!==undefined?ECO_FROM[idx]:0;
+    }
+    return{el:el,from:from,parsed:parsed};
+  }).filter(Boolean);
+
+  // Hero KPIs: anima no load com stagger
+  items.filter(function(d){return d.el.closest('.kpi');}).forEach(function(d,i){
+    setTimeout(function(){runAnim(d.el,d.from,d.parsed);},420+i*130);
+  });
+
+  // Demais elementos: anima ao entrar na viewport
+  var rest=items.filter(function(d){return!d.el.closest('.kpi');});
+  var cIO=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting)return;
+      var d=rest.find(function(x){return x.el===entry.target;});
+      if(d&&!d.done){d.done=true;setTimeout(function(){runAnim(d.el,d.from,d.parsed);},260);cIO.unobserve(entry.target);}
+    });
+  },{threshold:0.4});
+  rest.forEach(function(d){cIO.observe(d.el);});
+})();
+</script>
+</body>
+</html>

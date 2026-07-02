@@ -4,7 +4,6 @@ import {
   buildExtendFields,
   buildExtendTextos,
   buildExtendSegmentos,
-  ROTEADOR_TPLINK_OPTS,
 } from './wifiExtendShared'
 
 /**
@@ -30,7 +29,7 @@ export function getWifiExtendTplinkDefaults(): OsTemplatePresetPayload {
     title: 'Wi-Fi Extend — TP-Link',
     demandCategory: 'wifi-extend',
     outputTemplate: WIFI_EXTEND_OUTPUT,
-    fields: buildExtendFields(ROTEADOR_TPLINK_OPTS, true),
+    fields: buildExtendFields(true),
     operatorGuidance: {
       title: 'Atenção ao agendar a visita técnica',
       items: [

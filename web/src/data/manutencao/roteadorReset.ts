@@ -207,22 +207,6 @@ const COM_VISITA = [M_VISITA]
 const SO_LOJA    = [M_LOJA]
 const SO_REMOTO  = [M_REMOTO]
 
-const ROTEADOR_OPTIONS = [
-  'MULTILASER',
-  'TP-LINK 840',
-  'TP LINK C-20',
-  'D-LINK DIR 842',
-  'TP LINK C-5',
-  'TP LINK G-5',
-  'GREATEK',
-  'INTELBRAS',
-  'HUAWEI AX2',
-  'ZTE H196-MESH',
-  'ZTE H199-A',
-  'ONT ZTE F 670-L',
-  'ONT TP-LINK XC220',
-  'ONT TP-LINK XC230',
-].map((r) => ({ value: r, label: r }))
 
 export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
   {
@@ -307,7 +291,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
     control: 'select',
     section: S_DET,
     layout: { md: 4 },
-    options: ROTEADOR_OPTIONS,
+    catalogCategoria: 'equipamentos',
   },
   {
     id: 'ssid',
@@ -362,7 +346,7 @@ export const ROTEADOR_RESET_FIELDS: OsTemplateField[] = [
 
 export function buildRoteadorResetSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
@@ -375,6 +359,12 @@ export function buildRoteadorResetSegmentos(
   const sinalONU = upper(v.sinalONU)
   const oscila   = upper(v.oscila)
   const roteador = upper(v.roteador)
+
+  const _osRaw = buildRoteadorResetTextos(rawValues, '').roteadorResetTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
 
   const info = `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.`
 
@@ -396,6 +386,8 @@ export function buildRoteadorResetSegmentos(
         `INFORMEI ${cp} QUE O ROTEADOR ESTA RESETADO E ORIENTEI O MESMO A REALIZAR O PROCESSO DE RECONFIGURACAO REMOTA CONFORME TUTORIAL DA MZNET.`,
         `${cp} SEGUIU AS ORIENTACOES, CONFIGUROU O ROTEADOR E CONFIRMOU QUE A REDE WI-FI VOLTOU NORMALMENTE.\n\nSSID: ${ssid}\nSENHA: ${senhaWifi}\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -414,6 +406,8 @@ export function buildRoteadorResetSegmentos(
         ...twoOptions,
         `${cp} OPTOU POR TRAZER O ROTEADOR NA LOJA EM ${dataLoja} AS ${horaLoja}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -429,6 +423,8 @@ export function buildRoteadorResetSegmentos(
       ...twoOptions,
       `${cp} OPTOU PELA VISITA TECNICA, CONCORDOU COM OS TERMOS REPASSADOS E SOLICITOU PAGAR EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

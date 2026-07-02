@@ -287,7 +287,7 @@ export const LUZ_VERMELHA_ISENTO_FIELDS: OsTemplateField[] = [
 
 export function buildLuzVermelhaIsentoSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
@@ -307,6 +307,12 @@ export function buildLuzVermelhaIsentoSegmentos(
   const dataV      = v.dataVisita || 'XX/XX/XXXX'
   const horaV      = v.horaVisita || 'XX:XX'
 
+  const _osRaw = buildLuzVermelhaIsentoTextos(rawValues, '').luzVmIsentoTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
+
   if (tipo === T_TERCEIRO_TERCEIRO) {
     return {
       info: `${sol} (${parente} DE ${cp}) ENTROU EM CONTATO POR ${canal} (${contatoSol}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E ${op} SEM SINAL.`,
@@ -317,6 +323,8 @@ export function buildLuzVermelhaIsentoSegmentos(
         INFORMEI_ISENTO,
         `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solFull} (${parente}) ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -330,6 +338,8 @@ export function buildLuzVermelhaIsentoSegmentos(
         INFORMEI_ISENTO,
         `POR PROCEDIMENTO PADRAO ENTREI EM CONTATO POR ${canal} (${contato}) COM ${cp} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -343,6 +353,8 @@ export function buildLuzVermelhaIsentoSegmentos(
         INFORMEI_ISENTO,
         `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. ${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR E ASSINAR O.S. VISITA AGENDADA (A PEDIDO DO CLIENTE) PARA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -356,6 +368,8 @@ export function buildLuzVermelhaIsentoSegmentos(
       INFORMEI_ISENTO,
       `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA. DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} AS ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

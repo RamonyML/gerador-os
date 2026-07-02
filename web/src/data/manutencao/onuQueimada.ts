@@ -366,11 +366,17 @@ export const ONU_QUEIMADA_FIELDS: OsTemplateField[] = [
 
 export function buildOnuQueimadaSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
   }
+
+  const _osRaw = buildOnuQueimadaTextos(rawValues, '').onuQueimadaTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
 
   const tipo       = v.tipoSolicitacao || T_TITULAR
   const cp         = first(upper(v.cliente))
@@ -419,6 +425,8 @@ export function buildOnuQueimadaSegmentos(
         `${sol} ${agree}.`,
         `${proced} AUTORIZOU ${solFull} (${parente}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -430,6 +438,8 @@ export function buildOnuQueimadaSegmentos(
         `${sol} ${agree}.`,
         `${proced} DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -440,6 +450,8 @@ export function buildOnuQueimadaSegmentos(
         ...sharedCards,
         `${cp} ${agree},${cp} DISSE QUE NAO ESTARA PRESENTE, MAS AUTORIZOU ${solFull} (${parente}) A ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO CASO HOUVER. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -450,6 +462,8 @@ export function buildOnuQueimadaSegmentos(
       ...sharedCards,
       `${nome} ${agree},DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. ${visita}.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

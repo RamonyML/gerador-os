@@ -29,6 +29,7 @@ import { GRAU_RELACIONAMENTO } from '../data/grauRelacionamento'
 import { CARGO_FUNCAO } from '../data/cargoFuncao'
 import type { FieldOption, OsTemplateField } from '../types/osTemplate'
 import { getFieldControl, resolveFieldGridSize } from '../types/osTemplate'
+import { useCatalogo } from '../hooks/useCatalogo'
 import {
   CepLookupError,
   fetchCepWithFallback,
@@ -615,13 +616,15 @@ function HighlightSelect({
   field: f,
   value,
   onChange,
+  options: optionsProp,
 }: {
   field: OsTemplateField
   value: string
   onChange: (id: string, value: string) => void
+  options?: FieldOption[]
 }) {
   const theme = useTheme()
-  const options = f.options ?? []
+  const options = optionsProp ?? f.options ?? []
   const isRed = f.tone === 'red'
   const p = theme.palette.primary
   const gradient = isRed
@@ -695,6 +698,58 @@ function HighlightSelect({
   )
 }
 
+function CatalogSelectField({
+  field: f,
+  value,
+  onChange,
+  disabled = false,
+}: {
+  field: OsTemplateField
+  value: string
+  onChange: (id: string, value: string) => void
+  disabled?: boolean
+}) {
+  const { items } = useCatalogo(f.catalogCategoria!)
+  const options: FieldOption[] = items
+    .filter((i) => i.ativo && (!f.catalogGrupo || i.grupo === f.catalogGrupo))
+    .map((i) => ({ value: i.value, label: i.label }))
+
+  return (
+    <FormControl fullWidth size="small" disabled={disabled}>
+      <InputLabel id={`${f.id}-lbl`}>{f.label}</InputLabel>
+      <Select
+        labelId={`${f.id}-lbl`}
+        label={f.label}
+        value={value}
+        onChange={(e) => onChange(f.id, e.target.value)}
+      >
+        {options.map((opt, i) => (
+          <MenuItem key={`${f.id}-opt-${i}`} value={opt.value}>
+            {opt.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
+}
+
+function CatalogHighlightSelect({
+  field: f,
+  value,
+  onChange,
+}: {
+  field: OsTemplateField
+  value: string
+  onChange: (id: string, value: string) => void
+}) {
+  const { items } = useCatalogo(f.catalogCategoria!)
+  const options: FieldOption[] = items
+    .filter((i) => i.ativo && (!f.catalogGrupo || i.grupo === f.catalogGrupo))
+    .map((i) => ({ value: i.value, label: i.label }))
+
+  return <HighlightSelect field={f} value={value} onChange={onChange} options={options} />
+}
+
 function FieldInput({
   field: f,
   value,
@@ -712,8 +767,9 @@ function FieldInput({
 }) {
   const kind = getFieldControl(f)
 
-  if (f.highlight && kind === 'select' && f.options && f.options.length > 0) {
-    return <HighlightSelect field={f} value={value} onChange={onChange} />
+  if (f.highlight && kind === 'select') {
+    if (f.catalogCategoria) return <CatalogHighlightSelect field={f} value={value} onChange={onChange} />
+    if (f.options && f.options.length > 0) return <HighlightSelect field={f} value={value} onChange={onChange} />
   }
 
   if (kind === 'date') {
@@ -826,6 +882,10 @@ function FieldInput({
         }}
       />
     )
+  }
+
+  if (kind === 'select' && f.catalogCategoria) {
+    return <CatalogSelectField field={f} value={value} onChange={onChange} disabled={disabled} />
   }
 
   if (kind === 'select') {

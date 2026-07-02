@@ -1,6 +1,5 @@
 import type { OsTemplateField } from '../../types/osTemplate'
 import type { OsTemplatePresetPayload } from '../osTemplatePresets'
-import { ALTPLAN_ROTEADOR_OPTS } from '../altplan/remoto'
 
 const S_INST = 'DETALHES DA INSTALAÇÃO'
 const S_KIT = 'TESTES NO KIT DO TÉCNICO'
@@ -73,7 +72,7 @@ export const ENCE_ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     label: 'Roteador (já instalado)',
     control: 'select',
     section: S_INST,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { xs: 12, sm: 6 },
     showWhen: { field: 'tipoTroca', equals: TIPO_TROCA_SEM },
   },
@@ -93,7 +92,7 @@ export const ENCE_ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     label: 'Roteador retirado',
     control: 'select',
     section: S_INST,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { xs: 12, sm: 6 },
     showWhen: { field: 'tipoTroca', equals: TIPO_TROCA_COM },
   },
@@ -111,7 +110,7 @@ export const ENCE_ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     label: 'Roteador instalado',
     control: 'select',
     section: S_INST,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { xs: 12, sm: 6 },
     showWhen: { field: 'tipoTroca', equals: TIPO_TROCA_COM },
   },

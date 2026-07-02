@@ -63,6 +63,8 @@ import { DevHealthPage } from './pages/DevHealthPage'
 import { BugReportsPage } from './pages/BugReportsPage'
 import { TutoriaisHomePage } from './pages/TutoriaisHomePage'
 import { TutorialRoteadorResetadoPage } from './pages/TutorialRoteadorResetadoPage'
+import { CatalogoPage } from './pages/CatalogoPage'
+import { RequireCatalogo } from './components/RequireCatalogo'
 
 export default function App() {
   return (
@@ -397,6 +399,14 @@ export default function App() {
             <RequireUserManager>
               <AdminUsersPage />
             </RequireUserManager>
+          }
+        />
+        <Route
+          path="/admin/catalogo"
+          element={
+            <RequireCatalogo>
+              <CatalogoPage />
+            </RequireCatalogo>
           }
         />
       </Route>

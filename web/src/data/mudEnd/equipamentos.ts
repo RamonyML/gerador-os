@@ -342,25 +342,77 @@ export function buildMudEndEquipamentosSegmentos(
 
   const tipo               = v.tipoSolicitacao || T_TITULAR
   const clientePrimeiro    = first(upper(v.cliente))
-  const solicitantePrimeiro = first(upper(v.solicitante))
+  const solicitante        = upper(v.solicitante)
+  const solicitantePrimeiro = first(solicitante)
   const parenteSol         = upper(v.parenteSol)
+  const autorizado         = upper(v.autorizado)
+  const autorizadoPrimeiro = first(autorizado)
+  const parente            = upper(v.parente)
   const contato            = digits(v.contato)
   const contatoSol         = digits(v.contatoSol)
+  const contatoAut         = digits(v.contatoAut)
   const equipPrefix        = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
   const sinalSaida         = formatSinalFibraSaida(v.sinalONU)
   const canal              = v.canal ?? ''
+  const canalTit           = v.canalTit ?? ''
+  const adress             = upper(v.adress)
+  const complemento        = upper(v.complemento)
+  const bairro             = upper(v.bairro)
+  const num                = digits(v.num)
+  const formaPag           = v.formaPag ?? ''
+  const dataVisita         = v.dataVisita ?? ''
+  const horaVisita         = v.horaVisita ?? ''
+  const [dataLig, horaLig] = String(v.dataLigacao ?? '').trim().split(/\s+/)
 
   const ehTerceiro  = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
   const quem        = ehTerceiro ? `${solicitantePrimeiro} (${parenteSol} DE ${clientePrimeiro})` : clientePrimeiro
   const contatoInfo = ehTerceiro ? contatoSol : contato
+  const quemPrimeiro = ehTerceiro ? solicitantePrimeiro : clientePrimeiro
 
-  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO — BUSCAR EQUIPAMENTOS.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
+  // ── info card ──
+  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ${equipPrefix} ${sinalSaida}.`
 
-  const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndEquipamentosTextos(rawValues, '')
+  // ── blocos reutilizados ──
+  const cardEndereco = `ENDEREÇO NOVO: ${adress}, ${num}\nCOMPLEMENTO: ${complemento}\nCEP: ${v.cep ?? ''}\nBAIRRO: ${bairro}`
+  const cardInformei = `INFORMEI A ${quemPrimeiro} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO.\nCIENTE E ORIENTADO(A) QUE A MUDANÇA POSSUI O CUSTO DE SERVIÇO NO VALOR DE R$100,00 A SER PAGO NO ATO EM DINHEIRO, CARTÃO OU PIX.\nRESSALTEI QUE OS EQUIPAMENTOS DE INTERNET DEVEM SER LEVADOS PARA O NOVO ENDEREÇO, ONU, ROTEADOR OU ONT + (FONTES DE ENERGIA).`
+  const autorizacaoEntrega = `${quemPrimeiro} AUTORIZOU ${autorizado} (${parente}) A ENTREGAR EQUIPAMENTOS AO TÉCNICO NO ANTIGO ENDEREÇO (CONTATO DE ${autorizadoPrimeiro}: ${contatoAut}).`
 
-  const partes = mudEndTextoProtocolo.split(/\n[=*]{8,}\n/g).map(p => p.trim()).filter(Boolean)
-  const comentarios = partes.slice(2)
+  // ── comentários por variante ──
+  let comentarios: string[]
 
+  if (tipo === T_TERCEIRO_TITULAR) {
+    comentarios = [
+      `QUESTIONADO, ${solicitantePrimeiro} DISSE QUE VAI SE MUDAR E DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      cardInformei,
+      `${solicitantePrimeiro} CONFIRMOU A SOLICITAÇÃO E OPTOU REALIZAR O PAGAMENTO DA TAXA DE R$100,00 NO ${formaPag}.\n${autorizacaoEntrega}\nPOR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE AUTORIZOU A SOLICITAÇÃO E CONFIRMOU QUE ESTARÁ PRESENTE NO ATO DA VISITA.\nMUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+    ]
+  } else if (tipo === T_TERCEIRO_TERCEIRO) {
+    comentarios = [
+      `QUESTIONADO, ${solicitantePrimeiro} DISSE QUE VAI SE MUDAR E DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      cardInformei,
+      `${solicitantePrimeiro} CONFIRMOU A SOLICITAÇÃO E OPTOU REALIZAR O PAGAMENTO DA TAXA DE R$100,00 NO ${formaPag}.\n${autorizacaoEntrega}\nPOR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${canalTit} (${contato}) DIA ${dataLig ?? ''} ÀS ${horaLig ?? ''}HRS COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parenteSol}) ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.\nMUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+    ]
+  } else if (tipo === T_TITULAR_TERCEIRO) {
+    comentarios = [
+      `QUESTIONADO, ${clientePrimeiro} DISSE QUE VAI SE MUDAR E DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      cardInformei,
+      `${clientePrimeiro} CONFIRMOU A SOLICITAÇÃO E OPTOU REALIZAR O PAGAMENTO DA TAXA DE R$100,00 NO ${formaPag}.\n${autorizacaoEntrega}\n${clientePrimeiro} DISSE QUE ${autorizado} (${parente}) TAMBÉM ESTARÁ PRESENTE NO NOVO ENDEREÇO PARA ACOMPANHAR, ASSINAR O.S E EFETUAR O PAGAMENTO.\nMUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+    ]
+  } else {
+    // T_TITULAR
+    comentarios = [
+      `QUESTIONADO, ${clientePrimeiro} DISSE QUE VAI SE MUDAR E DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      cardInformei,
+      `${clientePrimeiro} CONFIRMOU A SOLICITAÇÃO E OPTOU REALIZAR O PAGAMENTO DA TAXA DE R$100,00 NO ${formaPag}.\n${autorizacaoEntrega}\nMUDANÇA AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+    ]
+  }
+
+  // ── OS fields ──
+  const { mudEndTextoOS } = buildMudEndEquipamentosTextos(rawValues, '')
   const _mark = 'INDICAÇÃO TÉCNICA:'
   const _midx = mudEndTextoOS.indexOf(_mark)
   const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS

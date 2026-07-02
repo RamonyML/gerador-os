@@ -303,7 +303,7 @@ export const FONTE_QUEIMADA_FIELDS: OsTemplateField[] = [
 
 export function buildFonteQueimadaSegmentos(
   rawValues: Record<string, unknown>,
-): { info: string; comentarios: string[] } {
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
   const v: Record<string, string> = {}
   for (const [key, value] of Object.entries(rawValues)) {
     v[key] = String(value ?? '')
@@ -321,6 +321,12 @@ export function buildFonteQueimadaSegmentos(
   const horaV     = v.horaVisita || 'XX:XX'
   const periodo   = upper(v.periodo) || 'MANHA'
 
+  const _osRaw = buildFonteQueimadaTextos(rawValues, '').fonteQueimadaTextoOS
+  const _mark = 'INDICACAO TECNICA:'
+  const _midx = _osRaw.indexOf(_mark)
+  const osDescricao = _midx >= 0 ? _osRaw.slice(0, _midx).replace(/[\s=>*]+$/, '') : _osRaw
+  const osIndicacoes = _midx >= 0 ? _osRaw.slice(_midx + _mark.length).trimStart() : ''
+
   if (modo === M_LOJA) {
     return {
       info: `${cp} ENTROU EM CONTATO POR ${canal} (${contato}) INFORMANDO PROBLEMA DE CONEXAO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUCAO E FIBRA COM SINAL: ${sinalONU}.`,
@@ -333,6 +339,8 @@ export function buildFonteQueimadaSegmentos(
         `SUGERI TAMBEM, A POSSIBILIDADE DE COMPARECER A LOJA E RETIRAR UMA NOVA FONTE DE ENERGIA SEM NENHUM CUSTO ADICIONAL.`,
         `${cp} OPTOU POR VIR A LOJA, DISSE QUE VIRA NO DIA ${dataV} NO PERIODO DA ${periodo}.\n\nCLIENTE SEM DUVIDAS.`,
       ],
+      osDescricao,
+      osIndicacoes,
     }
   }
 
@@ -347,6 +355,8 @@ export function buildFonteQueimadaSegmentos(
       `FICANDO APENAS A COBRANCA DO DESLOCAMENTO DO TECNICO COM O CUSTO DE R$50,00.`,
       `${cp} CONCORDOU COM OS TERMOS DA VISITA TECNICA E PAGARA EM ${formaPag}, DISSE QUE ESTARA PRESENTE PARA ACOMPANHAR O TECNICO. VISITA AGENDADA PARA O DIA ${dataV} A PARTIR DE ${horaV} HRS.\n\nCLIENTE SEM DUVIDAS.`,
     ],
+    osDescricao,
+    osIndicacoes,
   }
 }
 

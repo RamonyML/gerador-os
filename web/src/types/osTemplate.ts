@@ -1,4 +1,5 @@
 import type { Sector } from './profile'
+import type { CatalogoCategoria, PlanGrupo } from './catalogo'
 
 /** Tipo de controle no formulário do operador */
 export type FieldControl =
@@ -39,8 +40,12 @@ export interface OsTemplateField {
   /** Legado: se não houver `control`, textarea ⇐ multiline */
   multiline?: boolean
   control?: FieldControl
-  /** Obrigatório para select e radio */
+  /** Obrigatório para select e radio (hardcoded). Use catalogCategoria para opções dinâmicas. */
   options?: FieldOption[]
+  /** Quando definido, o select carrega opções do catálogo Firestore em vez do array `options`. */
+  catalogCategoria?: CatalogoCategoria
+  /** Para planos: filtra por 'atual' ou 'ofertado'. */
+  catalogGrupo?: PlanGrupo
   /** Largura no formulário; se omitido, o gerador usa heurística por tipo de campo. */
   layout?: FieldLayout
   /** Agrupa campos em seções (ex.: “IDENTIFICAÇÃO DO CLIENTE”). */

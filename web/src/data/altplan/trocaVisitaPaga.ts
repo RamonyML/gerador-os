@@ -3,7 +3,6 @@ import { formatSinalFibraSaida } from '../../lib/sinalFibraMask'
 import {
   ALTPLAN_PLANO_ATUAL_OPTS,
   ALTPLAN_PLANO_ESCOLHIDO_OPTS,
-  ALTPLAN_ROTEADOR_OPTS,
 } from './remoto'
 import {
   ORIGEM_OPTS,
@@ -497,7 +496,7 @@ export const ALTPLAN_TROCA_VISITA_PAGA_FIELDS: OsTemplateField[] = [
     label: 'Roteador atual',
     control: 'select',
     section: S_PLANO,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { md: 6 },
   },
   {

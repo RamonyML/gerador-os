@@ -194,6 +194,87 @@ const CONTINUOUS: { icon: LucideIcon; title: string; desc: string }[] = [
   },
 ]
 
+const IMPACT_KPIS = [
+  { target: 214, suffix: 'h', label: 'economizadas por mês', sub: 'via automação MK Solutions' },
+  { target: 642, suffix: 'h', label: 'economizadas no 2º trimestre', sub: 'Abril · Maio · Junho 2026' },
+  { target: 3850, suffix: '', label: 'O.S. automatizadas no 2º T', sub: 'média de 1.283/mês', isBR: true },
+  { target: 37, suffix: '/37', label: 'formulários integrados', sub: '100% de cobertura MK' },
+]
+
+function AnimatedKpi({
+  target,
+  suffix = '',
+  label,
+  sub,
+  isBR = false,
+  compact = false,
+}: {
+  target: number
+  suffix?: string
+  label: string
+  sub?: string
+  isBR?: boolean
+  compact?: boolean
+}) {
+  const [value, setValue] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  const hasRun = useRef(false)
+  const { isDark } = useColorMode()
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting || hasRun.current) return
+        hasRun.current = true
+        io.disconnect()
+        const dur = 1400
+        const start = performance.now()
+        const tick = (now: number) => {
+          const t = Math.min((now - start) / dur, 1)
+          const ease = 1 - (1 - t) ** 3
+          setValue(Math.round(target * ease))
+          if (t < 1) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      },
+      { threshold: 0.4 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [target])
+
+  const displayed = isBR ? value.toLocaleString('pt-BR') : String(value)
+
+  return (
+    <Box ref={ref} sx={{ textAlign: 'center', py: compact ? 1 : 3, px: compact ? 0 : 2 }}>
+      <Typography
+        component="div"
+        sx={{
+          fontWeight: 800,
+          color: isDark ? '#4ade80' : '#16a34a',
+          lineHeight: 1,
+          letterSpacing: '-0.03em',
+          fontSize: compact
+            ? { xs: '1.6rem', sm: '1.9rem', md: '2.125rem' }
+            : { xs: '2rem', sm: '2.4rem', md: '2.75rem' },
+        }}
+      >
+        {displayed}{suffix}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        {label}
+      </Typography>
+      {sub && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+          {sub}
+        </Typography>
+      )}
+    </Box>
+  )
+}
+
 function FadeInSection({ children, delayMs = 0 }: { children: ReactNode; delayMs?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -584,22 +665,12 @@ export function SobrePage() {
                 }}
               >
                 {[
-                  { num: '37', label: 'formulários integrados' },
-                  { num: '170', label: 'variantes de atendimento' },
-                  { num: '8', label: 'categorias cobertas' },
-                  { num: '100%', label: 'das O.S. automatizadas' },
-                ].map(({ num, label }) => (
-                  <Box key={label} sx={{ textAlign: 'center', py: 1 }}>
-                    <Typography
-                      variant="h4"
-                      sx={{ fontWeight: 800, color: isDark ? '#4ade80' : '#16a34a', lineHeight: 1 }}
-                    >
-                      {num}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {label}
-                    </Typography>
-                  </Box>
+                  { target: 37,  suffix: '',   label: 'formulários integrados'    },
+                  { target: 170, suffix: '',   label: 'variantes de atendimento'  },
+                  { target: 8,   suffix: '',   label: 'categorias cobertas'       },
+                  { target: 100, suffix: '%',  label: 'das O.S. automatizadas'    },
+                ].map((kpi) => (
+                  <AnimatedKpi key={kpi.label} {...kpi} compact />
                 ))}
               </Box>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 2.5, lineHeight: 1.7 }}>
@@ -706,6 +777,52 @@ export function SobrePage() {
                 </Paper>
               ))}
             </Box>
+          </Box>
+        </FadeInSection>
+
+        {/* Impacto em números */}
+        <FadeInSection delayMs={112}>
+          <Box sx={{ mt: 7 }}>
+            <SectionHeading
+              overline="Impacto em números"
+              title="O que a automação representa"
+              subtitle="Dados reais do 2º Trimestre de 2026 — baseados no volume de O.S. processadas."
+            />
+            <Paper
+              elevation={0}
+              sx={{
+                borderRadius: 3,
+                border: 1,
+                borderColor: alpha('#22c55e', isDark ? 0.3 : 0.2),
+                bgcolor: alpha('#22c55e', isDark ? 0.06 : 0.03),
+                overflow: 'hidden',
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' },
+                }}
+              >
+                {IMPACT_KPIS.map((kpi, i) => {
+                  const divColor = alpha('#22c55e', isDark ? 0.2 : 0.15)
+                  return (
+                    <Box
+                      key={kpi.label}
+                      sx={{
+                        borderRight: {
+                          xs: i % 2 === 0 ? `1px solid ${divColor}` : 'none',
+                          md: i < 3 ? `1px solid ${divColor}` : 'none',
+                        },
+                        borderBottom: { xs: i < 2 ? `1px solid ${divColor}` : 'none', md: 'none' },
+                      }}
+                    >
+                      <AnimatedKpi {...kpi} />
+                    </Box>
+                  )
+                })}
+              </Box>
+            </Paper>
           </Box>
         </FadeInSection>
 

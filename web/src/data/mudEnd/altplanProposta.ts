@@ -301,25 +301,118 @@ export function buildMudEndAltplanPropostaSegmentos(
 
   const tipo               = v.tipoSolicitacao || T_TITULAR
   const clientePrimeiro    = first(upper(v.cliente))
-  const solicitantePrimeiro = first(upper(v.solicitante))
+  const solicitante        = upper(v.solicitante)
+  const solicitantePrimeiro = first(solicitante)
+  const autorizado         = upper(v.autorizado)
+  const autorizadoPrimeiro = first(autorizado)
   const parente            = upper(v.parente)
   const contato            = digits(v.contato)
   const contatoSol         = digits(v.contatoSol)
+  const contatoAut         = digits(v.contatoAut)
   const equipPrefix        = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
   const sinalSaida         = formatSinalFibraSaida(v.sinalONU)
   const canal              = v.canal ?? ''
+  const canalTit           = v.canalTit ?? ''
+  const adress             = upper(v.adress)
+  const complemento        = upper(v.complemento)
+  const bairro             = upper(v.bairro)
+  const num                = digits(v.num)
+  const quandoMud          = upper(v.quandoMud)
+  const mudou              = upper(v.mudou)
+  const equipSituacao      = v.equipSituacao ?? ''
+  const tipoComp           = upper(v.tipoComp)
+  const comprovante        = upper(v.comprovante)
+  const comprovanteFinal   = comprovante === 'OUTROS' ? tipoComp : comprovante
+  const nomeComprov        = upper(v.nomeComprov)
+  const grauComp           = upper(v.grauComp)
+  const planoAtual         = v.planoAtual ?? ''
+  const planoEscolhido     = v.planoEscolhido ?? ''
+  const roteador           = v.roteador ?? ''
+  const dataContrato       = v.dataContrato ?? ''
+  const dataVisita         = v.dataVisita ?? ''
+  const horaVisita         = v.horaVisita ?? ''
+  const [dataLig, horaLig] = String(v.dataLigacao ?? '').trim().split(/\s+/)
 
-  const ehTerceiro  = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
-  const quem        = ehTerceiro ? `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})` : clientePrimeiro
-  const contatoInfo = ehTerceiro ? contatoSol : contato
+  const ehTerceiro      = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
+  const primeiroContato = ehTerceiro ? solicitantePrimeiro : clientePrimeiro
+  const contatoUsado    = ehTerceiro ? contatoSol : contato
 
-  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO COM ALTERAÇÃO DE PLANO (ISENTO).\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
+  // ── info card ──
+  const info = `${primeiroContato} ENTROU EM CONTATO POR ${canal} (${contatoUsado}) E PEDIU INFORMAÇÕES SOBRE MUDANÇA DE ENDEREÇO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO, E ${equipPrefix} ${sinalSaida}.`
 
-  const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndAltplanPropostaTextos(rawValues, '')
+  // ── blocos comuns ──
+  const enderecoBase = `ENDEREÇO NOVO: ${adress}, ${num}\nCOMPLEMENTO: ${complemento}\nCEP: ${v.cep ?? ''}\nBAIRRO: ${bairro}`
+  const cardEndereco = quandoMud ? enderecoBase + '\n' + quandoMud : enderecoBase
+  const cardComprovante = `COMPROVANTE DE ENDEREÇO (${comprovanteFinal}) EM ANEXO\nNOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`
 
-  const partes = mudEndTextoProtocolo.split(/\n[=*]{8,}\n/g).map(p => p.trim()).filter(Boolean)
-  const comentarios = partes.slice(2)
+  // cards 5-8 são idênticos em todas as variantes
+  const cardPropostas = `VISTO QUE O CLIENTE NÃO POSSUI FIDELIDADE NO MOMENTO DA SOLICITAÇÃO, REPASSEI DUAS PROPOSTAS PARA A EXECUÇÃO DO SERVIÇO.`
+  const cardFormaPadrao = `1. FORMA PADRÃO:\n- COBRAMOS O VALOR REFERENTE AO SERVIÇO E MATERIAL UTILIZADO, DE R$100,00 A SER PAGO PARA O TÉCNICO EM DINHEIRO, CARTÃO OU PIX, VISTO QUE CLIENTE NÃO TEVE INTERESSE NA RENOVAÇÃO DO PLANO APÓS OFERTA, MANTENDO PLANO ATUAL SEM FIDELIDADE.`
+  const cardAltPlano = `2. ALTERANDO O PLANO (VISITA SEM CUSTOS):\n- PLANO ATUAL: ${planoAtual} CONTRATADO EM ${dataContrato} COM FIDELIDADE DE 12 MESES. ROTEADOR: ${roteador}\n- PLANO OFERTADO: ${planoEscolhido}`
+  const cardAcesso = `ACESSO LIBERADO PARA SMARTPHONE OU TV SMART QUE POSSUA COMPATIBILIDADE.\nSENDO ASSIM, ${primeiroContato} OPTOU PELA ALTERAÇÃO DE PLANO (EXPLIQUEI AO CLIENTE QUE DESSA FORMA SERIA REINSERIDO EM NOSSA BASE COMO UM NOVO CLIENTE) TENDO COMO BENEFÍCIO VISITA ISENTA DE CUSTOS.`
 
+  // ── comentários por variante ──
+  let comentarios: string[]
+
+  if (tipo === T_TERCEIRO_TITULAR) {
+    comentarios = [
+      `QUESTIONADO, ${solicitantePrimeiro} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      `INFORMEI A ${solicitantePrimeiro} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO E QUE PARA REALIZAÇÃO DA NOVA INSTALAÇÃO.`,
+      ...(equipSituacao ? [equipSituacao] : []),
+      cardPropostas,
+      cardFormaPadrao,
+      cardAltPlano,
+      cardAcesso,
+      `CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.\n${solicitantePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.\n\nMUDANÇA E ALTERAÇÃO DE PLANO AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${canal} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE AUTORIZOU E CONFIRMOU A SOLICITAÇÃO.`,
+      cardComprovante,
+    ]
+  } else if (tipo === T_TERCEIRO_TERCEIRO) {
+    comentarios = [
+      `QUESTIONADO, ${solicitantePrimeiro} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      `INFORMEI A ${solicitantePrimeiro} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO E QUE PARA REALIZAÇÃO DA NOVA INSTALAÇÃO.`,
+      ...(equipSituacao ? [equipSituacao] : []),
+      cardPropostas,
+      cardFormaPadrao,
+      cardAltPlano,
+      cardAcesso,
+      `CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.\n${solicitantePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.\n\nMUDANÇA E ALTERAÇÃO DE PLANO AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+      `POR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${canalTit} (${contato}) DIA ${dataLig ?? ''} ÀS ${horaLig ?? ''}HRS COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E CONTRATO.`,
+      cardComprovante,
+    ]
+  } else if (tipo === T_TITULAR_TERCEIRO) {
+    comentarios = [
+      `QUESTIONADO, ${clientePrimeiro} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      `INFORMEI A ${clientePrimeiro} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO E QUE PARA REALIZAÇÃO DA NOVA INSTALAÇÃO.`,
+      ...(equipSituacao ? [equipSituacao] : []),
+      cardPropostas,
+      cardFormaPadrao,
+      cardAltPlano,
+      cardAcesso,
+      `CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.\n${clientePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.\n\n${clientePrimeiro} DISSE QUE NÃO ESTARÁ PRESENTE, MAS AUTORIZOU ${autorizado} (${parente}) A ACOMPANHAR E ASSINAR O.S.\n${clientePrimeiro} INFORMOU O NÚMERO DE CONTATO (${contatoAut}) PARA CASO SEJA NECESSÁRIO FALAR COM ${autorizadoPrimeiro}.\n\nMUDANÇA E ALTERAÇÃO DE PLANO AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+      cardComprovante,
+    ]
+  } else {
+    // T_TITULAR — padrão mostrado
+    comentarios = [
+      `QUESTIONADO, ${clientePrimeiro} DISSE QUE ${mudou} DESEJA QUE OS EQUIPAMENTOS SEJAM REINSTALADOS NO NOVO ENDEREÇO.`,
+      cardEndereco,
+      `INFORMEI A ${clientePrimeiro} QUE POSSUÍMOS VIABILIDADE DE FIBRA ÓTICA NO ENDEREÇO INFORMADO E QUE PARA REALIZAÇÃO DA NOVA INSTALAÇÃO.`,
+      ...(equipSituacao ? [equipSituacao] : []),
+      cardPropostas,
+      cardFormaPadrao,
+      cardAltPlano,
+      cardAcesso,
+      `CIENTE QUE OS BENEFÍCIOS SÃO LIBERADOS APÓS ASSINATURA DO CONTRATO.\n${clientePrimeiro} CONCORDOU COM OS TERMOS DE ALTERAÇÃO, ESTÁ CIENTE DA RENOVAÇÃO DA FIDELIDADE.\n\nMUDANÇA E ALTERAÇÃO DE PLANO AGENDADA PARA DIA ${dataVisita} ${horaVisita} HRS.`,
+      cardComprovante,
+    ]
+  }
+
+  // ── OS fields ──
+  const { mudEndTextoOS } = buildMudEndAltplanPropostaTextos(rawValues, '')
   const _mark = 'INDICAÇÃO TÉCNICA:'
   const _midx = mudEndTextoOS.indexOf(_mark)
   const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS

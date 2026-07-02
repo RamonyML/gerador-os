@@ -382,34 +382,6 @@ export const ALTPLAN_PLANO_ESCOLHIDO_OPTS = [
   },
 ]
 
-export const ALTPLAN_ROTEADOR_OPTS = [
-  { value: 'MULTILASER', label: 'MULTILASER' },
-  { value: 'TP-LINK 840', label: 'TP-LINK 840' },
-  { value: 'TP LINK C-20', label: 'TP LINK C-20' },
-  { value: 'D-LINK DIR 842', label: 'D-LINK DIR 842' },
-  { value: 'TP LINK C-5', label: 'TP LINK C-5' },
-  { value: 'TP LINK G-5', label: 'TP LINK G-5' },
-  { value: 'GREATEK', label: 'GREATEK' },
-  { value: 'INTELBRAS', label: 'INTELBRAS' },
-  { value: 'HUAWEI AX2', label: 'HUAWEI AX2' },
-  { value: 'ZTE H196-MESH', label: 'ZTE H196-MESH' },
-  { value: 'ZTE H199-A', label: 'ZTE H199-A' },
-  { value: 'ONT ZTE F 670-L', label: 'ONT ZTE F 670-L' },
-  { value: 'ONT TP-LINK XC220', label: 'ONT TP-LINK XC220' },
-  { value: 'ONT TP-LINK XC230', label: 'ONT TP-LINK XC230' },
-  { value: 'ONT TP-LINK X530', label: 'ONT TP-LINK X530' },
-  { value: 'ZTE H199-A + ZTE H199-A', label: 'ZTE H199-A + ZTE H199-A (Wi-Fi Extend)' },
-  { value: 'ZTE H199-A + ZTE H196', label: 'ZTE H199-A + ZTE H196 (Wi-Fi Extend)' },
-  {
-    value: 'ONT ZTE F 670-L + ZTE H199-A',
-    label: 'ONT ZTE F 670-L + ZTE H199-A (Wi-Fi Extend)',
-  },
-  {
-    value: 'ONT ZTE F 670-L + ZTE H196',
-    label: 'ONT ZTE F 670-L + ZTE H196 (Wi-Fi Extend)',
-  },
-  { value: 'PARTICULAR DO CLIENTE', label: 'ROTEADOR PARTICULAR' },
-]
 
 const CANAL_OPTS = [
   { value: 'LIGAÇÃO', label: 'Telefone' },
@@ -577,7 +549,7 @@ export const ALTPLAN_REMOTO_FIELDS: OsTemplateField[] = [
     label: 'Roteador',
     control: 'select',
     section: S_PLANO,
-    options: ALTPLAN_ROTEADOR_OPTS,
+    catalogCategoria: 'equipamentos',
     layout: { md: 6 },
   },
   {
