@@ -69,14 +69,15 @@ const SIDEBAR_WIDTH = 268
 const SIDEBAR_COLLAPSED_WIDTH = 76
 const SIDEBAR_COLLAPSED_KEY = 'gerador-os:sidebarCollapsed'
 
-/** Sublinhado rabiscado (onda) usado no hover dos itens do menu lateral. */
-function navWaveUnderline(color: string): string {
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="390" height="50" viewBox="0 0 390 50">` +
-    `<path fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-miterlimit="10" ` +
-    `d="M0,47.585c0,0,97.5,0,130,0c13.75,0,28.74-38.778,46.168-19.416C192.669,46.5,243.603,47.585,260,47.585c31.821,0,130,0,130,0"/>` +
-    `</svg>`
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+/** Tons de verde usados na borda/preenchimento dos itens do menu lateral (cicla por índice). */
+function navAccentColor(theme: Theme, index: number): string {
+  const shades = [
+    theme.palette.primary.main,
+    theme.palette.primary.dark,
+    theme.palette.secondary.main,
+    theme.palette.primary.light,
+  ]
+  return shades[index % shades.length]!
 }
 
 function initialsFrom(name: string): string {
@@ -267,7 +268,7 @@ export function AppLayout() {
           Navegação
         </Typography>
         <List sx={{ mt: 0.5 }}>
-          {navItems.map((item) => {
+          {navItems.map((item, index) => {
             const active = item.isActive(pathname)
             const Icon = item.icon
             const badgeCount = navBadges[item.to] ?? 0
@@ -287,61 +288,45 @@ export function AppLayout() {
                   onClick={() => setMobileOpen(false)}
                   sx={{
                     position: 'relative',
+                    overflow: 'hidden',
                     mx: 1.25,
                     my: 0.25,
                     px: 1.5,
                     py: 1,
                     borderRadius: 2,
+                    borderLeft: (t: Theme) => `4px solid ${navAccentColor(t, index)}`,
                     justifyContent: isCollapsed ? 'center' : 'flex-start',
                     color: active ? 'primary.main' : 'text.secondary',
-                    transition: 'background-color 0.2s ease, color 0.2s ease',
+                    transition: 'color 0.25s ease',
                     '&.Mui-selected, &.Mui-selected:hover': {
-                      bgcolor: (t) =>
-                        alpha(t.palette.primary.main, mode === 'dark' ? 0.18 : 0.1),
-                    },
-                    '&:hover': {
-                      color: 'primary.main',
-                      bgcolor: (t) =>
-                        alpha(t.palette.primary.main, mode === 'dark' ? 0.12 : 0.06),
-                    },
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 4,
-                      top: 9,
-                      bottom: 9,
-                      width: 3,
-                      borderRadius: 3,
-                      bgcolor: 'primary.main',
-                      transform: active ? 'scaleY(1)' : 'scaleY(0)',
-                      transition: 'transform 0.25s ease',
+                      bgcolor: (t: Theme) =>
+                        alpha(navAccentColor(t, index), mode === 'dark' ? 0.2 : 0.12),
                     },
                     '&::after': {
                       content: '""',
                       position: 'absolute',
-                      left: 50,
-                      right: 16,
-                      bottom: 2,
-                      height: 11,
-                      backgroundImage: (t: Theme) => navWaveUnderline(t.palette.primary.main),
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                      backgroundSize: '100% 100%',
-                      opacity: 0.85,
-                      transform: 'scaleX(0)',
-                      transformOrigin: 'left',
-                      transition: 'transform 0.45s ease',
-                      display: isCollapsed ? 'none' : 'block',
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 0,
+                      bgcolor: (t: Theme) => navAccentColor(t, index),
+                      transition: 'width 0.3s ease',
+                      zIndex: 0,
                     },
-                    '&:hover::after': { transform: active ? 'scaleX(0)' : 'scaleX(1)' },
+                    '&:hover::after': { width: active ? 0 : '100%' },
+                    '&:hover .MuiListItemIcon-root, &:hover .MuiListItemText-primary': {
+                      color: active ? undefined : '#fff',
+                    },
                   }}
                 >
                   <ListItemIcon
                     sx={{
+                      position: 'relative',
+                      zIndex: 1,
                       minWidth: isCollapsed ? 0 : 38,
                       justifyContent: 'center',
                       color: active ? 'primary.main' : 'text.secondary',
-                      transition: 'min-width 0.25s ease',
+                      transition: 'min-width 0.25s ease, color 0.25s ease',
                     }}
                   >
                     <Badge
@@ -356,6 +341,8 @@ export function AppLayout() {
                   <ListItemText
                     primary={item.label}
                     sx={{
+                      position: 'relative',
+                      zIndex: 1,
                       my: 0,
                       opacity: isCollapsed ? 0 : 1,
                       maxWidth: isCollapsed ? 0 : 200,
@@ -365,7 +352,7 @@ export function AppLayout() {
                     }}
                     slotProps={{
                       primary: {
-                        sx: { fontSize: 14, fontWeight: active ? 700 : 500 },
+                        sx: { fontSize: 14, fontWeight: active ? 700 : 500, transition: 'color 0.25s ease' },
                       },
                     }}
                   />
