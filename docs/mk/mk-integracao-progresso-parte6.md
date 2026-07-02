@@ -322,6 +322,7 @@ buildSegmentos: (v: Record<string, unknown>) => {
 | Conversores de Mídia (Roku) | ✅ Em produção |
 | Termo de Responsabilidade | ✅ Em produção |
 | **"Criar O.S. no MK" — TODOS os formulários com O.S.** | ✅ **Em produção (concluído 2026-06-29)** |
+| Mudança de Endereço (5 forms) | ✅ Em produção (2026-07-02) |
 
 ---
 
@@ -400,3 +401,38 @@ A integração MK está **completamente funcional em produção** (deploy 2026-0
 - **O.S.**: 100% dos formulários que geram visita técnica têm o botão "Criar O.S. no MK" ativo após o Card 0
 - **Feedback**: 8 formulários inserem comentário em atendimento existente (modo `comment`)
 - **Sem O.S.**: `senha-altera-senha` e `termo-resp-padrao` — apenas protocolo, comportamento correto
+
+---
+
+## 12. Mudança de Endereço — integração MK (2026-07-02)
+
+### 12.1 Contexto
+
+As 5 demandas de mudança de endereço foram integradas ao MK Solutions seguindo o mesmo padrão dos demais formulários. `mud-end-inviabilidade` **excluído** desta fase (sem integração MK por decisão de produto).
+
+### 12.2 Campos `cpf` adicionados
+
+Cada formulário recebeu o campo `{ id: 'cpf', label: 'CPF / CNPJ', control: 'text', placeholder: 'Somente numeros', section: S_ID, layout: { md: 4 } }` antes do campo `cliente` (que passou de `md: 6` para `md: 8`).
+
+- `mud-end-padrao` → campo adicionado diretamente em `padrao.ts`
+- `mud-end-com-fibra` → herda de `MUD_END_PADRAO_FIELDS` (automático)
+- `mud-end-buscar-equipamentos`, `mud-end-altplan-proposta`, `mud-end-altplan-pago` → campo adicionado em cada arquivo
+
+### 12.3 Funções `buildXxxSegmentos`
+
+Padrão: `info` (abertura) + `comentarios: [mudEndTextoProtocolo]` (texto completo do protocolo) + `osDescricao`/`osIndicacoes` (extraídos do `mudEndTextoOS` pelo marcador `INDICAÇÃO TÉCNICA:`).
+
+Cada `buildSegmentos` chama o `buildXxxTextos` existente passando `operadorPrimeiroNome = ''` para obter o OS text, e constrói o `info` diretamente dos valores normalizados.
+
+### 12.4 Registry — entradas adicionadas
+
+```typescript
+// processo 16 (PROC-MUDANCA-ENDERECO), classificação 3 (NORMAL)
+'mud-end-padrao':              { ..., processoId: 16, tipoOS: 6,  grupoServico: 10, tecnicoId: 1 },
+'mud-end-com-fibra':           { ..., processoId: 16, tipoOS: 6,  grupoServico: 10, tecnicoId: 1 },
+'mud-end-buscar-equipamentos': { ..., processoId: 16, tipoOS: 6,  grupoServico: 10, tecnicoId: 1 },
+'mud-end-altplan-proposta':    { ..., processoId: 16, tipoOS: 17, grupoServico: 10, tecnicoId: 1 },
+'mud-end-altplan-pago':        { ..., processoId: 16, tipoOS: 17, grupoServico: 10, tecnicoId: 1 },
+```
+
+`tipoOS: 6` = MUDANCA DE ENDERECO | `tipoOS: 17` = MUD END + ALT PLANO

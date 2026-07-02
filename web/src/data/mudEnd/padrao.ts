@@ -269,6 +269,39 @@ NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})`
   return { mudEndTextoProtocolo: protocolo, mudEndTextoOS: os, mudEndTextoAgenda: agenda }
 }
 
+export function buildMudEndPadraoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo               = v.tipoSolicitacao || T_TITULAR
+  const clientePrimeiro    = first(upper(v.cliente))
+  const solicitantePrimeiro = first(upper(v.solicitante))
+  const parente            = upper(v.parente)
+  const contato            = digits(v.contato)
+  const contatoSol         = digits(v.contatoSol)
+  const equipPrefix        = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
+  const sinalSaida         = formatSinalFibraSaida(v.sinalONU)
+  const canal              = v.canal ?? ''
+
+  const ehTerceiro  = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
+  const quem        = ehTerceiro ? `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})` : clientePrimeiro
+  const contatoInfo = ehTerceiro ? contatoSol : contato
+
+  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO.\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
+
+  const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndPadraoTextos(rawValues, '')
+  const _mark = 'INDICAÇÃO TÉCNICA:'
+  const _midx = mudEndTextoOS.indexOf(_mark)
+  const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS
+  const osIndicacoes = _midx >= 0 ? mudEndTextoOS.slice(_midx + _mark.length).trimStart() : ''
+
+  return { info, comentarios: [mudEndTextoProtocolo], osDescricao, osIndicacoes }
+}
+
 /** Campos e ordem espelham o index-mud-end.html (grid 12 colunas). */
 export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
   {
@@ -302,12 +335,20 @@ export const MUD_END_PADRAO_FIELDS: OsTemplateField[] = [
     layout: { md: 12 },
   },
   {
+    id: 'cpf',
+    label: 'CPF / CNPJ',
+    control: 'text',
+    placeholder: 'Somente numeros',
+    section: S_ID,
+    layout: { md: 4 },
+  },
+  {
     id: 'cliente',
     label: 'Nome completo',
     control: 'text',
     placeholder: 'Nome completo',
     section: S_ID,
-    layout: { md: 6 },
+    layout: { md: 8 },
   },
   {
     id: 'canal',

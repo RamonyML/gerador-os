@@ -130,30 +130,6 @@ const PLANO_ESCOLHIDO_OPTIONS = [
   },
 ]
 
-const ROTEADOR_OPTIONS = [
-  'MULTILASER',
-  'TP-LINK 840',
-  'TP LINK C-20',
-  'D-LINK DIR 842',
-  'TP LINK C-5',
-  'TP LINK G-5',
-  'TP-LINK EX511',
-  'GREATEK',
-  'INTELBRAS',
-  'HUAWEI AX2',
-  'ZTE H196-MESH',
-  'ZTE H199-A',
-  'ONT ZTE F 670-L',
-  'ONT TP-LINK XC220',
-  'ONT TP-LINK XC230',
-  'ONT TP-LINK X530',
-  'ONT TP-LINK X530v2',
-  'ZTE H199-A + ZTE H199-A',
-  'ZTE H199-A + ZTE H196',
-  'ONT ZTE F 670-L + ZTE H199-A',
-  'ONT ZTE F 670-L + ZTE H196',
-  'PARTICULAR DO CLIENTE',
-].map((value) => ({ value, label: value }))
 
 export const MUD_END_ALTPLAN_PAGO_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -343,6 +319,39 @@ FORMA DE PAGAMENTO EM ${v.formaPag ?? ''}`
   return { mudEndTextoProtocolo: protocolo, mudEndTextoOS: os, mudEndTextoAgenda: agenda }
 }
 
+export function buildMudEndAltplanPagoSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo               = v.tipoSolicitacao || T_TITULAR
+  const clientePrimeiro    = first(upper(v.cliente))
+  const solicitantePrimeiro = first(upper(v.solicitante))
+  const parente            = upper(v.parente)
+  const contato            = digits(v.contato)
+  const contatoSol         = digits(v.contatoSol)
+  const equipPrefix        = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
+  const sinalSaida         = formatSinalFibraSaida(v.sinalONU)
+  const canal              = v.canal ?? ''
+
+  const ehTerceiro  = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
+  const quem        = ehTerceiro ? `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})` : clientePrimeiro
+  const contatoInfo = ehTerceiro ? contatoSol : contato
+
+  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO COM ALTERAÇÃO DE PLANO (PAGO).\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
+
+  const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndAltplanPagoTextos(rawValues, '')
+  const _mark = 'INDICAÇÃO TÉCNICA:'
+  const _midx = mudEndTextoOS.indexOf(_mark)
+  const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS
+  const osIndicacoes = _midx >= 0 ? mudEndTextoOS.slice(_midx + _mark.length).trimStart() : ''
+
+  return { info, comentarios: [mudEndTextoProtocolo], osDescricao, osIndicacoes }
+}
+
 export const MUD_END_ALTPLAN_PAGO_FIELDS: OsTemplateField[] = [
   {
     id: 'tipoSolicitacao',
@@ -358,7 +367,8 @@ export const MUD_END_ALTPLAN_PAGO_FIELDS: OsTemplateField[] = [
     ],
     layout: { md: 12 },
   },
-  { id: 'cliente', label: 'Nome completo', control: 'text', placeholder: 'Nome completo', section: S_ID, layout: { md: 6 } },
+  { id: 'cpf', label: 'CPF / CNPJ', control: 'text', placeholder: 'Somente numeros', section: S_ID, layout: { md: 4 } },
+  { id: 'cliente', label: 'Nome completo', control: 'text', placeholder: 'Nome completo', section: S_ID, layout: { md: 8 } },
   {
     id: 'canal',
     label: 'Canal',
@@ -493,7 +503,7 @@ export const MUD_END_ALTPLAN_PAGO_FIELDS: OsTemplateField[] = [
   { id: 'grauComp', label: 'Grau / vínculo', control: 'text', placeholder: 'ASSINANTE, MÃE, IRMÃO, LOCATÁRIO, ETC...', section: S_COMP, layout: { md: 3 } },
   { id: 'planoAtual', label: 'Plano atual', control: 'select', section: S_PLAN, options: PLANO_ATUAL_OPTIONS, layout: { md: 3 } },
   { id: 'planoEscolhido', label: 'Plano escolhido', control: 'select', section: S_PLAN, options: PLANO_ESCOLHIDO_OPTIONS, layout: { md: 6 } },
-  { id: 'roteador', label: 'Roteador', control: 'select', section: S_PLAN, options: ROTEADOR_OPTIONS, layout: { md: 3 } },
+  { id: 'roteador', label: 'Roteador', control: 'select', section: S_PLAN, catalogCategoria: 'equipamentos', layout: { md: 3 } },
   { id: 'troca', label: 'Trocar roteador?', control: 'select', section: S_PLAN, options: [{ value: TROCA_VALUE, label: 'Sim' }, { value: 'REINSTALAR', label: 'Não' }], layout: { md: 6 } },
   { id: 'dataContrato', label: 'Plano contratado em', control: 'text', placeholder: 'mês/ano', section: S_PLAN, layout: { md: 6 } },
   { id: 'dataVisita', label: 'Visita Técnica', control: 'date', placeholder: 'dd/mm/aaaa', section: S_AGE, layout: { md: 3 } },

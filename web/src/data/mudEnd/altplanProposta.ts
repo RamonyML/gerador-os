@@ -126,30 +126,6 @@ const PLANO_ESCOLHIDO_OPTIONS = [
   },
 ]
 
-const ROTEADOR_OPTIONS = [
-  'MULTILASER',
-  'TP-LINK 840',
-  'TP LINK C-20',
-  'D-LINK DIR 842',
-  'TP LINK C-5',
-  'TP LINK G-5',
-  'TP-LINK EX511',
-  'GREATEK',
-  'INTELBRAS',
-  'HUAWEI AX2',
-  'ZTE H196-MESH',
-  'ZTE H199-A',
-  'ONT ZTE F 670-L',
-  'ONT TP-LINK XC220',
-  'ONT TP-LINK XC230',
-  'ONT TP-LINK X530',
-  'ONT TP-LINK X530v2',
-  'ZTE H199-A + ZTE H199-A',
-  'ZTE H199-A + ZTE H196',
-  'ONT ZTE F 670-L + ZTE H199-A',
-  'ONT ZTE F 670-L + ZTE H196',
-  'PARTICULAR DO CLIENTE',
-].map((value) => ({ value, label: value }))
 
 export const MUD_END_ALTPLAN_PROPOSTA_OUTPUT = [
   '=== Texto Protocolo ===',
@@ -221,14 +197,15 @@ export function buildMudEndAltplanPropostaTextos(
       ? contatoSol
       : contato
 
+  const partes = String(v.dataLigacao ?? '').trim().split(/\s+/)
+  const dataLigacao = partes[0] ?? ''
+  const horaLigacao = partes[1] ?? ''
+
   const protocoloExtra =
     tipo === T_TERCEIRO_TITULAR
       ? `\n\nPOR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${v.canal ?? ''} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE AUTORIZOU E CONFIRMOU A SOLICITAÇÃO.`
       : tipo === T_TERCEIRO_TERCEIRO
-        ? (() => {
-            const partes = String(v.dataLigacao ?? '').trim().split(/\s+/)
-            return `\n\nPOR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${v.canalTit ?? ''} (${contato}) DIA ${partes[0] ?? ''} ÀS ${partes[1] ?? ''}HRS COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E CONTRATO.`
-          })()
+        ? `\n\nPOR PROCEDIMENTO PADRÃO, ENTREI EM CONTATO POR ${v.canalTit ?? ''} (${contato}) DIA ${dataLigacao} ÀS ${horaLigacao}HRS COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E CONTRATO.`
         : ''
 
   const autorizacaoProto =
@@ -295,8 +272,10 @@ NOME NO COMPROVANTE: ${nomeComprov} (${grauComp})${protocoloExtra}`
     tipo === T_TITULAR_TERCEIRO
       ? `${clientePrimeiro} AUTORIZOU ${upper(v.autorizado)} (${parente}) A ACOMPANHAR E ASSINAR O.S. CONTATO DO AUTORIZADO: (${contatoAut}).`
       : tipo === T_TERCEIRO_TERCEIRO
-        ? `${solicitantePrimeiro} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S.`
-        : `${clientePrimeiro} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S.`
+        ? `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canalTit ?? ''} (${contato}) DIA ${dataLigacao} ÀS ${horaLigacao}HRS COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E AUTORIZOU ${solicitante} (${parente}) ACOMPANHAR, ASSINAR O.S E CONTRATO.`
+        : tipo === T_TERCEIRO_TITULAR
+          ? `POR PROCEDIMENTO PADRÃO ENTREI EM CONTATO POR ${v.canal ?? ''} (${contato}) COM ${clientePrimeiro} (ASSINANTE) QUE CONFIRMOU E DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S.`
+          : `${clientePrimeiro} DISSE QUE ESTARÁ PRESENTE PARA ACOMPANHAR E ASSINAR O.S.`
 
   const os = `${osPrefix} E SOLICITOU REINSTALAÇÃO DOS EQUIPAMENTOS DE INTERNET NO ENDEREÇO QUE ESTÁ NA O.S, DISSE "QUE MUDOU PARA ESTE ENDEREÇO E LEVOU OS EQUIPAMENTOS". VALOR DO SERVIÇO: R$100,00. SOLICITOU TAMBÉM A RENOVAÇÃO DO SEU CONTRATO E UPGRADE DE PLANO, PLANO ATUAL: ${v.planoAtual ?? ''}. PLANO OFERTADO: ${v.planoEscolhido ?? ''}. COM A ALTERACAO DE PLANO O SERVICO DE MUDANÇA DE ENDEREÇO FOI ISENTO, E COM ESSE BENEFICIO RENOVA-SE CONTRATO DE PERMANÊNCIA PARA 12 (DOZE) MESES A PARTIR DA ASSINATURA DA O.S E CONTRATO. ${osPresenca} VISITA AGENDADA PARA DIA ${v.dataVisita ?? ''} ${v.horaVisita ?? ''} HRS.
 ${trocaAgenda}
@@ -310,6 +289,39 @@ ${textoTecnico(v, troca)}`
   const agenda = `MUD END + ALT PLANO ${cliente} PROT:${v.protocolo ?? ''} ISENTO (${operadorPrimeiroNome}) - ${bairro} ${v.prumada ?? ''} // ${extendAgenda} ${trocaAgenda}`
 
   return { mudEndTextoProtocolo: protocolo, mudEndTextoOS: os, mudEndTextoAgenda: agenda }
+}
+
+export function buildMudEndAltplanPropostaSegmentos(
+  rawValues: Record<string, unknown>,
+): { info: string; comentarios: string[]; osDescricao: string; osIndicacoes: string } {
+  const v: Record<string, string> = {}
+  for (const [key, value] of Object.entries(rawValues)) {
+    v[key] = String(value ?? '')
+  }
+
+  const tipo               = v.tipoSolicitacao || T_TITULAR
+  const clientePrimeiro    = first(upper(v.cliente))
+  const solicitantePrimeiro = first(upper(v.solicitante))
+  const parente            = upper(v.parente)
+  const contato            = digits(v.contato)
+  const contatoSol         = digits(v.contatoSol)
+  const equipPrefix        = upper(v.onuOnt).startsWith('ONT') ? 'ONT' : 'ONU'
+  const sinalSaida         = formatSinalFibraSaida(v.sinalONU)
+  const canal              = v.canal ?? ''
+
+  const ehTerceiro  = tipo === T_TERCEIRO_TITULAR || tipo === T_TERCEIRO_TERCEIRO
+  const quem        = ehTerceiro ? `${solicitantePrimeiro} (${parente} DE ${clientePrimeiro})` : clientePrimeiro
+  const contatoInfo = ehTerceiro ? contatoSol : contato
+
+  const info = `${quem} ENTROU EM CONTATO POR ${canal} (${contatoInfo}) E SOLICITOU MUDANÇA DE ENDEREÇO COM ALTERAÇÃO DE PLANO (ISENTO).\n\nCLIENTE SEM BLOQUEIO, SEM REDUÇÃO E ${equipPrefix} ${sinalSaida}.`
+
+  const { mudEndTextoProtocolo, mudEndTextoOS } = buildMudEndAltplanPropostaTextos(rawValues, '')
+  const _mark = 'INDICAÇÃO TÉCNICA:'
+  const _midx = mudEndTextoOS.indexOf(_mark)
+  const osDescricao  = _midx >= 0 ? mudEndTextoOS.slice(0, _midx).replace(/[\s=>*]+$/, '') : mudEndTextoOS
+  const osIndicacoes = _midx >= 0 ? mudEndTextoOS.slice(_midx + _mark.length).trimStart() : ''
+
+  return { info, comentarios: [mudEndTextoProtocolo], osDescricao, osIndicacoes }
 }
 
 export const MUD_END_ALTPLAN_PROPOSTA_FIELDS: OsTemplateField[] = [
@@ -327,7 +339,8 @@ export const MUD_END_ALTPLAN_PROPOSTA_FIELDS: OsTemplateField[] = [
     ],
     layout: { md: 12 },
   },
-  { id: 'cliente', label: 'Nome completo', control: 'text', placeholder: 'Nome completo', section: S_ID, layout: { md: 6 } },
+  { id: 'cpf', label: 'CPF / CNPJ', control: 'text', placeholder: 'Somente numeros', section: S_ID, layout: { md: 4 } },
+  { id: 'cliente', label: 'Nome completo', control: 'text', placeholder: 'Nome completo', section: S_ID, layout: { md: 8 } },
   {
     id: 'canal',
     label: 'Canal',
@@ -415,7 +428,7 @@ export const MUD_END_ALTPLAN_PROPOSTA_FIELDS: OsTemplateField[] = [
   { id: 'grauComp', label: 'Grau / vínculo', control: 'text', section: S_COMP, layout: { md: 3 } },
   { id: 'planoAtual', label: 'Plano atual', control: 'select', section: S_PLAN, options: PLANO_ATUAL_OPTIONS, layout: { md: 3 } },
   { id: 'planoEscolhido', label: 'Plano escolhido', control: 'select', section: S_PLAN, options: PLANO_ESCOLHIDO_OPTIONS, layout: { md: 6 } },
-  { id: 'roteador', label: 'Roteador', control: 'select', section: S_PLAN, options: ROTEADOR_OPTIONS, layout: { md: 3 } },
+  { id: 'roteador', label: 'Roteador', control: 'select', section: S_PLAN, catalogCategoria: 'equipamentos', layout: { md: 3 } },
   { id: 'troca', label: 'Trocar roteador?', control: 'select', section: S_PLAN, options: [{ value: TROCA_VALUE, label: 'Sim' }, { value: 'REINSTALAR', label: 'Não' }], layout: { md: 6 } },
   { id: 'dataContrato', label: 'Plano contratado em', control: 'text', placeholder: 'mês/ano', section: S_PLAN, layout: { md: 6 } },
   { id: 'dataVisita', label: 'Visita Técnica', control: 'date', placeholder: 'dd/mm/aaaa', section: S_AGE, layout: { md: 3 } },

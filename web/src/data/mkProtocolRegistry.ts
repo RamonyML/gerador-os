@@ -34,6 +34,11 @@ import { buildPontoAdicionalSegmentos } from './wifiExtend/pontoAdicional'
 import { buildRokuPadraoSegmentos } from './midiaTv/rokuPadrao'
 import { buildRokuPresencialSegmentos } from './midiaTv/rokuPresencial'
 import { buildTermoRespPadraoSegmentos } from './termoDocs/termoRespPadrao'
+import { buildMudEndPadraoSegmentos } from './mudEnd/padrao'
+import { buildMudEndComFibraSegmentos } from './mudEnd/comFibra'
+import { buildMudEndEquipamentosSegmentos } from './mudEnd/equipamentos'
+import { buildMudEndAltplanPropostaSegmentos } from './mudEnd/altplanProposta'
+import { buildMudEndAltplanPagoSegmentos } from './mudEnd/altplanPago'
 
 export type MkProtocolNewEntry = {
   mode: 'new'
@@ -112,6 +117,14 @@ export const MK_PROTOCOL_REGISTRY: Record<string, MkProtocolEntry> = {
   'wifi-extend-tplink': { mode: 'new', processoId: 5, classificacaoId: 3, buildSegmentos: buildWifiExtendTplinkSegmentos, tipoOS: 18, grupoServico: 10, tecnicoId: 1 },
   // Ponto adicional — compra de equipamento, tipoOS 13 (OS DE PONTO ADICIONAL)
   'wifi-extend-ponto':  { mode: 'new', processoId: 5, classificacaoId: 3, buildSegmentos: buildPontoAdicionalSegmentos, tipoOS: 13, grupoServico: 10, tecnicoId: 1 },
+
+  // Mudança de endereço — processo 16 (PROC-MUDANCA-ENDERECO), classificação 3 (NORMAL)
+  // tipoOS 6 = MUDANCA DE ENDERECO | tipoOS 17 = MUD END + ALT PLANO
+  'mud-end-padrao':             { mode: 'new', processoId: 16, classificacaoId: 3, buildSegmentos: buildMudEndPadraoSegmentos, tipoOS: 6, grupoServico: 10, tecnicoId: 1 },
+  'mud-end-com-fibra':          { mode: 'new', processoId: 16, classificacaoId: 3, buildSegmentos: buildMudEndComFibraSegmentos, tipoOS: 6, grupoServico: 10, tecnicoId: 1 },
+  'mud-end-buscar-equipamentos': { mode: 'new', processoId: 16, classificacaoId: 3, buildSegmentos: buildMudEndEquipamentosSegmentos, tipoOS: 6, grupoServico: 10, tecnicoId: 1 },
+  'mud-end-altplan-proposta':   { mode: 'new', processoId: 16, classificacaoId: 3, buildSegmentos: buildMudEndAltplanPropostaSegmentos, tipoOS: 17, grupoServico: 10, tecnicoId: 1 },
+  'mud-end-altplan-pago':       { mode: 'new', processoId: 16, classificacaoId: 3, buildSegmentos: buildMudEndAltplanPagoSegmentos, tipoOS: 17, grupoServico: 10, tecnicoId: 1 },
 
   // Feedback — insere comentário num atendimento existente (protocolo informado pelo operador)
   'feedback-sem-sucesso':    { mode: 'comment', buildText: (v) => buildFeedbackSemSucessoTextos(v).feedbackSemSucessoTexto },
